@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 gem 'sidekiq'
 gem 'sidetiq'
+gem 'nokogiri'
 gem 'rethinkdb'
 gem 'colorize'
