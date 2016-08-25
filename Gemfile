@@ -1,0 +1,5 @@
+source 'https://rubygems.org'
+gem 'sidekiq'
+gem 'sidetiq'
+gem 'rethinkdb'
+gem 'colorize'
