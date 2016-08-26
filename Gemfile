@@ -3,7 +3,6 @@ gem 'sidekiq'
 gem 'sidetiq'
 gem 'nokogiri'
 gem 'rethinkdb'
-gem 'colorize'
 gem 'rest-client'
 gem 'require_all'
 gem 'rake'
@@ -16,7 +15,9 @@ gem 'redis'
 gem 'pry'
 gem 'hirb'
 gem 'coolline'
+gem 'colorize'
 gem 'awesome_print'
+gem 'table_print'
 
 
 # Test

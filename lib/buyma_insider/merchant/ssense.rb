@@ -1,3 +1,4 @@
+require 'table_print'
 require 'colorize'
 require 'awesome_print'
 require 'rest_client'
@@ -24,9 +25,10 @@ module Merchant
 
     end
 
+    # Calculate the raw size of the response
     def raw_size
       if @raw.nil?
-        Zlib::Deflate.deflate(@response.body)
+        Zlib::Deflate.deflate(@response.body).size
       else
         @raw.file.size
       end
@@ -42,11 +44,13 @@ module Merchant
           @response = get(address)
         end
 
-        article_document = Nokogiri::HTML(response.body)
+        article_document = Nokogiri::HTML(@response.body)
         merchant_items   = article_document.xpath %q(//div[@class="browsing-product-list"]//div[@class="browsing-product-item"])
 
         @total_traffic_in_byte += raw_size
         @total_merchant_items  += merchant_items.size
+
+        puts %Q(#{@total_traffic_in_byte} B, #{@total_merchant_items} Items).blue
       end
     end
   end
