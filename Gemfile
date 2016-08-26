@@ -4,8 +4,9 @@ gem 'sidetiq'
 gem 'nokogiri'
 gem 'rethinkdb'
 gem 'colorize'
-gem 'rest_client'
+gem 'rest-client'
 gem 'require_all'
+gem 'rake'
 
 # Persistence
 gem 'nobrainer'
@@ -16,4 +17,8 @@ gem 'pry'
 gem 'hirb'
 gem 'coolline'
 gem 'awesome_print'
+
+
+# Test
+gem 'minitest'
 

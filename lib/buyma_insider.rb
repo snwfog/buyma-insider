@@ -1,6 +1,10 @@
 require 'require_all'
 
-require_all 'buyma_insider/concerns/crawler'
-require_all 'buyma_insider/merchant'
-require_all 'buyma_insider/models'
-require_all 'buyma_insider/persistence'
+require 'buyma_insider/concerns/crawler/http'
+
+require 'buyma_insider/merchant/base'
+require 'buyma_insider/merchant/ssense'
+
+require 'buyma_insider/models/item'
+
+require 'buyma_insider/persistence/conn'

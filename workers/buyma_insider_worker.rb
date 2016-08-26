@@ -9,6 +9,6 @@ class BuymaInsiderWorker
   include Sidekiq::Worker
 
   def perform
-    puts 'LOL'
+    Merchant::Ssense.new.crawl
   end
 end
