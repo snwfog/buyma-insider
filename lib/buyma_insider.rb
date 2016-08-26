@@ -1,1 +1,6 @@
-require 'buyma_insider/merchant/ssense'
+require 'require_all'
+
+require_all 'buyma_insider/concerns'
+require_all 'buyma_insider/merchant'
+require_all 'buyma_insider/models'
+require_all 'buyma_insider/persistence'

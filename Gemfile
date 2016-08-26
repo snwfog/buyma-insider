@@ -4,7 +4,12 @@ gem 'sidetiq'
 gem 'nokogiri'
 gem 'rethinkdb'
 gem 'colorize'
-gem 'rest-client'
+gem 'rest_client'
+gem 'require_all'
+
+# Persistence
+gem 'nobrainer'
+gem 'redis'
 
 # Debugging / Development
 gem 'pry'
