@@ -9,7 +9,8 @@ module Concerns
       end
 
       def raw_response(address)
-        RestClient::Request.execute(method: :get, url: address, raw_response: true)
+        RestClient::Request.execute(method:  :get, url: address, raw_response: true,
+                                    headers: { user_agent: BuymaInsider::SPOOF_USER_AGENT })
       end
 
       def decode_response(raw_response)
