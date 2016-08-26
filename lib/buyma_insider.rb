@@ -1,0 +1,1 @@
+require 'buyma_insider/merchant/ssense'
