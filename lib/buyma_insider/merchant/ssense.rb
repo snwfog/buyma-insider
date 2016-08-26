@@ -5,6 +5,9 @@ require 'rest_client'
 require 'nokogiri'
 
 module Merchant
+  ##
+  # Store merchant information
+  ##
   class Ssense < Base
     index_page 'https://www.ssense.com/en-ca/men'
     index_page 'https://www.ssense.com/en-ca/women'
@@ -25,25 +28,9 @@ module Merchant
 
     end
 
-    # Calculate the raw size of the response
-    def raw_size
-      if @raw.nil?
-        Zlib::Deflate.deflate(@response.body).size
-      else
-        @raw.file.size
-      end
-    end
-
     def crawl
       index_pages.each do |address|
-        if @options[:raw_response]
-          @raw      = raw_response(address)
-          decoded   = decode_response(@raw)
-          @response = response(decoded, @raw)
-        else
-          @response = get(address)
-        end
-
+        get address # Grab the link and set @response
         article_document = Nokogiri::HTML(@response.body)
         merchant_items   = article_document.xpath %q(//div[@class="browsing-product-list"]//div[@class="browsing-product-item"])
 
