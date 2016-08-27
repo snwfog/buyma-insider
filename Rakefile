@@ -1,5 +1,14 @@
-require 'rake'
-require 'any_bar'
+%w(lib config spec workers).each do |p|
+  $:.unshift(File.expand_path(p), File.dirname(__FILE__))
+end
+
+require 'bundler'
+require 'buyma_insider'
+
+Bundler.require
+include RethinkDB::Shortcuts
+
+db_name = "#{BuymaInsider::NAME}_#{BuymaInsider::ENVIRONMENT}"
 
 desc 'Start sidekiq'
 task :sidekiq do
@@ -8,7 +17,7 @@ end
 
 desc 'Run test'
 task :test do
-  sh 'bundle execute pry -Iworkers:lib:spec ./spec/ssense_spec.rb'
+  sh 'pry -Iworkers:lib:spec ./spec/*_spec.rb'
 end
 
 desc 'Setup ssh'
@@ -20,6 +29,17 @@ task :ssh do
   # AnyBar::Client.new(1735).color = 'green'
   # AnyBar::Client.new(1736).color = 'green'
   # AnyBar::Client.new(1737).color = 'green'
+end
 
-  sh 'ssh -NTL 8080:localhost:8080 -L 28015:localhost:28015 -L 6379:localhost:6379 snw@mini.local'
+namespace :db do
+  desc 'Recreate the database'
+  task :reset => :drop do
+    NoBrainer.sync_schema(verbose: true)
+  end
+
+  desc 'Sync the schema and tables'
+  task :drop do
+    puts "DROPPING #{db_name}"
+    NoBrainer.purge!
+  end
 end

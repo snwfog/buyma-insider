@@ -4,11 +4,11 @@ require 'active_support'
 require 'active_support/core_ext/numeric/time'
 
 require 'buyma_insider'
-require 'nobrainer_config'
+require 'nobrainer'
 
 class ArticleModelBaseTest < Minitest::Test
   def test_create_base_article
-    1000.times {
+    1.times {
       a  = Article.create sku:         Faker::Code.ean,
                           name:        Faker::Commerce.product_name,
                           description: Faker::Hipster.sentences,
@@ -22,7 +22,9 @@ class ArticleModelBaseTest < Minitest::Test
     }
   end
 
-  def time_now
-    Time.now.utc.to_i.to_s
+  def test_article_base_support_inheritance
+    SubArticle.create
   end
 end
+
+class SubArticle < Article; end

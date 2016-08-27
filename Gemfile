@@ -8,6 +8,7 @@ gem 'rest-client'
 gem 'require_all'
 gem 'rake'
 gem 'activesupport'
+gem 'dotenv'
 
 # Persistence
 gem 'nobrainer'
@@ -20,6 +21,9 @@ gem 'coolline'
 gem 'colorize'
 gem 'awesome_print'
 gem 'table_print'
+
+# Deployment
+gem 'foreman'
 
 # Test
 gem 'minitest'
