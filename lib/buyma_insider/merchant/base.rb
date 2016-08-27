@@ -1,6 +1,10 @@
+require 'nokogiri'
+
 module Merchant
   class Base
     include Concerns::Crawler::Http
+
+    attr_accessor :document
 
     class << self
       attr_accessor :index_pages
@@ -17,6 +21,14 @@ module Merchant
 
     def index_pages
       self.class.index_pages
+    end
+
+    def parse
+      @document = Nokogiri::HTML(@response.body)
+    end
+
+    def item_path
+      raise 'Not implemented'
     end
   end
 end

@@ -10,7 +10,7 @@ module Concerns
       end
 
       def content_length
-        response.headers[:content_length] || Zlib::Deflate.deflate(@response.body).size # Approximate
+        @response.headers[:content_length] || Zlib::Deflate.deflate(@response.body).size # Approximate
       end
 
       def raw_response(address)

@@ -28,16 +28,22 @@ module Merchant
 
     end
 
+    def item_path
+      %q(//div[@class="browsing-product-list"]//div[@class="browsing-product-item"])
+    end
+
     def crawl
-      index_pages.each do |address|
-        get address # Grab the link and set @response
-        article_document = Nokogiri::HTML(@response.body)
-        merchant_items   = article_document.xpath %q(//div[@class="browsing-product-list"]//div[@class="browsing-product-item"])
+      index_pages.each do |url|
+        get url # Grab the link and set @response
+        parse # Parse into document from response
 
-        @total_traffic_in_byte += raw_size
-        @total_merchant_items  += merchant_items.size
+        items = document.xpath(item_path)
 
-        puts %Q(#{@total_traffic_in_byte} B, #{@total_merchant_items} Items).blue
+        @total_traffic_in_byte += content_length
+        @total_merchant_items  += items.size
+
+        puts %Q(#{@total_traffic_in_byte} B).blue
+        puts %Q(#{@total_merchant_items} Items).blue
       end
     end
   end

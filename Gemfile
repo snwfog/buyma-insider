@@ -19,7 +19,13 @@ gem 'colorize'
 gem 'awesome_print'
 gem 'table_print'
 
-
 # Test
 gem 'minitest'
+gem 'any_bar'
+case RUBY_PLATFORM
+when /darwin/
+  gem 'guard'
+  gem 'guard-minitest'
+end
+
 
