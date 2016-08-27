@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+gem 'sinatra'
 gem 'sidekiq'
 gem 'sidetiq'
 gem 'nokogiri'
@@ -21,6 +22,7 @@ gem 'table_print'
 
 # Test
 gem 'minitest'
+gem 'faker'
 gem 'any_bar'
 case RUBY_PLATFORM
 when /darwin/

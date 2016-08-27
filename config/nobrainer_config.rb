@@ -3,7 +3,7 @@ require 'nobrainer'
 NoBrainer.configure do |config|
   # app_name is the name of your application in lowercase.
   # When using Rails, the application name is automatically inferred.
-  # config.app_name = config.default_app_name
+  config.app_name = 'buyma_insider'
 
   # environment defaults to Rails.env for Rails apps or to the environment
   # variables RUBY_ENV, RAILS_ENV, RACK_ENV, or :production.
@@ -91,10 +91,13 @@ NoBrainer.configure do |config|
   # The env variable MACHINE_ID can also be used to set the machine id.
   # When using distinct machine_id, then primary keys are guaranteed to be
   # generated without conflicts.
-  # config.machine_id = config.default_machine_id
+  config.machine_id = 1
 
   # Criteria cache elements. For example, the result of a has_many association
   # is cached. The per criteria cache is disabled if it grows too big to avoid
   # out of memory issues.
   # config.criteria_cache_max_entries = 10_000
 end
+
+NoBrainer.sync_schema # Synchronize table schema
+

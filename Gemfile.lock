@@ -35,6 +35,8 @@ GEM
       unicode_utils (~> 1.4)
     domain_name (0.5.20160615)
       unf (>= 0.0.5, < 1.0.0)
+    faker (1.6.6)
+      i18n (~> 0.5)
     ffi (1.9.14)
     formatador (0.2.5)
     guard (2.14.0)
@@ -141,6 +143,7 @@ DEPENDENCIES
   awesome_print
   colorize
   coolline
+  faker
   guard
   guard-minitest
   hirb
@@ -155,6 +158,7 @@ DEPENDENCIES
   rethinkdb
   sidekiq
   sidetiq
+  sinatra
   table_print
 
 BUNDLED WITH

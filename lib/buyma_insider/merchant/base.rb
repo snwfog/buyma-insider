@@ -2,16 +2,23 @@ require 'nokogiri'
 
 module Merchant
   class Base
-    include Concerns::Crawler::Http
-
-    attr_accessor :document
+    include Concerns::Http
+    include Concerns::Parser
 
     class << self
       attr_accessor :index_pages
+      attr_accessor :item_xpath
 
       def index_page(index_address)
         @index_pages ||= []
         @index_pages << index_address
+      end
+
+      ##
+      # Return or set the item path
+      #
+      def item_xpath(path = nil)
+        @item_xpath ||= path
       end
     end
 
@@ -23,12 +30,8 @@ module Merchant
       self.class.index_pages
     end
 
-    def parse
-      @document = Nokogiri::HTML(@response.body)
-    end
-
-    def item_path
-      raise 'Not implemented'
+    def item_xpath
+      self.class.item_xpath
     end
   end
 end
