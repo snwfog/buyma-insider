@@ -6,7 +6,7 @@ class Article
 
   has_one :price_history
 
-  field :id,          primary_key: true
+  field :id,          primary_key: true, required: true
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
   field :description, type: String, length: (1..1000)
@@ -24,8 +24,12 @@ class Article
 
   def price=(price)
     super(price)
-    price_history ||= PriceHistory.new
-    price_history.add_price(price)
+    if (ph = price_history).nil?
+      ph = PriceHistory.new(article_id: self.id)
+    end
+
+    ph.add_price(price)
+    ph.save
   end
 
   # def id

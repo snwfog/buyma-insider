@@ -6,11 +6,12 @@ require 'nobrainer'
 class PriceHistory
   include NoBrainer::Document
 
-  field :article_id,  primary_key: true
-  field :currency,    type: Text, length: (3..3), default: 'CAN'
-  field :history,     type: Hash, default: {}
+  field :article_id, primary_key: true
+  field :currency,   type: Text, length: (3..3), default: 'CAN'
+  field :history,    type: Hash
 
   def add_price(price)
-    history[Time.now.utc.to_i.to_s] = price
+    self.history ||= {}
+    self.history[Time.now.utc.to_i.to_s] = price.to_i
   end
 end
