@@ -7,6 +7,7 @@ gem 'rethinkdb'
 gem 'rest-client'
 gem 'require_all'
 gem 'rake'
+gem 'activesupport'
 
 # Persistence
 gem 'nobrainer'

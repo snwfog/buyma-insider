@@ -8,5 +8,6 @@ class PriceHistory
   # belongs_to :article
 
   field :article_id,  primary_key: true
-  field :prices,      type: Hash
+  field :currency,    default: 'CAN'
+  field :prices,      type: Hash, default: {}
 end

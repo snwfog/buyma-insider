@@ -139,6 +139,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activesupport
   any_bar
   awesome_print
   colorize
