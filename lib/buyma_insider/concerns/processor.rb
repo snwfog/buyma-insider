@@ -5,18 +5,10 @@ module Concerns
     def process(*args, &block)
       @items.each do |html_node|
         # Build skeleton article
-        article    = article_model.from_node(html_node)
-        db_article = article_model.find?(article.id)
-
-        # Set new price
-        if db_article
-          db_article.price = article.price
-          article          = db_article
-        end
-
+        attrs   = article_model.attrs_from_node(html_node)
+        article = Article.upsert(attrs)
         # Preprocessing before saving
         yield article if block_given?
-        article.save
       end
     end
   end

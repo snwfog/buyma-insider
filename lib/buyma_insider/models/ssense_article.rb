@@ -4,18 +4,19 @@ class SsenseArticle < Article
   # primary_key :sku
 
   class << self
-    def from_node(item_node)
-      article = new(
-        id:          item_node['data-product-sku'],
-        name:        item_node['data-product-name'],
-        price:       item_node['data-product-price'],
-        description: %Q(#{item_node['data-product-brand']} #{item_node['data-product-name']}),
-      )
+    def attrs_from_node(n)
+      {
+        id:          n['data-product-sku'],
+        name:        n['data-product-name'],
+        price:       n['data-product-price'],
+        description: %Q(#{n['data-product-brand']} - #{n['data-product-name']}),
+        link:        %Q(#{Ssense.base_url}#{n.at_xpath('a').attributes['href']}),
+        '_type':     self.to_s
+      }
+    end
 
-      link         = item_node.at_xpath('a').attributes['href']
-      link         = %Q(#{Ssense.base_url}#{link})
-      article.link = link
-      article
+    def from_node(item_node)
+      new(attrs_from_node(item_node))
     end
   end
 end

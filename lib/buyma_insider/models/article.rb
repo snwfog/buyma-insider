@@ -16,7 +16,8 @@ class Article
   attr_reader :unique_id
 
   class << self
-    def from_node; raise 'Not implemented'; end
+    def attrs_from_node(n); raise 'Not implemented'; end
+    def from_node(n); raise 'Not implemented'; end
     # def primary_key(primary_key_name = :id)
     #   @primary_key ||= primary_key_name
     # end
@@ -24,12 +25,11 @@ class Article
 
   def price=(price)
     super(price)
-    if (ph = price_history).nil?
-      ph = PriceHistory.new(article_id: self.id)
+    NoBrainer::Lock.new("price_history:price=:#{self.id}").synchronize do
+      price_history = PriceHistory.upsert(article_id: self.id)
+      price_history.add_price(price)
+      price_history.save
     end
-
-    ph.add_price(price)
-    ph.save
   end
 
   # def id
