@@ -7,6 +7,7 @@ module Merchant
     include Concerns::Http
     include Concerns::Parser
     include Concerns::Processor
+    include Concerns::UrlCache
 
     class << self
       attr_accessor :base_url
