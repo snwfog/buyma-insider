@@ -11,7 +11,7 @@ module Concerns
     end
 
     def merchant_cache_key
-      %Q(merchant:#{self.class.to_s.downcase}:url_cache})
+      %Q(merchant:#{self.class.to_s.downcase}:url_cache:#{Time.now.utc.to_i.to_s}})
     end
 
     def cache_url
@@ -25,7 +25,7 @@ module Concerns
     end
 
     def flush_cache_url
-      $redis.sadd(merchant_cache_key, cache.to_a)
+      $redis.sadd(merchant_cache_key, cache.to_a) unless cache.empty?
     end
     # module ClassMethods; end
   end

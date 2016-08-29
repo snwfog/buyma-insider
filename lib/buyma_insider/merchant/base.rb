@@ -8,11 +8,13 @@ module Merchant
     include Concerns::Parser
     include Concerns::Processor
     include Concerns::UrlCache
+    include Concerns::Pager
 
     class << self
       attr_accessor :base_url
       attr_accessor :index_pages
       attr_accessor :item_xpath
+      attr_accessor :pager_css
       attr_accessor :article_model
 
       def base_url(url = nil)
@@ -28,6 +30,11 @@ module Merchant
       def item_xpath(path = nil)
         @item_xpath = path unless path.nil?
         @item_xpath
+      end
+
+      def pager_css(path = nil)
+        @pager_css = path unless path.nil?
+        @pager_css
       end
 
       def article_model(model = nil)
@@ -50,6 +57,10 @@ module Merchant
 
     def item_xpath
       self.class.item_xpath
+    end
+
+    def pager_css
+      self.class.pager_css
     end
 
     def article_model
