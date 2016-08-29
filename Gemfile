@@ -29,6 +29,8 @@ gem 'foreman'
 gem 'minitest'
 gem 'faker'
 gem 'any_bar'
+# gem 'redis-stat'
+
 case RUBY_PLATFORM
 when /darwin/
   gem 'guard'
