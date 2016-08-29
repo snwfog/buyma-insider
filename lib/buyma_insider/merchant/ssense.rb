@@ -31,31 +31,23 @@ class Ssense < Merchant::Base
   end
 
   def crawl
-    index_pages.each do |url|
+    index_pages.each do |index_url|
       begin
-        # Skip if cache include url
-        next if cache.include? url
-
-        # Get link HTML and set @response if not in url cache
-        get %Q(#{url})
-
-        # Cache effective url [UrlCache]
-        cache_url
-
-        # Parse into document from response [Parser]
-        parse
-
-        pages
-        puts next_page
-        puts prev_page
-
-        @items = @document.xpath(item_xpath)
-
-        # Process @items [Processor]
-        process
-
-        # Update current crawler statistics
-        update_crawl_stats
+        each_pages(index_url) do |pg_url|
+          # Skip if cache include url
+          next if cache.include? pg_url
+          # Get link HTML and set @response if not in url cache
+          @response = get pg_url
+          # Cache effective url [UrlCache]
+          cache_url
+          # Parse into document from response [Parser]
+          parse
+          @items = @document.xpath(item_xpath)
+          # Process @items [Processor]
+          process
+          # Update current crawler statistics
+          update_crawl_stats
+        end
       rescue Exception => e
         raise e
       ensure
@@ -65,11 +57,30 @@ class Ssense < Merchant::Base
     end
   end
 
-  def prev_page
-    "#{self.class.base_url}#{@pg_nodes.at_css('li:first-child a').attributes['href']}"
+  def each_pages(index_url)
+    # If response is nil, then its the index page...
+    # BUG: This could be run twice, also within loop
+    if index_pages.include?(index_url)
+      @response = get index_url if @response.nil?
+      parse
+      yield index_url
+    end
+
+    until (pg = next_page).nil?
+      yield pg
+    end
   end
 
+  # def prev_page
+  #   "#{self.class.base_url}#{@pg_nodes.at_css('li:first-child a').attributes['href']}"
+  # end
+
   def next_page
-    "#{self.class.base_url}#{@pg_nodes.at_css('li:last-child a').attributes['href']}"
+    if (last_pg_node = pages.at_css('li:last-child a')).nil?
+      ''
+    else
+      # BUG: Infinite loop here if the page is in the cache and cannot grab the next one
+      "#{self.class.base_url}#{last_pg_node.attributes['href']}"
+    end
   end
 end

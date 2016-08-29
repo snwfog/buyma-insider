@@ -4,8 +4,8 @@ module Concerns
   module Http
     # Shortcut to get
     def get(address)
-      @response = RestClient.get(address,
-                                 headers: { user_agent: BuymaInsider::SPOOF_USER_AGENT })
+      RestClient.get(address,
+                     headers: { user_agent: BuymaInsider::SPOOF_USER_AGENT })
     end
 
     def content_length
