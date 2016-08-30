@@ -1,21 +1,13 @@
 require 'active_support'
 require 'active_support/core_ext/string/inflections'
+require 'active_support/core_ext/module/delegation'
 require 'nokogiri'
 
 module Merchant
   class Base
-    include Concerns::Http
-    include Concerns::Parser
-    include Concerns::Processor
-    include Concerns::UrlCache
-    include Concerns::Pager
-
     class << self
-      attr_accessor :base_url
-      attr_accessor :index_pages
-      attr_accessor :item_xpath
-      attr_accessor :pager_css
-      attr_accessor :article_model
+      attr_accessor :base_url, :index_pages, :item_css,
+                    :pager_css, :article_model
 
       def base_url(url = nil)
         @base_url = url unless url.nil?
@@ -27,9 +19,9 @@ module Merchant
         @index_pages << index_address
       end
 
-      def item_xpath(path = nil)
-        @item_xpath = path unless path.nil?
-        @item_xpath
+      def item_css(path = nil)
+        @item_css = path unless path.nil?
+        @item_css
       end
 
       def pager_css(path = nil)
@@ -51,20 +43,11 @@ module Merchant
       end
     end
 
-    def index_pages
-      self.class.index_pages
-    end
+    delegate :base_url, :index_pages, :item_css,
+             :pager_css, :article_model, to: :class
 
-    def item_xpath
-      self.class.item_xpath
-    end
-
-    def pager_css
-      self.class.pager_css
-    end
-
-    def article_model
-      self.class.article_model
+    def initialize(options = {})
+      @options = options
     end
   end
 end

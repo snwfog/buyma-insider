@@ -13,61 +13,20 @@ class Ssense < Merchant::Base
   index_page 'https://www.ssense.com/en-ca/men/'
   index_page 'https://www.ssense.com/en-ca/women'
 
-  item_xpath %q(//div[@class="browsing-product-list"]//div[@class="browsing-product-item"])
+  item_css %q(div.browsing-product-list div.browsing-product-item)
   pager_css %q(div.browsing-pagination ul.nav)
 
-  attr_reader :total_traffic_in_byte
-  attr_reader :total_merchant_items
-
   def initialize(options={})
-    @options               = options
-    @total_traffic_in_byte = 0
-    @total_merchant_items  = 0
-  end
-
-  def update_crawl_stats
-    @total_traffic_in_byte += content_length
-    @total_merchant_items  += @items.count
+    super(options)
+    @exec = CrawlExecutor.new(self)
   end
 
   def crawl
     index_pages.each do |index_url|
-      begin
-        each_pages(index_url) do |pg_url|
-          # Skip if cache include url
-          next if cache.include? pg_url
-          # Get link HTML and set @response if not in url cache
-          @response = get pg_url
-          # Cache effective url [UrlCache]
-          cache_url
-          # Parse into document from response [Parser]
-          parse
-          @items = @document.xpath(item_xpath)
-          # Process @items [Processor]
-          process
-          # Update current crawler statistics
-          update_crawl_stats
-        end
-      rescue Exception => e
-        raise e
-      ensure
-        # Flush crawled page cache [UrlCache]
-        flush_cache_url
+      @exec.crawl(index_url) do |exec|
+        puts exec.total_traffic_in_byte
+        puts exec.total_merchant_items
       end
-    end
-  end
-
-  def each_pages(index_url)
-    # If response is nil, then its the index page...
-    # BUG: This could be run twice, also within loop
-    if index_pages.include?(index_url)
-      @response = get index_url if @response.nil?
-      parse
-      yield index_url
-    end
-
-    until (pg = next_page).nil?
-      yield pg
     end
   end
 
