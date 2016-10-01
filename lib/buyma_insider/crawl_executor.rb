@@ -10,13 +10,19 @@ class CrawlExecutor
   attr_accessor :total_traffic_in_byte
   attr_accessor :total_merchant_items
 
-  def initialize(merchant)
-    @merchant              = merchant
+  def initialize(m)
+    @merchant              = m
     @total_traffic_in_byte = 0
     @total_merchant_items  = 0
   end
 
-  def crawl(index_url)
+  def crawl
+    merchant.index_pages.each do |idx|
+      crawl_index_page %Q(#{merchant.base_url}/#{idx})
+    end
+  end
+
+  def crawl_index_page(index_url)
     begin
       each_page(index_url) do |pg_url|
         puts "Processing #{pg_url}".yellow
