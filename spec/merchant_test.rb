@@ -19,14 +19,14 @@ class MerchantTest < Minitest::Test
     assert_respond_to Merchant_A, 'pager_css'
   end
 
-  class Merchant_BArticle; end
+  class Merchant_BArt; end
   class Merchant_B < Merchant::Base
 
     self.base_url      = 'http://merchant-b.com'
     self.index_pages   = 'bindex.html'
     self.item_css      = 'b.css'
     self.pager_css     = 'b.pager'
-    self.article_model = Merchant_BArticle
+    self.article_model = Merchant_BArt
   end
 
   def test_should_allow_set_config_options
@@ -58,7 +58,7 @@ class MerchantTest < Minitest::Test
     assert_respond_to Merchant_C, 'article_model'
 
     assert_equal Merchant_A.article_model, Article
-    assert_equal Merchant_B.article_model, Merchant_BArticle
+    assert_equal Merchant_B.article_model, Merchant_BArt
     assert_equal Merchant_C.article_model, Merchant_CArticle
   end
 end
