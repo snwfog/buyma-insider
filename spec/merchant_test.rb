@@ -45,14 +45,14 @@ class MerchantTest < Minitest::Test
     self.article_model = Merchant_CArticle
   end
 
-  def test_merchants_should_not_override_config
+  def test_merchant_should_not_override_config
     assert Merchant_C.base_url, 'http://merchant-c.com'
     assert Merchant_C.index_pages, 'cindex.html'
     assert Merchant_C.item_css, 'c.css'
     assert Merchant_C.pager_css, 'c.pager'
   end
 
-  def test_merchants_should_have_article_model
+  def test_merchant_should_have_article_model
     assert_respond_to Merchant_A, 'article_model'
     assert_respond_to Merchant_B, 'article_model'
     assert_respond_to Merchant_C, 'article_model'
@@ -60,5 +60,11 @@ class MerchantTest < Minitest::Test
     assert_equal Merchant_A.article_model, Article
     assert_equal Merchant_B.article_model, Merchant_BArt
     assert_equal Merchant_C.article_model, Merchant_CArticle
+  end
+
+  class Merchant_AIndexer; end
+  def test_should_have_an_valid_indexer
+    assert_respond_to Merchant_A, 'article_model'
+    assert_equal Merchant_A.indexer, Merchant_AIndexer
   end
 end

@@ -8,17 +8,17 @@ require 'nokogiri'
 # Store merchant information
 ##
 class Ssense < Merchant::Base
-  self.base_url      = 'https://www.ssense.com'
-  self.index_pages   = ['en-ca/men', 'en-ca/women']
-  self.item_css      = 'div.browsing-product-list div.browsing-product-item'
-  self.pager_css     = 'div.browsing-pagination ul.nav'
+  self.base_url    = 'https://www.ssense.com'
+  self.index_pages = ['en-ca/men', 'en-ca/women']
+  self.item_css    = 'div.browsing-product-list div.browsing-product-item'
+  self.pager_css   = 'div.browsing-pagination ul.nav'
 
   def initialize
   end
 
   def crawl
     index_pages.each do |index_url|
-      @exec.crawl(index_url) do |exec|
+      @crawler.crawl(index_url) do |exec|
         puts exec.total_traffic_in_byte
         puts exec.total_merchant_items
       end

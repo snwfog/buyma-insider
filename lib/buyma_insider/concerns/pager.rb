@@ -1,13 +1,8 @@
 module Concerns
   module Pager
-    def each_page(index_url)
+    def each_page(index_url, &block)
       @response = get index_url
-      parse
-      yield index_url
-
-      until (pg = next_page).nil?
-        yield pg
-      end
+      Processor::IndexProcessor.process(Nokogiri::HTML(@response.body), self, &block)
     end
 
     def pages

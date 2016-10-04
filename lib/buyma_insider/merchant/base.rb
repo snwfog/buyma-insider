@@ -12,19 +12,24 @@ module Merchant
                     :pager_css
     class << self
       attr_accessor :article_model
+      attr_accessor :indexer
 
       def article_model
         @article_model ||= %Q(#{self.to_s}Article).safe_constantize || Article
       end
+
+      def indexer
+        @index = %Q(#{self.to_s}Indexer).safe_constantize
+      end
     end
 
     def initialize(opts = {})
-      @options  = opts
-      @executor = CrawlExecutor.new(self)
+      @options = opts
+      @crawler = CrawlExecutor.new(self.class)
     end
 
     def crawl
-      @executor.crawl
+      @crawler.crawl
     end
   end
 end

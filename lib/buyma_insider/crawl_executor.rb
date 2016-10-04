@@ -1,9 +1,8 @@
+require 'buyma_insider/url_cache'
+require 'buyma_insider/http'
+
 class CrawlExecutor
-  include Concerns::Http
   include Concerns::Parser
-  include Concerns::Processor
-  include Concerns::UrlCache
-  include Concerns::Pager
 
   attr_accessor :merchant
 
@@ -11,7 +10,9 @@ class CrawlExecutor
   attr_accessor :total_merchant_items
 
   def initialize(m)
-    @merchant              = m
+    @merchant  = m
+    @url_cache = UrlCache.new(m)
+
     @total_traffic_in_byte = 0
     @total_merchant_items  = 0
   end
@@ -22,16 +23,26 @@ class CrawlExecutor
     end
   end
 
+  def each_page(index_url, &block)
+    @response = ::Http.get index_url
+    @document = Nokogiri::HTML(@response.body)
+    indexer.index(@document, @merchant.class, &block)
+  end
+
   def crawl_index_page(index_url)
     begin
-      each_page(index_url) do |pg_url|
-        puts "Processing #{pg_url}".yellow
-        # Break if the pg_url is in the cache
-        break if cache.include? pg_url
+      each_page(index_url) do |i|
+        # Grab the index snapshot to compute the links
+        page_url = "#{@merchant.base_url}/#{index_url}/pages/#{i}"
+        puts "Processing #{page_url}".yellow
+
+        # Add url to cache, break if already exists
+        break unless @url_cache.add? page_url
+
         # Get link HTML and set @response if not in url cache
-        @response = get pg_url
-        # Cache effective url [UrlCache]
-        cache_url
+        @response = Http.get page_url
+
+
         # Parse into document from response [Parser]
         parse
         @items = @document.css(merchant.item_css)
