@@ -6,18 +6,33 @@ class UrlCacheTest < Minitest::Test
   end
 
   def setup
+    @cache = UrlCache.new Merchant_A
   end
 
-  def test_should_respond_to_set_method
-    @cache = UrlCache.new Merchant_A
+  def test_url_cache_should_respond_to_sets_methods
+    $redis.stub :smembers, [] do
+      assert_respond_to @cache, :add
+      assert_respond_to @cache, :add?
+      assert_respond_to @cache, :<<
+      assert_respond_to @cache, :include?
+    end
+  end
 
-    @redis = Minitest::Mock.new
-    def @redis.smembers(s); []; end
+  def test_url_cache_should_add_and_exist
+    $redis.stub :smembers, [] do
+      l_1 = 'http://test.com'
+      @cache << l_1
+      assert @cache.include? l_1
+    end
+  end
 
-    Redis.stub :smembers, @redis do
-      @cache.must_respond_to :add
-      @cache.must_respond_to :add?
-      @cache.must_respond_to :<<
+  def test_break
+    (1..5).each do |i|
+      if i == 2
+        next
+      else
+        puts i
+      end
     end
   end
 end

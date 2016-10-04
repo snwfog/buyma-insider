@@ -2,8 +2,6 @@ require 'buyma_insider/url_cache'
 require 'buyma_insider/http'
 
 class CrawlExecutor
-  include Concerns::Parser
-
   attr_accessor :merchant
 
   attr_accessor :total_traffic_in_byte
@@ -37,17 +35,23 @@ class CrawlExecutor
         puts "Processing #{page_url}".yellow
 
         # Add url to cache, break if already exists
-        break unless @url_cache.add? page_url
+        next unless @url_cache.add? page_url
 
         # Get link HTML and set @response if not in url cache
         @response = Http.get page_url
 
+        # Parse into document from response
+        if @response.body.empty?
+          @document = Nokogiri::HTML(@response.body)
+        else
+          next
+        end
 
-        # Parse into document from response [Parser]
-        parse
-        @items = @document.css(merchant.item_css)
-        # Process @items [Processor]
-        process
+        items = @document.css(merchant.item_css)
+
+        # Process @items
+        process(items)
+
         # Update current crawler statistics
         update_crawl_stats
       end
@@ -59,6 +63,10 @@ class CrawlExecutor
       # Flush crawled page cache [UrlCache]
       flush_cache_url
     end
+  end
+
+  def process(items)
+
   end
 
   def update_crawl_stats

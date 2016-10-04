@@ -1,14 +1,11 @@
 class UrlCache
   attr_accessor :cache
-  delegate :<<, :add, :add?, to: :cache
+  delegate :<<, :add, :add?, :include?,
+           to: :cache
 
   def initialize(m)
     @redis_key = "merchant:#{m.to_s}:urls:#{Time.now.utc.to_i.to_s}".downcase
     @cache     ||= Set.new($redis.smembers(@redis_key))
-  end
-
-  def cache(url)
-    @cache << url
   end
 
   # def cache_url
