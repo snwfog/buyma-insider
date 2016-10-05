@@ -4,6 +4,7 @@ module Indexer
   ##
   class Base
     def index(document, merchant, &block)
+      raise 'Not implemented'
     end
   end
 end

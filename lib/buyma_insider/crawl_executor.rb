@@ -24,53 +24,62 @@ class CrawlExecutor
   def each_page(index_url, &block)
     @response = ::Http.get index_url
     @document = Nokogiri::HTML(@response.body)
-    indexer.index(@document, @merchant.class, &block)
+    @merchant.indexer.index(@document, @merchant, &block)
   end
 
-  def crawl_index_page(index_url)
+  def crawl_index_page(index_url, &block)
     begin
-      each_page(index_url) do |i|
-        # Grab the index snapshot to compute the links
-        page_url = "#{@merchant.base_url}/#{index_url}/pages/#{i}"
-        puts "Processing #{page_url}".yellow
+      if block_given?
+        each_page(index_url, &block)
+      else
+        each_page(index_url) do |i|
+          # Grab the index snapshot to compute the links
+          page_url = "#{@merchant.base_url}/#{index_url}/pages/#{i}"
+          puts "Processing #{page_url}".yellow
 
-        # Add url to cache, break if already exists
-        next unless @url_cache.add? page_url
+          # Add url to cache, break if already exists
+          next unless @url_cache.add? page_url
 
-        # Get link HTML and set @response if not in url cache
-        @response = Http.get page_url
+          # Get link HTML and set @response if not in url cache
+          @response = Http.get page_url
 
-        # Parse into document from response
-        if @response.body.empty?
-          @document = Nokogiri::HTML(@response.body)
-        else
-          next
+          # Parse into document from response
+          if @response.body.empty?
+            @document = Nokogiri::HTML(@response.body)
+          else
+            next
+          end
+
+          items = @document.css(merchant.item_css)
+
+          # Process @items
+          process(items)
+
+          # Update current crawler statistics
+          update_crawl_stats(items)
         end
-
-        items = @document.css(merchant.item_css)
-
-        # Process @items
-        process(items)
-
-        # Update current crawler statistics
-        update_crawl_stats
       end
     rescue Exception => e
       raise e
     ensure
       # yield for merchant stats saving
-      yield self if block_given?
+      # yield self if block_given?
+
       # Flush crawled page cache [UrlCache]
-      flush_cache_url
+      # flush_cache_url
     end
   end
 
   def process(items)
-
+    items.each do |item_html_node|
+      attrs   = @merchant.article_model.attrs_from_node(item_html_node)
+      article = Article.upsert(attrs)
+      yield article if block_given?
+    end
   end
 
-  def update_crawl_stats
+  def update_crawl_stats(items)
     @total_traffic_in_byte += content_length
-    @total_merchant_items  += @items.count
+    @total_merchant_items  += items.count
   end
 end

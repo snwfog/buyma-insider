@@ -1,3 +1,4 @@
+# @deprecated
 module Concerns
   module Pager
     def each_page(index_url, &block)

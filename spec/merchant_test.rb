@@ -6,11 +6,8 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
+class Merchant_A < Merchant::Base; end
 class MerchantTest < Minitest::Test
-
-  class Merchant_A < Merchant::Base
-  end
-
   def test_should_have_config_and_respond_to_basic_class_config
     assert Merchant_A
     assert_respond_to Merchant_A, 'base_url'
@@ -62,9 +59,16 @@ class MerchantTest < Minitest::Test
     assert_equal Merchant_C.article_model, Merchant_CArticle
   end
 
-  class Merchant_AIndexer; end
-  def test_should_have_an_valid_indexer
+  def test_should_have_an_valid_article_model
     assert_respond_to Merchant_A, 'article_model'
-    assert_equal Merchant_A.indexer, Merchant_AIndexer
+    assert_equal Article, Merchant_A.article_model
+  end
+
+  Merchant_AIndexer = Class.new
+  Indexer.const_set 'Merchant_AIndexer', Merchant_AIndexer
+
+  def test_should_have_an_valid_indexer
+    assert_respond_to Merchant_A, :indexer
+    assert_instance_of Indexer::Merchant_AIndexer, Merchant_A.indexer
   end
 end

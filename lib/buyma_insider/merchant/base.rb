@@ -19,7 +19,7 @@ module Merchant
       end
 
       def indexer
-        @index = %Q(#{self.to_s}Indexer).safe_constantize
+        @index = %Q(Indexer::#{self.to_s}Indexer).safe_constantize.new
       end
     end
 
