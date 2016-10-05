@@ -25,14 +25,4 @@ class UrlCacheTest < Minitest::Test
       assert @cache.include? l_1
     end
   end
-
-  def test_break
-    (1..5).each do |i|
-      if i == 2
-        next
-      else
-        puts i
-      end
-    end
-  end
 end
