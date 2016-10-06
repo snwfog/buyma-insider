@@ -1,6 +1,6 @@
 module Indexer
 # Ssense Indexer
-  class SsenseIndexer < Base
+  class Ssense < Base
     self.pager_css = 'div.browsing-pagination ul.nav'
 
     def initialize(*args, &blk)

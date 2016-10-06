@@ -18,7 +18,7 @@ module Merchant
       end
 
       def indexer
-        %Q(Indexer::#{self.to_s}Indexer).safe_constantize
+        %Q(Indexer::#{self.to_s}).safe_constantize
       end
 
       def index_pages=(indices)

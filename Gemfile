@@ -28,7 +28,6 @@ gem 'foreman'
 # Test
 gem 'minitest'
 gem 'faker'
-gem 'any_bar'
 # gem 'redis-stat'
 
 case RUBY_PLATFORM

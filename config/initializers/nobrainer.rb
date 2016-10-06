@@ -99,5 +99,7 @@ NoBrainer.configure do |config|
   # config.criteria_cache_max_entries = 10_000
 end
 
-NoBrainer.sync_schema # Synchronize table schema
+unless ENV['environment'] =~ /^(dev|test).*$/
+  NoBrainer.sync_schema # Synchronize table schema
+end
 
