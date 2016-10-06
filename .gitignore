@@ -52,8 +52,8 @@ crashlytics-build.properties
 /coverage/
 /InstalledFiles
 /pkg/
-/spec/reports/
-/spec/examples.txt
+/test/reports/
+/test/examples.txt
 /test/tmp/
 /test/version_tmp/
 /tmp/
@@ -92,7 +92,7 @@ capybara-*.html
 /db/*.sqlite3-journal
 /public/system
 /coverage/
-/spec/tmp
+/test/tmp
 **.orig
 rerun.txt
 pickle-email-*.html
