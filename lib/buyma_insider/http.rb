@@ -1,8 +1,7 @@
 require 'rest_client'
 
 module Http
-  # Shortcut to get
-  def get(address)
+  def self.get(address)
     RestClient.get(address,
                    headers: {
                      user_agent: BuymaInsider::SPOOF_USER_AGENT

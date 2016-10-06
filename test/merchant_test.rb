@@ -13,7 +13,6 @@ class MerchantTest < Minitest::Test
     assert_respond_to Merchant_A, 'base_url'
     assert_respond_to Merchant_A, 'index_pages'
     assert_respond_to Merchant_A, 'item_css'
-    assert_respond_to Merchant_A, 'pager_css'
   end
 
   class Merchant_BArt; end
@@ -22,7 +21,6 @@ class MerchantTest < Minitest::Test
     self.base_url      = 'http://merchant-b.com'
     self.index_pages   = 'bindex.html'
     self.item_css      = 'b.css'
-    self.pager_css     = 'b.pager'
     self.article_model = Merchant_BArt
   end
 
@@ -30,7 +28,6 @@ class MerchantTest < Minitest::Test
     assert_equal 'http://merchant-b.com', Merchant_B.base_url
     assert_equal 'bindex.html', Merchant_B.index_pages
     assert_equal 'b.css', Merchant_B.item_css
-    assert_equal 'b.pager', Merchant_B.pager_css
   end
 
   class Merchant_CArticle; end
@@ -38,7 +35,6 @@ class MerchantTest < Minitest::Test
     self.base_url      = 'http://merchant-c.com'
     self.index_pages   = 'cindex.html'
     self.item_css      = 'c.css'
-    self.pager_css     = 'c.pager'
     self.article_model = Merchant_CArticle
   end
 
@@ -46,7 +42,6 @@ class MerchantTest < Minitest::Test
     assert Merchant_C.base_url, 'http://merchant-c.com'
     assert Merchant_C.index_pages, 'cindex.html'
     assert Merchant_C.item_css, 'c.css'
-    assert Merchant_C.pager_css, 'c.pager'
   end
 
   def test_merchant_should_have_article_model

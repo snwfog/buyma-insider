@@ -2,12 +2,14 @@ require 'ostruct'
 require 'buyma_insider'
 require 'minitest/autorun'
 
+class Indexer::Merchant_AIndexer < Indexer::Base
+end
+
 class Merchant_A < Merchant::Base
   self.base_url    = 'http://test.com'
   self.index_pages = ['1.html', '2.html']
 end
 
-class Indexer::Merchant_AIndexer < Indexer::Base; end
 
 class CrawlExecutorTest < Minitest::Test
   def test_should_respond_to_crawl
@@ -40,7 +42,7 @@ class CrawlExecutorTest < Minitest::Test
 
     count = 0
     indexer_stub = Minitest::Mock.new
-    def indexer_stub.index(_, _, &blk); (1..5).each(&blk); end
+    def indexer_stub.index(_, &blk); (1..5).each(&blk); end
 
     Indexer::Merchant_AIndexer.stub :new, indexer_stub do
       executor = CrawlExecutor.new(Merchant_A)

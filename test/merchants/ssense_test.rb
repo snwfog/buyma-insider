@@ -7,7 +7,7 @@ class MerchantSsenseTest < Minitest::Test
   end
 
   def test_should_have_indexer
-    assert_instance_of Indexer::SsenseIndexer, Ssense.indexer
+    assert_equal Indexer::SsenseIndexer, Ssense.indexer
   end
 
   # def test_crawl

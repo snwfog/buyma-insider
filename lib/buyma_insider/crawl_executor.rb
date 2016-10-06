@@ -16,15 +16,9 @@ class CrawlExecutor
   end
 
   def crawl
-    merchant.index_pages.each do |idx|
-      crawl_index_page %Q(#{merchant.base_url}/#{idx})
+    merchant.index_pages.each do |indexer|
+      indexer.index
     end
-  end
-
-  def each_page(index_url, &block)
-    @response = ::Http.get index_url
-    @document = Nokogiri::HTML(@response.body)
-    @merchant.indexer.index(@document, @merchant, &block)
   end
 
   def crawl_index_page(index_url, &block)
@@ -32,11 +26,7 @@ class CrawlExecutor
       if block_given?
         each_page(index_url, &block)
       else
-        each_page(index_url) do |i|
-          # Grab the index snapshot to compute the links
-          page_url = "#{@merchant.base_url}/#{index_url}/pages/#{i}"
-          puts "Processing #{page_url}".yellow
-
+        each_page(index_url) do |page_url|
           # Add url to cache, break if already exists
           next unless @url_cache.add? page_url
 
@@ -52,7 +42,7 @@ class CrawlExecutor
 
           items = @document.css(merchant.item_css)
 
-          # Process @items
+          # Process items
           process(items)
 
           # Update current crawler statistics
@@ -73,8 +63,7 @@ class CrawlExecutor
   def process(items)
     items.each do |item_html_node|
       attrs   = @merchant.article_model.attrs_from_node(item_html_node)
-      article = Article.upsert(attrs)
-      yield article if block_given?
+      Article.upsert(attrs)
     end
   end
 

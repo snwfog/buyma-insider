@@ -1,10 +1,15 @@
 module Indexer
-  ##
-  # Process an index page and create the pages links
-  ##
+# Ssense Indexer
   class SsenseIndexer < Base
-    def index(document, merchant, &block)
-      page_nodes = document.at_css(merchant.pager_css)
+    self.pager_css = 'div.browsing-pagination ul.nav'
+
+    def initialize(*args, &blk)
+      super(*args, &blk)
+      @merchant  = Ssense
+    end
+
+    def index(&blk)
+      page_nodes = index_document.at_css(self.pager_css)
       first_node = page_nodes.css('li:not(.hidden)').first
       last_node  = page_nodes.at_css('li:not(.hidden).last-page')
 
@@ -13,7 +18,7 @@ module Indexer
 
       raise unless block_given?
 
-      (first_page..last_page).each { |i| yield i }
+      (first_page..last_page).each(&blk)
     end
   end
 end

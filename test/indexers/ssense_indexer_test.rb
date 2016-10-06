@@ -22,16 +22,15 @@ class SsenseIndexerTest < Minitest::Test
     INDEX_HTML
 
     @pages_node = Nokogiri::HTML::DocumentFragment.parse(@index_html)
-    @indexer = Indexer::SsenseIndexer.new
-
-    @ssense_stub = Minitest::Mock.new
-    def @ssense_stub.pager_css; 'ul.nav'; end
+    @indexer    = Indexer::SsenseIndexer.new 'http://merchant-a.com/index.html'
   end
 
   def test_ssense_indexer_test
     yield_count = 0
-    @indexer.index(@pages_node, @ssense_stub) do
-      yield_count += 1
+    Indexer::SsenseIndexer.stub :pager_css, 'ul.nav' do
+      @indexer.index(@pages_node) do
+        yield_count += 1
+      end
     end
 
     assert_equal 8, yield_count
