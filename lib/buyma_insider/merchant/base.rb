@@ -34,6 +34,9 @@ module Merchant
 
     def crawl
       @crawler.crawl
+
+      puts @crawler.total_traffic_in_byte
+      puts @crawler.total_merchant_items
     end
   end
 end

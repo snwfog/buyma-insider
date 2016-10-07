@@ -17,40 +17,39 @@ class CrawlExecutor
 
   def crawl
     merchant.index_pages.each do |indexer|
-      indexer.index do |page_url|
+      indexer.each_page do |page_url|
         # Add url to cache, break if already exists
         next unless @url_cache.add? page_url
 
         # Get link HTML and set @response if not in url cache
-        @response = Http.get page_url
+        response = Http.get page_url
 
         # Parse into document from response
-        if @response.body.empty?
-          @document = Nokogiri::HTML(@response.body)
-        else
-          next
-        end
+        next if response.body.empty?
 
+        @document = Nokogiri::HTML(response.body)
         items = @document.css(merchant.item_css)
 
         # Process items
         process(items)
 
-        # Update current crawler statistics
-        update_crawl_stats(items)
+        @total_merchant_items  += items.count
+        @total_traffic_in_byte += content_length(response)
       end
     end
   end
 
   def process(items)
     items.each do |item_html_node|
-      attrs = @merchant.article_model.attrs_from_node(item_html_node)
+      attrs = @merchant.article_model
+                .attrs_from_node(item_html_node)
+
       Article.upsert(attrs)
     end
   end
 
-  def update_crawl_stats(items)
-    @total_traffic_in_byte += content_length
-    @total_merchant_items  += items.count
+  def content_length(response)
+    response.headers[:content_length] ||
+      Zlib::Deflate.deflate(response.body).size # Approximate
   end
 end

@@ -37,7 +37,7 @@ class SsenseIndexerTest < Minitest::Test
     yield_count = 0
 
     Indexer::Ssense.stub :pager_css, 'ul.nav' do
-      @indexer.index do
+      @indexer.each_page do
         yield_count += 1
       end
     end
