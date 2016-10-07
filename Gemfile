@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+
 gem 'sinatra'
 gem 'sidekiq'
 gem 'sidetiq'
@@ -22,11 +23,15 @@ gem 'colorize'
 gem 'awesome_print'
 gem 'table_print'
 
+gem 'httplog'
+gem 'logging'
+
 # Deployment
 gem 'foreman'
 
 # Test
 gem 'minitest'
+gem 'rspec'
 gem 'faker'
 # gem 'redis-stat'
 

@@ -10,7 +10,7 @@ class Merchant_A < Merchant::Base
 end
 
 
-class CrawlExecutorTest < Minitest::Test
+class CrawlerTest < Minitest::Test
   def test_should_respond_to_crawl
     assert_respond_to Merchant_A.new, 'crawl'
   end

@@ -1,5 +1,5 @@
+require 'rspec'
 require 'buyma_insider'
-require 'minitest/autorun'
 
 describe Ssense do
   before do

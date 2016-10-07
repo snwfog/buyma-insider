@@ -1,3 +1,4 @@
+require 'logging'
 require 'buyma_insider/url_cache'
 require 'buyma_insider/http'
 
@@ -7,7 +8,10 @@ class Crawler
   attr_accessor :total_traffic_in_byte
   attr_accessor :total_merchant_items
 
+
   def initialize(m)
+    @log = Logging.logger[self]
+
     @merchant  = m
     @url_cache = UrlCache.new(m)
 
@@ -18,6 +22,8 @@ class Crawler
   def crawl
     merchant.index_pages.each do |indexer|
       indexer.each_page do |page_url|
+        @log.debug("requesting #{page_url}")
+
         # Add url to cache, break if already exists
         next unless @url_cache.add? page_url
 
