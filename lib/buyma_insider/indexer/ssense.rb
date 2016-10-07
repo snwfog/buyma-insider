@@ -3,12 +3,7 @@ module Indexer
   class Ssense < Base
     self.pager_css = 'div.browsing-pagination ul.nav'
 
-    def initialize(*args, &blk)
-      super(*args, &blk)
-      @merchant  = Ssense
-    end
-
-    def index(&blk)
+    def each_index(&blk)
       page_nodes = index_document.at_css(self.pager_css)
       first_node = page_nodes.css('li:not(.hidden)').first
       last_node  = page_nodes.at_css('li:not(.hidden).last-page')

@@ -7,11 +7,10 @@ require 'nokogiri'
 module Merchant
   class Base
     class_attribute :base_url, :item_css
-    cattr_accessor :index_pages
 
     class << self
       attr_accessor :article_model
-      attr_accessor :indexer
+      attr_accessor :index_pages
 
       def article_model
         @article_model ||= %Q(#{self.to_s}Article).safe_constantize || Article
@@ -22,9 +21,9 @@ module Merchant
       end
 
       def index_pages=(indices)
-        @index_pages = indices.map do |index_url|
-          indexer.new(index_url)
-        end
+        @index_pages = indices.map { |index_url|
+          indexer.new(index_url, self)
+        }
       end
     end
 
