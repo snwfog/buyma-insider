@@ -1,7 +1,7 @@
 require 'buyma_insider/url_cache'
 require 'buyma_insider/http'
 
-class CrawlExecutor
+class Crawler
   attr_accessor :merchant
 
   attr_accessor :total_traffic_in_byte

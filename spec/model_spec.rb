@@ -6,6 +6,7 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
+class SubArticle < Article; end
 describe Article do
   it 'should be persisted' do
     a = Article.create id:          Faker::Code.ean,
@@ -41,24 +42,9 @@ describe PriceHistory do
   end
 
   it 'should be able to add price' do
-
-  end
-end
-
-class ArticleModelBaseTest < Minitest::Test
-  def test_create_article_should_be_persisted
-  end
-
-  def test_article_base_support_inheritance
-  end
-
-  def test_article_price_history_create
-  end
-
-  def test_price_history_add_price
     ph = PriceHistory.new(
-      article_id: SecureRandom.base64(22),
-      currency:   'CAN',
+        article_id: SecureRandom.base64(22),
+        currency:   'CAN',
     )
 
     ph.add_price(123.00)
@@ -67,5 +53,3 @@ class ArticleModelBaseTest < Minitest::Test
     assert ph.persisted?
   end
 end
-
-class SubArticle < Article; end

@@ -29,7 +29,7 @@ module Merchant
 
     def initialize(opts = {})
       @options = opts
-      @crawler = CrawlExecutor.new(self.class)
+      @crawler = Crawler.new(self.class)
     end
 
     def crawl
