@@ -17,58 +17,39 @@ class CrawlExecutor
 
   def crawl
     merchant.index_pages.each do |indexer|
-      indexer.index
-    end
-  end
+      indexer.each_page do |page_url|
+        # Add url to cache, break if already exists
+        next unless @url_cache.add? page_url
 
-  def crawl_index_page(index_url, &block)
-    begin
-      if block_given?
-        each_page(index_url, &block)
-      else
-        each_page(index_url) do |page_url|
-          # Add url to cache, break if already exists
-          next unless @url_cache.add? page_url
+        # Get link HTML and set @response if not in url cache
+        response = Http.get page_url
 
-          # Get link HTML and set @response if not in url cache
-          @response = Http.get page_url
+        # Parse into document from response
+        next if response.body.empty?
 
-          # Parse into document from response
-          if @response.body.empty?
-            @document = Nokogiri::HTML(@response.body)
-          else
-            next
-          end
+        @document = Nokogiri::HTML(response.body)
+        items = @document.css(merchant.item_css)
 
-          items = @document.css(merchant.item_css)
+        # Process items
+        process(items)
 
-          # Process items
-          process(items)
-
-          # Update current crawler statistics
-          update_crawl_stats(items)
-        end
+        @total_merchant_items  += items.count
+        @total_traffic_in_byte += content_length(response)
       end
-    rescue Exception => e
-      raise e
-    ensure
-      # yield for merchant stats saving
-      # yield self if block_given?
-
-      # Flush crawled page cache [UrlCache]
-      # flush_cache_url
     end
   end
 
   def process(items)
     items.each do |item_html_node|
-      attrs   = @merchant.article_model.attrs_from_node(item_html_node)
+      attrs = @merchant.article_model
+                .attrs_from_node(item_html_node)
+
       Article.upsert(attrs)
     end
   end
 
-  def update_crawl_stats(items)
-    @total_traffic_in_byte += content_length
-    @total_merchant_items  += items.count
+  def content_length(response)
+    response.headers[:content_length] ||
+      Zlib::Deflate.deflate(response.body).size # Approximate
   end
 end
