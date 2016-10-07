@@ -6,8 +6,8 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
-class ArticleModelBaseTest < Minitest::Test
-  def test_create_article_should_be_persisted
+describe Article do
+  it 'should be persisted' do
     a = Article.create id:          Faker::Code.ean,
                        name:        Faker::Commerce.product_name,
                        description: Faker::Hipster.sentence,
@@ -16,7 +16,7 @@ class ArticleModelBaseTest < Minitest::Test
     assert a.persisted?, 'Article should be persisted'
   end
 
-  def test_article_base_support_inheritance
+  it 'should support inheritance' do
     sub = SubArticle.create id:          Faker::Code.ean,
                             name:        Faker::Commerce.product_name,
                             description: Faker::Hipster.sentence,
@@ -24,18 +24,35 @@ class ArticleModelBaseTest < Minitest::Test
                             link:        Faker::Internet.url
     assert sub.persisted?
   end
+end
 
-  def test_article_price_history_create
+describe PriceHistory do
+  it 'should be persisted' do
     ph = PriceHistory.create(
-      article_id: SecureRandom.base64(22),
-      currency:   'CAN',
-      history:    {
-        1.day.from_now.utc.to_i.to_s => 123.23,
-        2.day.from_now.utc.to_i.to_s => 123.23
-      }
+        article_id: SecureRandom.base64(22),
+        currency:   'CAN',
+        history:    {
+            1.day.from_now.utc.to_i.to_s => 123.23,
+            2.day.from_now.utc.to_i.to_s => 123.23
+        }
     )
 
     assert ph.persisted?
+  end
+
+  it 'should be able to add price' do
+
+  end
+end
+
+class ArticleModelBaseTest < Minitest::Test
+  def test_create_article_should_be_persisted
+  end
+
+  def test_article_base_support_inheritance
+  end
+
+  def test_article_price_history_create
   end
 
   def test_price_history_add_price
