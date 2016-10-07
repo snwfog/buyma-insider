@@ -12,6 +12,6 @@ class PriceHistory
 
   def add_price(price)
     self.history ||= {}
-    self.history[Time.now.utc.to_i.to_s] = price.to_i
+    self.history[Time.now.utc.to_s] = price.to_i
   end
 end
