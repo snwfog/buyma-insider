@@ -6,7 +6,8 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
-class SubArticle < Article; end
+class SubArticle < Article;
+end
 describe Article do
   it 'should be persisted' do
     a = Article.create id:          Faker::Code.ean,
@@ -30,12 +31,12 @@ end
 describe PriceHistory do
   it 'should be persisted' do
     ph = PriceHistory.create(
-        article_id: SecureRandom.base64(22),
-        currency:   'CAN',
-        history:    {
-            1.day.from_now.utc.to_i.to_s => 123.23,
-            2.day.from_now.utc.to_i.to_s => 123.23
-        }
+      article_id: SecureRandom.base64(22),
+      currency:   'CAN',
+      history:    {
+        1.day.from_now.utc.to_i.to_s => 123.23,
+        2.day.from_now.utc.to_i.to_s => 123.23
+      }
     )
 
     expect(ph.persisted?).to be true
@@ -43,8 +44,8 @@ describe PriceHistory do
 
   it 'should be able to add price' do
     ph = PriceHistory.new(
-        article_id: SecureRandom.base64(22),
-        currency:   'CAN',
+      article_id: SecureRandom.base64(22),
+      currency:   'CAN',
     )
 
     ph.add_price(123.00)
@@ -56,6 +57,16 @@ end
 
 describe CrawlHistory do
   it 'should persist' do
-    CrawlHistory.new
+    ch = CrawlHistory.create(
+      description: "New crawl #{Faker::Internet.url}"
+    )
+
+    expect(ch.persisted?).to be_truthy
+  end
+
+  it 'should not persist when not valid' do
+    ch = CrawlHistory.create
+    expect(ch.persisted?).to be_falsey
+    expect { CrawlHistory.create! }.to raise_error(NoBrainer::Error::DocumentInvalid)
   end
 end
