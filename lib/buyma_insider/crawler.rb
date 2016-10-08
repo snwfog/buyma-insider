@@ -10,7 +10,7 @@ class Crawler
 
 
   def initialize(m)
-    @log = Logging.logger[self]
+    @logger = Logging.logger[self]
 
     @merchant  = m
     @url_cache = UrlCache.new(m)
@@ -22,7 +22,7 @@ class Crawler
   def crawl
     merchant.index_pages.each do |indexer|
       indexer.each_page do |page_url|
-        @log.debug("requesting #{page_url}")
+        @logger.debug("requesting #{page_url}")
 
         # Add url to cache, break if already exists
         next unless @url_cache.add? page_url

@@ -1,7 +1,7 @@
 require 'require_all'
 require 'dotenv'
 
-require_rel '../config'
+require_rel '../config/initializers'
 require_rel 'buyma_insider'
 
 Dotenv.load
