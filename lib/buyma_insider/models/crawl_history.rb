@@ -11,9 +11,9 @@ class CrawlHistory
   field :finished_at,    type: Time
   field :status,         type: Enum, default: :scheduled, in: %i(scheduled inprogress failed success)
 
-  def elapsed_timed
+  def elapsed_time
     if finished_at.nil?
-      'Unknown'
+      -1
     else
       finished_at - created_at
     end

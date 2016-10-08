@@ -12,17 +12,17 @@ Logging.logger.root.add_appenders(Logging.appenders
                                                     :pattern => '[%d] %-5l -- %c : %m\n')))
 
 
-worker          = Logging.logger['Worker']
-worker.level    = :info
-worker.additive = false
-
-worker.add_appenders(Logging.appenders
-                       .stdout(:layout => Logging.layouts.pattern(
-                         :pattern => '[%d] %-5l -- %c : %m\n')))
-
-worker.add_appenders(Logging.appenders
-                       .rolling_file("./log/workers-#{ENV['ENVIRONMENT']}.log",
-                                     :age    => 'weekly',
-                                     :layout => Logging.layouts.pattern(
-                                       :pattern => '[%d] %-5l -- %c : %m\n')))
+# worker          = Logging.logger[Merchant]
+# worker.level    = :info
+# worker.additive = false
+#
+# worker.add_appenders(Logging.appenders
+#                        .stdout(:layout => Logging.layouts.pattern(
+#                          :pattern => '[%d] %-5l -- %c : %m\n')))
+#
+# worker.add_appenders(Logging.appenders
+#                        .rolling_file("./log/workers-#{ENV['ENVIRONMENT']}.log",
+#                                      :age    => 'weekly',
+#                                      :layout => Logging.layouts.pattern(
+#                                        :pattern => '[%d] %-5l -- %c : %m\n')))
 

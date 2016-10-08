@@ -11,7 +11,7 @@ class Article
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
   field :description, type: String, length: (1..1000)
-  field :link,        type: String, required: true, length: (1..1000), format: %r(https?://)
+  field :link,        type: String, required: true, length: (1..1000), format: %r(//.*)
   # field :category
 
   alias_method :unique_id,  :id
@@ -25,10 +25,6 @@ class Article
     def from_node(html_node)
       new(attrs_from_node(html_node))
     end
-
-    # def primary_key(primary_key_name = :id)
-    #   @primary_key ||= primary_key_name
-    # end
   end
 
   def price=(price)
@@ -47,8 +43,4 @@ class Article
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
   end
-
-  # def id
-  #   self.send(self.class.primary_key)
-  # end
 end

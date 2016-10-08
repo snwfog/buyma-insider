@@ -1,14 +1,14 @@
 require 'buyma_insider'
 require 'minitest/autorun'
 
-describe Ssense do
+describe Zara do
   before do
-    @ssense = ::Ssense.new
+    @zara = ::Zara.new
   end
 
   describe 'when crawl' do
     it 'must crawl' do
-      @ssense.crawl
+      @zara.crawl
     end
   end
 end

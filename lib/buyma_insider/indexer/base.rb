@@ -1,4 +1,5 @@
 require 'nokogiri'
+
 module Indexer
   class Base
     class_attribute :pager_css
@@ -14,14 +15,19 @@ module Indexer
     end
 
     def index_document
-      response = Http.get @index_url
+      response = Http.get "http:#{@index_url}"
       Nokogiri::HTML(response.body)
     end
 
     def each_page(&blk)
-      compute_page(&blk)
+      if self.class.pager_css.nil?
+        yield @index_url
+      else
+        compute_page(&blk)
+      end
     end
 
+    # Use @index_url and compute the pages
     def compute_page(&blk)
       raise 'Not implemented'
     end
