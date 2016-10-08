@@ -1,5 +1,4 @@
 require 'nokogiri'
-
 module Indexer
   class Base
     class_attribute :pager_css

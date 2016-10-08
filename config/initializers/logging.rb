@@ -1,10 +1,18 @@
 require 'logging'
 
-Logging.logger.root.appenders = Logging.appenders.rolling_file("./log/buyma-insider-#{ENV['ENVIRONMENT']}.log", :age => 'weekly')
-Logging.logger.root.level = :info
+Logging.logger.root.level     = :info
+Logging.logger.root.appenders = Logging.appenders
+                                  .rolling_file("./log/buyma-insider-#{ENV['ENVIRONMENT']}.log",
+                                                :age    => 'weekly',
+                                                :layout => Logging.layouts.pattern(
+                                                  :pattern => '[%d] %-5l -- %c : %m\n'))
 
-worker = Logging.logger['worker']
-worker.appenders = Logging.appenders.rolling_file("./log/workers-#{ENV['ENVIRONMENT']}.log", :age => 'weekly')
-worker.level = :info
+worker           = Logging.logger['worker']
+worker.level     = :info
+worker.appenders = Logging.appenders
+                     .rolling_file("./log/workers-#{ENV['ENVIRONMENT']}.log",
+                                   :age    => 'weekly',
+                                   :layout => Logging.layouts.pattern(
+                                     :pattern => '[%d] %-5l -- %c : %m\n'))
 
 

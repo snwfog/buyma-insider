@@ -10,7 +10,7 @@ class ExampleWorker
   end
 
   def perform
-    @logger.info "Performed action in example worker"
+    @logger.info 'test' => 'one'
     @logger.debug "This should not be logged"
   end
 end
