@@ -41,6 +41,8 @@ class Crawler
 
         @total_merchant_items  += items.count
         @total_traffic_in_byte += content_length(response)
+        @logger.info "Total items crawled #{@total_merchant_items}"
+        @logger.info "Total traffic #{@total_traffic_in_byte}B"
       end
     end
   end

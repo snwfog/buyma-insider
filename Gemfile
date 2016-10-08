@@ -29,11 +29,13 @@ gem 'logging'
 # Deployment
 gem 'foreman'
 
-# Test
-gem 'minitest'
-gem 'rspec'
-gem 'faker'
+group :test do
+  gem 'minitest'
+  gem 'rspec'
+  gem 'faker'
+  gem "nyan-cat-formatter"
 # gem 'redis-stat'
+end
 
 case RUBY_PLATFORM
 when /darwin/

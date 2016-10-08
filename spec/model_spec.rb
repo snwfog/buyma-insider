@@ -1,5 +1,5 @@
+require 'rspec'
 require 'faker'
-require 'minitest/autorun'
 require 'active_support'
 require 'active_support/core_ext/numeric/time'
 
@@ -14,7 +14,7 @@ describe Article do
                        description: Faker::Hipster.sentence,
                        price:       Faker::Commerce.price,
                        link:        Faker::Internet.url
-    assert a.persisted?, 'Article should be persisted'
+    expect(a.persisted?).to be true
   end
 
   it 'should support inheritance' do
@@ -23,7 +23,7 @@ describe Article do
                             description: Faker::Hipster.sentence,
                             price:       Faker::Commerce.price,
                             link:        Faker::Internet.url
-    assert sub.persisted?
+    expect(sub.persisted?).to be true
   end
 end
 
@@ -38,7 +38,7 @@ describe PriceHistory do
         }
     )
 
-    assert ph.persisted?
+    expect(ph.persisted?).to be true
   end
 
   it 'should be able to add price' do
@@ -50,6 +50,12 @@ describe PriceHistory do
     ph.add_price(123.00)
     ph.save
 
-    assert ph.persisted?
+    expect(ph.persisted?).to be true
+  end
+end
+
+describe CrawlHistory do
+  it 'should persist' do
+    CrawlHistory.new
   end
 end
