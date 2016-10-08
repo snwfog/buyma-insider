@@ -1,4 +1,5 @@
 require 'nobrainer'
+require 'active_support/core_ext/string/inflections'
 
 class Article
   include NoBrainer::Document
@@ -13,11 +14,15 @@ class Article
   field :link,        type: String, required: true, length: (1..1000), format: %r(https?://)
   # field :category
 
-  attr_reader :unique_id
+  # attr_reader :unique_id
 
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
-    def from_node(n); raise 'Not implemented'; end
+    # Factory helper
+    def from_node(item_node)
+      new(attrs_from_node(item_node))
+    end
+
     # def primary_key(primary_key_name = :id)
     #   @primary_key ||= primary_key_name
     # end
@@ -32,9 +37,16 @@ class Article
     end
   end
 
-  # Factory helper
-  def from_node(item_node)
-    new(attrs_from_node(item_node))
+  def name=(name)
+    super(desc.humanize)
+  end
+
+  def description=(desc)
+    super(desc.humanize)
+  end
+
+  def link=(link)
+    super(link.gsub(%r(^https?://(www.)?), '//'))
   end
 
   # def id
