@@ -14,13 +14,16 @@ class Article
   field :link,        type: String, required: true, length: (1..1000), format: %r(https?://)
   # field :category
 
-  # attr_reader :unique_id
+  alias_method :unique_id,  :id
+  alias_method :sku,        :id
+  alias_method :desc,       :description
+  alias_method :title,      :name
 
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
     # Factory helper
-    def from_node(item_node)
-      new(attrs_from_node(item_node))
+    def from_node(html_node)
+      new(attrs_from_node(html_node))
     end
 
     # def primary_key(primary_key_name = :id)
@@ -38,15 +41,11 @@ class Article
   end
 
   def name=(name)
-    super(desc.humanize)
-  end
-
-  def description=(desc)
-    super(desc.humanize)
+    super(name.titleize)
   end
 
   def link=(link)
-    super(link.gsub(%r(^https?://(www.)?), '//'))
+    super(link.gsub(%r(^https?://), '//'))
   end
 
   # def id

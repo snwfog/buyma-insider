@@ -9,6 +9,7 @@ class CrawlHistory
   field :items_count,    type: Integer, default: 0 # Merchant items crawled
   field :traffic_size,   type: Integer, default: 0 # Traffic used
   field :finished_at,    type: Time
+  field :status,         type: Enum, default: :scheduled, in: %i(scheduled inprogress failed success)
 
   def elapsed_timed
     if finished_at.nil?

@@ -9,11 +9,4 @@ class MerchantSsenseTest < Minitest::Test
   def test_should_have_indexer
     assert_equal Indexer::Ssense, Ssense.indexer
   end
-
-  # def test_crawl
-  #   @ssense.crawl
-  #
-  #   puts @ssense.total_merchant_items
-  #   puts @ssense.total_traffic_in_byte
-  # end
 end
