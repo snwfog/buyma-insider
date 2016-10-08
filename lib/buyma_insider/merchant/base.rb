@@ -21,8 +21,8 @@ module Merchant
       end
 
       def index_pages=(indices)
-        @index_pages = indices.map { |index_url|
-          indexer.new(index_url, self)
+        @index_pages = indices.map { |path|
+          indexer.new(path, self)
         }
       end
     end

@@ -37,14 +37,14 @@ class MerchantTest < Minitest::Test
 
   def test_should_allow_set_config_options
     assert_equal Merchant_B.base_url, 'http://merchant-b.com'
-    assert_equal ['bindex.html'], Merchant_B.index_pages.map(&:index_url)
+    assert_equal ['bindex.html'], Merchant_B.index_pages.map(&:index_path)
     assert_equal 'b.css', Merchant_B.item_css
   end
 
 
   def test_merchant_should_not_override_config
     assert_equal Merchant_C.base_url, 'http://merchant-c.com'
-    assert_equal ['cindex.html'], Merchant_C.index_pages.map(&:index_url)
+    assert_equal ['cindex.html'], Merchant_C.index_pages.map(&:index_path)
     assert_equal 'c.css', Merchant_C.item_css
   end
 

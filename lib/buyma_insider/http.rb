@@ -3,9 +3,8 @@ require 'rest-client'
 module Http
   def self.get(address)
     RestClient.get(address,
-                   headers: {
-                     user_agent: BuymaInsider::SPOOF_USER_AGENT
-                   })
+                   user_agent: BuymaInsider::SPOOF_USER_AGENT
+    )
   end
 
   def content_length

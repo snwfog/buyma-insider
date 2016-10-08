@@ -4,17 +4,17 @@ module Indexer
     class_attribute :pager_css
 
     attr_accessor :merchant
-    attr_reader   :index
-    attr_reader   :index_url
+    attr_reader :index_url
+    attr_reader :index_path
 
-    def initialize(index_url, m)
-      @merchant  = m
-      @index_url = index_url # Index path
-      @index     = URI("#{@merchant.base_url}/#{index_url}")
+    def initialize(path, m)
+      @merchant   = m
+      @index_path = path # Index path
+      @index_url  = "#{@merchant.base_url}/#{path}"
     end
 
     def index_document
-      response = Http.get @index.to_s
+      response = Http.get @index_url
       Nokogiri::HTML(response.body)
     end
 
@@ -24,6 +24,11 @@ module Indexer
 
     def compute_page(&blk)
       raise 'Not implemented'
+    end
+
+    # override
+    def to_s
+      "#{@index_url}"
     end
   end
 end

@@ -32,6 +32,11 @@ class Article
     end
   end
 
+  # Factory helper
+  def from_node(item_node)
+    new(attrs_from_node(item_node))
+  end
+
   # def id
   #   self.send(self.class.primary_key)
   # end
