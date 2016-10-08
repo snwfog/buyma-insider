@@ -29,11 +29,14 @@ module Merchant
 
     def initialize(opts = {})
       @options = opts
-      @crawler = Crawler.new(self.class)
     end
 
     def crawl
-      @crawler.crawl
+      crawler = Crawler.new(self.class)
+      crawler.crawl do |article|
+        @logger.debug('Got', article)
+        article.upsert!
+      end
     end
   end
 end

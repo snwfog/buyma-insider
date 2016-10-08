@@ -6,7 +6,15 @@ class CrawlHistory
 
   field :id,             primary_key: true, required: true
   field :description,    type: String, required: true
-  field :merchant_items, type: Integer # Merchant items crawled
-  field :traffic,        type: Integer # Traffic used
+  field :items_count,    type: Integer, default: 0 # Merchant items crawled
+  field :traffic_size,   type: Integer, default: 0 # Traffic used
   field :finished_at,    type: Time
+
+  def elapsed_timed
+    if finished_at.nil?
+      'Unknown'
+    else
+      finished_at - created_at
+    end
+  end
 end

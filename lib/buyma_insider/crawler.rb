@@ -5,22 +5,17 @@ require 'buyma_insider/http'
 class Crawler
   attr_accessor :merchant
 
-  attr_accessor :total_traffic_in_byte
-  attr_accessor :total_merchant_items
-
-
   def initialize(m)
     @logger = Logging.logger[self]
 
     @merchant  = m
     @url_cache = UrlCache.new(m)
-
-    @total_traffic_in_byte = 0
-    @total_merchant_items  = 0
   end
 
-  def crawl
+  def crawl(&blk)
     merchant.index_pages.each do |indexer|
+      history = CrawlHistory.create(description: "#{@merchant.to_s} '#{indexer.to_s}'")
+
       indexer.each_page do |page_url|
         @logger.info("Requesting page '#{page_url}'")
 
@@ -34,30 +29,22 @@ class Crawler
         next if response.body.empty?
 
         @document = Nokogiri::HTML(response.body)
-        items = @document.css(merchant.item_css)
+        @document.css(merchant.item_css).each do |it|
+          attrs = @merchant.article_model.attrs_from_node(it)
 
-        # Process items
-        process(items)
+          # IMPT: Just yield the new article
+          blk.call(Article.new(attrs))
+          history.items_count  += 1
+        end
 
-        @total_merchant_items  += items.count
-        @total_traffic_in_byte += content_length(response)
-        @logger.info "Total items crawled #{@total_merchant_items}"
-        @logger.info "Total traffic #{@total_traffic_in_byte}B"
+        history.traffic_size += response.content_length
       end
+
+      history.save
+      @logger.info <<-HISTORY
+        #{history.description} crawl finished in #{history.elapsed_time}s
+        [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]
+      HISTORY
     end
-  end
-
-  def process(items)
-    items.each do |item_html_node|
-      attrs = @merchant.article_model
-                .attrs_from_node(item_html_node)
-
-      Article.upsert(attrs)
-    end
-  end
-
-  def content_length(response)
-    response.headers[:content_length] ||
-      Zlib::Deflate.deflate(response.body).size # Approximate
   end
 end
