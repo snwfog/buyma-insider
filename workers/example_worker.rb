@@ -6,11 +6,11 @@ class ExampleWorker
   include Sidekiq::Worker
 
   def initialize
-    @logger = Logging.logger['worker']
+    @logger = Logging.logger['Worker']
   end
 
   def perform
-    @logger.info 'test' => 'one'
-    @logger.debug "This should not be logged"
+    @logger.info 'Example worker performed action!'
+    logger.info 'Sidekiq example worker performed!'
   end
 end

@@ -22,7 +22,7 @@ class Crawler
   def crawl
     merchant.index_pages.each do |indexer|
       indexer.each_page do |page_url|
-        @logger.debug("requesting #{page_url}")
+        @logger.info("Requesting page '#{page_url}'")
 
         # Add url to cache, break if already exists
         next unless @url_cache.add? page_url
