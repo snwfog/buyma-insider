@@ -3,8 +3,26 @@ require 'dotenv'
 
 Dotenv.load
 
-require_rel '../config/initializers'
-require_rel 'buyma_insider'
+require_rel '../config/initializers/'
+require_rel './buyma_insider/crawler'
+require_rel './buyma_insider/http'
+require_rel './buyma_insider/url_cache'
+
+require_rel './buyma_insider/indexer/base'
+require_rel './buyma_insider/indexer/ssense'
+require_rel './buyma_insider/indexer/zara'
+
+require_rel './buyma_insider/merchant/base'
+require_rel './buyma_insider/merchant/ssense'
+require_rel './buyma_insider/merchant/zara'
+
+require_rel './buyma_insider/workers/worker'
+require_rel './buyma_insider/workers/example_worker'
+require_rel './buyma_insider/workers/ssense_worker'
+require_rel './buyma_insider/workers/zara_worker'
+
+require_rel './buyma_insider/models/'
+require_rel './buyma_insider/utils/'
 
 module BuymaInsider
   NAME             = 'buyma_insider'

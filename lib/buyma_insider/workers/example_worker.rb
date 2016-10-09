@@ -4,13 +4,12 @@ require 'sidetiq'
 ##
 # Example
 #
-class Worker::ExampleWorker
+class ExampleWorker
   include Sidekiq::Worker
   include Sidetiq::Schedulable
 
   # recurrence { secondly(10) }
-
   def perform
-    logger.info "Worked performed!"
+    logger.info 'Work performed!'
   end
 end

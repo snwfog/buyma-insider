@@ -1,6 +1,6 @@
 require 'sentry-raven'
 
-if ENV['ENVIRONMENT'] =~ /(PROD)|(production)/i
+if ENV['ENVIRONMENT'] =~ /prod(uction)?/i
   Raven.inject_only :sidekiq
   Raven.configure do |config|
     config.dsn          = ENV['SENTRY_DSN']

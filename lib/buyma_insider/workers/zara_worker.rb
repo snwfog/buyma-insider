@@ -1,8 +1,8 @@
 ##
 # Zara
 #
-class Worker::ZaraWorker < Worker::Base
-  recurrence { minutely(10) }
+class ZaraWorker < Worker::Base
+  # recurrence { hourly(1) }
 
   def initialize
     @merchant = ::Zara.new

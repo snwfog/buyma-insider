@@ -44,11 +44,17 @@ class Crawler
 
           @document = Nokogiri::HTML(response.body)
           @document.css(merchant.item_css).each do |it|
-            @logger.debug it.to_html
-            attrs = @merchant.article_model.attrs_from_node(it)
-            # IMPT: Just yield the attrs hash
-            @logger.debug attrs
-            blk.call(history, attrs)
+            begin
+              # TODO: Will fail if the parsing fail
+              attrs = @merchant.article_model.attrs_from_node(it)
+              # IMPT: Just yield the attrs hash
+              blk.call(history, attrs)
+            rescue Exception => ex
+              @logger.warn 'Invalid html structure:'
+              @logger.warn it.to_html
+            ensure
+              @logger.debug attrs
+            end
           end
 
           history.traffic_size += response.content_length
@@ -63,11 +69,11 @@ class Crawler
         history.finished_at = Time.now.utc
         history.save
 
-        @logger.info "#{history.description} finished at #{Time.now}"
-        @logger.info <<~HISTORY
+        @logger.info <<-EOF
+          #{history.description} finished at #{Time.now}
           #{history.description} crawl finished with #{history.status} in #{history.elapsed_time}s
-        HISTORY
-        @logger.info "[Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]"
+            [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+        EOF
       end
     end
   end

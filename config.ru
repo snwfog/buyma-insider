@@ -9,6 +9,6 @@ require 'sidetiq/web'
 
 app = Sidekiq::Web
 app.set environment: ENV['ENVIRONMENT']
-# app.set bind: '0.0.0.0'
-# app.set port: 9494
+app.set bind: '0.0.0.0'
+app.set port: 9292
 app.run!

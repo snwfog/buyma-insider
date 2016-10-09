@@ -25,16 +25,16 @@ module Worker
     end
 
     def log_start
-      logger.info "Start crawling #{@merchant.class.to_s}..."
+      logger.info "Start crawling #{merchant.class.to_s}..."
       Slackiq.notify webhook_name: :worker,
-                     title:        "Start crawling #{@merchant.class.to_s}..."
+                     title:        "Start crawling #{merchant.class.to_s}..."
     end
 
     def log_end
       Slackiq.notify webhook_name: :worker,
-                     title:        "Finished crawling #{@merchant.class.to_s} in #{@crawler.total_elapsed_time}s.",
-                     Success:      @stats.key?(true) ? @stats[true].map(&:link).join('\n') : 'None',
-                     Failed:       @stats.key?(false) ? @stats[false].map(&:link).join('\n') : 'None'
+                     title:        "Finished crawling #{merchant.class.to_s} in #{crawler.total_elapsed_time / 60}m.",
+                     Success:      @stats.key?(true) ? stats[true].map(&:link).join("\n") : 'None',
+                     Failed:       @stats.key?(false) ? stats[false].map(&:link).join("\n") : 'None'
     end
   end
 end

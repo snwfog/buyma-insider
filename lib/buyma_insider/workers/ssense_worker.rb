@@ -1,7 +1,7 @@
 ##
 # Ssense
 #
-class Worker::SsenseWorker < Worker::Base
+class SsenseWorker < Worker::Base
   def initialize
     @merchant = ::Sense.new
   end
