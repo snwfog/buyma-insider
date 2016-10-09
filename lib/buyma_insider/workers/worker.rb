@@ -1,12 +1,10 @@
 require 'sidekiq'
-require 'sidetiq'
 require 'slackiq'
 require 'sentry-raven'
 
 module Worker
   class Base
     include ::Sidekiq::Worker
-    include ::Sidetiq::Schedulable
 
     attr_accessor :merchant
     attr_accessor :crawler

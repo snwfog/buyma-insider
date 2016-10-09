@@ -51,9 +51,9 @@ class Crawler
 
           history.traffic_size += response.content_length
         end
-        history.status = :success
+        history.status = :completed
       rescue Exception => ex
-        history.status = :failed
+        history.status = :aborted
         @logger.error ex
         Raven.capture_exception(ex)
 

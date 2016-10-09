@@ -1,2 +1,2 @@
-sidekiq: bundle exec sidekiq --require ./workers/startup.rb --logfile ./log/sidekiq-${ENVIRONMENT}.log
+sidekiq: bundle exec sidekiq --require ./workers.rb
 sidekiq_web: rackup --quiet

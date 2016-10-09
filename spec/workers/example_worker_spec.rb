@@ -1,8 +1,8 @@
 require 'buyma_insider'
 require 'rspec'
 
-describe Worker::SsenseWorker do
+describe Worker::ExampleWorker do
   it 'should crawl' do
-    Worker::SsenseWorker.new.perform
+    Worker::ExampleWorker.new.perform
   end
 end
