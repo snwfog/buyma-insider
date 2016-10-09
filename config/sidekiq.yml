@@ -1,6 +1,6 @@
 ---
 :pidfile: ./tmp/pids/sidekiq.pid
-:logfile: ./log/sidekiq-development.log
-production:
-  :logfile: ./log/sidekiq-production.log
+#:logfile: ./log/sidekiq-development.log
+#production:
+#  :logfile: ./log/sidekiq-production.log
 
