@@ -10,7 +10,7 @@ describe Zara do
     it 'must crawl' do
       crawler = @zara.crawl
       crawler.stats
-      crawler.elapsed_time
+      crawler.total_elapsed_time
     end
   end
 end

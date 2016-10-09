@@ -34,8 +34,9 @@ module Merchant
 
     def crawl
       crawler = Crawler.new(self.class)
-      crawler.crawl do |attrs|
+      crawler.crawl do |history, attrs|
         merchant_article = self.class.article_model.new(attrs)
+        history.items_count += 1
         if merchant_article.valid?
           # NOTE:
           # A polymorphic problem has been detected: The fields `[:id]' are defined on `Article'.
@@ -46,8 +47,9 @@ module Merchant
           article = Article.upsert!(attrs)
           @logger.debug "Saved #{article.inspect}"
         else
-          @logger.warn "Found not valid article, #{merchant_article.errors.messages}"
+          @logger.warn "Invalid article, #{merchant_article.errors.messages}"
           @logger.warn "Skipping... #{merchant_article.inspect}"
+          history.invalid_items_count += 1
         end
       end
 

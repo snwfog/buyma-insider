@@ -16,7 +16,11 @@ class Crawler
 
   def crawl(&blk)
     merchant.index_pages.each do |indexer|
-      history = CrawlHistory.create(description: "#{@merchant.to_s} '#{indexer.to_s}'")
+      history = CrawlHistory.create(
+        description: "#{@merchant.to_s} '#{indexer.to_s}'",
+        link:        indexer.to_s
+      )
+
       @histories << history
 
       begin
@@ -42,9 +46,7 @@ class Crawler
             attrs = @merchant.article_model.attrs_from_node(it)
             # IMPT: Just yield the attrs hash
             @logger.debug attrs
-            blk.call(attrs)
-
-            history.items_count += 1
+            blk.call(history, attrs)
           end
 
           history.traffic_size += response.content_length
@@ -69,7 +71,7 @@ class Crawler
     end
   end
 
-  def elapsed_time
+  def total_elapsed_time
     @histories.select(&:successful?).map(&:elapsed_time).reduce(:+)
   end
 
