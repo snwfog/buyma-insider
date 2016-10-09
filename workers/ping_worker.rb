@@ -10,6 +10,5 @@ class PingWorker
 
   def perform
     logger.info "Worked performed!"
-    1 / 0
   end
 end
