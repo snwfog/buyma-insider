@@ -33,12 +33,13 @@ gem 'logging'
 
 # Deployment
 gem 'foreman'
+gem 'rubocop', require: false
 
 group :test do
   gem 'minitest'
   gem 'rspec'
   gem 'faker'
-  gem "nyan-cat-formatter"
+  gem 'nyan-cat-formatter'
 # gem 'redis-stat'
 end
 
