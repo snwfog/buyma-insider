@@ -1,11 +1,11 @@
 require 'sidekiq'
 require 'buyma_insider'
 
-class SsenseWorker
+class ZaraWorker
   include Sidekiq::Worker
 
   def perform
-    logger.info "Start crawling #{::Ssense}"
-    ::Ssense.new.crawl
+    logger.info "Start crawling #{Zara}"
+    ::Zara.new.crawl
   end
 end

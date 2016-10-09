@@ -1,3 +1,4 @@
+require 'sentry-raven'
 require 'logging'
 require 'buyma_insider/url_cache'
 require 'buyma_insider/http'
@@ -45,6 +46,8 @@ class Crawler
       rescue Exception => ex
         history.status = :failed
         @logger.error ex
+        Raven.capture_exception(ex)
+
         raise ex
       ensure
         history.finished_at = Time.now.utc

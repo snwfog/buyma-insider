@@ -11,6 +11,8 @@ gem 'rake'
 gem 'activesupport'
 gem 'dotenv'
 
+gem 'sentry-raven', require: 'sentry-raven-without-integrations'
+
 # Persistence
 gem 'nobrainer'
 gem 'redis'

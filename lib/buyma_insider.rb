@@ -1,10 +1,10 @@
 require 'require_all'
 require 'dotenv'
 
+Dotenv.load
+
 require_rel '../config/initializers'
 require_rel 'buyma_insider'
-
-Dotenv.load
 
 module BuymaInsider
   NAME             = 'buyma_insider'
