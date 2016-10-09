@@ -37,6 +37,8 @@ class Crawler
           # Get link HTML and set @response if not in url cache
           response = Http.get "http:#{page_url}"
 
+          @logger.info("Requested page '#{page_url}' (#{response.content_length}B)")
+
           # Parse into document from response
           next if response.body.empty?
 
@@ -54,10 +56,9 @@ class Crawler
         history.status = :completed
       rescue Exception => ex
         history.status = :aborted
+        @logger.error history.description
         @logger.error ex
         Raven.capture_exception(ex)
-
-        raise ex
       ensure
         history.finished_at = Time.now.utc
         history.save
