@@ -8,7 +8,9 @@ describe Zara do
 
   describe 'when crawl' do
     it 'must crawl' do
-      @zara.crawl
+      crawler = @zara.crawl
+      crawler.stats
+      crawler.elapsed_time
     end
   end
 end

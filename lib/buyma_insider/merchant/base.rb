@@ -50,6 +50,8 @@ module Merchant
           @logger.warn "Skipping... #{merchant_article.inspect}"
         end
       end
+
+      crawler
     end
   end
 end

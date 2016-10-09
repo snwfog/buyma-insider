@@ -2,7 +2,7 @@ require 'sidekiq'
 require 'sidetiq'
 require 'buyma_insider'
 
-class PingWorker
+class ExampleWorker
   include Sidekiq::Worker
   include Sidetiq::Schedulable
 

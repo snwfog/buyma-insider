@@ -5,18 +5,25 @@ require 'buyma_insider/http'
 
 class Crawler
   attr_accessor :merchant
+  attr_accessor :histories
 
   def initialize(merchant)
     @merchant  = merchant
     @logger    = Logging.logger[merchant]
     @url_cache = UrlCache.new(merchant)
+    @histories = []
   end
 
   def crawl(&blk)
     merchant.index_pages.each do |indexer|
       history = CrawlHistory.create(description: "#{@merchant.to_s} '#{indexer.to_s}'")
+      @histories << history
+
       begin
         @logger.info "#{history.description} started at #{Time.now}"
+        history.status = :inprogress
+        history.save
+
         indexer.each_page do |page_url|
           @logger.info("Requesting page '#{page_url}'")
 
@@ -60,5 +67,13 @@ class Crawler
         @logger.info "[Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]"
       end
     end
+  end
+
+  def elapsed_time
+    @histories.select(&:successful?).map(&:elapsed_time).reduce(:+)
+  end
+
+  def stats
+    @histories.group_by(&:successful?)
   end
 end

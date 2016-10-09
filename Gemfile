@@ -17,6 +17,9 @@ gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 gem 'nobrainer'
 gem 'redis'
 
+# Integration
+gem 'slackiq'
+
 # Debugging / Development
 gem 'pry'
 gem 'hirb'
