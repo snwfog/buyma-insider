@@ -1,6 +1,5 @@
 ---
 :pidfile: ./tmp/pids/sidekiq.pid
-#:logfile: ./log/sidekiq-development.log
-#production:
-#  :logfile: ./log/sidekiq-production.log
+production:
+  :concurrency: 20
 
