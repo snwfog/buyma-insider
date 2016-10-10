@@ -6,17 +6,17 @@ require 'active_support/core_ext/string/inflections'
 # .filter({ '_type': 'ZaraArticle' })
 r.table('articles')
   .run($conn).each do |r|
-  if record['id'] =~ /^[a-z]{3}/
-    klazz = record['_type'].safe_constantize
+  if r['id'] =~ /^[a-z]{3}/
+    klazz = r['_type'].safe_constantize
 
     r.table('price_histories')
-      .get(record['id'])
-      .update(article_id: "#{klazz.merchant_code}:#{record['id']}")
+      .get(r['id'])
+      .update(article_id: "#{klazz.merchant_code}:#{r['id']}")
       .run($conn)
 
     r.table('articles')
-      .get(record['id'])
-      .update(id: "#{klazz.merchant_code}:#{record['id']}")
+      .get(r['id'])
+      .update(id: "#{klazz.merchant_code}:#{r['id']}")
       .run($conn)
   end
 end
