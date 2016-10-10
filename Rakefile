@@ -2,13 +2,13 @@
   $:.unshift(File.expand_path(p), File.dirname(__FILE__))
 end
 
-require 'bundler'
-require 'buyma_insider'
+require 'nobrainer'
+# require 'bundler'
+# require 'buyma_insider'
 
-Bundler.require
-include RethinkDB::Shortcuts
-
-db_name = "#{BuymaInsider::NAME}_#{BuymaInsider::ENVIRONMENT}"
+# Bundler.require
+# include RethinkDB::Shortcuts
+# db_name = "#{BuymaInsider::NAME}_#{BuymaInsider::ENVIRONMENT}"
 
 desc 'Start sidekiq'
 task :sidekiq do
@@ -29,6 +29,11 @@ task :ssh do
   # AnyBar::Client.new(1735).color = 'green'
   # AnyBar::Client.new(1736).color = 'green'
   # AnyBar::Client.new(1737).color = 'green'
+end
+
+desc 'Cleanup log'
+task :cleanup do
+  %x(rm -rf ./log/*.log)
 end
 
 namespace :db do
