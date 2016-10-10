@@ -1,8 +1,5 @@
 # Buyma Insider
 
-# Todo
-- Figure out production information
-
 # Production
 - RethinkDB ENV=production
 - Redis port 65340

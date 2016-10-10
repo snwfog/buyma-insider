@@ -11,8 +11,6 @@ class Indexer::Ssense < Indexer::Base
     first_page = first_node.content.to_i
     last_page  = last_node.at_css('a').content.to_i
 
-    (first_page..last_page).each { |i|
-      yield "#{index_url}/pages/#{i}"
-    }
+    (first_page..last_page).each { |i| yield "#{index_url}/pages/#{i}" }
   end
 end

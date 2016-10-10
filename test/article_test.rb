@@ -28,12 +28,12 @@ class ArticleTest < Minitest::Test
       </div>
     FRAG
 
-    article = SsenseArticle.from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-    assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article.desc
-    assert_equal 'Tan Canadian Tapestry Coat', article.name
-    assert_equal 5890.00, article.price
-    assert_equal '162418M176009', article.sku
-    assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article.link
+    article = SsenseArticle.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+    assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article[:description]
+    assert_equal 'Tan Canadian Tapestry Coat', article[:name]
+    assert_equal 5890.00, ('%.02f' % article[:price].to_f).to_f
+    assert_equal '162418M176009', article[:id]
+    assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article[:link]
   end
 
   def test_zara_should_parse
@@ -48,11 +48,11 @@ class ArticleTest < Minitest::Test
       </li>
     FRAG
 
-    article = ZaraArticle.from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
-    assert_equal 'VELVET TOGGLE JACKET', article.desc
-    assert_equal 'Velvet Toggle Jacket', article.name
-    assert_equal 139.00, article.price
-    assert_equal '3711654', article.sku
-    assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article.link
+    article = ZaraArticle.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
+    assert_equal 'VELVET TOGGLE JACKET', article[:description]
+    assert_equal 'VELVET TOGGLE JACKET', article[:name]
+    assert_equal 139.00, ('%.02f' % article[:price].to_f).to_f
+    assert_equal '3711654', article[:id]
+    assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article[:link]
   end
 end

@@ -1,8 +1,9 @@
 *.env
 *.env.local
 *.env.development
-*.env.test
-*.env.testing
+*.env.unittest
+*.env.integrationtest
+*.env.staging
 *.env.production
 
 ### JetBrains template

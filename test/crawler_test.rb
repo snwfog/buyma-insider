@@ -15,21 +15,14 @@ class CrawlerTest < Minitest::Test
     assert_respond_to Merchant_A.new, 'crawl'
   end
 
-  def test_should_have_proper_merchant_class
-    merchant = Merchant_A.new
-    executor = merchant.instance_variable_get(:@crawler)
-    assert executor
-    assert_equal Merchant_A, executor.merchant
-  end
-
   def test_should_call_crawl
-    executor_mock = Minitest::Mock.new
-    merchant      = Merchant_A.new
-    merchant.instance_variable_set(:@crawler, executor_mock)
-
-    executor_mock.expect :crawl, nil
-    merchant.crawl
-    executor_mock.verify
+    crawler = Minitest::Mock.new
+    Crawler.stub :new, crawler do
+      merchant      = Merchant_A.new
+      crawler.expect :crawl, nil
+      merchant.crawl
+      crawler.verify
+    end
   end
 
   # def test_url_cache

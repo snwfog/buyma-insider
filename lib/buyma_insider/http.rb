@@ -7,10 +7,6 @@ module Http
     )
   end
 
-  def content_length
-    @response.headers[:content_length] || Zlib::Deflate.deflate(@response.body).size # Approximate
-  end
-
   # @deprecated
   def raw_response(address)
     RestClient::Request.execute(method:  :get, url: address, raw_response: true,
