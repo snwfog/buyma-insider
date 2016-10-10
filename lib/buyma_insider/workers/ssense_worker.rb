@@ -3,7 +3,7 @@
 #
 class SsenseWorker < Worker::Base
   def initialize
-    @merchant = ::Sense.new
+    @merchant = ::Ssense.new
   end
 
   def crawl

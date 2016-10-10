@@ -69,10 +69,9 @@ class Crawler
         history.finished_at = Time.now.utc
         history.save
 
-        @logger.info <<-EOF
-          #{history.description} finished at #{Time.now}
-          #{history.description} crawl finished with #{history.status} in #{history.elapsed_time}s
-            [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+        @logger.info <<~EOF
+          #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
+          [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end

@@ -65,7 +65,6 @@ class Zara < Merchant::Base
     'man/soft-wear-c637037.html',
     'man/special-prices/view-all-c787511.html',
     'man/seasonals-man/seasonals-man-collection-c865501.html',
-    'man/jogging-c797512.html',
   ]
 
   self.item_css    = 'ul.product-list li.product'
