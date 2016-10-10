@@ -2,6 +2,8 @@
 # Ssense
 #
 class SsenseWorker < Worker::Base
+  recurrence { daily.hour_of_day(3) }
+
   def initialize
     @merchant = ::Ssense.new
   end
