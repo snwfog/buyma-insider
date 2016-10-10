@@ -58,7 +58,8 @@ end
 describe CrawlHistory do
   it 'should persist' do
     ch = CrawlHistory.create(
-      description: "New crawl #{Faker::Internet.url}"
+      description: "New crawl #{Faker::Internet.url}",
+      link: '//google.com'
     )
 
     expect(ch.persisted?).to be_truthy
