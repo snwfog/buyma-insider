@@ -10,7 +10,7 @@ class Crawler
   def initialize(merchant)
     @merchant  = merchant
     @logger    = Logging.logger[merchant]
-    @url_cache = UrlCache.new(merchant)
+    @url_cache = UrlCache.new
     @histories = []
   end
 

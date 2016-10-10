@@ -13,7 +13,7 @@ module Merchant
       attr_accessor :index_pages
 
       def article_model
-        @article_model ||= %Q(#{self.to_s}Article).safe_constantize || Article
+        @article_model ||= "#{self.to_s}Article".safe_constantize || Article
       end
 
       def indexer

@@ -2,6 +2,8 @@
 # Zara article
 #
 class ZaraArticle < Article
+  self.merchant_code = 'zar'
+
   def self.attrs_from_node(n)
     item_a = n.at_css('a.item._item')
     desc_a = n.at_css('div.product-info a.name._item')

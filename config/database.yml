@@ -1,0 +1,19 @@
+default: &default
+  host: localhost
+  port: 28015
+#  db: buyma_insider_development
+#  user:
+#  password:
+#  timeout:
+
+development:
+  <<: *default
+  db: buyma_insider_development
+
+unittest:
+  <<: *default
+  db: buyma_insider_unittest
+
+production:
+  <<: *default
+  db: buyma_insider_production

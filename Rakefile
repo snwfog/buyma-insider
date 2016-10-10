@@ -47,4 +47,9 @@ namespace :db do
     puts "DROPPING #{db_name}"
     NoBrainer.purge!
   end
+
+  desc 'Create a new db patch'
+  task :patch, ['name'] do |t, args|
+    sh 'touch ' + "./patches/#{Time.now.to_s}_#{args['name']}.rb".gsub(/[-:\s]/, '_')
+  end
 end

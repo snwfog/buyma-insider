@@ -25,12 +25,18 @@ class Article
   alias_method :desc,       :description
   alias_method :title,      :name
 
+  class_attribute :merchant_code # 3 letters code to make id unique
+
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
     # Factory helper
     def from_node(html_node)
       new(attrs_from_node(html_node))
     end
+  end
+
+  def id=(id)
+    super("#{self.merchant_code}:#{id}")
   end
 
   def price=(price)
@@ -51,6 +57,6 @@ class Article
   end
 
   def new_article?
-    @new_article.nil? ? true : @new_article
+    new_article.nil? ? true : new_article
   end
 end

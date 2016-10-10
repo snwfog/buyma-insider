@@ -2,6 +2,8 @@
 # Ssense article
 #
 class SsenseArticle < Article
+  self.merchant_code = 'sse'
+
   def self.attrs_from_node(n)
     {
       id:          n['data-product-sku'],
