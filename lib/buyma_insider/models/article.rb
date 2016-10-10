@@ -7,6 +7,12 @@ class Article
 
   has_one :price_history
 
+  after_find do |m|
+    m.new_article = false
+  end
+
+  attr_accessor :new_article
+
   field :id,          primary_key: true, required: true
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
@@ -42,5 +48,9 @@ class Article
 
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
+  end
+
+  def new_article?
+    @new_article.nil? ? true : @new_article
   end
 end

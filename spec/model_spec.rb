@@ -6,8 +6,6 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
-class SubArticle < Article;
-end
 describe Article do
   it 'should be persisted' do
     a = Article.create id:          Faker::Code.ean,
@@ -25,6 +23,36 @@ describe Article do
                             price:       Faker::Commerce.price,
                             link:        Faker::Internet.url
     expect(sub.persisted?).to be true
+  end
+end
+
+class SubArticle < Article; end
+
+describe SubArticle do
+  it 'should trigger after_find on upsert!' do
+    first_article = Article.upsert!(
+      id:          Faker::Bitcoin.address,
+      name:        Faker::Commerce.product_name,
+      price:       Faker::Commerce.price,
+      description: Faker::Commerce.product_name,
+      link:        '//test1.com',
+      '_type':     SubArticle.to_s
+    )
+
+    expect(first_article.persisted?).to be_truthy
+    expect(first_article.new_article?).to be_truthy
+
+    same_article = Article.upsert!(
+      id:          first_article.id,
+      name:        'Second name',
+      price:       '0.99',
+      description: 'Second name',
+      link:        '//test2.com',
+      '_type':     SubArticle.to_s
+    )
+
+    expect(same_article.id).to be_equal(first_article.id)
+    expect(same_article.new_article?).to be_falsey
   end
 end
 
@@ -59,7 +87,7 @@ describe CrawlHistory do
   it 'should persist' do
     ch = CrawlHistory.create(
       description: "New crawl #{Faker::Internet.url}",
-      link: '//google.com'
+      link:        '//google.com'
     )
 
     expect(ch.persisted?).to be_truthy
