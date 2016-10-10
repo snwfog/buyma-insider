@@ -2,7 +2,7 @@
 # Zara
 #
 class ZaraWorker < Worker::Base
-  # recurrence { hourly(1) }
+  recurrence { daily(1) }
 
   def initialize
     @merchant = ::Zara.new

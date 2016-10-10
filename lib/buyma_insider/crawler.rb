@@ -37,7 +37,7 @@ class Crawler
           # Get link HTML and set @response if not in url cache
           response = Http.get "http:#{page_url}"
 
-          @logger.info("Requested page '#{page_url}' (#{response.content_length}B)")
+          @logger.info("Received html '#{page_url}' (#{response.content_length}B)")
 
           # Parse into document from response
           next if response.body.empty?
