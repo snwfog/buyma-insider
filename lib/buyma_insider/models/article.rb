@@ -35,10 +35,6 @@ class Article
     end
   end
 
-  def id=(id)
-    super("#{self.merchant_code}:#{id}")
-  end
-
   def price=(price)
     super(price)
     NoBrainer::Lock.new("price_history:price=:#{self.id}").synchronize do

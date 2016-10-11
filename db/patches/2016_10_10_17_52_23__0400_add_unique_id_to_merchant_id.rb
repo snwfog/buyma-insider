@@ -2,6 +2,8 @@ require 'buyma_insider'
 require 'patches/setup'
 require 'active_support/core_ext/string/inflections'
 
+# IMPT: This script has a bug...
+
 # .eq_join('id', r.table('price_histories'))
 # .filter({ '_type': 'ZaraArticle' })
 
