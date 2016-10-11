@@ -1,8 +1,3 @@
 # Buyma Insider
 
-# Production
-- RethinkDB ENV=production
-- Redis port 65340
-- Redis port 65341
-- Redis port 65342
-
+- BUG: There are relationship errors, more price history than articles
