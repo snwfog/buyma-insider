@@ -4,20 +4,28 @@ require 'active_support/core_ext/string/inflections'
 
 # .eq_join('id', r.table('price_histories'))
 # .filter({ '_type': 'ZaraArticle' })
+
 r.table('articles')
   .run($conn).each do |record|
   unless record['id'] =~ /^[a-z]{3}/
     klazz = record['_type'].safe_constantize
 
-    r.table('price_histories')
-      .get(record['id'])
-      .update(article_id: "#{klazz.merchant_code}:#{record['id']}")
-      .run($conn)
+    ph = r.table('price_histories')
+           .get(record['id'])
+           .run($conn)
 
-    r.table('articles')
-      .get(record['id'])
-      .update(id: "#{klazz.merchant_code}:#{record['id']}")
-      .run($conn)
+    unless ph.nil?
+      ph.merge(article_id: "#{klazz.merchant_code}:#{record['id']}")
+      r.table('price_histories').insert(ph).run($conn)
+      r.table('price_histories').get(record['id']).delete.run($conn)
+
+      art = r.table('articles')
+              .get(record['id'])
+              .merge(id: "#{klazz.merchant_code}:#{record['id']}")
+              .run($conn)
+
+      r.table('articles').insert(art).run($conn)
+      r.table('articles').get(record['id']).delete.run($conn)
+    end
   end
 end
-
