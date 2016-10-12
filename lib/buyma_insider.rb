@@ -17,9 +17,13 @@ require_rel './buyma_insider/merchant/ssense'
 require_rel './buyma_insider/merchant/zara'
 
 require_rel './buyma_insider/workers/worker'
+require_rel './buyma_insider/workers/crawler_worker_base'
 require_rel './buyma_insider/workers/example_worker'
-require_rel './buyma_insider/workers/ssense_worker'
-require_rel './buyma_insider/workers/zara_worker'
+
+require_rel './buyma_insider/workers/daily/ssense_worker'
+require_rel './buyma_insider/workers/daily/zara_worker'
+
+require_rel './buyma_insider/workers/weekly/new_article_worker'
 
 require_rel './buyma_insider/models/'
 require_rel './buyma_insider/utils/'

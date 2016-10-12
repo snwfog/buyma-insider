@@ -1,7 +1,7 @@
 ##
 # Ssense
 #
-class SsenseWorker < Worker::Base
+class SsenseWorker < CrawlerWorkerBase
   recurrence { daily.hour_of_day(3) }
 
   def initialize

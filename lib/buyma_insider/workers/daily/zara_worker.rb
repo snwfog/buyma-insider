@@ -1,7 +1,7 @@
 ##
 # Zara
 #
-class ZaraWorker < Worker::Base
+class ZaraWorker < CrawlerWorkerBase
   recurrence { daily.hour_of_day(2) }
 
   def initialize

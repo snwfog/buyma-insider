@@ -2,12 +2,12 @@
 default: &default
   host: 127.0.0.1
   port: 6379
+  db: 1
 #  password:
 #  path:
 #  connect_timeout:  0.2,
 #  read_timeout: 1.0,
 #  write_timeout: 0.5
-  db: 1
 
 development:
   <<: *default
