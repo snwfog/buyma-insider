@@ -5,13 +5,17 @@ require 'sidekiq'
 require 'logging'
 require 'buyma_insider'
 
+raise 'Environment missing' unless ENV.has_key? 'ENVIRONMENT'
+redis_config = YAML.load_file(File.expand_path('config/redis.yml'))
+                 .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
+
 Sidekiq.configure_server do |config|
-  config.redis  = { url:  'redis://127.0.0.1:6379/1', }
+  config.redis  = redis_config
   config.logger = Logging.logger[:Worker]
 end
 
 Sidekiq.configure_client do |config|
-  config.redis  = { url:  'redis://127.0.0.1:6379/1', }
+  config.redis  = redis_config
   config.logger = Logging.logger[:Worker]
 end
 
