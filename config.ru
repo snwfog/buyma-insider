@@ -7,9 +7,5 @@ require 'sidetiq/web'
 
 redis_config = YAML.load_file(File.expand_path('config/redis.yml'))
                  .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
-
-Sidekiq.configure_client do |config|
-  config.redis = redis_config
-end
-
+Sidekiq.configure_client { |config| config.redis = redis_config }
 Sidekiq::Web.run!
