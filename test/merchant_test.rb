@@ -49,18 +49,17 @@ class MerchantTest < Minitest::Test
   end
 
   def test_merchant_should_have_article_model
-    assert_respond_to Merchant_A, 'article_model'
     assert_respond_to Merchant_B, 'article_model'
     assert_respond_to Merchant_C, 'article_model'
 
-    assert_equal Merchant_A.article_model, Article
     assert_equal Merchant_B.article_model, Merchant_BArticle
     assert_equal Merchant_C.article_model, Merchant_CArticle
   end
 
-  def test_should_have_an_valid_article_model
+  def test_should_raise_if_no_valid_article_model
     assert_respond_to Merchant_A, 'article_model'
-    assert_equal Article, Merchant_A.article_model
+    error = assert_raises { Merchant_A.article_model }
+    assert_equal error.message, 'No article model'
   end
 
   def test_should_have_an_valid_indexer

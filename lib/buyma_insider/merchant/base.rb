@@ -7,14 +7,15 @@ require 'nokogiri'
 module Merchant
   class Base
     class_attribute :base_url, :item_css
+    class_attribute :article_model
+
+    def self.article_model
+      @article_model ||= "#{self.to_s}Article".safe_constantize
+      raise 'No article model' if @article_model.nil?
+    end
 
     class << self
-      attr_accessor :article_model
       attr_accessor :index_pages
-
-      def article_model
-        @article_model ||= "#{self.to_s}Article".safe_constantize || Article
-      end
 
       def indexer
         %Q(Indexer::#{self.to_s}).safe_constantize

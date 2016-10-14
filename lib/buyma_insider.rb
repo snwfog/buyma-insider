@@ -3,6 +3,7 @@ require 'dotenv'
 
 Dotenv.load
 
+# TODO: Add autoload (a la Rails)
 require_rel '../config/initializers/'
 require_rel './buyma_insider/crawler'
 require_rel './buyma_insider/http'
