@@ -12,18 +12,18 @@
 #
 # and, you'll have to watch "config/Guardfile" instead of "Guardfile"
 
-$:.unshift File.expand_path('lib', File.dirname(__FILE__))
+$:.unshift File.expand_path('app', File.dirname(__FILE__))
 $:.unshift File.expand_path('config', File.dirname(__FILE__))
 $:.unshift File.expand_path('spec', File.dirname(__FILE__))
 
 guard :minitest do
   # with Minitest::Unit
   watch(%r{^test/(.*)\/?test_(.*)\.rb$})
-  watch(%r{^lib/(.*/)?([^/]+)\.rb$}) { |m| "test/#{m[1]}test_#{m[2]}.rb" }
+  watch(%r{^app/(.*/)?([^/]+)\.rb$}) { |m| "test/#{m[1]}test_#{m[2]}.rb" }
   watch(%r{^test/test_helper\.rb$}) { 'test' }
 
   # with Minitest::Spec
   # watch(%r{^spec/(.*)_spec\.rb$})
-  # watch(%r{^lib/(.+)\.rb$})         { |m| "spec/#{m[1]}_spec.rb" }
+  # watch(%r{^app/(.+)\.rb$})         { |m| "spec/#{m[1]}_spec.rb" }
   # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
 end

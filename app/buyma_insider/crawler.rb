@@ -50,8 +50,9 @@ class Crawler
               # IMPT: Just yield the attrs hash
               blk.call(history, attrs)
             rescue Exception => ex
-              @logger.warn 'Invalid html structure:'
+              @logger.warn 'Failed parsing merchant item'
               @logger.warn it.to_html
+              @logger.warn ex
             ensure
               @logger.debug attrs
             end

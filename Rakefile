@@ -1,5 +1,5 @@
-%w(lib config spec workers).each do |p|
-  $:.unshift(File.expand_path(p), File.dirname(__FILE__))
+%w(app config spec workers).each do |p|
+  $LOAD_PATH.unshift(File.expand_path(p), File.dirname(__FILE__))
 end
 
 require 'nobrainer'
@@ -10,14 +10,9 @@ require 'nobrainer'
 # include RethinkDB::Shortcuts
 # db_name = "#{BuymaInsider::NAME}_#{BuymaInsider::ENVIRONMENT}"
 
-desc 'Start sidekiq'
-task :sidekiq do
-  sh 'bundle execute sidekiq -r ./workers/buyma_insider_worker.rb'
-end
-
 desc 'Run test'
 task :test do
-  sh 'pry -Iworkers:lib:spec ./spec/*_spec.rb'
+  sh 'pry -Iapp:spec ./spec/*_spec.rb'
 end
 
 desc 'Setup ssh'

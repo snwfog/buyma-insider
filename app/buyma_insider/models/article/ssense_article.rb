@@ -6,7 +6,7 @@ class SsenseArticle < Article
 
   def self.attrs_from_node(n)
     {
-      id:          "#{merchant_code}:#{n['data-product-sku']}",
+      id:          n['data-product-sku'],
       name:        n['data-product-name'],
       price:       n['data-product-price'],
       description: "#{n['data-product-brand']} - #{n['data-product-name']}",

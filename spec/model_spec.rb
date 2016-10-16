@@ -7,6 +7,10 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
+class Article
+  self.merchant_code = 'tes'
+end
+
 describe Article do
   it 'should be persisted' do
     a = Article.create id:          Faker::Code.ean,
@@ -26,18 +30,20 @@ describe Article do
     expect(sub.persisted?).to be true
   end
 
-  # it 'should schedule new article worker when creating an new article' do
-  #   id = Faker::Code.ean
-  #   expect(NewArticleWorker).to receive(:perform_async).with(id)
-  #   Article.create id:          id,
-  #                  name:        Faker::Commerce.product_name,
-  #                  description: Faker::Hipster.sentence,
-  #                  price:       Faker::Commerce.price,
-  #                  link:        Faker::Internet.url
-  # end
+  it 'should create new article redis on creating an new article' do
+    id = Faker::Code.ean
+    expect(RedisConnection.sadd).to receive(['new_articles', id])
+    Article.create id:          id,
+                   name:        Faker::Commerce.product_name,
+                   description: Faker::Hipster.sentence,
+                   price:       Faker::Commerce.price,
+                   link:        Faker::Internet.url
+  end
 end
 
-class SubArticle < Article; end
+class SubArticle < Article
+  self.merchant_code = 'sub'
+end
 
 describe SubArticle do
   xit 'should trigger after_find on upsert!' do

@@ -1,4 +1,5 @@
 require 'nobrainer'
+require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/string/inflections'
 
 class Article
@@ -8,10 +9,16 @@ class Article
   has_one :price_history
 
   after_create do |m|
-
+    $redis.with do |conn|
+      conn.pipelined do
+        conn.zadd(:new_articles_expires_at, new_articles_expires_at.from_now.utc.to_i, m.id)
+        conn.hincrby(:new_articles_summary, merchant_code, 1)
+      end
+    end
   end
 
   attr_accessor :new_article
+  attr_accessor :new_article_expires_at
 
   field :id,          primary_key: true, required: true
   field :name,        type: String, required: true, length: (1..500)
@@ -26,12 +33,17 @@ class Article
   alias_method :title,      :name
 
   class_attribute :merchant_code # 3 letters code to make id unique
+  class_attribute :new_articles_expires_at
 
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
     # Factory helper
     def from_node(html_node)
       new(attrs_from_node(html_node))
+    end
+
+    def new_articles_expires_at
+      @new_articles_expires_at || 7.days
     end
   end
 
@@ -44,6 +56,10 @@ class Article
     end
   end
 
+  def id=(primary_key)
+    super("#{self.merchant_code}:#{primary_key}")
+  end
+
   def name=(name)
     super(name.titleize)
   end
@@ -51,4 +67,5 @@ class Article
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
   end
+
 end
