@@ -4,20 +4,20 @@ require 'buyma_insider/url_cache'
 require 'buyma_insider/http'
 
 class Crawler
-  attr_accessor :merchant
+  attr_accessor :merchant_klazz
   attr_accessor :histories
 
-  def initialize(merchant)
-    @merchant  = merchant
-    @logger    = Logging.logger[merchant]
-    @url_cache = UrlCache.new
-    @histories = []
+  def initialize(merchant_klazz)
+    @merchant_klazz = merchant_klazz
+    @logger         = Logging.logger[merchant_klazz]
+    @url_cache      = UrlCache.new
+    @histories      = []
   end
 
   def crawl(&blk)
-    merchant.index_pages.each do |indexer|
+    merchant_klazz.index_pages.each do |indexer|
       history = CrawlHistory.create(
-        description: "#{@merchant.to_s} '#{indexer.to_s}'",
+        description: "#{merchant_klazz.to_s} '#{indexer.to_s}'",
         link:        indexer.to_s
       )
 
@@ -43,10 +43,10 @@ class Crawler
           next if response.body.empty?
 
           @document = Nokogiri::HTML(response.body)
-          @document.css(merchant.item_css).each do |it|
+          @document.css(merchant_klazz.item_css).each do |it|
             begin
               # TODO: Will fail if the parsing fail
-              attrs = @merchant.article_model.attrs_from_node(it)
+              attrs = merchant_klazz.article_model.attrs_from_node(it)
               # IMPT: Just yield the attrs hash
               blk.call(history, attrs)
             rescue Exception => ex
@@ -72,7 +72,7 @@ class Crawler
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-          [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                    [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end
