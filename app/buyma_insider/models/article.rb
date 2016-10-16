@@ -56,9 +56,10 @@ class Article
     end
   end
 
-  def id=(primary_key)
-    super("#{self.merchant_code}:#{primary_key}")
-  end
+  # You should not mess with id...
+  # def id=(primary_key)
+  #   super("#{self.merchant_code}:#{primary_key}")
+  # end
 
   def name=(name)
     super(name.titleize)

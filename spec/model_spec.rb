@@ -21,6 +21,21 @@ describe Article do
     expect(a.persisted?).to be true
   end
 
+  it 'should be persisted once' do
+    a = Article.create id:          Faker::Code.ean,
+                       name:        Faker::Commerce.product_name,
+                       description: Faker::Hipster.sentence,
+                       price:       Faker::Commerce.price,
+                       link:        Faker::Internet.url
+    expect(a.persisted?).to be true
+
+    Article.upsert! id:          a.id,
+                    name:        a.name,
+                    description: a.description,
+                    price:       a.price,
+                    link:        a.link
+  end
+
   it 'should support inheritance' do
     sub = SubArticle.create id:          Faker::Code.ean,
                             name:        Faker::Commerce.product_name,

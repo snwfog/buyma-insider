@@ -40,7 +40,7 @@ class ArticleTest < Minitest::Test
     assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article[:description]
     assert_equal 'Tan Canadian Tapestry Coat', article[:name]
     assert_equal 5890.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal '162418M176009', article[:id]
+    assert_equal 'sse:162418M176009', article[:id]
     assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article[:link]
   end
 
@@ -60,7 +60,7 @@ class ArticleTest < Minitest::Test
     assert_equal 'VELVET TOGGLE JACKET', article[:description]
     assert_equal 'VELVET TOGGLE JACKET', article[:name]
     assert_equal 139.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal '3711654', article[:id]
+    assert_equal 'zar:3711654', article[:id]
     assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article[:link]
   end
 end

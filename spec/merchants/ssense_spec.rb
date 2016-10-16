@@ -7,7 +7,7 @@ describe Ssense do
   end
 
   describe 'when crawl' do
-    it 'must crawl' do
+    xit 'must crawl' do
       @ssense.crawl
     end
   end
