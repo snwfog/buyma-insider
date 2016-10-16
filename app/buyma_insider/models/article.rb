@@ -7,8 +7,8 @@ class Article
 
   has_one :price_history
 
-  after_find do |m|
-    m.new_article = false
+  after_create do |m|
+
   end
 
   attr_accessor :new_article
@@ -50,9 +50,5 @@ class Article
 
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
-  end
-
-  def new_article?
-    new_article.nil? ? true : new_article
   end
 end

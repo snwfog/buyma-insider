@@ -1,4 +1,5 @@
 require 'rspec'
+require 'minitest/autorun'
 require 'faker'
 require 'active_support'
 require 'active_support/core_ext/numeric/time'
@@ -24,12 +25,22 @@ describe Article do
                             link:        Faker::Internet.url
     expect(sub.persisted?).to be true
   end
+
+  # it 'should schedule new article worker when creating an new article' do
+  #   id = Faker::Code.ean
+  #   expect(NewArticleWorker).to receive(:perform_async).with(id)
+  #   Article.create id:          id,
+  #                  name:        Faker::Commerce.product_name,
+  #                  description: Faker::Hipster.sentence,
+  #                  price:       Faker::Commerce.price,
+  #                  link:        Faker::Internet.url
+  # end
 end
 
 class SubArticle < Article; end
 
 describe SubArticle do
-  it 'should trigger after_find on upsert!' do
+  xit 'should trigger after_find on upsert!' do
     first_article = Article.upsert!(
       id:          Faker::Bitcoin.address,
       name:        Faker::Commerce.product_name,
@@ -40,7 +51,7 @@ describe SubArticle do
     )
 
     expect(first_article.persisted?).to be_truthy
-    expect(first_article.new_article?).to be_truthy
+    expect(first_article.new_article).to be_truthy
 
     same_article = Article.upsert!(
       id:          first_article.id,
@@ -52,7 +63,7 @@ describe SubArticle do
     )
 
     expect(same_article.id).to be_equal(first_article.id)
-    expect(same_article.new_article?).to be_falsey
+    expect(same_article.new_article).to be_falsey
   end
 end
 
