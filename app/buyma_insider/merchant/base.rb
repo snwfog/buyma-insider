@@ -36,7 +36,7 @@ module Merchant
     def crawl
       crawler = Crawler.new(self.class)
       crawler.crawl do |history, attrs|
-        merchant_article    = self.article_model.new(attrs)
+        merchant_article    = self.class.article_model.new(attrs)
         history.items_count += 1
         if merchant_article.valid?
           # NOTE:

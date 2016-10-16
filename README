@@ -1,3 +1,4 @@
 # Buyma Insider
 
 - BUG: There are relationship errors, more price history than articles
+- FEATURE: If there is item present, we should save the new price instead of raising primary key issue
