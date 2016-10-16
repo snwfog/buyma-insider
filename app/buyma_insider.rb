@@ -21,8 +21,8 @@ require_rel './buyma_insider/workers/worker'
 require_rel './buyma_insider/workers/crawler_worker_base'
 require_rel './buyma_insider/workers/example_worker'
 
-require_rel './buyma_insider/workers/daily/ssense_worker'
-require_rel './buyma_insider/workers/daily/zara_worker'
+require_rel './buyma_insider/workers/scheduled/ssense_worker'
+require_rel './buyma_insider/workers/scheduled/zara_worker'
 
 require_rel './buyma_insider/workers/new_article_worker'
 
