@@ -201,6 +201,7 @@ DEPENDENCIES
   activesupport
   awesome_print
   colorize
+  connection_pool
   coolline
   dotenv
   faker

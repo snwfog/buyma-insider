@@ -10,6 +10,7 @@ gem 'require_all'
 gem 'rake'
 gem 'activesupport'
 gem 'dotenv'
+gem 'connection_pool'
 
 gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 
