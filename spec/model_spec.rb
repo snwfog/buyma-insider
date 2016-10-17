@@ -45,7 +45,7 @@ describe Article do
     expect(sub.persisted?).to be true
   end
 
-  it 'should create new article redis on creating an new article' do
+  xit 'should create new article redis on creating an new article' do
     id = Faker::Code.ean
     expect(RedisConnection.sadd).to receive(['new_articles', id])
     Article.create id:          id,

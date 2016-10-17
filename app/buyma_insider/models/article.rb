@@ -11,8 +11,8 @@ class Article
   after_create do |m|
     $redis.with do |conn|
       conn.pipelined do
-        conn.zadd(:new_articles_expires_at, new_articles_expires_at.from_now.utc.to_i, m.id)
-        conn.hincrby(:new_articles_summary, merchant_code, 1)
+        conn.zadd(:'new_articles:expires_at', new_articles_expires_at.from_now.utc.to_i, m.id)
+        conn.hincrby(:'new_articles:summary', merchant_code, 1)
       end
     end
   end
@@ -37,6 +37,7 @@ class Article
 
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
+
     # Factory helper
     def from_node(html_node)
       new(attrs_from_node(html_node))
