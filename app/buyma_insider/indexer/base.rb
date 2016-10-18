@@ -9,9 +9,9 @@ module Indexer
     attr_reader :index_path
 
     def initialize(path, merchant_klazz)
-      @merchant_klazz   = merchant_klazz
-      @index_path = path # Index path
-      @index_url  = "#{merchant_klazz.base_url}/#{path}"
+      @merchant_klazz = merchant_klazz
+      @index_path     = path # Index path
+      @index_url      = "#{merchant_klazz.base_url}/#{path}"
     end
 
     def index_document
