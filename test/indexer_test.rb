@@ -33,4 +33,27 @@ class IndexerTest < Minitest::Test
     assert_equal 5, indices.count
     assert_equal Array.new(5) { |idx| "//test.com/b?p=#{idx+1}" }, indices
   end
+
+  def test_should_parse_shoeme_index
+    indexer = Indexer::Shoeme.new('b', TestMerchantA)
+
+    def indexer.index_document
+      Nokogiri::HTML::DocumentFragment.parse <<-FRAG
+        <div class="nxt-pagination">
+          <ul>
+            <li><span class="nxt-current">1</span></li>
+            <li><a href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=2">2</a></li>
+            <li><a href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=3">3</a></li>
+            <li><a class="nxt-pages-next" href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=2">Next</a></li>
+            <li><a class="nxt-pages-next" href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=38">Last</a></li>
+          </ul>
+        </div>
+      FRAG
+    end
+
+    indices = []
+    indexer.compute_page { |idx| indices << idx }
+    assert_equal 38, indices.count
+    assert_equal Array.new(38) { |idx| "//test.com/b/\#/?page=#{idx+1}" }, indices
+  end
 end
