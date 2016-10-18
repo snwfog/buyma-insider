@@ -15,8 +15,8 @@ class CrawlerWorkerBase < Worker::Base
   end
 
   def crawl
-    @crawler = @merchant.crawl
-    @stats   = @crawler.stats
+    @crawler = merchant.crawl
+    @stats   = crawler.stats
   end
 
   def log_start
