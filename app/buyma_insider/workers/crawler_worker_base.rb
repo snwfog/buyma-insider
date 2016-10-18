@@ -15,7 +15,8 @@ class CrawlerWorkerBase < Worker::Base
   end
 
   def crawl
-    raise 'Not implemented'
+    @crawler = @merchant.crawl
+    @stats   = @crawler.stats
   end
 
   def log_start

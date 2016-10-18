@@ -11,9 +11,4 @@ class GetoutsideWorker < CrawlerWorkerBase
   def initialize
     @merchant = ::Getoutside.new
   end
-
-  def crawl
-    @crawler = @merchant.crawl
-    @stats   = @crawler.stats
-  end
 end

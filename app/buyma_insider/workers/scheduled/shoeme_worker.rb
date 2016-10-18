@@ -11,9 +11,4 @@ class ShoemeWorker < CrawlerWorkerBase
   def initialize
     @merchant = ::Shoeme.new
   end
-
-  def crawl
-    @crawler = @merchant.crawl
-    @stats   = @crawler.stats
-  end
 end
