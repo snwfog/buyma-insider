@@ -27,6 +27,6 @@ class ShoemeArticle < Article
     link      = URI.decode(link)
     url_parts = link.scan(URI.regexp).first.compact
     url_parts.shift
-    super(url_parts.join('.'))
+    super("//#{url_parts.join('.')}")
   end
 end

@@ -6,6 +6,10 @@ class Shoeme < Merchant::Base
   self.base_url    = '//shoeme.ecomm-nav.com'
   self.index_pages = [
     'collections/womens-shoes',
+    'collections/mens-shoes',
+    'collections/kids',
+    'collections/all-bags',
+    'collections/sale'
   ]
 
   # Move this into article
