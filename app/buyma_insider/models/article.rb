@@ -11,8 +11,8 @@ class Article
   after_create do |m|
     $redis.with do |conn|
       conn.pipelined do
-        conn.zadd(:'new_articles:expires_at', new_articles_expires_at.from_now.utc.to_i, m.id)
-        conn.hincrby(:'new_articles:summary', merchant_code, 1)
+        conn.zadd(:'articles:new:expires_at', new_articles_expires_at.from_now.utc.to_i, m.id)
+        conn.hincrby(:'articles:new:summary', merchant_code, 1)
       end
     end
   end
@@ -69,5 +69,4 @@ class Article
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
   end
-
 end

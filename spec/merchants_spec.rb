@@ -21,7 +21,7 @@ describe Merchant::Base do
   end
 
   describe ::Shoeme do
-    it 'should crawl' do
+    xit 'should crawl' do
       ::Shoeme.new.crawl
     end
   end
