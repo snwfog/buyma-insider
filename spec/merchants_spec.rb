@@ -15,7 +15,7 @@ describe Merchant::Base do
   end
 
   describe ::Getoutside do
-    xit 'should crawl' do
+    it 'should crawl' do
       ::Getoutside.new.crawl
     end
   end

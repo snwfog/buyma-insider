@@ -106,6 +106,51 @@ class ArticleTest < Minitest::Test
     assert_equal 'http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html', article[:link]
   end
 
+  def test_getoutside_should_parse_2
+    frag = <<-FRAG
+      <li class="item">
+        <div class="product-image-wrapper" style="max-width:295px;">
+          <a href="http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html" title="Native Apex" class="product-image">
+          <img src="http://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/2/0/208-native-apex-36001453-dublin-grey-1.jpg" alt="Native Apex">
+          <img class="alt-img" src="http://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/2/0/208-native-apex-36001453-dublin-grey-2.jpg" alt="Native Apex">
+          <span class="sticker-wrapper top-right"><span class="sticker sale">Sale</span></span>                    </a>
+          <ul class="add-to-links clearer addto-links-icons addto-onimage display-onhover">
+            <li><a class="link-wishlist" rel="nofollow" href="https://www.getoutsideshoes.com/wishlist/index/add/product/86297/form_key/KAG0e9eTWKcI0jsI/" title="Add to Wishlist">
+              <span class="icon icon-hover i-wishlist-bw"></span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <!-- end: product-image-wrapper -->
+        <h2 class="product-name"><a href="http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html" title="Native Apex">Native Apex</a></h2>
+        <div class="price-box">
+          <p class="old-price">
+            <span class="price-label">Regular Price:</span>
+            <span class="price" id="old-price-86297">
+            CA$ 164.99                </span>
+          </p>
+          <p class="special-price sp-price-line">
+            <span class="price" id="product-price-86297">
+            CA$ 119.99                </span>
+          </p>
+        </div>
+        <div class="actions clearer">
+        </div>
+        <!-- end: actions -->
+      </li>
+    FRAG
+
+    article = GetoutsideArticle.attrs_from_node(
+      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
+    )
+
+    assert_equal 'Native Apex', article[:description]
+    assert_equal 'Native Apex', article[:name]
+    assert_equal 119.99, ('%.02f' % article[:price].to_f).to_f
+    assert_equal 'get:86297', article[:id]
+    assert_equal 'http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html', article[:link]
+  end
+
   def test_shoeme_should_parse
     frag = <<-FRAG
       <li class="product-li">
