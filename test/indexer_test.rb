@@ -42,10 +42,10 @@ class IndexerTest < Minitest::Test
         <div class="nxt-pagination">
           <ul>
             <li><span class="nxt-current">1</span></li>
-            <li><a href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=2">2</a></li>
-            <li><a href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=3">3</a></li>
-            <li><a class="nxt-pages-next" href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=2">Next</a></li>
-            <li><a class="nxt-pages-next" href="?Features=Ankle+Boots+%26+Booties&amp;Subcategory=Ankle+%26+Short+Boots&amp;search_return=all&amp;page=38">Last</a></li>
+            <li><a href="http://www.shoeme.ca/collections/womens-shoesnav/page-2">2</a></li>
+            <li><a href="http://www.shoeme.ca/collections/womens-shoesnav/page-3">3</a></li>
+            <li><a class="nxt-pages-next" href="http://www.shoeme.ca/collections/womens-shoesnav/page-2">Next <span class="nxt-pages-caret"></span></a></li>
+            <li><a class="nxt-pages-next" href="http://www.shoeme.ca/collections/womens-shoesnav/page-5">Last <span class="nxt-pages-caret"></span></a></li>
           </ul>
         </div>
       FRAG
@@ -53,7 +53,7 @@ class IndexerTest < Minitest::Test
 
     indices = []
     indexer.compute_page { |idx| indices << idx }
-    assert_equal 38, indices.count
-    assert_equal Array.new(38) { |idx| "//test.com/b/\#/?page=#{idx+1}" }, indices
+    assert_equal 5, indices.count
+    assert_equal Array.new(5) { |idx| "//test.com/nav?initial_url=http://www.shoeme.ca/b&page=#{idx+1}" }, indices
   end
 end

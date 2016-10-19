@@ -16,7 +16,7 @@ module Merchant
       attr_accessor :index_pages
 
       def indexer
-        %Q(Indexer::#{self.to_s}).safe_constantize
+        @indexer ||= %Q(Indexer::#{self.to_s}).safe_constantize
       end
 
       def index_pages=(indices)

@@ -15,13 +15,13 @@ describe Merchant::Base do
   end
 
   describe ::Getoutside do
-    it 'should crawl' do
+    xit 'should crawl' do
       ::Getoutside.new.crawl
     end
   end
 
   describe ::Shoeme do
-    xit 'should crawl' do
+    it 'should crawl' do
       ::Shoeme.new.crawl
     end
   end

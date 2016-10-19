@@ -4,13 +4,13 @@
 class SsenseArticle < Article
   self.merchant_code = 'sse'
 
-  def self.attrs_from_node(n)
+  def self.attrs_from_node(node)
     {
-      id:          "#{merchant_code}:#{n['data-product-sku']}",
-      name:        n['data-product-name'],
-      price:       n['data-product-price'],
-      description: "#{n['data-product-brand']} - #{n['data-product-name']}",
-      link:        "#{Ssense.base_url}#{n.at_css('a')['href']}",
+      id:          "#{merchant_code}:#{node['data-product-sku']}",
+      name:        node['data-product-name'],
+      price:       node['data-product-price'],
+      description: "#{node['data-product-brand']} - #{node['data-product-name']}",
+      link:        "#{Ssense.base_url}#{node.at_css('a')['href']}",
       '_type':     self.to_s
     }
   end

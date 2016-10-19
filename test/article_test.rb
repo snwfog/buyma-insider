@@ -109,21 +109,29 @@ class ArticleTest < Minitest::Test
   def test_shoeme_should_parse
     frag = <<-FRAG
       <li class="product-li">
-        <div class="product-tile" data-pos="1">
-          <a href="http://www.shoeme.ca/products/sam-edelman-blake-black-velour-suede-e4701l1002" onmousedown="return nxt_repo.product_x('Sam-Edelman-Womens-Blake-Black-Velour-Suede',1);">    <img class="product-img img-responsive" src="https://cdn.shopify.com/s/files/1/0121/3322/products/12883090_medium.jpg?v=1472498487" onerror="this.style.display='none';">   </a>
+        <div class="product-tile">
+          <a href="//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88" onmousedown="return nxt_repo.product_x('The-North-Face-Womens-Thermoball-Roll-Down-Bootie-II-Tnf-Black-Jumbo-Hbone-Print-plum-Kittn-Gry',13);">
+            <img class="product-img img-responsive" src="https://cdn.shopify.com/s/files/1/0121/3322/products/CM88_DUL_SHOE_hero_F15_RGB_3370b15e-c23f-4c2a-8549-3ad10f8cb251_medium.jpeg?v=1450122887" onerror="this.style.display='none';">
+          </a>
           <div class="product-dts">
             <div class="product-title">
-              <a href="http://www.shoeme.ca/products/sam-edelman-blake-black-velour-suede-e4701l1002" onmousedown="return nxt_repo.product_x('Sam-Edelman-Womens-Blake-Black-Velour-Suede',1);">
-                <h5>Sam Edelman</h5>
-                <h6>       Blake       <span>Black</span>      </h6>
+              <a href="//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88" onmousedown="return nxt_repo.product_x('The-North-Face-Womens-Thermoball-Roll-Down-Bootie-II-Tnf-Black-Jumbo-Hbone-Print-plum-Kittn-Gry',13);">
+                <h5>The North Face</h5>
+                <h6>
+                  Thermoball Roll-Down Bootie II
+                  <span>Black</span>
+                </h6>
               </a>
             </div>
-            <div class="product-buttons">     <a href="#" data-wishlist="add" class="add-to-wishlist"><i class="sm-bag"></i></a>     <a href="#" data-cart="add"><i class="sm-heart"></i></a>    </div>
+            <div class="product-buttons">
+              <a href="#" data-wishlist="add"><i class="sm-bag"></i></a>
+              <a href="#" data-cart="add"><i class="sm-heart"></i></a>
+            </div>
           </div>
           <div class="product-price">
-            <p class="product-price">$225.00</p>
+            <p class="product-price">$125.00</p>
           </div>
-          <i class="sm-new-prod"></i>
+          <div class="sm-localfulfill" data-lf-vendor="V00018"></div>
         </div>
       </li>
     FRAG
@@ -132,10 +140,10 @@ class ArticleTest < Minitest::Test
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
-    assert_equal 'Sam-Edelman-Womens-Blake-Black-Velour-Suede', article[:name]
-    assert_equal 'Sam-Edelman-Womens-Blake-Black-Velour-Suede', article[:description]
-    assert_equal 225.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal 'sho:e4701l1002', article[:id]
-    assert_equal 'http://www.shoeme.ca/products/sam-edelman-blake-black-velour-suede-e4701l1002', article[:link]
+    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article[:name]
+    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article[:description]
+    assert_equal 125.00, ('%.02f' % article[:price].to_f).to_f
+    assert_equal "sho:#{Digest::MD5.hexdigest('The North Face - Thermoball Roll-Down Bootie II')}", article[:id]
+    assert_equal '//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88', article[:link]
   end
 end

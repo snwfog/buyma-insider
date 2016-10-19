@@ -4,7 +4,6 @@
 class GetoutsideArticle < Article
   self.merchant_code = 'get'
 
-
   def self.attrs_from_node(node)
     product_image_link = node.at_css('a.product-image')
 

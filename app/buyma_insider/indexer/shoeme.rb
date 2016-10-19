@@ -1,6 +1,10 @@
 class Indexer::Shoeme < Indexer::Base
   self.pager_css = 'div.nxt-pagination'
 
+  def initialize(path, merchant_klazz)
+    super("nav?initial_url=http://www.shoeme.ca/#{path}", merchant_klazz)
+  end
+
   def compute_page
     raise unless block_given?
 
@@ -9,7 +13,7 @@ class Indexer::Shoeme < Indexer::Base
     last_node  = page_nodes.at_css('ul li:last-child')
 
     first_page = first_node.at_css('span.nxt-current').content.to_i
-    /page=(?<last_page>[\d]{1,10})/ =~ last_node.at_css('a.nxt-pages-next')['href']
-    (first_page..last_page.to_i).each { |i| yield "#{index_url}/\#/?page=#{i}" }
+    /page-(?<last_page>[\d]{1,10})/ =~ last_node.at_css('a.nxt-pages-next')['href']
+    (first_page..last_page.to_i).each { |i| yield "#{index_url}&page=#{i}" }
   end
 end
