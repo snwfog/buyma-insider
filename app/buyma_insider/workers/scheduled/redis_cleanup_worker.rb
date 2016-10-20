@@ -11,12 +11,12 @@ class RedisCleanupWorker < Worker::Base
 
   private
   def delete_expired_new_articles(conn, opts)
-    expires_at           = opts[:expires_at]
-    expired_articles_ids = conn.zscan_each(:'articles:new:expires_at')
-                             .take_while { |article|
+    article_should_expires_at = opts[:expires_at]
+    expired_articles_ids      = conn.zscan_each(:'articles:new:expires_at')
+                                  .take_while { |article|
       _article_id, expires_at = *article
       expires_at_time         = Time.at(expires_at).utc
-      expires_at_time <= expires_at
+      expires_at_time <= article_should_expires_at
     }.map(&:first)
 
     unless expired_articles_ids.empty?
