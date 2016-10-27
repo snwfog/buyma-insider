@@ -4,6 +4,7 @@ require 'dotenv'
 Dotenv.load
 
 # TODO: Add autoload (a la Rails)
+
 require_rel '../config/initializers/'
 require_rel './buyma_insider/crawler'
 require_rel './buyma_insider/http'
@@ -33,6 +34,7 @@ require_rel './buyma_insider/workers/scheduled/redis_cleanup_worker'
 
 require_rel './buyma_insider/models/'
 require_rel './buyma_insider/utils/'
+require_rel './serializers'
 
 module BuymaInsider
   NAME             = 'buyma_insider'
