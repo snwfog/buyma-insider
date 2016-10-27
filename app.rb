@@ -3,8 +3,6 @@ require 'sinatra'
 require 'sinatra/json'
 require 'sinatra/reloader'
 
-AMS = ActiveModelSerializers
-
 get '/crawl_histories' do
   json CrawlHistory.first
 end

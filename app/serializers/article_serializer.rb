@@ -1,7 +1,5 @@
 require 'active_model_serializers'
 
-AMS = ::ActiveModelSerializers
-
 class ArticleSerializer < ActiveModel::Serializer
   attributes :id,
              :name,
