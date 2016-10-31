@@ -72,7 +72,5 @@ module Merchant
     def to_s
       "#<#{self.class}>"
     end
-
-
   end
 end
