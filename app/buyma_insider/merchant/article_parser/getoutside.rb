@@ -1,5 +1,5 @@
-class GetoutsideArticle < Article
-  def self.attrs_from_node(node)
+module Merchant::ArticleParser::Getoutside
+  def attrs_from_node(node)
     product_image_link = node.at_css('a.product-image')
 
     # This is last price, which is either regular price or special price

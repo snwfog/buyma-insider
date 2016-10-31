@@ -1,7 +1,5 @@
-##
-# Store merchant information
-#
 class Ssense < Merchant::Base
+  self.code        = 'sse'
   self.base_url    = '//www.ssense.com'
   self.index_pages = [
     'en-ca/men',

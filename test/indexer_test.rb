@@ -1,13 +1,14 @@
 require 'buyma_insider'
 require 'minitest/autorun'
 
-class TestMerchantA < Merchant::Base
+class TestMerchant_A < Merchant::Base
+  self.code     = 'tta'
   self.base_url = '//test.com'
 end
 
 class IndexerTest < Minitest::Test
   def test_should_parse_getoutside_index
-    indexer = Indexer::Getoutside.new('b', TestMerchantA)
+    indexer = Indexer::Getoutside.new('b', TestMerchant_A)
     def indexer.index_document
       Nokogiri::HTML::DocumentFragment.parse <<-FRAG
         <div class="pager">
@@ -35,7 +36,7 @@ class IndexerTest < Minitest::Test
   end
 
   def test_should_parse_shoeme_index
-    indexer = Indexer::Shoeme.new('b', TestMerchantA)
+    indexer = Indexer::Shoeme.new('b', TestMerchant_A)
 
     def indexer.index_document
       Nokogiri::HTML::DocumentFragment.parse <<-FRAG

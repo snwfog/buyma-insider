@@ -1,6 +1,5 @@
-require 'uri'
-class ShoemeArticle < Article
-  def self.attrs_from_node(node)
+module Merchant::ArticleParser::Shoeme
+  def attrs_from_node(node)
     product_title_node = node.at_css('div.product-title')
 
     brand      = product_title_node.at_css('h5').content
@@ -15,12 +14,5 @@ class ShoemeArticle < Article
       link:        product_title_node.at_css('a')['href'],
       '_type':     self.to_s
     }
-  end
-
-  def link=(link)
-    link      = URI.decode(link)
-    url_parts = link.scan(URI.regexp).first.compact
-    url_parts.shift
-    super("//#{url_parts.join('.')}")
   end
 end

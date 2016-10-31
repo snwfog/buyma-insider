@@ -20,7 +20,7 @@ class Article
   attr_accessor :new_article
   attr_accessor :new_article_expires_at
 
-  field :id,          primary_key: true, required: true
+  field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
   field :description, type: String, length: (1..1000)
@@ -35,8 +35,19 @@ class Article
   class_attribute :merchant_code # 3 letters code to make id unique
   class_attribute :new_articles_expires_at
 
+  # scops
+  scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
+
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
+
+    def merchant_klazz
+      to_s.gsub!(/Article/, '').safe_constantize
+    end
+
+    def merchant_code
+      merchant_klazz.code
+    end
 
     # Factory helper
     def from_node(html_node)

@@ -1,7 +1,5 @@
-##
-# Zara
-#
 class Zara < Merchant::Base
+  self.code        = 'zar'
   self.base_url    = '//www.zara.com/ca/en'
   self.index_pages = [
     # Woman
@@ -67,5 +65,5 @@ class Zara < Merchant::Base
     'man/seasonals-man/seasonals-man-collection-c865501.html',
   ]
 
-  self.item_css    = 'ul.product-list li.product'
+  self.item_css = 'ul.product-list li.product'
 end

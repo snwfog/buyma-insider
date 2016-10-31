@@ -6,10 +6,19 @@ require 'nokogiri'
 
 module Merchant
   class Base
+    include NoBrainer::Document
     extend ActiveSupport::DescendantsTracker
+
+    has_many :crawl_history, foreign_key: :merchant_id
+
+    field :id,    primary_key: true, required: true, format: /[a-z]{3}/
+    field :name,  type: String, required: true
 
     class_attribute :base_url
     class_attribute :item_css
+    class_attribute :code
+
+    alias_method :code, :id
 
     class << self
       attr_accessor :article_model
@@ -24,7 +33,9 @@ module Merchant
       end
 
       def article_model
-        @article_model ||= "#{self.to_s}Article".safe_constantize || raise('Article model not found')
+        @article_model               ||= "#{self.to_s}Article".safe_constantize || raise('Article model not found')
+        @article_model.merchant_code = code
+        @article_model
       end
     end
 
@@ -56,5 +67,12 @@ module Merchant
 
       crawler
     end
+
+    # BUG: Hack, otherwise inspect breaks...
+    def to_s
+      "#<#{self.class}>"
+    end
+
+
   end
 end

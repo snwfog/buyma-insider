@@ -4,7 +4,8 @@ require 'minitest/autorun'
 
 class SsenseIndexerTest < Minitest::Test
   def setup
-    @indexer    = Indexer::Ssense.new 'http://merchant-a.com/index.html', Ssense
+    @indexer = Indexer::Ssense.new 'http://merchant-a.com/index.html', Ssense
+
     def Http.get(link)
       mock_response = Minitest::Mock.new
 

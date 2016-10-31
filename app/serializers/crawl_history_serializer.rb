@@ -3,7 +3,7 @@ require 'active_model_serializers'
 class CrawlHistorySerializer < ActiveModel::Serializer
   attributes :id,
              :status,
-             :link,
+             # :link,
              :description,
              :items_count,
              :invalid_items_count,

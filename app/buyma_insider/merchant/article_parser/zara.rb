@@ -1,5 +1,5 @@
-class ZaraArticle < Article
-  def self.attrs_from_node(node)
+module Merchant::ArticleParser::Zara
+  def attrs_from_node(node)
     item_a = node.at_css('a.item._item')
     desc_a = node.at_css('div.product-info a.name._item')
     price  = node.at_css('div.product-info div.price._product-price span')

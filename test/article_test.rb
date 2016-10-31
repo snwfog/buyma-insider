@@ -2,19 +2,6 @@ require 'buyma_insider'
 require 'minitest/autorun'
 
 class ArticleTest < Minitest::Test
-  def test_should_have_merchant_code
-    Article.descendants.each do |c|
-      refute_nil c.merchant_code, "#{c} should have merchant code"
-      assert c.merchant_code.length == 3, "#{c} should have merchant code of length 3"
-      assert c.new.merchant_code.length == 3, "Instance of #{c} should have merchant code of length 3"
-    end
-  end
-
-  def test_should_all_have_unique_merchant_code
-    merchant_codes = Article.descendants.map(&:merchant_code)
-    assert_equal merchant_codes.uniq.sort.to_s, merchant_codes.sort.to_s
-  end
-
   def test_ssense_should_parse
     frag = <<-FRAG
       <div class="browsing-product-item" itemscope="" itemtype="http://schema.org/Product" data-product-id="1676753" data-product-sku="162418M176009" data-product-name="Tan Canadian Tapestry Coat" data-product-brand="Saint Laurent" data-product-price="5890" data-product-category="Coats">

@@ -17,6 +17,7 @@ class Crawler
   def crawl(&blk)
     merchant_klazz.index_pages.each do |indexer|
       history = CrawlHistory.create(
+        merchant_id: merchant_klazz.code,
         description: "#{merchant_klazz.to_s} '#{indexer.to_s}'",
         link:        indexer.to_s
       )
@@ -72,7 +73,7 @@ class Crawler
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-                    [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                              [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end

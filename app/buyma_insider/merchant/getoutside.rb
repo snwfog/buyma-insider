@@ -1,7 +1,5 @@
-##
-# Store merchant information
-#
 class Getoutside < Merchant::Base
+  self.code        = 'get'
   self.base_url    = '//www.getoutsideshoes.com'
   self.index_pages = [
     'new-arrivals.html',

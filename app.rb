@@ -1,17 +1,35 @@
 require 'buyma_insider'
 require 'sinatra'
-require 'sinatra/json'
+require 'sinatra/contrib'
 require 'sinatra/reloader'
 
+helpers do
+  def render_json(model, options = {})
+    if model
+      json AMS::SerializableResource.new(model, options)
+    else
+      not_found
+    end
+  end
+end
+
+before do
+  content_type :json
+end
+
+get '/merchant_statuses' do
+  render_json MerchantStatus.all
+end
+
 get '/crawl_histories' do
-  json CrawlHistory.first
+  render_json CrawlHistory.all
+end
+
+get '/crawl_histories/:id' do
+  render_json CrawlHistory.find?(params[:id])
 end
 
 get '/articles/:id' do
-  if (article = Article.find?(params[:id]))
-    json AMS::SerializableResource.new(article)
-  else
-    not_found
-  end
+  render_json Article.find? params[:id]
 end
 

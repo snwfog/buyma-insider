@@ -2,6 +2,7 @@
 # Store merchant information
 #
 class Shoeme < Merchant::Base
+  self.code        = 'sho'
   # IMPT: This is the crawl URL, not the merchant url
   self.base_url    = '//shoeme.ecomm-nav.com'
   self.index_pages = [

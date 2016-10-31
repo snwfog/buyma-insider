@@ -1,6 +1,7 @@
 require 'active_model_serializers'
 
-AMS = ::ActiveModelSerializers unless defined? :AMS
+AMS = ::ActiveModelSerializers unless defined? AMS
 
-ActiveModelSerializers.config.adapter       = :json_api
-ActiveModelSerializers.config.key_transform = :underscore
+AMS.config.adapter       = :json_api
+# AMS.config.key_transform = :underscore
+
