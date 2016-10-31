@@ -6,7 +6,7 @@ Logging.logger.root.add_appenders(Logging.appenders
                                       :pattern => '[%d] %-5l -- %c : %m\n')))
 
 Logging.logger.root.add_appenders(Logging.appenders
-                                    .rolling_file("./log/buyma-insider-#{ENV['ENVIRONMENT']}.log",
+                                    .rolling_file(File.expand_path("../../../log/buyma-insider-#{ENV['ENVIRONMENT']}.log", __FILE__),
                                                   :age    => 'weekly',
                                                   :layout => Logging.layouts.pattern(
                                                     :pattern => '[%d] %-5l -- %c : %m\n')))

@@ -1,7 +1,7 @@
 require 'logging'
 require 'sidekiq'
 
-redis_config = YAML.load_file(File.expand_path('config/redis.yml'))
+redis_config = YAML.load_file(File.expand_path('../../../config/redis.yml', __FILE__))
                  .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
 
 Sidekiq.configure_server do |config|
