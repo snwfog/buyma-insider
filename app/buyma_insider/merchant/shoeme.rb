@@ -10,23 +10,23 @@ module Merchant
       'collections/all-bags',
       'collections/sale'
     ]
-
+    
     # Move this into article
     self.item_css    = 'ul.product-list li.product-li'
-
+    
     def self.attrs_from_node(node)
       product_title_node = node.at_css('div.product-title')
-
+      
       brand      = product_title_node.at_css('h5').content
       short_desc = product_title_node.at_css('h6').child.content.strip
       desc       = "#{brand} - #{short_desc}"
-
+      
       encoded_link = product_title_node.at_css('a')['href']
       decoded_link = URI.decode(encoded_link)
       url_parts    = decoded_link.scan(URI.regexp).first.compact
       url_parts.shift
       link = "//#{url_parts.join}"
-
+      
       {
         id:          "#{code}:#{Digest::MD5.hexdigest(desc)}",
         name:        desc,

@@ -25,7 +25,7 @@ module Merchant
       'woman/special-prices-c783580.html',
       'woman/premium/view-all-c765596.html',
       'woman/swinging-tweed-c662001.html',
-
+      
       # TRF
       'trf/new-in-c840006.html',
       'trf/coats-c502501.html',
@@ -42,7 +42,7 @@ module Merchant
       'trf/bags-c269223.html',
       'trf/basics/t-shirts-c841502.html',
       'trf/ungendered-c758512.html',
-
+      
       'man/new-in-c744526.html',
       'man/trending-picks-c858034.html',
       'man/outerwear/view-all-c764502.html',
@@ -65,14 +65,14 @@ module Merchant
       'man/special-prices/view-all-c787511.html',
       'man/seasonals-man/seasonals-man-collection-c865501.html',
     ]
-
+    
     self.item_css = 'ul.product-list li.product'
-
+    
     def self.attrs_from_node(node)
       item_a = node.at_css('a.item._item')
       desc_a = node.at_css('div.product-info a.name._item')
       price  = node.at_css('div.product-info div.price._product-price span')
-
+      
       {
         id:          "#{code}:#{node['data-productid']}",
         name:        desc_a.content,
