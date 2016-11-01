@@ -46,7 +46,7 @@ describe RedisCleanupWorker do
     end
   end
 
-  it 'should cleanup older items' do
+  xit 'should cleanup older items' do
     articles_3
     $redis.with do |conn|
       expect(conn.zcard(:'articles:new:expires_at')).to eq(@new_article_count + 3)
@@ -57,7 +57,7 @@ describe RedisCleanupWorker do
     end
   end
 
-  it 'should cleanup older items and have proper summary values' do
+  xit 'should cleanup older items and have proper summary values' do
     articles_3
     a_articles_3
 

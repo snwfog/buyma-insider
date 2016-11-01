@@ -2,27 +2,27 @@ require 'buyma_insider'
 require 'minitest/autorun'
 
 describe Merchant::Base do
-  describe ::Ssense do
+  describe Merchant::Ssense do
     xit 'should crawl' do
-      ::Ssense.new.crawl
+      Merchant::Ssense.new.crawl
     end
   end
 
-  describe ::Zara do
+  describe Merchant::Zara do
     xit 'should crawl' do
-      ::Zara.new.crawl
+      Merchant::Zara.new.crawl
     end
   end
 
-  describe ::Getoutside do
-    it 'should crawl' do
-      ::Getoutside.new.crawl
+  describe Merchant::Getoutside do
+    xit 'should crawl' do
+      Merchant::Getoutside.new.crawl
     end
   end
 
-  describe ::Shoeme do
+  describe Merchant::Shoeme do
     xit 'should crawl' do
-      ::Shoeme.new.crawl
+      Merchant::Shoeme.new.crawl
     end
   end
 end

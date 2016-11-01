@@ -13,7 +13,7 @@ end
 
 describe Article do
   it 'should be persisted' do
-    a = Article.create id:          Faker::Code.ean,
+    a = Article.create id:          "abc:#{Faker::Code.ean}",
                        name:        Faker::Commerce.product_name,
                        description: Faker::Hipster.sentence,
                        price:       Faker::Commerce.price,
@@ -22,7 +22,7 @@ describe Article do
   end
 
   it 'should be persisted once' do
-    a = Article.create id:          Faker::Code.ean,
+    a = Article.create id:          "abc:#{Faker::Code.ean}",
                        name:        Faker::Commerce.product_name,
                        description: Faker::Hipster.sentence,
                        price:       Faker::Commerce.price,
@@ -37,7 +37,7 @@ describe Article do
   end
 
   it 'should support inheritance' do
-    sub = SubArticle.create id:          Faker::Code.ean,
+    sub = SubArticle.create id:          "abc:#{Faker::Code.ean}",
                             name:        Faker::Commerce.product_name,
                             description: Faker::Hipster.sentence,
                             price:       Faker::Commerce.price,
@@ -46,7 +46,7 @@ describe Article do
   end
 
   xit 'should create new article redis on creating an new article' do
-    id = Faker::Code.ean
+    id = "abc:#{Faker::Code.ean}"
     expect(RedisConnection.sadd).to receive(['new_articles', id])
     Article.create id:          id,
                    name:        Faker::Commerce.product_name,
@@ -63,7 +63,7 @@ end
 describe SubArticle do
   xit 'should trigger after_find on upsert!' do
     first_article = Article.upsert!(
-      id:          Faker::Bitcoin.address,
+      id:          "abc:#{Faker::Code.ean}",
       name:        Faker::Commerce.product_name,
       price:       Faker::Commerce.price,
       description: Faker::Commerce.product_name,
@@ -91,7 +91,7 @@ end
 describe PriceHistory do
   it 'should be persisted' do
     ph = PriceHistory.create(
-      article_id: SecureRandom.base64(22),
+      article_id: "abc:#{Faker::Code.ean}",
       currency:   'CAN',
       history:    {
         1.day.from_now.utc.to_i.to_s => 123.23,
@@ -104,7 +104,7 @@ describe PriceHistory do
 
   it 'should be able to add price' do
     ph = PriceHistory.new(
-      article_id: SecureRandom.base64(22),
+      article_id: "abc:#{Faker::Code.ean}",
       currency:   'CAN',
     )
 
