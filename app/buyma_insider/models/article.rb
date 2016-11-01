@@ -8,17 +8,8 @@ class Article
 
   has_one :price_history
 
-  after_create do |m|
-    $redis.with do |conn|
-      conn.pipelined do
-        conn.zadd(:'articles:new:expires_at', new_articles_expires_at.from_now.utc.to_i, m.id)
-        conn.hincrby(:'articles:new:summary', merchant_code, 1)
-      end
-    end
-  end
-
-  attr_accessor :new_article
-  attr_accessor :new_article_expires_at
+  # after_create do |m|
+  # end
 
   field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
   field :name,        type: String, required: true, length: (1..500)
@@ -32,23 +23,17 @@ class Article
   alias_method :desc,       :description
   alias_method :title,      :name
 
-  class_attribute :merchant_code # 3 letters code to make id unique
-  class_attribute :new_articles_expires_at
-
   # scops
   scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
 
   class << self
-    def attrs_from_node(n); raise 'Not implemented'; end
-
-    # Factory helper
-    def from_node(html_node)
-      new(attrs_from_node(html_node))
-    end
-
-    # TODO: Deprecate this
-    def new_articles_expires_at
-      @new_articles_expires_at || 7.days
+    # @deprecated Factory helper
+    # def from_node(html_node)
+    #   new(attrs_from_node(html_node))
+    # end
+    
+    def new_articles_expires_in
+      7.days
     end
   end
 

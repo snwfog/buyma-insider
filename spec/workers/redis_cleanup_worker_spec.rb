@@ -4,11 +4,9 @@ require 'minitest/autorun'
 require 'rspec'
 
 class RedisCleanupWorkerArticle < Article
-  self.merchant_code = 'red'
 end
 
 class ARedisCleanupWorkerArticle < Article
-  self.merchant_code = 'are'
 end
 
 describe RedisCleanupWorker do

@@ -39,6 +39,10 @@ module Merchant
       @options = opts
       @logger  = Logging.logger[self]
     end
+    
+    def id
+      self.class.code
+    end
 
     def crawl
       crawler = Crawler.new(self.class)

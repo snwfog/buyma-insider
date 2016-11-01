@@ -7,10 +7,6 @@ require 'active_support/core_ext/numeric/time'
 require 'buyma_insider'
 require 'nobrainer'
 
-class Article
-  self.merchant_code = 'tes'
-end
-
 describe Article do
   it 'should be persisted' do
     a = Article.create id:          "abc:#{Faker::Code.ean}",
@@ -57,7 +53,6 @@ describe Article do
 end
 
 class SubArticle < Article
-  self.merchant_code = 'sub'
 end
 
 describe SubArticle do

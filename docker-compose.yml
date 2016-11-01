@@ -1,7 +1,13 @@
 version: '2'
 services:
-	db:
-		image: greyarch/rethinkdb
-		ports:
-			- "28015:28015"
-			- "8080:8080"
+  db:
+    container_name: rethinkdb
+    image: greyarch/rethinkdb
+    ports:
+      - "28015:28015"
+      - "8080:8080"
+  cache:
+    container_name: redis
+    image: redis
+    ports:
+      - "6379:6379"
