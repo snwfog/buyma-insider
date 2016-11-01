@@ -1,7 +1,7 @@
 require 'buyma_insider'
 require 'minitest/autorun'
 
-class ArticleTest < Minitest::Test
+class ArticleParseTest < Minitest::Test
   def test_ssense_should_parse
     frag = <<-FRAG
       <div class="browsing-product-item" itemscope="" itemtype="http://schema.org/Product" data-product-id="1676753" data-product-sku="162418M176009" data-product-name="Tan Canadian Tapestry Coat" data-product-brand="Saint Laurent" data-product-price="5890" data-product-category="Coats">
@@ -28,12 +28,12 @@ class ArticleTest < Minitest::Test
       </div>
     FRAG
 
-    article = SsenseArticle.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-    assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article[:description]
-    assert_equal 'Tan Canadian Tapestry Coat', article[:name]
-    assert_equal 5890.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal 'sse:162418M176009', article[:id]
-    assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article[:link]
+    article_hash = Merchant::Ssense.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+    assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article_hash[:description]
+    assert_equal 'Tan Canadian Tapestry Coat', article_hash[:name]
+    assert_equal 5890.00, ('%.02f' % article_hash[:price].to_f).to_f
+    assert_equal 'sse:162418M176009', article_hash[:id]
+    assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article_hash[:link]
   end
 
   def test_zara_should_parse
@@ -48,12 +48,12 @@ class ArticleTest < Minitest::Test
       </li>
     FRAG
 
-    article = ZaraArticle.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
-    assert_equal 'VELVET TOGGLE JACKET', article[:description]
-    assert_equal 'VELVET TOGGLE JACKET', article[:name]
-    assert_equal 139.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal 'zar:3711654', article[:id]
-    assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article[:link]
+    article_hash = Merchant::Zara.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
+    assert_equal 'VELVET TOGGLE JACKET', article_hash[:description]
+    assert_equal 'VELVET TOGGLE JACKET', article_hash[:name]
+    assert_equal 139.00, ('%.02f' % article_hash[:price].to_f).to_f
+    assert_equal 'zar:3711654', article_hash[:id]
+    assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article_hash[:link]
   end
 
   def test_getoutside_should_parse
@@ -82,15 +82,15 @@ class ArticleTest < Minitest::Test
       </li>
     FRAG
 
-    article = GetoutsideArticle.attrs_from_node(
+    article_hash = Merchant::Getoutside.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
-    assert_equal 'Sperry Waterproof Cold Bay Boot', article[:description]
-    assert_equal 'Sperry Waterproof Cold Bay Boot', article[:name]
-    assert_equal 179.99, ('%.02f' % article[:price].to_f).to_f
-    assert_equal 'get:86405', article[:id]
-    assert_equal 'http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html', article[:link]
+    assert_equal 'Sperry Waterproof Cold Bay Boot', article_hash[:description]
+    assert_equal 'Sperry Waterproof Cold Bay Boot', article_hash[:name]
+    assert_equal 179.99, ('%.02f' % article_hash[:price].to_f).to_f
+    assert_equal 'get:86405', article_hash[:id]
+    assert_equal 'http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html', article_hash[:link]
   end
 
   def test_getoutside_should_parse_2
@@ -127,15 +127,15 @@ class ArticleTest < Minitest::Test
       </li>
     FRAG
 
-    article = GetoutsideArticle.attrs_from_node(
+    article_hash = Merchant::Getoutside.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
-    assert_equal 'Native Apex', article[:description]
-    assert_equal 'Native Apex', article[:name]
-    assert_equal 119.99, ('%.02f' % article[:price].to_f).to_f
-    assert_equal 'get:86297', article[:id]
-    assert_equal 'http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html', article[:link]
+    assert_equal 'Native Apex', article_hash[:description]
+    assert_equal 'Native Apex', article_hash[:name]
+    assert_equal 119.99, ('%.02f' % article_hash[:price].to_f).to_f
+    assert_equal 'get:86297', article_hash[:id]
+    assert_equal 'http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html', article_hash[:link]
   end
 
   def test_shoeme_should_parse
@@ -168,14 +168,14 @@ class ArticleTest < Minitest::Test
       </li>
     FRAG
 
-    article = ShoemeArticle.attrs_from_node(
+    article_hash = Merchant::Shoeme.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
-    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article[:name]
-    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article[:description]
-    assert_equal 125.00, ('%.02f' % article[:price].to_f).to_f
-    assert_equal "sho:#{Digest::MD5.hexdigest('The North Face - Thermoball Roll-Down Bootie II')}", article[:id]
-    assert_equal '//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88', article[:link]
+    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article_hash[:name]
+    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article_hash[:description]
+    assert_equal 125.00, ('%.02f' % article_hash[:price].to_f).to_f
+    assert_equal "sho:#{Digest::MD5.hexdigest('The North Face - Thermoball Roll-Down Bootie II')}", article_hash[:id]
+    assert_equal '//www.shoeme.ca/products/northface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88', article_hash[:link]
   end
 end

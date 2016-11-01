@@ -3,17 +3,13 @@ require 'dotenv'
 
 Dotenv.load
 
-# TODO: Add autoload (a la Rails)
-
 require_rel '../config/initializers/'
 require_rel './buyma_insider/crawler'
 require_rel './buyma_insider/http'
 require_rel './buyma_insider/url_cache'
 
-require_rel './buyma_insider/indexer/'
-
+require_rel './buyma_insider/merchant/indexer/'
 require_rel './buyma_insider/merchant/'
-require_rel './buyma_insider/merchant/article_parser'
 
 require_rel './buyma_insider/workers/worker'
 require_rel './buyma_insider/workers/crawler_worker_base'

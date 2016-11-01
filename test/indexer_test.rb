@@ -7,8 +7,14 @@ class TestMerchant_A < Merchant::Base
 end
 
 class IndexerTest < Minitest::Test
+  def test_should_have_indexer
+    Merchant::Base.descendants.each do |m_klazz|
+      refute_nil m_klazz.indexer
+    end
+  end
+
   def test_should_parse_getoutside_index
-    indexer = Indexer::Getoutside.new('b', TestMerchant_A)
+    indexer = Merchant::Indexer::Getoutside.new('b', TestMerchant_A)
     def indexer.index_document
       Nokogiri::HTML::DocumentFragment.parse <<-FRAG
         <div class="pager">
@@ -36,7 +42,7 @@ class IndexerTest < Minitest::Test
   end
 
   def test_should_parse_shoeme_index
-    indexer = Indexer::Shoeme.new('b', TestMerchant_A)
+    indexer = Merchant::Indexer::Shoeme.new('b', TestMerchant_A)
 
     def indexer.index_document
       Nokogiri::HTML::DocumentFragment.parse <<-FRAG
@@ -56,5 +62,45 @@ class IndexerTest < Minitest::Test
     indexer.compute_page { |idx| indices << idx }
     assert_equal 5, indices.count
     assert_equal Array.new(5) { |idx| "//test.com/nav?initial_url=http://www.shoeme.ca/b&page=#{idx+1}" }, indices
+  end
+
+  def test_should_parse_ssense_index
+    @indexer = Merchant::Indexer::Ssense.new 'http://merchant-a.com/index.html', TestMerchant_A
+
+    def Http.get(link)
+      mock_response = Minitest::Mock.new
+      def mock_response.body
+        <<-INDEX_HTML
+          <html><body>
+            <ul class="nav">
+              <li class="hidden"><a href="/en-ca/men/pages/0">←</a></li>
+              <li class="active">1 </li>
+              <li class=""><a href="/en-ca/men/pages/2">2</a></li>
+              <li class=""><a href="/en-ca/men/pages/3">3</a></li>
+              <li class=""><a href="/en-ca/men/pages/4">4</a></li>
+              <li class=""><a href="/en-ca/men/pages/5">5</a></li>
+              <li class=""><a href="/en-ca/men/pages/6">6</a></li>
+              <li class=""><a href="/en-ca/men/pages/7">7</a></li>
+              <li class="ellipsis">...</li>
+              <li class="last-page"><a href="/en-ca/men/pages/8">8</a></li>
+              <li class=""><a href="/en-ca/men/pages/2">→</a>
+              </li>
+            </ul>
+          </body></html>
+        INDEX_HTML
+      end
+
+      mock_response
+    end
+
+    yield_count = 0
+
+    Merchant::Indexer::Ssense.stub :pager_css, 'ul.nav' do
+      @indexer.each_page do
+        yield_count += 1
+      end
+    end
+
+    assert_equal 8, yield_count
   end
 end

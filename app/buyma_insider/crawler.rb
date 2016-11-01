@@ -47,7 +47,7 @@ class Crawler
           @document.css(merchant_klazz.item_css).each do |it|
             begin
               # TODO: Will fail if the parsing fail
-              attrs = merchant_klazz.article_model.attrs_from_node(it)
+              attrs = merchant_klazz.attrs_from_node(it)
               # IMPT: Just yield the attrs hash
               blk.call(history, attrs)
             rescue Exception => ex

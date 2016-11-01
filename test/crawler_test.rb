@@ -2,7 +2,8 @@ require 'ostruct'
 require 'buyma_insider'
 require 'minitest/autorun'
 
-class Indexer::TestMerchant_A < Indexer::Base; end
+class Merchant::Indexer::TestMerchant_A < Merchant::Indexer::Base
+end
 
 class TestMerchant_A < Merchant::Base
   self.base_url    = 'http://test.com'

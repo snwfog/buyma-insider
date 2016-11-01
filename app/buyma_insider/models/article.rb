@@ -41,19 +41,12 @@ class Article
   class << self
     def attrs_from_node(n); raise 'Not implemented'; end
 
-    def merchant_klazz
-      to_s.gsub!(/Article/, '').safe_constantize
-    end
-
-    def merchant_code
-      merchant_klazz.code
-    end
-
     # Factory helper
     def from_node(html_node)
       new(attrs_from_node(html_node))
     end
 
+    # TODO: Deprecate this
     def new_articles_expires_at
       @new_articles_expires_at || 7.days
     end

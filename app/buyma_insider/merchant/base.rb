@@ -21,21 +21,17 @@ module Merchant
     alias_method :code, :id
 
     class << self
-      attr_accessor :article_model
       attr_accessor :index_pages
 
       def indexer
-        @indexer ||= %Q(Indexer::#{self.to_s}).safe_constantize
+        merchant_name = to_s.split('::').last
+        @indexer ||= %Q(::Merchant::Indexer::#{merchant_name}).safe_constantize
+        raise 'Indexer not found' if @indexer.nil?
+        @indexer
       end
 
       def index_pages=(indices)
         @index_pages = indices.map { |path| indexer.new(path, self) }
-      end
-
-      def article_model
-        @article_model               ||= "#{self.to_s}Article".safe_constantize || raise('Article model not found')
-        @article_model.merchant_code = code
-        @article_model
       end
     end
 
@@ -47,7 +43,7 @@ module Merchant
     def crawl
       crawler = Crawler.new(self.class)
       crawler.crawl do |history, attrs|
-        merchant_article    = self.class.article_model.new(attrs)
+        merchant_article    = Article.new(attrs)
         history.items_count += 1
         if merchant_article.valid?
           # NOTE:
