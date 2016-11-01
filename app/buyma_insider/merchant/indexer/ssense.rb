@@ -1,8 +1,6 @@
 module Merchant
   module Indexer
     class Ssense < Base
-      self.pager_css = 'div.browsing-pagination ul.nav'
-
       def compute_page
         raise unless block_given?
 

@@ -1,8 +1,6 @@
 module Merchant
   module Indexer
     class Getoutside < Base
-      self.pager_css = 'div.pager'
-
       def compute_page
         raise unless block_given?
         page_nodes = index_document.at_css(self.pager_css)

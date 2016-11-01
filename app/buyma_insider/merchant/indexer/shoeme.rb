@@ -1,10 +1,8 @@
 module Merchant
   module Indexer
     class Shoeme < Base
-      self.pager_css = 'div.nxt-pagination'
-
-      def initialize(path, merchant_klazz)
-        super("nav?initial_url=http://www.shoeme.ca/#{path}", merchant_klazz)
+      def initialize(path, merchant)
+        super("nav?initial_url=http://www.shoeme.ca/#{path}", merchant)
       end
 
       def compute_page

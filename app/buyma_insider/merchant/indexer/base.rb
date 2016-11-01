@@ -1,41 +1,42 @@
 require 'nokogiri'
+require 'active_support/core_ext/module/delegation'
 
 module Merchant
   module Indexer
     class Base
-      class_attribute :pager_css
-
-      attr_accessor :merchant_klazz
-      attr_reader :index_url
-      attr_reader :index_path
-
-      def initialize(path, merchant_klazz)
-        @merchant_klazz = merchant_klazz
-        @index_path     = path # Index path
-        @index_url      = "#{merchant_klazz.base_url}/#{path}"
+      delegate :pager_css, to: :metadata
+      
+      attr_accessor :metadata
+      attr_accessor :index_path # 'shoe.html'
+      attr_accessor :index_url  # 'www.merchant.com'
+      
+      def initialize(index_path, metadata)
+        @metadata   = metadata
+        @index_path = index_path
+        @index_url  = "#{metadata.base_url}/#{path}"
       end
-
+      
       def index_document
-        response = Http.get "http:#{@index_url}"
+        response = Http.get "http:#{index_url}"
         Nokogiri::HTML(response.body)
       end
-
+      
       def each_page(&blk)
-        if self.class.pager_css.nil?
+        if pager_css.nil?
           yield @index_url
         else
           compute_page(&blk)
         end
       end
-
+      
       # Use @index_url and compute the pages
       def compute_page(&blk)
-        raise 'Not implemented'
+        raise 'compute_pate is not implemented'
       end
-
+      
       # override
       def to_s
-        "#{@index_url}"
+        index_url
       end
     end
   end

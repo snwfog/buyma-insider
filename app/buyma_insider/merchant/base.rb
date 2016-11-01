@@ -1,51 +1,34 @@
-require 'active_support/core_ext/string/inflections'
-require 'active_support/core_ext/module/delegation'
-require 'active_support/core_ext/class/attribute'
-require 'active_support/descendants_tracker'
 require 'nokogiri'
+require 'active_support/core_ext/module/delegation'
 
 module Merchant
   class Base
-    include NoBrainer::Document
-    extend ActiveSupport::DescendantsTracker
-
-    has_many :crawl_history, foreign_key: :merchant_id
-
-    field :id,    primary_key: true, required: true, format: /[a-z]{3}/
-    field :name,  type: String, required: true
-
-    class_attribute :base_url
-    class_attribute :item_css
-    class_attribute :code
-
-    alias_method :code, :id
-
-    class << self
-      attr_accessor :index_pages
-
-      def indexer
-        merchant_name = to_s.split('::').last
-        @indexer ||= %Q(::Merchant::Indexer::#{merchant_name}).safe_constantize
-        raise 'Indexer not found' if @indexer.nil?
-        @indexer
+    delegate :id, :code, :name, :base_url,
+             :pager_css, :item_css, :index_pages,
+             to: :metadata
+    
+    def self.all_merchants
+      @@all_merchants ||= MerchantMetadata.all.map do |meta|
+        Merchant::Base.new(meta)
       end
-
-      def index_pages=(indices)
-        @index_pages = indices.map { |path| indexer.new(path, self) }
-      end
-    end
-
-    def initialize(opts = {})
-      @options = opts
-      @logger  = Logging.logger[self]
     end
     
-    def id
-      self.class.code
+    def initialize(metadata, opts = {})
+      @metadata = metadata,
+        @options = opts
+      @logger   = Logging.logger[self]
     end
-
+    
+    def indices
+      @indices ||= index_pages.map { |path| indexer.new(path, self) }
+    end
+    
+    def indexer
+      @indexer ||= %Q(::Merchant::Indexer::#{name.capitalize}).safe_constantize
+    end
+    
     def crawl
-      crawler = Crawler.new(self.class)
+      crawler = Crawler.new(self)
       crawler.crawl do |history, attrs|
         merchant_article    = Article.new(attrs)
         history.items_count += 1
@@ -64,13 +47,8 @@ module Merchant
           history.invalid_items_count += 1
         end
       end
-
+      
       crawler
-    end
-
-    # BUG: Hack, otherwise inspect breaks...
-    def to_s
-      "#<#{self.class}>"
     end
   end
 end

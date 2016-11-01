@@ -1,25 +1,25 @@
 # Redis
-default: &default
-  host: 127.0.0.1
-  port: 6379
-  db: 1
+default:            &default
+  host:             127.0.0.1
+  port:             6379
+  db:               1
 #  password:
 #  path:
-#  connect_timeout:  0.2,
-#  read_timeout: 1.0,
-#  write_timeout: 0.5
+#  connect_timeout: 0.2,
+#  read_timeout:    1.0,
+#  write_timeout:   0.5
 
 development:
-  <<: *default
+  <<:               *default
 
 unittest:
-  <<: *default
+  <<:               *default
 
 integrationtest:
-  <<: *default
+  <<:               *default
 
 staging:
-  <<: *default
+  <<:               *default
 
 production:
-  <<: *default
+  <<:               *default
