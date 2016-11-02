@@ -2,7 +2,7 @@ require 'ostruct'
 require 'buyma_insider'
 require 'minitest/autorun'
 
-require_relative './setup_merchant'
+require_relative './setup'
 
 # test_metadata = OpenStruct.new code: 'tta'
 # test_merchant = Merchant::Base.new(test_metadata)

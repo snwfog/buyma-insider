@@ -6,12 +6,15 @@ class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
+  EXPIRES_IN = 7.days
+
   has_one :price_history
 
   # after_create do |m|
   # end
 
   field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
+  field :merchant_id, type: String, required: true
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
   field :description, type: String, length: (1..1000)
@@ -25,17 +28,6 @@ class Article
 
   # scops
   scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
-
-  class << self
-    # @deprecated Factory helper
-    # def from_node(html_node)
-    #   new(attrs_from_node(html_node))
-    # end
-    
-    def new_articles_expires_in
-      7.days
-    end
-  end
 
   def price=(price)
     super(price)
@@ -57,5 +49,9 @@ class Article
 
   def link=(link)
     super(link.gsub(%r(^https?://), '//'))
+  end
+
+  def new?
+    (created_at + EXPIRES_IN) > Time.now.utc
   end
 end

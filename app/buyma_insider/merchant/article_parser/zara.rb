@@ -12,7 +12,6 @@ module Merchant
           price:       price['data-price'][/[$]?[\d]{1,10}\.[\d]{2}/],
           description: desc_a.content,
           link:        item_a['href'],
-          '_type':     self.to_s
         }
       end
     end

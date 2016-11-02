@@ -61,6 +61,6 @@ namespace :db do
   
   desc 'Create a new db patch'
   task :patch, ['name'] do |t, args|
-    sh 'touch ' + "./patches/#{Time.now.to_s}_#{args['name']}.rb".gsub(/[-:\s]/, '_')
+    sh 'touch ' + "./db/patches/#{Time.now.to_s}_#{args['name']}.rb".gsub(/[-:\s]/, '_')
   end
 end

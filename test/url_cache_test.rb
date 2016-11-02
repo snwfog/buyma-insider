@@ -2,9 +2,6 @@ require 'buyma_insider'
 require 'minitest/autorun'
 
 class UrlCacheTest < Minitest::Test
-  class Merchant_A
-  end
-
   def setup
     @cache = UrlCache.new
   end

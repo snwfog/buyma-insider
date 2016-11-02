@@ -6,7 +6,7 @@ require 'active_support/descendants_tracker'
 require 'buyma_insider'
 require 'nobrainer'
 
-require_relative './setup_merchant'
+require_relative './setup'
 #
 # class TestMerchant_A < Merchant::Base
 #   self.code = 'tta'

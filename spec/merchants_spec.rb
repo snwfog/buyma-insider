@@ -19,6 +19,6 @@ describe Merchant::Base do
   end
 
   it 'should crawl' do
-
+    Merchant::Base[:getoutside].crawl
   end
 end

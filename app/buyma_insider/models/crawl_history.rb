@@ -7,6 +7,7 @@ class CrawlHistory
   alias_method :started_at, :created_at
 
   field :id,                  primary_key: true, required: true
+  field :merchant_id,         type: String, required: true
   field :status,              type: Enum, default: :scheduled, in: %i(scheduled inprogress aborted completed)
   field :link,                type: String, required: true, length: (1..1000), format: %r(//.*)
   field :description,         type: String, required: true

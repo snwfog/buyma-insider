@@ -5,24 +5,20 @@ require 'active_support'
 require 'active_support/core_ext/numeric/time'
 
 require 'buyma_insider'
-require 'nobrainer'
+require_relative './setup'
 
 describe Article do
   it 'should be persisted' do
-    a = Article.create id:          "abc:#{Faker::Code.ean}",
-                       name:        Faker::Commerce.product_name,
-                       description: Faker::Hipster.sentence,
-                       price:       Faker::Commerce.price,
-                       link:        Faker::Internet.url
+    a = get_test_article
+    expect(a.save).to be true
+    expect(a.valid?).to be true
     expect(a.persisted?).to be true
   end
 
   it 'should be persisted once' do
-    a = Article.create id:          "abc:#{Faker::Code.ean}",
-                       name:        Faker::Commerce.product_name,
-                       description: Faker::Hipster.sentence,
-                       price:       Faker::Commerce.price,
-                       link:        Faker::Internet.url
+    a = get_test_article
+    expect(a.save).to be true
+    expect(a.valid?).to be true
     expect(a.persisted?).to be true
 
     Article.upsert! id:          a.id,
@@ -34,21 +30,21 @@ describe Article do
 
   it 'should support inheritance' do
     sub = SubArticle.create id:          "abc:#{Faker::Code.ean}",
+                            merchant_id: 'abc',
                             name:        Faker::Commerce.product_name,
                             description: Faker::Hipster.sentence,
                             price:       Faker::Commerce.price,
                             link:        Faker::Internet.url
+
+    expect(sub.valid?).to be true
     expect(sub.persisted?).to be true
   end
 
   xit 'should create new article redis on creating an new article' do
     id = "abc:#{Faker::Code.ean}"
     expect(RedisConnection.sadd).to receive(['new_articles', id])
-    Article.create id:          id,
-                   name:        Faker::Commerce.product_name,
-                   description: Faker::Hipster.sentence,
-                   price:       Faker::Commerce.price,
-                   link:        Faker::Internet.url
+    a = get_test_article
+    a.save
   end
 end
 
@@ -113,6 +109,7 @@ end
 describe CrawlHistory do
   it 'should persist' do
     ch = CrawlHistory.create(
+      merchant_id: 'abc',
       description: "New crawl #{Faker::Internet.url}",
       link:        '//google.com'
     )

@@ -20,7 +20,6 @@ module Merchant
           price:       node.at_css('div.product-price p.product-price').content[/[\d]{1,10}\.[\d]{2}/],
           description: desc,
           link:        link,
-          '_type':     self.to_s
         }
       end
     end

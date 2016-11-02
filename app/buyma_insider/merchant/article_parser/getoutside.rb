@@ -17,7 +17,6 @@ module Merchant
           price:       price,
           description: node.at_css('h2.product-name a').content,
           link:        product_image_link['href'],
-          '_type':     self.to_s
         }
       end
     end
