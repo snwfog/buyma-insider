@@ -1,7 +1,17 @@
 require 'buyma_insider'
 require 'sinatra'
 require 'sinatra/contrib'
+require 'sinatra/cross_origin'
 require 'sinatra/reloader'
+
+register Sinatra::CrossOrigin
+
+enable :cross_origin
+set :allow_origin, :any
+set :allow_methods, [:get, :post, :options]
+set :allow_credentials, true
+set :max_age, '1728000'
+set :expose_headers, ['Content-Type']
 
 helpers do
   def render_json(model, options = {})
@@ -15,6 +25,10 @@ end
 
 before do
   content_type :json
+end
+
+get '/merchant_metadatum' do
+  render_json MerchantMetadata.all
 end
 
 get '/merchant_statuses' do

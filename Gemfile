@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem "sinatra-cross_origin"
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'sidekiq'
 gem 'sidetiq'

@@ -14,8 +14,8 @@ class MerchantMetadata
   field :id,           primary_key: true, required: true, format: /[a-z]{3}/
   field :name,         type: String, required: true
   field :base_url,     type: String, required: true
-  field :pager_css,    type: String, required: true
-  field :item_css,     type: String
+  field :pager_css,    type: String
+  field :item_css,     type: String, required: true
   field :index_pages,  type: Set, required: true
   
   alias_method :code, :id

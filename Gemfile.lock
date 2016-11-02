@@ -211,6 +211,7 @@ GEM
       rack-test
       sinatra (~> 1.4.0)
       tilt (>= 1.3, < 3)
+    sinatra-cross_origin (0.4.0)
     slackiq (1.1.4)
       httparty
     slop (3.6.0)
@@ -265,6 +266,7 @@ DEPENDENCIES
   sidetiq
   sinatra
   sinatra-contrib
+  sinatra-cross_origin
   slackiq
   table_print
 
