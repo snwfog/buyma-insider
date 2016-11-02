@@ -30,7 +30,7 @@ class Article
   scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
 
   def price=(price)
-    super(price)
+    super(price.to_f)
     NoBrainer::Lock.new("price_history:price=:#{self.id}").synchronize do
       price_history = PriceHistory.upsert(article_id: self.id)
       price_history.add_price(price)

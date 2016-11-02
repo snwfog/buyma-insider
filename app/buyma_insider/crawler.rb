@@ -16,6 +16,7 @@ class Crawler
 
   def crawl(&blk)
     merchant.indices.each do |indexer|
+      protocol = merchant.metadata.ssl ? 'https' : 'http'
       history = CrawlHistory.create(
         merchant_id: merchant.code,
         description: "#{merchant.name} '#{indexer.to_s}'",
@@ -36,7 +37,7 @@ class Crawler
           next unless @url_cache.add? page_url
 
           # Get link HTML and set @response if not in url cache
-          response = Http.get "http:#{page_url}"
+          response = Http.get "#{protocol}:#{page_url}"
 
           @logger.info("Received html '#{page_url}' (#{response.content_length} B)")
 
@@ -65,16 +66,17 @@ class Crawler
         history.status = :completed
       rescue Exception => ex
         history.status = :aborted
+        Raven.capture_exception(ex)
         @logger.error history.description
         @logger.error ex
-        Raven.capture_exception(ex)
+        # raise ex swallow error and log to sentry
       ensure
         history.finished_at = Time.now.utc
         history.save
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-                                                            [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                                                                      [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end

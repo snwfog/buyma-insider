@@ -31,7 +31,7 @@ module Merchant
     end
 
     def indices
-      @indices ||= index_pages.map { |path| indexer.new(path, self) }
+      @indices ||= index_pages.map { |path| indexer.new(path, metadata) }
     end
 
     def indexer
@@ -53,6 +53,7 @@ module Merchant
           @logger.debug "Saved #{article.inspect}"
         rescue Exception => ex
           @logger.warn ex
+          @logger.warn attrs
           history.invalid_items_count += 1
         end
       end

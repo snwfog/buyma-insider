@@ -28,5 +28,5 @@ require_rel './serializers'
 module BuymaInsider
   NAME             = 'buyma_insider'
   ENVIRONMENT      = ENV['ENVIRONMENT']
-  SPOOF_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.57 Safari/537.36'
+  SPOOF_USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.28 Safari/537.36'
 end

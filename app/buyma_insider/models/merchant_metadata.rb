@@ -17,7 +17,8 @@ class MerchantMetadata
   field :pager_css,    type: String
   field :item_css,     type: String, required: true
   field :index_pages,  type: Set, required: true
-  
+  field :ssl,          type: Boolean
+
   alias_method :code, :id
   alias_method :code=, :id=
 

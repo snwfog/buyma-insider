@@ -7,6 +7,7 @@ ssense:
   index_pages:
     - en-ca/men
     - en-ca/women
+  ssl: true
 
 shoeme:
   id:           sho
@@ -20,6 +21,7 @@ shoeme:
     - collections/kids
     - collections/all-bags
     - collections/sale
+  ssl: false
 
 getoutside:
   id:           get
@@ -34,6 +36,7 @@ getoutside:
     - kid-s.html
     - accessories.html
     - sale.html
+  ssl: false
 
 zara:
   id:           zar
@@ -99,3 +102,4 @@ zara:
     - man/soft-wear-c637037.html
     - man/special-prices/view-all-c787511.html
     - man/seasonals-man/seasonals-man-collection-c865501.html
+  ssl: false

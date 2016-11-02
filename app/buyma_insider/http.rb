@@ -1,9 +1,11 @@
+require 'logging'
 require 'rest-client'
 
 module Http
   def self.get(address)
     RestClient.get(address,
-                   user_agent: BuymaInsider::SPOOF_USER_AGENT
+                   user_agent: BuymaInsider::SPOOF_USER_AGENT,
+                   pragma: 'no-cache'
     )
   end
 
