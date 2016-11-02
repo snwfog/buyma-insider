@@ -40,42 +40,28 @@ require_relative './setup_merchant'
 # end
 
 class MerchantMetadataTest < Minitest::Test
-  @@merchants = MerchantMetadata.load
+  @@merchant_metadatum = MerchantMetadata.load
   
   def test_should_have_and_respond_to_mandatory_class_config
-    @@merchants.each do |merchant|
-      assert_respond_to merchant, :name
-      refute_nil merchant.name, "#{merchant} should have a name"
-      
-      assert_respond_to merchant, :base_url
-      refute_nil merchant.base_url, "#{merchant} should have base_url"
-      
-      assert_respond_to merchant, :pager_css
-      refute_nil merchant.pager_css, "#{merchant} should have item_css"
-      
-      assert_respond_to merchant, :item_css
-      refute_nil merchant.item_css, "#{merchant} should have item_css"
-      
-      assert_respond_to merchant, :index_pages
-      refute_nil merchant.index_pages, "#{merchant} should have index_pages"
+    @@merchant_metadatum.each do |metadata|
+      refute_nil metadata.name, "#{metadata} should have a name"
+      refute_nil metadata.base_url, "#{metadata} should have base_url"
+      # pager_css is not required
+      # refute_nil metadata.pager_css, "#{metadata} should have pager_css"
+      refute_nil metadata.item_css, "#{metadata} should have item_css"
+      refute_nil metadata.index_pages, "#{metadata} should have index_pages"
     end
   end
   
   def test_should_have_merchant_code
-    @@merchants.each do |merchant|
+    @@merchant_metadatum.each do |merchant|
       refute_nil merchant.code, "#{merchant} should have merchant code"
       assert merchant.code.length == 3, "#{merchant} should have merchant code of length 3"
     end
   end
   
   def test_should_all_have_unique_merchant_code
-    merchant_codes = @@merchants.map(&:code)
+    merchant_codes = @@merchant_metadatum.map(&:code)
     assert_equal merchant_codes.uniq.sort.to_s, merchant_codes.sort.to_s
-  end
-  
-  def test_should_have_an_valid_indexer
-    @@merchants.each do |merchant|
-      assert_respond_to merchant, :indexer
-    end
   end
 end

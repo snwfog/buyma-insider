@@ -1,7 +1,7 @@
 require 'buyma_insider'
 require 'minitest/autorun'
 
-class ArticleParseTest < Minitest::Test
+class ArticleParserTest < Minitest::Test
   def test_ssense_should_parse
     frag = <<-FRAG
       <div class="browsing-product-item" itemscope="" itemtype="http://schema.org/Product" data-product-id="1676753" data-product-sku="162418M176009" data-product-name="Tan Canadian Tapestry Coat" data-product-brand="Saint Laurent" data-product-price="5890" data-product-category="Coats">
@@ -28,7 +28,17 @@ class ArticleParseTest < Minitest::Test
       </div>
     FRAG
 
-    article_hash = Merchant::Ssense.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+    parser = Class.new do |klazz|
+      def klazz.code
+        'sse'
+      end
+
+      def klazz.base_url
+        '//www.ssense.com'
+      end
+    end.extend(Merchant::ArticleParser::Ssense)
+
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article_hash[:description]
     assert_equal 'Tan Canadian Tapestry Coat', article_hash[:name]
     assert_equal 5890.00, ('%.02f' % article_hash[:price].to_f).to_f
@@ -48,7 +58,8 @@ class ArticleParseTest < Minitest::Test
       </li>
     FRAG
 
-    article_hash = Merchant::Zara.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
+    parser = Class.new { |klazz| def klazz.code; 'zar'; end }.extend(Merchant::ArticleParser::Zara)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'VELVET TOGGLE JACKET', article_hash[:description]
     assert_equal 'VELVET TOGGLE JACKET', article_hash[:name]
     assert_equal 139.00, ('%.02f' % article_hash[:price].to_f).to_f
@@ -82,7 +93,8 @@ class ArticleParseTest < Minitest::Test
       </li>
     FRAG
 
-    article_hash = Merchant::Getoutside.attrs_from_node(
+    parser = Class.new { |klazz| def klazz.code; 'get'; end }.extend(Merchant::ArticleParser::Getoutside)
+    article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
@@ -127,7 +139,8 @@ class ArticleParseTest < Minitest::Test
       </li>
     FRAG
 
-    article_hash = Merchant::Getoutside.attrs_from_node(
+    parser = Class.new { |klazz| def klazz.code; 'get'; end }.extend(Merchant::ArticleParser::Getoutside)
+    article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
@@ -168,7 +181,8 @@ class ArticleParseTest < Minitest::Test
       </li>
     FRAG
 
-    article_hash = Merchant::Shoeme.attrs_from_node(
+    parser = Class.new { |klazz| def klazz.code; 'sho'; end }.extend(Merchant::ArticleParser::Shoeme)
+    article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 

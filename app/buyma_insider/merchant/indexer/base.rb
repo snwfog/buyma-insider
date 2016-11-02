@@ -5,15 +5,16 @@ module Merchant
   module Indexer
     class Base
       delegate :pager_css, to: :metadata
-      
+
+      # www.merchant.com/shoe + pager style
       attr_accessor :metadata
-      attr_accessor :index_path # 'shoe.html'
+      attr_accessor :index_path # 'shoe'
       attr_accessor :index_url  # 'www.merchant.com'
-      
+
       def initialize(index_path, metadata)
         @metadata   = metadata
         @index_path = index_path
-        @index_url  = "#{metadata.base_url}/#{path}"
+        @index_url  = "#{metadata.base_url}/#{index_path}"
       end
       
       def index_document
@@ -34,7 +35,7 @@ module Merchant
         raise 'compute_pate is not implemented'
       end
       
-      # override
+      # @override
       def to_s
         index_url
       end

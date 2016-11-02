@@ -6,27 +6,38 @@ module Merchant
     delegate :id, :code, :name, :base_url,
              :pager_css, :item_css, :index_pages,
              to: :metadata
-    
-    def self.all_merchants
-      @@all_merchants ||= MerchantMetadata.all.map do |meta|
-        Merchant::Base.new(meta)
+
+    def self.all
+      @@all ||= MerchantMetadata.all.map do |meta|
+        merchant = Merchant::Base.new(meta)
+        merchant.extend "Merchant::ArticleParser::#{meta.name_capitalized}".safe_constantize
       end
     end
-    
+
+    def self.merchants
+      @@merchants ||= Hash[all.collect { |m| [m.name.to_sym, m] }]
+    end
+
+    def self.[](merchant_sym)
+      merchants[merchant_sym]
+    end
+
+    attr_accessor :metadata
+
     def initialize(metadata, opts = {})
-      @metadata = metadata,
-        @options = opts
+      @metadata = metadata
+      @options  = opts
       @logger   = Logging.logger[self]
     end
-    
+
     def indices
       @indices ||= index_pages.map { |path| indexer.new(path, self) }
     end
-    
+
     def indexer
       @indexer ||= %Q(::Merchant::Indexer::#{name.capitalize}).safe_constantize
     end
-    
+
     def crawl
       crawler = Crawler.new(self)
       crawler.crawl do |history, attrs|
@@ -47,7 +58,6 @@ module Merchant
           history.invalid_items_count += 1
         end
       end
-      
       crawler
     end
   end

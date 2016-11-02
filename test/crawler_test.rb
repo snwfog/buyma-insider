@@ -1,25 +1,17 @@
-require 'ostruct'
 require 'buyma_insider'
 require 'minitest/autorun'
 
-class Merchant::Indexer::TestMerchant_A < Merchant::Indexer::Base
-end
-
-class TestMerchant_A < Merchant::Base
-  self.base_url    = 'http://test.com'
-  self.index_pages = ['1.html', '2.html']
-end
-
+TestMerchant_A = Class.new(Merchant::Base)
 
 class CrawlerTest < Minitest::Test
   def test_should_respond_to_crawl
-    assert_respond_to TestMerchant_A.new, 'crawl'
+    assert_respond_to TestMerchant_A.new(nil), :crawl
   end
 
   def test_should_call_crawl
     crawler = Minitest::Mock.new
     Crawler.stub :new, crawler do
-      merchant      = TestMerchant_A.new
+      merchant      = TestMerchant_A.new(nil)
       crawler.expect :crawl, nil
       merchant.crawl
       crawler.verify
