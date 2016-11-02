@@ -2,8 +2,7 @@ module Merchant
   module Indexer
     class Ssense < Base
       def compute_page
-        raise unless block_given?
-
+        raise 'Indexer#compute_page should have block' unless block_given?
         page_nodes = index_document.at_css(pager_css)
         first_node = page_nodes.css('li:not(.hidden)').first
         last_node  = page_nodes.at_css('li:not(.hidden).last-page')

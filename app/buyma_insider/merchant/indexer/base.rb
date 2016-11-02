@@ -32,7 +32,7 @@ module Merchant
       
       # Use @index_url and compute the pages
       def compute_page(&blk)
-        raise 'compute_pate is not implemented'
+        raise 'Indexer#compute_page should have block'
       end
       
       # @override

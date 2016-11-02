@@ -1,28 +1,24 @@
+require 'rspec'
 require 'buyma_insider'
-require 'minitest/autorun'
 
 describe Merchant::Base do
-  describe Merchant::Ssense do
-    xit 'should crawl' do
-      Merchant::Ssense.new.crawl
-    end
+  it 'should have metadata' do
+    expect(MerchantMetadata.all.count).to be(4)
   end
 
-  describe Merchant::Zara do
-    xit 'should crawl' do
-      Merchant::Zara.new.crawl
-    end
+  it 'should list all merchants' do
+    expect(Merchant::Base.all.count).to be 4
+    expect(Merchant::Base.merchants.keys.count).to be 4
   end
 
-  describe Merchant::Getoutside do
-    xit 'should crawl' do
-      Merchant::Getoutside.new.crawl
-    end
+  it 'should fetch merchants' do
+    expect(Merchant::Base[:getoutside]).to be_an_instance_of(Merchant::Base)
+    expect(Merchant::Base[:shoeme]).to be_an_instance_of(Merchant::Base)
+    expect(Merchant::Base[:zara]).to be_an_instance_of(Merchant::Base)
+    expect(Merchant::Base[:ssense]).to be_an_instance_of(Merchant::Base)
   end
 
-  describe Merchant::Shoeme do
-    xit 'should crawl' do
-      Merchant::Shoeme.new.crawl
-    end
+  it 'should crawl' do
+
   end
 end
