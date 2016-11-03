@@ -1,11 +1,16 @@
 require 'logging'
+require 'faker'
 require 'rest-client'
 
 module Http
   def self.get(address)
     RestClient.get(address,
-                   user_agent: BuymaInsider::SPOOF_USER_AGENT,
-                   pragma: 'no-cache'
+                   x_forwarded_for:  Faker::Internet.ip_v4_address,
+                   x_forwarded_host: Faker::Internet.ip_v4_address,
+                   user_agent:       BuymaInsider::SPOOF_USER_AGENT,
+                   accept_encoding:  'gzip, deflate',
+                   cache_control:    'no-cache',
+                   pragma:           'no-cache'
     )
   end
 
