@@ -29,7 +29,7 @@ r.table('articles').run($conn).each do |record|
       .replace do |article|
       article.without('_type')
     end.run($conn)
-    print 'Removing _type field...'
+    puts 'Removing _type field...'
   else
     puts 'Skipping removing _type field...'
   end
