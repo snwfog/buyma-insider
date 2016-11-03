@@ -1,3 +1,6 @@
+$:.unshift(File.expand_path('../app', __FILE__))
+$:.unshift(File.expand_path('../config', __FILE__))
+
 require 'buyma_insider'
 require 'sinatra'
 require 'sinatra/contrib'
@@ -7,6 +10,7 @@ require 'sinatra/reloader'
 register Sinatra::CrossOrigin
 
 enable :cross_origin
+set :run, true
 set :allow_origin, :any
 set :allow_methods, [:get, :post, :options]
 set :allow_credentials, true
