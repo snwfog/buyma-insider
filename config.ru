@@ -5,7 +5,11 @@ require 'sidetiq/web'
 # require 'require_all'
 # require_all 'buyma_insider/workers'
 
-redis_config = YAML.load_file(File.expand_path('config/redis.yml'))
+raise 'No environment defined' if ENV['ENVIRONMENT'].nil?
+
+redis_config = YAML
+                 .load_file(File.expand_path('config/redis.yml'))
                  .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
+
 Sidekiq.configure_client { |config| config.redis = redis_config }
-Sidekiq::Web.run!
+run Sidekiq::Web
