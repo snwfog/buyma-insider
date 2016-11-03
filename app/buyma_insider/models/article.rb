@@ -6,7 +6,7 @@ class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  EXPIRES_IN = 7.days
+  EXPIRES_IN = 1.week
 
   has_one :price_history
 
@@ -26,7 +26,7 @@ class Article
   alias_method :desc,       :description
   alias_method :title,      :name
 
-  # scops
+  # scopes
   scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
 
   def price=(price)

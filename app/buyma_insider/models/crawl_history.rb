@@ -15,7 +15,7 @@ class CrawlHistory
   field :invalid_items_count, type: Integer, default: 0
   field :traffic_size,        type: Integer, default: 0 # Traffic used
   field :finished_at,         type: Time
-
+  
   def elapsed_time
     if finished_at.nil?
       -1
@@ -24,7 +24,7 @@ class CrawlHistory
     end
   end
 
-  def successful?
+  def completed?
     status == :completed
   end
 end
