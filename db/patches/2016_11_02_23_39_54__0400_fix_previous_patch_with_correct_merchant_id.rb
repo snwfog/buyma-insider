@@ -12,7 +12,7 @@ r.table('articles').run($conn).each do |record|
   else
     r.table('articles')
       .get(record['id'])
-      .update(name: merchant_id).run($conn)
+      .update(merchant_id: merchant_id).run($conn)
     puts "Adding merchant_id:#{merchant_id}..."
   end
 end
