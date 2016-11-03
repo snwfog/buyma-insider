@@ -10,7 +10,7 @@ module Merchant
     def self.all
       @@all ||= MerchantMetadata.all.map do |meta|
         merchant = Merchant::Base.new(meta)
-        merchant.extend "Merchant::ArticleParser::#{meta.name_capitalized}".safe_constantize
+        merchant.extend "Merchant::ArticleParser::#{meta.name.capitalize}".safe_constantize
       end
     end
 
