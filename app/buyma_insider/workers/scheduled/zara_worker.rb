@@ -7,6 +7,6 @@ class ZaraWorker < CrawlerWorkerBase
   }
 
   def initialize
-    @merchant = ::Zara.new
+    @merchant = Merchant::Base[:zara]
   end
 end

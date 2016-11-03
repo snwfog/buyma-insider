@@ -8,6 +8,6 @@ class ShoemeWorker < CrawlerWorkerBase
   }
 
   def initialize
-    @merchant = ::Shoeme.new
+    @merchant = Merchant::Base[:shoeme]
   end
 end

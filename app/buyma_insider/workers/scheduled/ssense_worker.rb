@@ -7,6 +7,6 @@ class SsenseWorker < CrawlerWorkerBase
   }
 
   def initialize
-    @merchant = ::Ssense.new
+    @merchant = Merchant::Base[:ssense]
   end
 end

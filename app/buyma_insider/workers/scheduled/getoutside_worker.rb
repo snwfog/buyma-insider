@@ -9,6 +9,6 @@ class GetoutsideWorker < CrawlerWorkerBase
   }
 
   def initialize
-    @merchant = ::Getoutside.new
+    @merchant = Merchant::Base[:getoutside]
   end
 end
