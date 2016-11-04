@@ -83,10 +83,10 @@ class Crawler
   end
 
   def total_elapsed_time
-    @histories.select(&:successful?).map(&:elapsed_time).reduce(:+)
+    @histories.select(&:completed?).map(&:elapsed_time).reduce(:+)
   end
 
   def stats
-    @histories.group_by(&:successful?)
+    @histories.group_by(&:completed?)
   end
 end
