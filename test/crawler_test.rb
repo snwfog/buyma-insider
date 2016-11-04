@@ -4,6 +4,13 @@ require 'minitest/autorun'
 TestMerchant_A = Class.new(Merchant::Base)
 
 class CrawlerTest < Minitest::Test
+  def test_should_respond_to_methods
+    merchant_stub = Minitest::Mock.new
+    crawler = Crawler.new(merchant_stub)
+    assert_respond_to crawler, :total_elapsed_time
+    assert_respond_to crawler, :stats
+  end
+
   def test_should_respond_to_crawl
     assert_respond_to TestMerchant_A.new(nil), :crawl
   end
