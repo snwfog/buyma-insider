@@ -61,7 +61,7 @@ NoBrainer.configure do |config|
   # user_timezone can be configured with :utc, :local, or :unchanged.
   # When reading an attribute from a model which type is Time, the timezone
   # of that time is translated according to this setting.
-  # config.user_timezone = :local
+  config.user_timezone = :utc
 
   # db_timezone can be configured with :utc, :local, or :unchanged.
   # When writting to the database, the timezone of Time attributes are
