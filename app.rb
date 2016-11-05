@@ -47,6 +47,12 @@ get '/crawl_histories/:id' do
   render_json CrawlHistory.find(params[:id])
 end
 
+get '/:merchant_id/crawl_sessions' do
+  render_json MerchantMetadata
+                .find(params[:merchant_id])
+                .crawl_sessions.all
+end
+
 get '/articles/:id' do
   render_json Article.find(params[:id])
 end

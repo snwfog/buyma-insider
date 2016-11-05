@@ -15,7 +15,7 @@ class Crawler
   end
 
   def crawl(&blk)
-    crawl_session = CrawlSession.create!
+    crawl_session = CrawlSession.create!(merchant_id: merchant.id)
     merchant.indices.each do |indexer|
       protocol = merchant.metadata.ssl ? 'https' : 'http'
       history  = CrawlHistory.create(
@@ -78,7 +78,7 @@ class Crawler
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-                                                                                [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                                                                                                              [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end

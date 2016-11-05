@@ -6,3 +6,4 @@ docker run  --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
 - FEATURE: If there is item present, we should save the new price instead of raising primary key issue
 - BUG: There are relationship errors, more price history than articles
 - BUG: Sentry not notified on failure
+- BUG: Metadata is actually plurial...
