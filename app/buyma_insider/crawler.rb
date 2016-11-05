@@ -15,12 +15,14 @@ class Crawler
   end
 
   def crawl(&blk)
+    crawl_session = CrawlSession.create!
     merchant.indices.each do |indexer|
       protocol = merchant.metadata.ssl ? 'https' : 'http'
-      history = CrawlHistory.create(
-        merchant_id: merchant.code,
-        description: "#{merchant.name} '#{indexer.to_s}'",
-        link:        indexer.to_s
+      history  = CrawlHistory.create(
+        merchant_id:   merchant.code,
+        crawl_session: crawl_session,
+        description:   "#{merchant.name} '#{indexer.to_s}'",
+        link:          indexer.to_s
       )
 
       @histories << history
@@ -69,14 +71,14 @@ class Crawler
         Raven.capture_exception(ex)
         @logger.error history.description
         @logger.error ex
-        # raise ex swallow error and log to sentry
+          # raise ex swallow error and log to sentry
       ensure
         history.finished_at = Time.now.utc
         history.save
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-                                                                      [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                                                                                [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end

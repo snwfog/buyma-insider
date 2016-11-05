@@ -39,10 +39,6 @@ get '/merchant_metadatum/:id' do
   render_json MerchantMetadata.find(params['id'])
 end
 
-get '/merchant_statuses' do
-  render_json MerchantStatus.all
-end
-
 get '/crawl_histories' do
   render_json CrawlHistory.all
 end
