@@ -3,7 +3,7 @@ require 'buyma_insider'
 
 describe Merchant::Base do
   it 'should have metadata' do
-    expect(MerchantMetadata.all.count).to be(4)
+    expect(MerchantMetadatum.all.count).to be(4)
   end
 
   it 'should list all merchants' do

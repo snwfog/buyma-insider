@@ -1,6 +1,6 @@
 require 'active_model_serializers'
 
-class MerchantMetadataSerializer < ActiveModel::Serializer
+class MerchantMetadatumSerializer < ActiveModel::Serializer
   attributes :id,
              :name,
              :base_url,

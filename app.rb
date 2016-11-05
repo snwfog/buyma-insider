@@ -32,11 +32,11 @@ before do
 end
 
 get '/merchant_metadatum' do
-  render_json MerchantMetadata.all
+  render_json MerchantMetadatum.all
 end
 
 get '/merchant_metadatum/:id' do
-  render_json MerchantMetadata.find(params['id'])
+  render_json MerchantMetadatum.find(params['id'])
 end
 
 get '/crawl_histories' do
@@ -48,7 +48,7 @@ get '/crawl_histories/:id' do
 end
 
 get '/:merchant_id/crawl_sessions' do
-  render_json MerchantMetadata
+  render_json MerchantMetadatum
                 .find(params[:merchant_id])
                 .crawl_sessions.all
 end

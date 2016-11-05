@@ -5,8 +5,8 @@ require_relative './setup'
 
 class MerchantTest < Minitest::Test
   def setup
-    @metadatum = MerchantMetadata.load
-    MerchantMetadata.stub :all, @metadatum do
+    @metadatum = MerchantMetadatum.load
+    MerchantMetadatum.stub :all, @metadatum do
       @merchants = Merchant::Base.all
     end
   end
@@ -20,7 +20,7 @@ class MerchantTest < Minitest::Test
     assert_respond_to Merchant::Base, :merchants
     assert_respond_to Merchant::Base, :[]
 
-    MerchantMetadata.stub :all, @metadatum do
+    MerchantMetadatum.stub :all, @metadatum do
       assert_equal 4, Merchant::Base.all.count
     end
   end

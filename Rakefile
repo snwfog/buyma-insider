@@ -43,7 +43,7 @@ namespace :db do
   task :setup do
     config = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
     config.each_key do |k|
-      merchant = MerchantMetadata.upsert!(config[k])
+      merchant = MerchantMetadatum.upsert!(config[k])
       puts "Created #{merchant.class}[#{merchant.code}]"
     end
   end

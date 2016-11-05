@@ -1,6 +1,6 @@
 require 'nobrainer'
 
-class MerchantMetadata
+class MerchantMetadatum
   include NoBrainer::Document
 
   has_many :crawl_histories, foreign_key: :merchant_id,

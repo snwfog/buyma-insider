@@ -39,11 +39,11 @@ require_relative './setup'
 #   self.item_css    = 'c.css'
 # end
 
-class MerchantMetadataTest < Minitest::Test
-  @@merchant_metadatum = MerchantMetadata.load
-  
+class MerchantMetadatumTest < Minitest::Test
+  @@merchant_metadata = MerchantMetadatum.load
+
   def test_should_have_and_respond_to_mandatory_class_config
-    @@merchant_metadatum.each do |metadata|
+    @@merchant_metadata.each do |metadata|
       refute_nil metadata.name, "#{metadata} should have a name"
       refute_nil metadata.base_url, "#{metadata} should have base_url"
       # pager_css is not required
@@ -52,16 +52,16 @@ class MerchantMetadataTest < Minitest::Test
       refute_nil metadata.index_pages, "#{metadata} should have index_pages"
     end
   end
-  
+
   def test_should_have_merchant_code
-    @@merchant_metadatum.each do |merchant|
+    @@merchant_metadata.each do |merchant|
       refute_nil merchant.code, "#{merchant} should have merchant code"
       assert merchant.code.length == 3, "#{merchant} should have merchant code of length 3"
     end
   end
-  
+
   def test_should_all_have_unique_merchant_code
-    merchant_codes = @@merchant_metadatum.map(&:code)
+    merchant_codes = @@merchant_metadata.map(&:code)
     assert_equal merchant_codes.uniq.sort.to_s, merchant_codes.sort.to_s
   end
 end

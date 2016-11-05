@@ -9,8 +9,8 @@ require_relative './setup'
 
 class IndexerTest < Minitest::Test
   def setup
-    @metadatum = MerchantMetadata.load
-    MerchantMetadata.stub :all, @metadatum do
+    @metadatum = MerchantMetadatum.load
+    MerchantMetadatum.stub :all, @metadatum do
       @all       = Merchant::Base.all
       @merchants = Merchant::Base.merchants
     end
