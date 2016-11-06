@@ -31,4 +31,16 @@ class CrawlSessionTest < Minitest::Test
       assert_equal(6, subject.elapsed_time)
     end
   end
+
+  def test_should_give_started_at_and_finished_at
+    subject         = CrawlSession.new
+    crawl_histories = 3.times.map { helper_get_crawl_history }
+
+    subject.stub :crawl_histories, crawl_histories do
+      started_at_expected  = crawl_histories.map(&:created_at).min
+      finished_at_expected = crawl_histories.map(&:finished_at).max
+      assert_equal started_at_expected, subject.started_at
+      assert_equal finished_at_expected, subject.finished_at
+    end
+  end
 end

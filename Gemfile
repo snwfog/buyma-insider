@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'sinatra'
+gem 'sinatra', github: 'sinatra/sinatra', branch: 'master'
 gem 'sinatra-contrib'
 gem "sinatra-cross_origin"
 gem 'active_model_serializers', '~> 0.10.0'
@@ -28,6 +28,7 @@ gem 'logging'
 
 # Deployment
 gem 'foreman'
+gem 'unicorn'
 
 group :development do
   gem 'shotgun'
