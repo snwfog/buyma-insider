@@ -20,14 +20,14 @@ class CrawlerWorkerBase < Worker::Base
   end
 
   def log_start
-    logger.info "Start crawling #{merchant.class.to_s}..."
+    logger.info "Start crawling #{merchant.name.to_s}..."
     Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.class.to_s} crawl started..."
+                   title:        "#{merchant.name.to_s} crawl started..."
   end
 
   def log_end
     Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.class.to_s} crawl finished in #{'%.02f' % (crawler.total_elapsed_time / 60)}m.",
+                   title:        "#{merchant.name.to_s} crawl finished in #{'%.02f' % (crawler.total_elapsed_time / 60)}m.",
                    Success:      stats.fetch(true, []).count,
                    Failed:       stats.fetch(false, []).count
   end

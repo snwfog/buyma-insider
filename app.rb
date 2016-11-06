@@ -31,11 +31,11 @@ before do
   content_type :json
 end
 
-get '/merchant_metadatum' do
+get '/merchant_metadata' do
   render_json MerchantMetadatum.all
 end
 
-get '/merchant_metadatum/:id' do
+get '/merchant_metadata/:id' do
   render_json MerchantMetadatum.find(params['id'])
 end
 
@@ -43,14 +43,17 @@ get '/crawl_histories' do
   render_json CrawlHistory.all
 end
 
-get '/crawl_histories/:id' do
-  render_json CrawlHistory.find(params[:id])
+get '/crawl_histories/:merchant_id' do
+  render_json CrawlSession.where(merchant_id: params[:merchant_id]).all
 end
 
-get '/:merchant_id/crawl_sessions' do
-  render_json MerchantMetadatum
-                .find(params[:merchant_id])
-                .crawl_sessions.all
+get '/crawl_sessions' do
+  sessions = if params.key? 'merchant'
+               CrawlSession.where(merchant_id: params[:merchant])
+             else
+               CrawlSession
+             end
+  render_json sessions.all
 end
 
 get '/articles/:id' do

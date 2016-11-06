@@ -20,8 +20,7 @@ class MerchantMetadatumSerializer < ActiveModel::Serializer
   end
 
   def last_sync
-    object.crawl_histories
-      .order_by(created_at: :desc).first
+    object.crawl_sessions.max(:created_at)
       &.created_at
   end
 end

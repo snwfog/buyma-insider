@@ -12,11 +12,15 @@ class CrawlSession
   field :merchant_id, type: String, required: true
 
   def started_at
-    crawl_histories.min_by(&:created_at).created_at
+    # crawl_histories.min_by(&:created_at).created_at
+    crawl_histories.min(:created_at)
+      &.created_at
   end
 
   def finished_at
-    crawl_histories.max_by(&:finished_at).finished_at
+    # crawl_histories.max_by(&:finished_at).finished_at
+    crawl_histories.max(:finished_at)
+      &.finished_at
   end
 
   def respond_to_missing?(m, *args)
