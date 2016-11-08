@@ -11,6 +11,12 @@ class CrawlSession
   field :id, primary_key: true, required: true
   field :merchant_id, type: String, required: true
 
+  validates_presence_of :started_at
+  validates_numericality_of :items_count, greater_than_or_equal_to: 0
+  validates_numericality_of :invalid_items_count, greater_than_or_equal_to: 0
+  validates_numericality_of :traffic_size, greater_than_or_equal_to: 0
+  validates_numericality_of :elapsed_time, greater_than_or_equal_to: 0
+
   def started_at
     # crawl_histories.min_by(&:created_at).created_at
     crawl_histories.min(:created_at)
