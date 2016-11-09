@@ -10,14 +10,14 @@ require_relative './setup'
 describe Article do
   it 'should be persisted' do
     a = get_test_article
-    expect(a.save).to be true
+    expect(a.save!).to be true
     expect(a.valid?).to be true
     expect(a.persisted?).to be true
   end
 
   it 'should be persisted once' do
     a = get_test_article
-    expect(a.save).to be true
+    expect(a.save!).to be true
     expect(a.valid?).to be true
     expect(a.persisted?).to be true
 
@@ -29,12 +29,12 @@ describe Article do
   end
 
   it 'should support inheritance' do
-    sub = SubArticle.create id:          "abc:#{Faker::Code.ean}",
-                            merchant_id: 'abc',
-                            name:        Faker::Commerce.product_name,
-                            description: Faker::Hipster.sentence,
-                            price:       Faker::Commerce.price,
-                            link:        Faker::Internet.url
+    sub = SubArticle.create! id:          "abc:#{Faker::Code.ean}",
+                             merchant_id: 'abc',
+                             name:        Faker::Commerce.product_name,
+                             description: Faker::Hipster.sentence,
+                             price:       Faker::Commerce.price,
+                             link:        Faker::Internet.url
 
     expect(sub.valid?).to be true
     expect(sub.persisted?).to be true
@@ -44,13 +44,11 @@ describe Article do
     id = "abc:#{Faker::Code.ean}"
     expect(RedisConnection.sadd).to receive(['new_articles', id])
     a = get_test_article
-    a.save
+    a.save!
   end
 end
 
-class SubArticle < Article
-end
-
+SubArticle = Class.new(Article)
 describe SubArticle do
   xit 'should trigger after_find on upsert!' do
     first_article = Article.upsert!(
@@ -81,7 +79,7 @@ end
 
 describe PriceHistory do
   it 'should be persisted' do
-    ph = PriceHistory.create(
+    ph = PriceHistory.create!(
       article_id: "abc:#{Faker::Code.ean}",
       currency:   'CAN',
       history:    {
@@ -100,7 +98,7 @@ describe PriceHistory do
     )
 
     ph.add_price(123.00)
-    ph.save
+    ph.save!
 
     expect(ph.persisted?).to be true
   end
@@ -108,18 +106,19 @@ end
 
 describe CrawlHistory do
   it 'should persist' do
-    ch = CrawlHistory.create(
-      merchant_id: 'abc',
-      description: "New crawl #{Faker::Internet.url}",
-      link:        '//google.com'
+    crawl_session = CrawlSession.create!(merchant_id: 'abc')
+    ch            = CrawlHistory.create!(
+      merchant_id:   'abc',
+      crawl_session: crawl_session,
+      description:   "New crawl #{Faker::Internet.url}",
+      link:          '//google.com'
     )
 
     expect(ch.persisted?).to be_truthy
+    expect(ch.crawl_session.id).to eq(crawl_session.id)
   end
 
   it 'should not persist when not valid' do
-    ch = CrawlHistory.create
-    expect(ch.persisted?).to be_falsey
     expect { CrawlHistory.create! }.to raise_error(NoBrainer::Error::DocumentInvalid)
   end
 end

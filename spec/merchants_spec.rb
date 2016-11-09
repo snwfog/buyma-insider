@@ -18,7 +18,7 @@ describe Merchant::Base do
     expect(Merchant::Base[:ssense]).to be_an_instance_of(Merchant::Base)
   end
 
-  it 'should crawl' do
+  xit 'should crawl' do
     Merchant::Base[:ssense].crawl
   end
 end

@@ -27,7 +27,7 @@ describe 'Merchant Website Checks' do
     merchants = Merchant::Base.all.reject { |merchant| merchant.pager_css.nil? }
     merchants.each do |merchant|
       Http.stub :get, pages[merchant.name.to_sym] do
-        indexer     = merchant.indexer.new('http://dummy.responsestub.com', merchant.metadata)
+        indexer     = merchant.indexer.new('http://dummy.responsestub.com', merchant.metadatum)
         index_pages = indexer.compute_page {}.to_a
         expect(index_pages).to be_an_instance_of Array
       end

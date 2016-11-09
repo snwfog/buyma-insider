@@ -5,17 +5,18 @@ class CrawlSession
   include NoBrainer::Document::Timestamps
 
   has_many :crawl_histories
-  # This association is defined on merchant_metadatum
+  # INFO: This association is defined on merchant_metadatum
   # belongs_to :merchant
 
   field :id, primary_key: true, required: true
   field :merchant_id, type: String, required: true
 
-  validates_presence_of :started_at
-  validates_numericality_of :items_count, greater_than_or_equal_to: 0
-  validates_numericality_of :invalid_items_count, greater_than_or_equal_to: 0
-  validates_numericality_of :traffic_size, greater_than_or_equal_to: 0
-  validates_numericality_of :elapsed_time, greater_than_or_equal_to: 0
+  # INFO: Disable validation for now
+  # validates_presence_of :started_at
+  # validates_numericality_of :items_count, greater_than_or_equal_to: 0
+  # validates_numericality_of :invalid_items_count, greater_than_or_equal_to: 0
+  # validates_numericality_of :traffic_size, greater_than_or_equal_to: 0
+  # validates_numericality_of :elapsed_time, greater_than_or_equal_to: 0
 
   def started_at
     # crawl_histories.min_by(&:created_at).created_at

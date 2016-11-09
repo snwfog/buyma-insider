@@ -11,16 +11,7 @@ require_rel './buyma_insider/url_cache'
 require_rel './buyma_insider/merchant/indexer/'
 require_rel './buyma_insider/merchant/'
 
-require_rel './buyma_insider/workers/worker'
-require_rel './buyma_insider/workers/crawler_worker_base'
-require_rel './buyma_insider/workers/example_worker'
-
-require_rel './buyma_insider/workers/scheduled/ssense_worker'
-require_rel './buyma_insider/workers/scheduled/zara_worker'
-require_rel './buyma_insider/workers/scheduled/getoutside_worker'
-require_rel './buyma_insider/workers/scheduled/shoeme_worker'
-require_rel './buyma_insider/workers/scheduled/redis_cleanup_worker'
-
+require_rel './buyma_insider/workers/'
 require_rel './buyma_insider/models/'
 require_rel './buyma_insider/utils/'
 require_rel './serializers'

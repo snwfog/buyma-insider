@@ -1,4 +1,3 @@
-require 'sidekiq'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/time/calculations'
 
@@ -9,9 +8,7 @@ require 'active_support/core_ext/time/calculations'
 # to run, then schedule them so they can
 # finish on time, e.g. before 6 a.m.
 #
-class CrawlScheduleWorker
-  include Sidekiq::Worker
-
+class CrawlScheduleWorker < Worker::Base
   recurrence { daily.hour_of_day(20) }
 
   def initialize
