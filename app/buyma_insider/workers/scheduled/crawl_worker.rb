@@ -1,22 +1,20 @@
 require 'slackiq'
 require 'sentry-raven'
 
-class CrawlerWorkerBase < Worker::Base
-  attr_accessor :merchant
-  attr_accessor :crawler
-  attr_accessor :stats
+class CrawlWorker < Worker::Base
+  attr_accessor :merchant,
+                :crawler,
+                :stats
 
-  def perform
+  def perform(merchant_code)
     log_start
 
-    Raven.capture { crawl }
+    Raven.capture {
+      @crawler = Merchant::Base[merchant_code].crawl
+      @stats   = crawler.stats
+    }
 
     log_end
-  end
-
-  def crawl
-    @crawler = merchant.crawl
-    @stats   = crawler.stats
   end
 
   def log_start

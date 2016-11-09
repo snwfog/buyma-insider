@@ -5,7 +5,7 @@ module Merchant
   class Base
     delegate :id, :code, :name, :base_url,
              :pager_css, :item_css, :index_pages,
-             to: :metadata
+             to: :metadatum
 
     def self.all
       @@all ||= MerchantMetadatum.all.map do |meta|
@@ -22,20 +22,23 @@ module Merchant
       merchants[merchant_sym]
     end
 
-    attr_accessor :metadata
+    attr_accessor :metadatum
 
-    def initialize(metadata, opts = {})
-      @metadata = metadata
-      @options  = opts
-      @logger   = Logging.logger[self]
+    def initialize(metadatum, opts = {})
+      @metadatum = metadatum
+      @options   = opts
+      @logger    = Logging.logger[self]
     end
 
     def indices
-      @indices ||= index_pages.map { |path| indexer.new(path, metadata) }
+      @indices ||= index_pages.map { |path|
+        indexer.new(path, metadatum)
+      }
     end
 
     def indexer
-      @indexer ||= %Q(::Merchant::Indexer::#{name.capitalize}).safe_constantize
+      @indexer ||= %Q(::Merchant::Indexer::#{name.capitalize})
+                     .safe_constantize
     end
 
     def crawl

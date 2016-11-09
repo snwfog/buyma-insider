@@ -24,7 +24,7 @@ class IndexerTest < Minitest::Test
 
   def test_should_parse_getoutside_index
     indexer = Merchant::Indexer::Getoutside.new(
-      'b', @merchants[:getoutside].metadata
+      'b', @merchants[:getoutside].metadatum
     )
 
     def indexer.index_document
@@ -55,7 +55,7 @@ class IndexerTest < Minitest::Test
 
   def test_should_parse_shoeme_index
     indexer = Merchant::Indexer::Shoeme.new(
-      'b', @merchants[:shoeme].metadata
+      'b', @merchants[:shoeme].metadatum
     )
 
     def indexer.index_document
@@ -80,7 +80,7 @@ class IndexerTest < Minitest::Test
 
   def test_should_parse_ssense_index
     indexer = Merchant::Indexer::Ssense.new(
-      'index', @merchants[:ssense].metadata
+      'index', @merchants[:ssense].metadatum
     )
 
     def indexer.index_document
