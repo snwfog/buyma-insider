@@ -6,6 +6,8 @@ class CrawlHistory
 
   belongs_to :crawl_session
 
+  # default_scope { order_by(created_at: :asc) }
+
   alias_method :started_at, :created_at
 
   field :id,                  primary_key: true, required: true
@@ -18,7 +20,7 @@ class CrawlHistory
   field :invalid_items_count, type: Integer, default: 0
   field :traffic_size,        type: Integer, default: 0 # Traffic used
   field :finished_at,         type: Time
-  
+
   def elapsed_time
     if finished_at.nil?
       -1
