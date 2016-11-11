@@ -60,7 +60,19 @@ get '/crawl_sessions' do
   render_json sessions.all
 end
 
-get '/articles/:id' do
-  render_json Article.find(params[:id])
+namespace '/articles' do
+  get do
+    merchant_id, page = params.values_at(:merchant, :page)
+    raise 'Parameter missing' if merchant_id.nil?
+    render_json Article
+                  .where(merchant_id: merchant_id)
+                  .offset((page || 0) * 20)
+                  .limit(20)
+  end
+
+  get '/:id' do
+    render_json Article.find(params[:id])
+  end
 end
+
 
