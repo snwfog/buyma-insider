@@ -71,7 +71,7 @@ namespace '/articles' do
   end
 
   get '/:id' do
-    render_json Article.find(params[:id])
+    render_json Article.find(params[:id]), include: '**'
   end
 end
 
