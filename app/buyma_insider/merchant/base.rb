@@ -9,7 +9,7 @@ module Merchant
 
     def self.all
       @@all ||= MerchantMetadatum.all.map do |meta|
-        merchant = Merchant::Base.new(meta)
+        merchant = new(meta)
         merchant.extend "Merchant::ArticleParser::#{meta.name.capitalize}".safe_constantize
       end
     end

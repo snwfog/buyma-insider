@@ -23,7 +23,7 @@ module Merchant
         Nokogiri::HTML(response.body)
       end
 
-      def each_page(&blk)
+      def each_page(opts = {}, &blk)
         if pager_css.nil?
           yield @index_url
         else

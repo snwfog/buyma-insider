@@ -14,10 +14,10 @@ class Crawler
     @histories = []
   end
 
-  def crawl(&blk)
+  def crawl(opts = {}, &blk)
     crawl_session = CrawlSession.create!(merchant_id: merchant.id)
     merchant.indices.each do |indexer|
-      protocol = merchant.metadata.ssl ? 'https' : 'http'
+      protocol = merchant.metadatum.ssl ? 'https' : 'http'
       history  = CrawlHistory.create(
         merchant_id:   merchant.code,
         crawl_session: crawl_session,
@@ -32,7 +32,7 @@ class Crawler
         history.status = :inprogress
         history.save
 
-        indexer.each_page do |page_url|
+        indexer.each_page(opts) do |page_url|
           @logger.info("Requesting page '#{page_url}'")
 
           # Add url to cache, break if already exists
