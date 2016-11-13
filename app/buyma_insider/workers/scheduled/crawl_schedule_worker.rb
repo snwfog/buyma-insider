@@ -24,7 +24,7 @@ class CrawlScheduleWorker < Worker::Base
 
     merchant_scores = merchant_scores.sort_by(&:last) # sort_by array's last, which is the elapsed time
     merchant_scores.each do |merchant, _elapsed_time|
-      CrawlWorker.perform_at @start_time, merchant.code
+      CrawlWorker.perform_at @start_time, merchant.name
       @start_time += 30.minutes
     end
   end
