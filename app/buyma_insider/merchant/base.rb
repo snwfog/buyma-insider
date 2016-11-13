@@ -10,7 +10,7 @@ module Merchant
     def self.all
       @@all ||= MerchantMetadatum.all.map do |meta|
         merchant = new(meta)
-        merchant.extend "Merchant::ArticleParser::#{meta.name.capitalize}".safe_constantize
+        merchant.extend("Merchant::#{meta.name.capitalize}".safe_constantize)
       end
     end
 
@@ -22,6 +22,7 @@ module Merchant
       merchants[merchant_sym]
     end
 
+    class_attribute :indexer
     attr_accessor :metadatum
 
     def initialize(metadatum, opts = {})
@@ -34,11 +35,6 @@ module Merchant
       @indices ||= index_pages.map { |path|
         indexer.new(path, metadatum)
       }
-    end
-
-    def indexer
-      @indexer ||= %Q(::Merchant::Indexer::#{name.capitalize})
-                     .safe_constantize
     end
 
     def crawl

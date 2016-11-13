@@ -8,9 +8,7 @@ require_rel './buyma_insider/crawler'
 require_rel './buyma_insider/http'
 require_rel './buyma_insider/url_cache'
 
-require_rel './buyma_insider/merchant/indexer/'
 require_rel './buyma_insider/merchant/'
-
 require_rel './buyma_insider/workers/'
 require_rel './buyma_insider/models/'
 require_rel './buyma_insider/utils/'

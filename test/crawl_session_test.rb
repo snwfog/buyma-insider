@@ -32,7 +32,7 @@ class CrawlSessionTest < Minitest::Test
     end
   end
 
-  def test_should_give_started_at_and_finished_at
+  def xtest_should_give_started_at_and_finished_at
     subject         = CrawlSession.new
     crawl_histories = 3.times.map { helper_get_crawl_history }
 

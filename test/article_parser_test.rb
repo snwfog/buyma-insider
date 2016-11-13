@@ -36,7 +36,7 @@ class ArticleParserTest < Minitest::Test
       def klazz.base_url
         '//www.ssense.com'
       end
-    end.extend(Merchant::ArticleParser::Ssense)
+    end.extend(Merchant::Ssense::Parser)
 
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article_hash[:description]
@@ -58,7 +58,8 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'zar'; end }.extend(Merchant::ArticleParser::Zara)
+    parser = Class.new { |klazz| def klazz.code; 'zar'; end }
+               .extend(Merchant::Zara::Parser)
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'VELVET TOGGLE JACKET', article_hash[:description]
     assert_equal 'VELVET TOGGLE JACKET', article_hash[:name]
@@ -93,7 +94,8 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'get'; end }.extend(Merchant::ArticleParser::Getoutside)
+    parser = Class.new { |klazz| def klazz.code; 'get'; end }
+               .extend(Merchant::Getoutside::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -139,7 +141,8 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'get'; end }.extend(Merchant::ArticleParser::Getoutside)
+    parser = Class.new { |klazz| def klazz.code; 'get'; end }
+               .extend(Merchant::Getoutside::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -181,7 +184,8 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'sho'; end }.extend(Merchant::ArticleParser::Shoeme)
+    parser = Class.new { |klazz| def klazz.code; 'sho'; end }
+               .extend(Merchant::Shoeme::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )

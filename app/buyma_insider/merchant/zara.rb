@@ -1,11 +1,19 @@
 module Merchant
-  module ArticleParser
-    module Zara
+  module Zara
+    def self.extended(merchant)
+      merchant.indexer = ZaraIndexer
+      merchant.extend Parser
+    end
+
+    class ZaraIndexer < Indexer
+    end
+
+    module Parser
       def attrs_from_node(node)
         item_a = node.at_css('a.item._item')
         desc_a = node.at_css('div.product-info a.name._item')
         price  = node.at_css('div.product-info div.price._product-price span')
-    
+
         {
           id:          "#{code}:#{node['data-productid']}",
           name:        desc_a.content,

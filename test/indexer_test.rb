@@ -17,13 +17,13 @@ class IndexerTest < Minitest::Test
   end
 
   def test_should_have_indexer
-    @all.each do |m_klazz|
-      refute_nil m_klazz.indexer
+    @all.each do |merchant|
+      refute_nil merchant.indexer, "Merchant #{merchant} should have indexer"
     end
   end
 
   def test_should_parse_getoutside_index
-    indexer = Merchant::Indexer::Getoutside.new(
+    indexer = Merchant::Getoutside::GetoutsideIndexer.new(
       'b', @merchants[:getoutside].metadatum
     )
 
@@ -54,7 +54,7 @@ class IndexerTest < Minitest::Test
   end
 
   def test_should_parse_shoeme_index
-    indexer = Merchant::Indexer::Shoeme.new(
+    indexer = Merchant::Shoeme::ShoemeIndexer.new(
       'b', @merchants[:shoeme].metadatum
     )
 
@@ -79,7 +79,7 @@ class IndexerTest < Minitest::Test
   end
 
   def test_should_parse_ssense_index
-    indexer = Merchant::Indexer::Ssense.new(
+    indexer = Merchant::Ssense::SsenseIndexer.new(
       'index', @merchants[:ssense].metadatum
     )
 

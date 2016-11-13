@@ -19,6 +19,7 @@ gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 # Persistence
 gem 'nobrainer'
 gem 'redis'
+gem 'seed-fu'
 
 # Integration
 gem 'slackiq'
