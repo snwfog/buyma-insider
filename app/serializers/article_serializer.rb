@@ -9,7 +9,9 @@ class ArticleSerializer < ActiveModel::Serializer
              :price,
              :link,
              :price_history,
-             :description
+             :description,
+             :created_at,
+             :updated_at
 
   def price_history
     object.price_history.history
