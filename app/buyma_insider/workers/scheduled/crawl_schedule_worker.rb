@@ -18,7 +18,7 @@ class CrawlScheduleWorker < Worker::Base
   def perform
     merchant_scores = Merchant::Base.all.each { |merchant|
       metadatum = merchant.metadatum
-      [merchant, metadatum.crawl_sessions.inject(0) { |m, n| (m + n)/2 }]
+      [merchant, metadatum.crawl_sessions.map(&:elapsed_time).inject(0) { |m, n| (m + n)/2 }]
     }
 
     merchant_scores = merchant_scores.sort_by(&:last) # sort_by array's last
