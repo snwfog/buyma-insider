@@ -18,8 +18,8 @@ module Merchant
       @@merchants ||= Hash[all.collect { |m| [m.name.to_sym, m] }]
     end
 
-    def self.[](merchant_sym)
-      merchants[merchant_sym]
+    def self.[](merchant_name)
+      merchants[merchant_name.to_sym]
     end
 
     class_attribute :indexer
