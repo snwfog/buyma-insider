@@ -7,15 +7,16 @@ class CrawlWorker < Worker::Base
                 :stats
 
   def perform(merchant_name)
-    log_start
-
     Raven.capture {
       @merchant = Merchant::Base[merchant_name]
-      @crawler  = merchant.crawl
-      @stats    = crawler.stats
-    }
 
-    log_end
+      log_start
+
+      @crawler = merchant.crawl
+      @stats   = crawler.stats
+
+      log_end
+    }
   end
 
   def log_start
