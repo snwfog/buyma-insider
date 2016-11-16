@@ -3,7 +3,14 @@
 ## SETUP
 
 ```
+# Start rethinkdb with docker
 docker run  --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
+
+# Launching unicorn locally
+ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d
+
+# Launching pry
+ENVIRONMENT=development be pry -Iapp:config:db -r 'buyma_insider'
 ```
 
 ## NOTE

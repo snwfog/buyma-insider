@@ -25,7 +25,7 @@ class CrawlerTest < Minitest::Test
     end
   end
 
-  def test_empty_crawl_histories_should_return_0
+  def test_empty_crawl_histories_should_return_0_total_elapsed_time
     merchant_stub = Minitest::Mock.new
     crawler = Crawler.new(merchant_stub)
     crawler.stub :histories, [] do
