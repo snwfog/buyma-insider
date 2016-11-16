@@ -78,17 +78,17 @@ class Crawler
 
         @logger.info <<~EOF
           #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time}s) with #{history.status}
-                                                                                                              [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
+                                                                                                                        [Total items: #{history.items_count}, Traffic size: #{history.traffic_size}B]\n
         EOF
       end
     end
   end
 
   def total_elapsed_time
-    @histories.select(&:completed?).map(&:elapsed_time).reduce(:+)
+    histories.select(&:completed?).map(&:elapsed_time).reduce(0.0, :+)
   end
 
   def stats
-    @histories.group_by(&:completed?)
+    histories.group_by(&:completed?)
   end
 end
