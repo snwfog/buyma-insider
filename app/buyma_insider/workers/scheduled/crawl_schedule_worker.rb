@@ -1,3 +1,4 @@
+require 'slackiq'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/time/calculations'
 
@@ -26,6 +27,8 @@ class CrawlScheduleWorker < Worker::Base
     merchant_scores.each do |merchant, _elapsed_time|
       CrawlWorker.perform_at @start_time, merchant.name
       @start_time += 30.minutes
+      Slackiq.notify webhook_name: :worker,
+                     title:        %(#{merchant.name.capitalize} crawler scheduled to start @ #{@start_time.strftime('%F %T')})
     end
   end
 end
