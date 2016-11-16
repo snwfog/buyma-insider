@@ -20,15 +20,18 @@ class CrawlScheduleWorker < Worker::Base
     merchant_scores = Merchant::Base.all.map { |merchant|
       metadatum = merchant.metadatum
       [merchant, metadatum.crawl_sessions
-                   .map(&:elapsed_time).inject(0) { |m, n| (m + n)/2 }]
+                   .map(&:elapsed_time)
+                   .compact
+                   .inject(0) { |m, n| (m + n)/2 }]
     }
 
     merchant_scores = merchant_scores.sort_by(&:last) # sort_by array's last, which is the elapsed time
     merchant_scores.each do |merchant, _elapsed_time|
       CrawlWorker.perform_at @start_time, merchant.name
-      @start_time += 30.minutes
       Slackiq.notify webhook_name: :worker,
                      title:        %(#{merchant.name.capitalize} crawler scheduled to start @ #{@start_time.strftime('%F %T')})
+
+      @start_time += 30.minutes
     end
   end
 end
