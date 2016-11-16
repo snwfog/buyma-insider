@@ -2,12 +2,19 @@
 
 ## SETUP
 
+- Unicorn in development can be run with local launch command
+- Nginx has to be setup in production, but locally
+  unicorn is directly listening on port 5000 and
+  localhost, so nginx don't have to be setup
+- Daemonize command option is not added for unicorn, but
+  could be if needed, just modify Procfile
+
 ```
 # Start rethinkdb with docker
 docker run  --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
 
 # Launching unicorn locally
-ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d
+ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d --host localhost --port 5000
 
 # Launching pry
 ENVIRONMENT=development be pry -Iapp:config:db -r 'buyma_insider'

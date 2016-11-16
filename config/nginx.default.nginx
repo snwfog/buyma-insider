@@ -5,14 +5,16 @@ events {}
 
 http {
   upstream buyma_insider {
-    server unix:/Users/snw/src/buyma_insider/shared/sockets/unicorn.sock fail_timeout=0;
+    # TODO: Fix this relative path
+    server unix:~/app/buyma_insider/shared/sockets/unicorn.sock fail_timeout=0;
   }
 
   server {
     listen 80;
     server_name localhost;
 
-    root /Users/snw/src/buyma_insider/public;
+    # TODO: Fix this relative path
+    root ~/app/buyma_insider/public;
     try_files $uri/index.html $uri @buyma_insider;
 
     access_log /dev/stdout;
