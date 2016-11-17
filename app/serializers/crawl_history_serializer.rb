@@ -1,6 +1,8 @@
 require 'active_model_serializers'
 
 class CrawlHistorySerializer < ActiveModel::Serializer
+  cache key: :crawl_history
+
   attributes :id,
              :status,
              # :link,

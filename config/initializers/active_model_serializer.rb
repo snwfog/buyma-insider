@@ -1,7 +1,14 @@
+require 'active_support/cache'
+require 'redis-activesupport'
 require 'active_model_serializers'
+require_relative './redis'
 
 AMS = ::ActiveModelSerializers unless defined? AMS
 
-AMS.config.adapter       = :json_api
+AMS.config.adapter         = :json_api
+AMS.config.cache_store     = ActiveSupport::Cache::RedisStore
+# AMS.config.cache_store     = ActiveSupport::Cache::RedisStore.new('localhost:6379/1', pool_size: 2, pool_timeout: 10)
+#   RedisStore.new "localhost:6379/0", "localhost:6380/0", pool_size: 5, pool_timeout: 10
+AMS.config.perform_caching = true
 # AMS.config.key_transform = :underscore
 

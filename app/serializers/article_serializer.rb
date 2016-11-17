@@ -4,6 +4,8 @@ require 'securerandom'
 class ArticleSerializer < ActiveModel::Serializer
   # has_one :price_history
 
+  cache key: :article
+
   attributes :id,
              :name,
              :price,
