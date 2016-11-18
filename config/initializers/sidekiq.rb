@@ -1,15 +1,17 @@
 require 'logging'
 require 'sidekiq'
 
-redis_config = YAML.load_file(File.expand_path('../../../config/redis.yml', __FILE__))
-                 .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
+redis_path = File.expand_path('../../../config/redis.yml', __FILE__)
+config     = YAML
+               .load_file(redis_path)
+               .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
 
-Sidekiq.configure_server do |config|
-  config.redis  = redis_config
-  config.logger = Logging.logger[:Worker]
+Sidekiq.configure_server do |cfg|
+  cfg.redis  = config
+  cfg.logger = Logging.logger[:Worker]
 end
 
-Sidekiq.configure_client do |config|
-  config.redis  = redis_config
-  config.logger = Logging.logger[:Worker]
+Sidekiq.configure_client do |cfg|
+  cfg.redis  = config
+  cfg.logger = Logging.logger[:Worker]
 end
