@@ -14,7 +14,6 @@ gem 'rake'
 gem 'activesupport'
 gem 'dotenv'
 gem 'connection_pool'
-gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 
 # Persistence
 gem 'nobrainer'
@@ -23,7 +22,9 @@ gem 'redis-activesupport'
 gem 'seed-fu'
 
 # Integration
+gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 gem 'slackiq'
+gem 'money-open-exchange-rates' # Money + exchange rates
 
 gem 'httplog'
 gem 'logging'

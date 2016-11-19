@@ -139,6 +139,14 @@ GEM
     mime-types-data (3.2016.0521)
     mini_portile2 (2.1.0)
     minitest (5.9.1)
+    monetize (1.4.0)
+      money (~> 6.7)
+    money (6.7.1)
+      i18n (>= 0.6.4, <= 0.7.0)
+      sixarm_ruby_unaccent (>= 1.1.1, < 2)
+    money-open-exchange-rates (0.7.0)
+      monetize (~> 1.4)
+      money (~> 6.7)
     multi_json (1.12.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -236,6 +244,7 @@ GEM
       ice_cube (~> 0.14.0)
       sidekiq (>= 4.1.0)
     sinatra-cross_origin (0.4.0)
+    sixarm_ruby_unaccent (1.1.1)
     slackiq (1.1.4)
       httparty
     slop (3.6.0)
@@ -276,6 +285,7 @@ DEPENDENCIES
   httplog
   logging
   minitest
+  money-open-exchange-rates
   nobrainer
   nokogiri
   nyan-cat-formatter
