@@ -9,8 +9,10 @@ class ExchangeRate
   field :timestamp, type: Time, required: true
   field :rates,     type: Hash, required: true
 
+  default_scope { order_by(timestamp: :desc) }
+
   def self.latest
-    order_by(timestamp: :desc).first
+    first
   end
 
   def timestamp=(unix)

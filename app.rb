@@ -82,4 +82,11 @@ get '/articles/:id' do
   render_json Article.find(params[:id]), include: '**'
 end
 
+# Default hardcoded to JYP, USD, and CAD
+get '/rates/latest' do
+  render_json ExchangeRate.latest
+end
 
+get '/rates' do
+  render_json ExchangeRate.limit(20)
+end
