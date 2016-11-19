@@ -73,7 +73,7 @@ get '/articles' do
                 .offset((page - 1) * count)
                 .limit(count), meta: { current_page: page,
                                        total_pages:  (articles.count / count.to_f).ceil,
-                                       new_count:    Article.new_articles.count,
+                                       new_count:    Article.new_articles.where(merchant_id: :id).count,
                                        sale_count:   0, # TODO
                                        total_count:  articles.count }
 end
