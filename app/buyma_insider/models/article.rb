@@ -27,7 +27,7 @@ class Article
   alias_method :title,      :name
 
   # scopes
-  scope(:new_articles) { where(:created_at.gte => 1.week.ago.utc) }
+  scope(:new_articles) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
 
   def price=(price)
     super(price.to_f)
