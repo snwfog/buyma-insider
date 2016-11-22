@@ -8,7 +8,7 @@ class PriceHistory
 
   field :article_id, primary_key: true
   field :currency,   type: Text, length: (3..3), default: 'CAN'
-  field :history,    type: Hash
+  field :history,    type: Array # Array of price hash
 
   def add_price(price)
     history ||= {}
