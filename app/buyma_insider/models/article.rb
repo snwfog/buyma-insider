@@ -27,7 +27,9 @@ class Article
   alias_method :title,      :name
 
   # scopes
-  scope(:new_articles) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
+  scope(:shinchyaku) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
+  # TODO: To implement
+  scope(:yasuuri)    { where(:price.lt => 1.00) }
 
   def price=(price)
     super(price.to_f)

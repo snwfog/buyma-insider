@@ -61,21 +61,30 @@ get '/crawl_sessions' do
 end
 
 get '/articles' do
-  merchant_id, page, count, new = params.values_at(:merchant, :page, :count, :new)
-  page                          = page ? page.to_i : 1
-  count                         = (count.to_i) > 0 ? count.to_i : 20
-  new                           ||= false
+  merchant_name, page, count, filter = params.values_at(:merchant, :page, :count, :filter)
+  page                               = page ? page.to_i : 1
+  count                              = (count.to_i) > 0 ? count.to_i : 20
+  filter                             = filter&.to_sym || :all
 
-  raise 'Parameter missing' if merchant_id.nil?
-  articles = Article.where(merchant_id: merchant_id)
-  articles = articles.new_articles if new
+  merchant = Merchant::Base[merchant_name]
+  raise 'Merchant does not exists' unless merchant
+  mm       = merchant.metadatum
+  articles = case filter
+             when :new
+               mm.articles.shinchyaku
+             when :sale
+               mm.articles.yasuuri
+             else
+               # Default to show all articles
+               mm.articles
+             end
   render_json articles
                 .offset((page - 1) * count)
                 .limit(count), meta: { current_page: page,
                                        total_pages:  (articles.count / count.to_f).ceil,
-                                       new_count:    Article.new_articles.where(merchant_id: :id).count,
-                                       sale_count:   0, # TODO
-                                       total_count:  articles.count }
+                                       new_count:    mm.shinchyaku.count,
+                                       sale_count:   mm.yasuuri.count,
+                                       total_count:  mm.articles.count }
 end
 
 get '/articles/:id' do

@@ -17,7 +17,7 @@ class MerchantStatus < AMS::Model
   end
 
   def new_articles_count
-    @m_klazz.article_model.new_articles.count
+    @m_klazz.article_model.shinchyaku.count
   end
 
   def total_articles_count

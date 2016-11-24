@@ -18,7 +18,8 @@ class MerchantMetadatumSerializer < ActiveModel::Serializer
   end
 
   def new_articles_count
-    object.articles.new_articles.count
+    # This is a chained criteria, not method call
+    object.shinchyaku.count
   end
 
   def last_sync
