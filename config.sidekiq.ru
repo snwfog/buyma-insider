@@ -1,5 +1,8 @@
+$LOAD_PATH.unshift(File.expand_path('../app', __FILE__))
+
 require 'sidekiq/web'
 require 'sidetiq/web'
+require 'buyma_insider'
 
 raise 'No environment defined' if ENV['ENVIRONMENT'].nil?
 
