@@ -4,6 +4,7 @@ $:.unshift(File.expand_path('../config', __FILE__))
 require 'buyma_insider'
 require 'sinatra'
 require 'sinatra/contrib'
+require 'sinatra/param'
 require 'sinatra/cross_origin'
 require 'sinatra/reloader'
 
@@ -61,18 +62,20 @@ get '/crawl_sessions' do
 end
 
 get '/articles' do
+  param :merchant, String,  required: true
+  param :page,     Integer, default: 1
+  param :count,    Integer, default: 20
+  param :filter,   String,  default: 'all'
+
   merchant_name, page, count, filter = params.values_at(:merchant, :page, :count, :filter)
-  page                               = page ? page.to_i : 1
-  count                              = (count.to_i) > 0 ? count.to_i : 20
-  filter                             = filter&.to_sym || :all
 
   merchant = Merchant::Base[merchant_name]
   raise 'Merchant does not exists' unless merchant
   mm       = merchant.metadatum
   articles = case filter
-             when :new
+             when 'new'
                mm.articles.shinchyaku
-             when :sale
+             when 'sale'
                mm.articles.yasuuri
              else
                # Default to show all articles

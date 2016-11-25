@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'sinatra', github: 'sinatra/sinatra', branch: 'master'
 gem 'sinatra-contrib'
+gem 'sinatra-param', github: 'snwfog/sinatra-param', branch: 'master'
 gem 'sinatra-cross_origin'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'sidekiq'
