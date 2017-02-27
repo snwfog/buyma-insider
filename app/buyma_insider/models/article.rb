@@ -10,8 +10,12 @@ class Article
 
   has_one :price_history
 
-  # after_create do |m|
-  # end
+  after_save do |article|
+    price_history.save
+  end
+
+  after_destroy do |article|
+  end
 
   field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
   field :merchant_id, type: String, required: true
@@ -27,17 +31,19 @@ class Article
   alias_method :title,      :name
 
   # scopes
+  ## New articles
   scope(:shinchyaku) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
   # TODO: To implement
+  ## On sale articles
   scope(:yasuuri)    { where(:price.lt => 1.00) }
 
   def price=(price)
     super(price.to_f)
-    NoBrainer::Lock.new("price_history:price=:#{self.id}").synchronize do
-      price_history = PriceHistory.upsert(article_id: self.id)
-      price_history.add_price(price)
-      price_history.save
-    end
+    price_history.add_price(price)
+  end
+
+  def price_history
+    super || PriceHistory.new(article_id: id)
   end
 
   # You should not mess with id...

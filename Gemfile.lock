@@ -90,6 +90,14 @@ GEM
     domain_name (0.5.20161021)
       unf (>= 0.0.5, < 1.0.0)
     dotenv (2.1.1)
+    elasticsearch (5.0.3)
+      elasticsearch-api (= 5.0.3)
+      elasticsearch-transport (= 5.0.3)
+    elasticsearch-api (5.0.3)
+      multi_json
+    elasticsearch-transport (5.0.3)
+      faraday
+      multi_json
     erubis (2.7.0)
     faker (1.6.6)
       i18n (~> 0.5)
@@ -276,6 +284,7 @@ DEPENDENCIES
   connection_pool
   coolline
   dotenv
+  elasticsearch
   faker
   foreman
   guard

@@ -22,6 +22,9 @@ gem 'redis'
 gem 'redis-activesupport'
 gem 'seed-fu'
 
+# Searching
+gem 'elasticsearch'
+
 # Integration
 gem 'sentry-raven', require: 'sentry-raven-without-integrations'
 gem 'slackiq'
