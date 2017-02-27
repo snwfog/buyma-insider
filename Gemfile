@@ -35,7 +35,7 @@ gem 'logging'
 
 # Deployment
 gem 'foreman'
-gem 'unicorn'
+gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
   gem 'shotgun'
@@ -61,5 +61,3 @@ when /darwin/
   gem 'guard'
   gem 'guard-minitest'
 end
-
-

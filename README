@@ -8,7 +8,7 @@
   localhost, so nginx don't have to be setup
 - Daemonize command option is not added for unicorn, but
   could be if needed, just modify Procfile
-
+- Make sure to set the ENVIRONMENT variable when running elsewhere
 ```
 # Start rethinkdb with docker
 docker run  --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
