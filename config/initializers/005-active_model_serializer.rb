@@ -1,7 +1,6 @@
 require 'active_support/cache'
 require 'redis-activesupport'
 require 'active_model_serializers'
-require_relative './redis'
 
 AMS = ::ActiveModelSerializers unless defined? AMS
 

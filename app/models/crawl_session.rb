@@ -4,12 +4,11 @@ class CrawlSession
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  has_many :crawl_histories, scope: -> { order_by(created_at: :asc).limit(20) }
-  # INFO: This association is defined on merchant_metadatum
-  # belongs_to :merchant
+  has_many    :crawl_histories, scope: -> { order_by(created_at: :asc).limit(20) }
+  
+  belongs_to  :merchant_metadatum, required: true
 
   field :id,          primary_key: true, required: true
-  field :merchant_id, type: String, required: true
 
   # INFO: Disable validation for now
   # validates_presence_of :started_at

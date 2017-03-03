@@ -12,8 +12,8 @@ timeout 30
 listen "#{app_dir}/tmp/sockets/unicorn.sock", :backlog => 64
 
 # Logging
-stderr_path "#{app_dir}/log/unicorn-stderr-#{ENV['ENVIRONMENT']}.log"
-stdout_path "#{app_dir}/log/unicorn-stdout-#{ENV['ENVIRONMENT']}.log"
+stderr_path "#{app_dir}/log/unicorn-stderr-#{ENV['RACK_ENV']}.log"
+stdout_path "#{app_dir}/log/unicorn-stdout-#{ENV['RACK_ENV']}.log"
 
 # Set master PID location
 pid "#{app_dir}/tmp/pids/unicorn.pid"

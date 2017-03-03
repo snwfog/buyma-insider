@@ -1,15 +1,16 @@
 require 'logging'
 
-Logging.logger.root.level = :info
-Logging.logger.root.add_appenders(Logging.appenders
-                                    .stdout(:layout => Logging.layouts.pattern(
-                                      :pattern => '[%d] %-5l -- %c : %m\n')))
+layout   = Logging.layouts.pattern(pattern: '[%d] %-5l -- %c : %m\n')
+log_path = File.expand_path("../../../log/buyma-insider-#{ENV['RACK_ENV']}.log", __FILE__)
 
-Logging.logger.root.add_appenders(Logging.appenders
-                                    .rolling_file(File.expand_path("../../../log/buyma-insider-#{ENV['ENVIRONMENT']}.log", __FILE__),
-                                                  :age    => 'weekly',
-                                                  :layout => Logging.layouts.pattern(
-                                                    :pattern => '[%d] %-5l -- %c : %m\n')))
+Logging.logger.root.level = :info
+Logging.logger.root.add_appenders(
+  Logging.appenders.stdout(layout: layout))
+
+Logging.logger.root.add_appenders(
+  Logging.appenders.rolling_file(log_path,
+                                 age:    'daily',
+                                 layout: layout))
 
 
 # worker          = Logging.logger[Merchant]
