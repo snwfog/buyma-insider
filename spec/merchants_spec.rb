@@ -6,12 +6,12 @@ describe Merchant::Base do
     expect(MerchantMetadatum.all.count).to be(4)
   end
 
-  it 'should list all merchants' do
+  it 'should list all merchant' do
     expect(Merchant::Base.all.count).to be 4
     expect(Merchant::Base.merchants.keys.count).to be 4
   end
 
-  it 'should fetch merchants' do
+  it 'should fetch merchant' do
     expect(Merchant::Base[:getoutside]).to be_an_instance_of(Merchant::Base)
     expect(Merchant::Base[:shoeme]).to be_an_instance_of(Merchant::Base)
     expect(Merchant::Base[:zara]).to be_an_instance_of(Merchant::Base)

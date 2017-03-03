@@ -1,4 +1,3 @@
-require 'buyma_insider'
 require 'money/bank/open_exchange_rates_bank'
 
 class OpenExchangeRatesWorker < Worker::Base

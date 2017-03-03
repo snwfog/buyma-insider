@@ -4,7 +4,7 @@ require 'active_support/core_ext/time/calculations'
 
 ##
 #
-# Will take all the merchants crawler,
+# Will take all the merchant crawler,
 # compute the average of the current time they takes
 # to run, then schedule them so they can
 # finish on time, e.g. before 6 a.m.

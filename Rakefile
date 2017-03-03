@@ -38,7 +38,7 @@ task :cleanup do
 end
 
 namespace :db do
-  # Initialize merchants from config
+  # Initialize merchant from config
   desc 'Setup merchant class'
   task :setup do
     config = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))

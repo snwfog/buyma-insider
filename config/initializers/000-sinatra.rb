@@ -1,3 +1,3 @@
-require 'sinatra'
-require 'sinatra/cross_origin'
+# require 'sinatra'
+# require 'sinatra/cross_origin'
 

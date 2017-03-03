@@ -7,7 +7,8 @@ module Merchant
 
     class GetoutsideIndexer < Indexer
       def compute_page
-        raise 'Indexer#compute_page should have block' unless block_given?
+        super
+        
         page_nodes = index_document.at_css(self.pager_css)
 
         first_node = page_nodes.at_css('ol li:first-child')

@@ -35,21 +35,5 @@ module Merchant
         indexer.new(path, metadatum)
       }
     end
-
-    def crawl
-      crawler = Crawler.new(self)
-      crawler.crawl do |history, attrs|
-        begin
-          article             = Article.upsert!(attrs)
-          history.items_count += 1
-          @logger.debug "Saved #{article.inspect}"
-        rescue Exception => ex
-          @logger.warn ex
-          @logger.warn attrs
-          history.invalid_items_count += 1
-        end
-      end
-      crawler
-    end
   end
 end

@@ -7,14 +7,9 @@ require_rel '../config/initializers/'
 
 require_rel './models'
 require_rel './serializers'
+require_rel './workers'
 
-require_rel './buyma_insider/crawler'
-require_rel './buyma_insider/http'
-require_rel './buyma_insider/url_cache'
-
-require_rel './buyma_insider/merchant/'
-require_rel './buyma_insider/workers/'
-require_rel './buyma_insider/utils/'
+require_all 'lib'
 
 module BuymaInsider
   NAME             = 'buyma_insider'

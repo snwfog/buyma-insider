@@ -1,12 +1,8 @@
-require 'sinatra'
-
-raise 'No environment defined' if ENV['ENVIRONMENT'].nil?
-
-set     :env, ENV['ENVIRONMENT']
-disable :run
-
 require './app'
+require 'rack'
 
-run Sinatra::Application
+# set     :env, ENV['RACK_ENV'] # this is default
+
+run BuymaInsider::App
 
 

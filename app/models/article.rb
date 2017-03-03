@@ -8,7 +8,7 @@ class Article
 
   EXPIRES_IN = 1.week
 
-  has_one :price_history, required: true
+  has_one :price_history
   
   belongs_to :merchant_metadatum, required: true
 

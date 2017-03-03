@@ -1,3 +1,5 @@
+require 'sidekiq'
+
 redis_cfg_path = File.expand_path('../../../config/redis.yml', __FILE__)
 redis_cfg      = YAML.load_file(redis_cfg_path)
                    .with_indifferent_access

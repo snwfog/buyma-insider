@@ -16,7 +16,7 @@ describe 'Merchant Website Checks' do
     end
   }
 
-  it 'should reach merchants page and check first page' do
+  it 'should reach merchant page and check first page' do
     merchants = Merchant::Base.all
     merchants.each do |merchant|
       expect(pages[merchant.name.to_sym].code).to be 200
