@@ -5,6 +5,9 @@ require 'nobrainer'
 #
 class PriceHistory
   include NoBrainer::Document
+  include NoBrainer::Document::Timestamps
+  
+  belongs_to :article
 
   field :article_id, primary_key: true
   field :currency,   type: Text, length: (3..3), default: 'CAN'

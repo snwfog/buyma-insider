@@ -8,7 +8,9 @@ class Article
 
   EXPIRES_IN = 1.week
 
-  has_one :price_history
+  has_one :price_history, required: true
+  
+  belongs_to :merchant_metadatum, required: true
 
   after_save do |article|
     price_history.save
@@ -18,7 +20,6 @@ class Article
   end
 
   field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
-  field :merchant_id, type: String, required: true
   field :name,        type: String, required: true, length: (1..500)
   field :price,       type: Float,  required: true # Latest price
   field :description, type: String, length: (1..1000)
@@ -36,6 +37,10 @@ class Article
   # TODO: To implement
   ## On sale articles
   scope(:yasuuri)    { where(:price.lt => 1.00) }
+  
+  def merchant=(merchant)
+    merchant_metadatum = merchant.metadatum
+  end
 
   def price=(price)
     super(price.to_f)

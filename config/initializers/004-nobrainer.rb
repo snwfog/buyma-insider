@@ -7,7 +7,7 @@ NoBrainer.configure do |config|
 
   # environment defaults to Rails.env for Rails apps or to the environment
   # variables RUBY_ENV, RAILS_ENV, RACK_ENV, or :production.
-  config.environment = ENV['ENVIRONMENT'] || :development
+  config.environment = ENV['RACK_ENV']
 
   # rethinkdb_urls specifies the RethinkDB database connection urls.
   # You may specify multiple urls to provide fault tolerance capabilities.

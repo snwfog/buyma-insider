@@ -7,8 +7,11 @@ class CrawlSession
   has_many    :crawl_histories, scope: -> { order_by(created_at: :asc).limit(20) }
   
   belongs_to  :merchant_metadatum, required: true
+  
+  alias_method :started_at, :created_at
 
   field :id,          primary_key: true, required: true
+  field :finished_at, type: Time
 
   # INFO: Disable validation for now
   # validates_presence_of :started_at
@@ -17,39 +20,19 @@ class CrawlSession
   # validates_numericality_of :traffic_size, greater_than_or_equal_to: 0
   # validates_numericality_of :elapsed_time, greater_than_or_equal_to: 0
 
-  def started_at
-    # crawl_histories.min_by(&:created_at).created_at
-    crawl_histories.min(:created_at)
-      &.created_at
-  end
+  # def started_at
+  #   # crawl_histories.min_by(&:created_at).created_at
+  #   crawl_histories.min(:created_at)
+  #     &.created_at
+  # end
 
-  def finished_at
-    # crawl_histories.max_by(&:finished_at).finished_at
-    crawl_histories.max(:finished_at)
-      &.finished_at
-  end
-
-  def respond_to_missing?(m, *args)
-    case m
-    when :items_count,
-      :invalid_items_count,
-      :traffic_size,
-      :elapsed_time
-      true
-    else
-      super
-    end
-  end
-
-  def method_missing(m, *args)
-    case m
-    when :items_count,
-      :invalid_items_count,
-      :traffic_size,
-      :elapsed_time
-      crawl_histories.map(&m).inject(:+)
-    else
-      super
+  [:items_count,
+   :invalid_items_count,
+   :traffic_size_kb,
+   :elapsed_time_s]
+  .each do |m|
+    define_method(m) do
+      crawl_histories.map(&m).inject(0, :+)
     end
   end
 end

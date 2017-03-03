@@ -7,6 +7,8 @@ module Merchant
              :pager_css, :item_css, :index_pages,
              to: :metadatum
 
+    class_attribute :indexer
+    
     def self.all
       @@all ||= MerchantMetadatum.all.map do |meta|
         merchant = new(meta)
@@ -22,13 +24,10 @@ module Merchant
       merchants[merchant_name.to_sym]
     end
 
-    class_attribute :indexer
     attr_accessor :metadatum
 
-    def initialize(metadatum, opts = {})
+    def initialize(metadatum)
       @metadatum = metadatum
-      @options   = opts
-      @logger    = Logging.logger[self]
     end
 
     def indices

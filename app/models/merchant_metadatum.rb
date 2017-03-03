@@ -3,13 +3,11 @@ require 'nobrainer'
 class MerchantMetadatum
   include NoBrainer::Document
 
-  has_many :crawl_histories, foreign_key: :merchant_id,
-                             scope: -> { order_by(created_at: :desc) }
+  has_many :crawl_histories, scope: -> { order_by(created_at: :desc) }
 
-  has_many :crawl_sessions, foreign_key: :merchant_id,
-                            scope: -> { order_by(created_at: :desc) }
+  has_many :crawl_sessions, scope: -> { order_by(created_at: :desc) }
 
-  has_many :articles,        foreign_key: :merchant_id
+  has_many :articles
 
   field :id,           primary_key: true, required: true, format: /[a-z]{3}/
   field :name,         type: String, required: true
