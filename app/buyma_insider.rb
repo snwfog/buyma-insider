@@ -6,6 +6,7 @@ require 'dotenv/load'
 require_rel '../config/initializers/'
 
 require_rel './models'
+require_rel './controllers'
 require_rel './serializers'
 require_rel './workers'
 

@@ -10,20 +10,19 @@ class MerchantMetadatumSerializer < ActiveModel::Serializer
              :item_css,
              :index_pages,
              :total_articles_count,
-             :new_articles_count,
-             :last_sync
+             # :new_articles_count,
+             :last_sync_at
 
   def total_articles_count
     object.articles.count
   end
 
-  def new_articles_count
-    # This is a chained criteria, not method call
-    object.shinchyaku.count
-  end
+  # def new_articles_count
+  #   # This is a chained criteria, not method call
+  #   object.shinchyaku.count
+  # end
 
-  def last_sync
-    object.crawl_sessions.max(:created_at)
-      &.created_at
+  def last_sync_at
+    object.crawl_sessions.max(:created_at)&.created_at
   end
 end

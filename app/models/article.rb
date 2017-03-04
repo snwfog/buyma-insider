@@ -13,7 +13,11 @@ class Article
   belongs_to :merchant_metadatum, required: true
 
   after_save do |article|
-    price_history.save
+    price_history ||= PriceHistory.create!(article)
+  end
+  
+  after_create do |article|
+    price_history = PriceHistory.new(article)
   end
 
   after_destroy do |article|
@@ -33,10 +37,10 @@ class Article
 
   # scopes
   ## New articles
-  scope(:shinchyaku) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
+  scope(:latests) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
   # TODO: To implement
   ## On sale articles
-  scope(:yasuuri)    { where(:price.lt => 1.00) }
+  scope(:sales)    { where(:price.lt => 1.00) }
   
   def merchant=(merchant)
     merchant_metadatum = merchant.metadatum
@@ -45,10 +49,6 @@ class Article
   def price=(price)
     super(price.to_f)
     price_history.add_price(price)
-  end
-
-  def price_history
-    super || PriceHistory.new(article_id: id)
   end
 
   # You should not mess with id...

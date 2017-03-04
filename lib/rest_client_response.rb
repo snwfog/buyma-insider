@@ -1,3 +1,5 @@
+require 'rest_client'
+
 ##
 # Extension for RestClient::Response
 #

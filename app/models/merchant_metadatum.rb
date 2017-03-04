@@ -20,13 +20,13 @@ class MerchantMetadatum
   alias_method :code,   :id
   alias_method :code=,  :id=
 
-  def shinchyaku
+  def latests
     # This is a flat criteria, might look wrong
     # but its working
-    articles.shinchyaku
+    # articles.shinchyaku
   end
 
-  def yasuuri
-    articles.yasuuri
+  def sales
+    # articles.sales
   end
 end
