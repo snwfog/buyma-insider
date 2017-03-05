@@ -1,6 +1,7 @@
+require 'active_model_serializers'
 require 'active_support/descendants_tracker'
 
-class MerchantStatus < AMS::Model
+class MerchantStatus < ActiveModelSerializers::Model
   alias :read_attribute_for_serialization :send
 
   attr_accessor :new_articles_count

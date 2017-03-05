@@ -1,12 +1,10 @@
 require 'sinatra/base'
-require 'sinatra/contrib'
+require 'sinatra/json'
 require 'sinatra/param'
 require 'sinatra/cross_origin'
 require 'sinatra/reloader'
 
 class ApplicationController < Sinatra::Base
-  register Sinatra::CrossOrigin
-
   disable :run
   disable :static
   disable :views
@@ -19,10 +17,12 @@ class ApplicationController < Sinatra::Base
   set :allow_methods,   [:get, :post, :options]
   set :max_age,         '1728000'
   set :expose_headers,  ['content-type']
-
-  before do
-    content_type :json
-  end
   
+  configure :development do
+    register Sinatra::Reloader
+    also_reload './app/serializers/*.rb'
+  end
+
+  register Sinatra::CrossOrigin
   helpers ::JsonHelper
 end
