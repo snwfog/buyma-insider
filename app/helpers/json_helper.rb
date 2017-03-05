@@ -10,7 +10,7 @@ module JsonHelper
         options[:json_encoder] = :to_json
         super(ActiveModelSerializers::SerializableResource.new(object), options)
       else
-        not_found
+        not_found({'Not found' => 'Model is not found'}.to_json)
       end
     end
   end

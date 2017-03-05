@@ -1,12 +1,12 @@
 require_relative './application'
 
 class ArticlesController < ApplicationController
-  get '/:merchant_id' do
+  get '/' do
     param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
     param :page,        Integer, in: (1..200), default: 1
     param :limit,       Integer, in: (1..20), default: 20
     param :filter,      String
-    
+
     merchant_id, page, count, filter = params.values_at(:merchant_id, :page, :limit, :filter)
     merchant = Merchant.find!(merchant_id)
     articles = if ['latests', 'sales'].include?(filter)
@@ -14,7 +14,7 @@ class ArticlesController < ApplicationController
                else
                  merchant.articles
                end
-    
+
     json articles
            .offset((page - 1) * count)
            .limit(count), meta: { current_page:  page,
@@ -25,9 +25,9 @@ class ArticlesController < ApplicationController
   end
 
   get '/:id' do
-    param :id, Integer, required: true
+    param :id, String, required: true
     
-    json Article.find(params[:id]), include: '**'
+    json Article.find?(params[:id]), include: '**'
   end
   
   get '/search' do

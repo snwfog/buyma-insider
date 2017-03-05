@@ -26,7 +26,7 @@ class ApplicationController < Sinatra::Base
   before do
     content_type :json
   end
-
+  
   register Sinatra::CrossOrigin
   helpers Sinatra::Param
   helpers ::JsonHelper

@@ -1,13 +1,10 @@
 require_relative './application'
 
 class CrawlSessionsController < ApplicationController
-  get '/' do
-    json CrawlSession.order_by(created_at: :desc)
-  end
-  
   get '/:merchant_id' do
-    param :merchant_id, Integer, required: true
+    param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
     
-    json CrawlSession.where(merchant_id: params[:merchant_id])
+    merchant_id = params.values_at(:merchant_id)
+    json CrawlSession.where(merchant_id: merchant_id)
   end
 end
