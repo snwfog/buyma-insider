@@ -6,7 +6,7 @@ class CrawlHistory
 
   belongs_to :crawl_session
   
-  belongs_to :merchant_metadatum
+  belongs_to :merchant
   
   # default_scope { order_by(created_at: :asc) }
 

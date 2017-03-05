@@ -21,10 +21,8 @@ class CrawlWorker < Worker::Base
     }
   end
   
-  def perform(merchant_name)
-    @merchant = Merchant[merchant_name]
-    raise 'Invalid merchant "%s"' % merchant_name unless @merchant
-    
+  def perform(merchant_id)
+    @merchant = Merchant.find!(merchant_id)
     Raven.capture do
       log_start
       
@@ -60,13 +58,13 @@ class CrawlWorker < Worker::Base
           next unless @url_cache.add? page_url
           
           # Get link HTML and set @response if not in url cache
-          response = RestClient.get "#{protocol}:#{page_url}"
+          response = RestClient.get "#{protocol}:#{page_url}", @std_headers
           
           logger.info("Received html '#{page_url}' (#{response.content_length} B)")
           
           # Parse into document from response
           next if response.body.empty?
-
+          
           document = Nokogiri::HTML(response.body)
           document.css(merchant.item_css).each do |it|
             begin
@@ -75,11 +73,11 @@ class CrawlWorker < Worker::Base
               article          = Article.upsert!(attrs)
               article.merchant = merchant
               article.save
-    
+              
               history.items_count += 1
             rescue Exception => ex
               history.invalid_items_count += 1
-    
+              
               logger.warn 'Failed parsing a merchant item'
               logger.warn it.to_html
               logger.warn ex
@@ -90,13 +88,18 @@ class CrawlWorker < Worker::Base
           
           history.traffic_size_kb += (response.content_length / 1000.0)
         end
-        history.completed!
       rescue Exception => ex
         history.aborted!
         # raise ex swallow error and log to sentry
         Raven.capture_exception(ex)
-        @logger.error history.description
-        @logger.error ex
+        logger.error history.description
+        logger.error ex
+        if ex.is_a? RestClient::Exception
+          logger.error ex.http_headers
+        end
+        logger.error ex.backtrace
+      else
+        history.completed!
       ensure
         history.finished_at = Time.now.utc
         history.save

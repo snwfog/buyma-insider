@@ -1,7 +1,7 @@
 require 'nokogiri'
 require 'active_support/core_ext/module/delegation'
 
-module Merchant
+module Merchants
   class Indexer
     delegate :pager_css, to: :merchant_metadatum
     

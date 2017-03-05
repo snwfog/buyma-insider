@@ -1,9 +1,9 @@
 require 'sentry-raven'
 
-if ENV['RACK_ENV'] =~ /prod(uction)?/i
+if ENV['RACK_ENV'] =~ /prod(udction)?/i
   Raven.inject_only :sidekiq
   Raven.configure do |config|
     config.dsn          = ENV['SENTRY_DSN']
-    config.environments = [ENV['RACK_ENV']]
+    config.environments = [:production]
   end
 end

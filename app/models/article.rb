@@ -10,7 +10,7 @@ class Article
 
   has_one :price_history
   
-  belongs_to :merchant_metadatum, required: true
+  belongs_to :merchant, required: true
 
   after_save do |article|
     price_history ||= PriceHistory.create!(article)
@@ -32,10 +32,6 @@ class Article
   # TODO: To implement
   ## On sale articles
   scope(:sales)    { where(:price.lt => 1.00) }
-  
-  def merchant=(merchant)
-    merchant_metadatum = merchant.metadatum
-  end
 
   def price=(price)
     super(price.to_f)

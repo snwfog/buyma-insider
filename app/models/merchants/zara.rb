@@ -1,4 +1,4 @@
-module Merchant
+module Merchants
   module Zara
     def self.extended(merchant)
       merchant.indexer = ZaraIndexer

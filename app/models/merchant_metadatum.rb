@@ -2,14 +2,10 @@ require 'nobrainer'
 
 class MerchantMetadatum
   include NoBrainer::Document
+ 
+  belongs_to :merchant, required: true
 
-  has_many :crawl_histories, scope: -> { order_by(created_at: :desc) }
-
-  has_many :crawl_sessions, scope: -> { order_by(created_at: :desc) }
-
-  has_many :articles
-
-  field :id,           primary_key: true, required: true, format: /[a-z]{3}/
+  field :id,           primary_key: true, required: true
   field :name,         type: String, required: true
   field :base_url,     type: String, required: true
   field :pager_css,    type: String

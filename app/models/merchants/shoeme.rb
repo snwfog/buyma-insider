@@ -1,4 +1,4 @@
-module Merchant
+module Merchants
   module Shoeme
     def self.extended(merchant)
       merchant.indexer = ShoemeIndexer

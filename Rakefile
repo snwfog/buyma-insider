@@ -2,6 +2,7 @@ $:.unshift(File.expand_path('app'))
 # $:.unshift(File.expand_path('db'))
 
 require 'buyma_insider'
+require 'ostruct'
 load 'no_brainer/railtie/database.rake'
 
 # require 'bundler'
@@ -41,15 +42,26 @@ task :environment do
   # Just an empty task that stub rails environment task
 end
 
+desc 'Crawl a merchant given merchant id'
+task :crawl, [:merchant_id] do |_, args|
+  CrawlWorker.new.perform(args.fetch(:merchant_id))
+end
+
 namespace :db do
   # Initialize merchant from config
   desc 'Setup merchants metadata'
   task :setup do
     merchant_cfg_path = File.expand_path('../config/merchant.yml', __FILE__)
     merchant_cfg      = YAML.load_file(merchant_cfg_path)
-    merchant_cfg.each_key do |k|
-      merchant = MerchantMetadatum.upsert!(merchant_cfg.fetch(k))
-      puts "Merchant #{merchant.name}[#{merchant.code}] created..."
+    merchant_cfg.each_key do |merchant_name|
+      merchant_datum = merchant_cfg.fetch(merchant_name) { |name| raise KeyError, "Merchant #{name} not found" }
+      m              = OpenStruct.new(merchant_datum)
+      merchant       = Merchant.new(id: m.id, name: m.name)
+      merchant.save!
+      
+      metadatum = MerchantMetadatum.upsert!(merchant_datum.merge(merchant: merchant))
+      
+      puts "Merchant #{metadatum.name}[#{metadatum.code}] created..."
     end
   end
   

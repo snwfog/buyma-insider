@@ -1,4 +1,4 @@
-module Merchant
+module Merchants
   module Ssense
     def self.extended(merchant)
       merchant.indexer = SsenseIndexer
