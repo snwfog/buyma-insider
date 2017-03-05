@@ -7,10 +7,9 @@ module JsonHelper
   module OverrideMethods
     def json(object, options = {})
       if object
-        options[:json_encoder] = :to_json
-        super(ActiveModelSerializers::SerializableResource.new(object), options)
+        super(ActiveModelSerializers::SerializableResource.new(object, options), { json_encoder: :to_json })
       else
-        not_found({'Not found' => 'Model is not found'}.to_json)
+        not_found({ 'Not found' => 'Model is not found' }.to_json)
       end
     end
   end

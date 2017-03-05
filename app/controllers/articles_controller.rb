@@ -7,7 +7,8 @@ class ArticlesController < ApplicationController
     param :limit,       Integer, in: (1..20), default: 20
     param :filter,      String
 
-    merchant_id, page, count, filter = params.values_at(:merchant_id, :page, :limit, :filter)
+    merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
+    
     merchant = Merchant.find!(merchant_id)
     articles = if ['latests', 'sales'].include?(filter)
                  merchant.articles.public_send(filter)
@@ -16,9 +17,9 @@ class ArticlesController < ApplicationController
                end
 
     json articles
-           .offset((page - 1) * count)
-           .limit(count), meta: { current_page:  page,
-                                  total_pages:   (articles.count / count.to_f).ceil,
+           .offset((page - 1) * limit)
+           .limit(limit), meta: { current_page:  page,
+                                  total_pages:   (articles.count / limit.to_f).ceil,
                                   latests_count: merchant.articles.latests.count,
                                   sales_count:   merchant.articles.sales.count,
                                   total_count:   merchant.articles.count }
