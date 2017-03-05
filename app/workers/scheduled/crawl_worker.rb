@@ -68,11 +68,9 @@ class CrawlWorker < Worker::Base
           document = Nokogiri::HTML(response.body)
           document.css(merchant.item_css).each do |it|
             begin
-              # TODO: Will fail if the parsing fail
-              attrs            = merchant.attrs_from_node(it)
-              article          = Article.upsert!(attrs)
-              article.merchant = merchant
-              article.save
+              attrs   = merchant.attrs_from_node(it)
+              article = Article.upsert!(attrs.merge(merchant: merchant))
+              article.update_price_history!
               
               history.items_count += 1
             rescue Exception => ex
@@ -104,9 +102,8 @@ class CrawlWorker < Worker::Base
         history.finished_at = Time.now.utc
         history.save
         
-        logger.info <<~EOF
-          #{history.description} finished at #{Time.now} (#{'%.02f' % history.elapsed_time_s}s) with #{history.status}
-        EOF
+        logger.info 'Crawling %s finished at %s' % [history.description, Time.now]
+        logger.info history.attributes
       end
     end
   end

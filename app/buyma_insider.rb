@@ -1,4 +1,4 @@
-$:.unshift(File.expand_path('../lib', __FILE__))
+$:.unshift(File.expand_path('../../lib', __FILE__))
 
 require 'require_all'
 require 'dotenv/load'
@@ -6,9 +6,10 @@ require 'faker'
 
 require_rel '../config/initializers/'
 
+require_rel './helpers'
 require_rel './models'
-require_rel './controllers'
 require_rel './serializers'
+require_rel './controllers'
 require_rel './workers'
 
 require_all 'lib'

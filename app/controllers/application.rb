@@ -20,18 +20,9 @@ class ApplicationController < Sinatra::Base
   set :max_age,         '1728000'
   set :expose_headers,  ['content-type']
 
-  helpers do
-    def render_json(model, options = {})
-      if model
-        json AMS::SerializableResource.new(model, options)
-      else
-        not_found
-      end
-    end
-  end
-
   before do
     content_type :json
   end
   
+  helpers ::JsonHelper
 end

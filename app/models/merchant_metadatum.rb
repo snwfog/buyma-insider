@@ -3,7 +3,7 @@ require 'nobrainer'
 class MerchantMetadatum
   include NoBrainer::Document
  
-  belongs_to :merchant, required: true
+  belongs_to :merchant, required: true, unique: true
 
   field :id,           primary_key: true, required: true
   field :name,         type: String, required: true
