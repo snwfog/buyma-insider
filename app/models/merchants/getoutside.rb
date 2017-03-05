@@ -34,6 +34,7 @@ module Merchants
         
         {
           id:          "#{code}:#{article_id}",
+          sku:         article_id,
           name:        product_image_link['title'],
           price:       price,
           description: node.at_css('h2.product-name a').content,

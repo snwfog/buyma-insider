@@ -12,6 +12,8 @@ class CrawlSession
 
   field :id,          primary_key: true, required: true
   field :finished_at, type: Time
+  
+  default_scope { order_by(created_at: :desc) }
 
   # INFO: Disable validation for now
   # validates_presence_of :started_at

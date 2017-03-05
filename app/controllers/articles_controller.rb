@@ -1,38 +1,33 @@
 require_relative './application'
 
 class ArticlesController < ApplicationController
-  get '/' do
-    param :merchant, String, required: true
-    param :page,     Integer, default: 1
-    param :count,    Integer, default: 20
-    param :filter,   String, default: 'all'
+  get '/:merchant_id' do
+    param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
+    param :page,        Integer, in: (1..200), default: 1
+    param :limit,       Integer, in: (1..20), default: 20
+    param :filter,      String
     
-    merchant_name, page, count, filter = params.values_at(:merchant, :page, :count, :filter)
-    
-    merchant = Merchant::Base[merchant_name]
-    raise 'Merchant does not exists' unless merchant
-    mm       = merchant.metadatum
-    articles = case filter
-               when 'new'
-                 mm.articles.latests
-               when 'sale'
-                 mm.articles.sales
+    merchant_id, page, count, filter = params.values_at(:merchant_id, :page, :limit, :filter)
+    merchant = Merchant.find!(merchant_id)
+    articles = if ['latests', 'sales'].include?(filter)
+                 merchant.articles.public_send(filter)
                else
-                 # Default to show all articles
-                 mm.articles
+                 merchant.articles
                end
-    render_json articles
-                  .offset((page - 1) * count)
-                  .limit(count), meta: { current_page: page,
-                                         total_pages:  (articles.count / count.to_f).ceil,
-                                         new_count:    mm.latests.count,
-                                         sale_count:   mm.sales.count,
-                                         total_count:  mm.articles.count }
+    
+    json articles
+           .offset((page - 1) * count)
+           .limit(count), meta: { current_page:  page,
+                                  total_pages:   (articles.count / count.to_f).ceil,
+                                  latests_count: merchant.articles.latests.count,
+                                  sales_count:   merchant.articles.sales.count,
+                                  total_count:   merchant.articles.count }
   end
 
   get '/:id' do
     param :id, Integer, required: true
-    render_json Article.find(params[:id]), include: '**'
+    
+    json Article.find(params[:id]), include: '**'
   end
   
   get '/search' do

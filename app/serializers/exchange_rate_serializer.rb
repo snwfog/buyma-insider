@@ -3,7 +3,7 @@ require 'active_model_serializers'
 class ExchangeRateSerializer < ActiveModel::Serializer
   DEFAULT_RATES = %w(JPY CAD USD)
 
-  cache key: :exchange_rates
+  # cache key: :exchange_rates
   attributes :id,
              :base,
              :timestamp,

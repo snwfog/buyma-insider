@@ -22,7 +22,12 @@ class ApplicationController < Sinatra::Base
     register Sinatra::Reloader
     also_reload './app/serializers/*.rb'
   end
+  
+  before do
+    content_type :json
+  end
 
   register Sinatra::CrossOrigin
+  helpers Sinatra::Param
   helpers ::JsonHelper
 end

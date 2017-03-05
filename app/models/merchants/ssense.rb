@@ -23,6 +23,7 @@ module Merchants
       def attrs_from_node(node)
         {
           id:          "#{code}:#{node['data-product-sku']}",
+          sku:         node['data-product-sku'],
           name:        node['data-product-name'],
           price:       node['data-product-price'],
           description: "#{node['data-product-brand']} - #{node['data-product-name']}",

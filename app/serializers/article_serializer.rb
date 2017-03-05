@@ -4,15 +4,15 @@ require 'securerandom'
 class ArticleSerializer < ActiveModel::Serializer
   # has_one :price_history
 
-  cache key: :article
+  # cache key: :article
 
   attributes :id,
              :name,
+             :description,
              :price,
              :link,
              :price_history,
-             :price_summary,
-             :description,
+             # :price_summary,
              :created_at,
              :updated_at
 
@@ -20,17 +20,17 @@ class ArticleSerializer < ActiveModel::Serializer
     object.price_history.history
   end
 
-  def price_summary
-    histories = object.price_history.history
-    stats     = Hash.new
-    unless histories.empty?
-      min, max    = histories.minmax
-      stats[:max] = { seen_at: max.first, price: max.last.to_f }
-      stats[:min] = { seen_at: min.first, price: min.last.to_f }
-      stats[:avg] = { price: histories.values.inject(0.0, :+) / histories.count }
-    end
-    stats
-  end
+  # def price_summary
+  #   histories = object.price_history.history
+  #   stats     = Hash.new
+  #   unless histories.empty?
+  #     min, max    = histories.minmax
+  #     stats[:max] = { seen_at: max.first, price: max.last.to_f }
+  #     stats[:min] = { seen_at: min.first, price: min.last.to_f }
+  #     stats[:avg] = { price: histories.values.inject(0.0, :+) / histories.count }
+  #   end
+  #   stats
+  # end
 
   # class PriceHistorySerializer < ActiveModel::Serializer
   #   attributes :currency,

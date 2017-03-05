@@ -38,6 +38,7 @@ module Merchants
 
         {
           id:          "#{code}:#{Digest::MD5.hexdigest(desc)}",
+          sku:         Digest::MD5.hexdigest(desc),
           name:        desc,
           price:       node.at_css('div.product-price p.product-price').content[/[\d]{1,10}\.[\d]{2}/],
           description: desc,
