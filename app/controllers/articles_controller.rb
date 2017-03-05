@@ -14,9 +14,9 @@ class ArticlesController < ApplicationController
     mm       = merchant.metadatum
     articles = case filter
                when 'new'
-                 mm.articles.shinchyaku
+                 mm.articles.latests
                when 'sale'
-                 mm.articles.yasuuri
+                 mm.articles.sales
                else
                  # Default to show all articles
                  mm.articles
@@ -25,13 +25,21 @@ class ArticlesController < ApplicationController
                   .offset((page - 1) * count)
                   .limit(count), meta: { current_page: page,
                                          total_pages:  (articles.count / count.to_f).ceil,
-                                         new_count:    mm.shinchyaku.count,
-                                         sale_count:   mm.yasuuri.count,
+                                         new_count:    mm.latests.count,
+                                         sale_count:   mm.sales.count,
                                          total_count:  mm.articles.count }
   end
 
   get '/:id' do
     param :id, Integer, required: true
     render_json Article.find(params[:id]), include: '**'
+  end
+  
+  get '/search' do
+    param :query, String
+    param :q,     String
+    any_of :query, :q
+  
+    json :ok
   end
 end

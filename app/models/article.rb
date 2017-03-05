@@ -15,13 +15,6 @@ class Article
   after_save do |article|
     price_history ||= PriceHistory.create!(article)
   end
-  
-  after_create do |article|
-    price_history = PriceHistory.new(article)
-  end
-
-  after_destroy do |article|
-  end
 
   field :id,          primary_key: true, required: true, format: /[a-z]{3}:[\w]+/
   field :name,        type: String, required: true, length: (1..500)
@@ -35,8 +28,6 @@ class Article
   alias_method :desc,       :description
   alias_method :title,      :name
 
-  # scopes
-  ## New articles
   scope(:latests) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
   # TODO: To implement
   ## On sale articles

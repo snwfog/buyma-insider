@@ -1,4 +1,5 @@
 require 'set'
+require 'faker'
 require 'sentry-raven'
 
 class CrawlWorker < Worker::Base
@@ -21,7 +22,8 @@ class CrawlWorker < Worker::Base
   end
   
   def perform(merchant_name)
-    @merchant = Merchant::Base[merchant_name]
+    @merchant = Merchant[merchant_name]
+    raise 'Invalid merchant "%s"' % merchant_name unless @merchant
     
     Raven.capture do
       log_start

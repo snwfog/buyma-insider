@@ -1,10 +1,11 @@
+require 'buyma_insider'
 require 'yaml'
 require 'rethinkdb'
-require 'buyma_insider'
-
-raise 'Environment missing' unless ENV.has_key? 'ENVIRONMENT'
 
 include RethinkDB::Shortcuts
-rethinkdb_config = YAML.load_file(File.expand_path('config/database.yml'))
-                     .deep_symbolize_keys[ENV['ENVIRONMENT'].to_sym]
-$conn            = r.connect(rethinkdb_config)
+
+rethinkdb_cfg_path = File.expand_path('config/database.yml')
+rethinkdb_cfg      = YAML.load_file(rethinkdb_cfg_path)
+                       .with_indifferent_access.fetch(ENV['RACK_ENV'])
+
+$conn              = r.connect(rethinkdb_cfg)
