@@ -49,7 +49,7 @@ class CrawlWorker < Worker::Base
       begin
         logger.info("#{history.description} started at #{Time.now}")
         history.inprogress!
-        history.save
+        history.save!
         
         indexer.each_page do |page_url|
           logger.info("Requesting page '#{page_url}'")
@@ -100,7 +100,7 @@ class CrawlWorker < Worker::Base
         history.completed!
       ensure
         history.finished_at = Time.now.utc
-        history.save
+        history.save!
         
         logger.info 'Crawling %s finished at %s' % [history.description, Time.now]
         logger.info history.attributes

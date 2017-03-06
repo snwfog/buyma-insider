@@ -18,13 +18,8 @@ class CrawlHistory
   field :description,         type: String, required: true
   field :items_count,         type: Integer, default: 0
   field :invalid_items_count, type: Integer, default: 0
-  field :traffic_size_kb,     type: Integer, default: 0 # Traffic used
+  field :traffic_size_kb,     type: Float, default: 0.0 # Traffic used
   field :finished_at,         type: Time
   
   default_scope { order_by(created_at: :desc) }
-
-  def elapsed_time_s
-    ended_at = inprogress? ? Time.now.utc : finished_at
-    ended_at - started_at
-  end
 end

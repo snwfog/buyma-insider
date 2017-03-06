@@ -11,26 +11,29 @@ require 'active_support/core_ext/time/calculations'
 #
 class CrawlScheduleWorker < Worker::Base
   recurrence { daily.hour_of_day(20) }
-
+  
   def initialize
     @start_time = Time.now.beginning_of_day.tomorrow + 1.hour
   end
-
+  
   def perform
-    merchant_scores = Merchant::Base.all.map { |merchant|
-      metadatum = merchant.metadatum
-      [merchant, metadatum.crawl_sessions
-                   .map(&:elapsed_time)
-                   .compact
-                   .inject(0) { |m, n| (m + n)/2 }]
+    merchant_crawl_time = Merchant.all.map { |merchant|
+      elapsed_time_s_last_10 = merchant.crawl_sessions.limit(10).map(&:elapsed_time_s)
+      avg_time_s             = if elapsed_time_s_last_10.empty?
+                                 0.0
+                               else
+                                 elapsed_time_s_last_10.inject(0.0, :+) / elapsed_time_s_last_10.size
+                               end
+      [merchant, avg_time_s]
     }
-
-    merchant_scores = merchant_scores.sort_by(&:last) # sort_by array's last, which is the elapsed time
-    merchant_scores.each do |merchant, _elapsed_time|
-      CrawlWorker.perform_at @start_time, merchant.name
+    
+    p merchant_crawl_time
+    merchant_crawl_time = merchant_crawl_time.sort_by(&:last) # sort_by array's last, which is the elapsed time
+    merchant_crawl_time.each do |merchant, _elapsed_time|
+      CrawlWorker.perform_at @start_time, merchant.id
       Slackiq.notify webhook_name: :worker,
                      title:        %(#{merchant.name.capitalize} crawler scheduled to start @ #{@start_time.strftime('%F %T')})
-
+      
       @start_time += 30.minutes
     end
   end
