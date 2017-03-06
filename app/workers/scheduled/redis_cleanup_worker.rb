@@ -1,3 +1,4 @@
+# @deprecated
 class RedisCleanupWorker < Worker::Base
   recurrence { daily.hour_of_day(6) }
 
