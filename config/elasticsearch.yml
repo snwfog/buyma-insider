@@ -1,0 +1,26 @@
+settings:
+  index:
+    number_of_shards:    1
+    number_of_replicas:  0
+mappings:
+  dynamic:               strict
+  article:
+    properties:
+      merchant_id:
+        type:            keyword
+      sku:
+        type:            keyword
+      name:
+        type:            text
+      price:
+        type:            scaled_float
+        scaling_factor:  100
+      description:
+        type:            text
+      link:
+        type:            text
+        analyzer:        simple
+      created_at:
+        type:            date
+      updated_at:
+        type:            date

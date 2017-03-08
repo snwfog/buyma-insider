@@ -7,7 +7,7 @@ ssense:
   index_pages:
     - en-ca/men
     - en-ca/women
-  ssl: true
+  ssl:          true
 
 shoeme:
   id:           sho
@@ -21,7 +21,7 @@ shoeme:
     - collections/kids
     - collections/all-bags
     - collections/sale
-  ssl: false
+  ssl:          false
 
 getoutside:
   id:           get
@@ -36,7 +36,7 @@ getoutside:
     - kid-s.html
     - accessories.html
     - sale.html
-  ssl: false
+  ssl:          false
 
 zara:
   id:           zar
@@ -46,4 +46,4 @@ zara:
   item_css:     ul.product-list li.product
   index_pages:
     - women/new-in-c805003.html
-  ssl: false
+  ssl:          false

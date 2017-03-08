@@ -15,6 +15,7 @@ gem 'rake'
 gem 'activesupport'
 gem 'dotenv'
 gem 'connection_pool'
+gem 'hashie'
 
 # Persistence
 gem 'nobrainer'

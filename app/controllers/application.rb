@@ -17,6 +17,7 @@ class ApplicationController < Sinatra::Base
   set :allow_methods,   [:get, :post, :options]
   set :max_age,         '1728000'
   set :expose_headers,  ['content-type']
+# set :env, ENV['RACK_ENV'] # this is default
   
   configure :development do
     register Sinatra::Reloader
