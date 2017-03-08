@@ -1,4 +1,4 @@
-require 'elasticsearch_document'
+require 'elasticsearch/document'
 
 require 'nobrainer'
 require 'active_support/core_ext/numeric/time'
@@ -7,7 +7,7 @@ require 'active_support/core_ext/string/inflections'
 class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include ::BuymaInsider::ElasticsearchDocument
+  include ::BuymaInsider::Elasticsearch::Document
 
   EXPIRES_IN = 1.week
 

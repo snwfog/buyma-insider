@@ -1,3 +1,4 @@
+require 'logging'
 require 'sinatra/base'
 require 'sinatra/json'
 require 'sinatra/param'
@@ -12,6 +13,7 @@ class ApplicationController < Sinatra::Base
 
   enable :cross_origin
   enable :allow_credentials
+  enable :logging
 
   set :allow_origin,    :any
   set :allow_methods,   [:get, :post, :options]
@@ -24,11 +26,18 @@ class ApplicationController < Sinatra::Base
     also_reload './app/serializers/*.rb'
   end
   
+  configure :production do
+    # Log to file as well
+    use Rack::CommonLogger, Logging.logger['Web']
+  end
+  
   before do
     content_type :json
   end
   
   register Sinatra::CrossOrigin
+  
   helpers Sinatra::Param
   helpers ::JsonHelper
+  helpers ::ElasticsearchHelper
 end

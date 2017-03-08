@@ -21,8 +21,7 @@ class CrawlSession
   end
 
   def elapsed_time_s
-    crawl_histories.limit(20).sum do |ch|
-      (ch['finished_at'] || Time.now.utc) - ch['created_at']
-    end
+    crawl_histories.where(status: :completed)
+                   .sum { |h| h['finished_at'] - h['created_at'] }
   end
 end

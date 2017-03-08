@@ -4,6 +4,7 @@ require 'sentry-raven'
 
 class CrawlWorker < Worker::Base
   attr_accessor :merchant
+  attr_accessor :crawl_session
   attr_accessor :histories
   
   def initialize
@@ -33,7 +34,7 @@ class CrawlWorker < Worker::Base
   end
   
   def crawl
-    crawl_session = CrawlSession.create!(merchant: merchant)
+    @crawl_session = CrawlSession.create!(merchant: merchant)
     
     merchant.indices.each do |indexer|
       protocol = merchant.metadatum.ssl ? 'https' : 'http'
@@ -109,7 +110,7 @@ class CrawlWorker < Worker::Base
   end
   
   def total_elapsed_time
-    histories.select(&:completed?).map(&:elapsed_time_s).reduce(0.0, :+)
+    crawl_session.elapsed_time_s
   end
   
   def stats

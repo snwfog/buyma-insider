@@ -1,7 +1,8 @@
 require 'nobrainer'
 
 module BuymaInsider
-  module ElasticsearchDocument
+  module Elasticsearch
+  module Document
     def self.included(klazz)
       if klazz < NoBrainer::Document
         klazz.class_eval do
@@ -15,5 +16,6 @@ module BuymaInsider
         end
       end
     end
+  end
   end
 end
