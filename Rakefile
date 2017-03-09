@@ -65,6 +65,9 @@ namespace :db do
     end
   end
   
+  desc 'nobrainer:drop + nobrainer:sync_schema + db:setup merchants'
+  task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup]
+  
   desc 'Create a new db patch'
   task :patch, ['name'] do |t, args|
     sh "touch ./db/patches/#{Time.now.to_s}_#{args['name']}.rb".gsub(/[-:\s]/, '_')

@@ -5,7 +5,7 @@ require 'active_support/core_ext/string/inflections'
 class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include ::BuymaInsider::Elasticsearch::Document
+  include ::Elasticsearch::Document
 
   EXPIRES_IN = 1.week
 

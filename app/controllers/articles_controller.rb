@@ -1,7 +1,7 @@
 require_relative './application'
 
 class ArticlesController < ApplicationController
-  include BuymaInsider::Elasticsearch::Queryable
+  include ::Elasticsearch::Queryable
   
   get '/' do
     param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
