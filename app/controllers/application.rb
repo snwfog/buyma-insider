@@ -1,10 +1,3 @@
-require 'logging'
-require 'sinatra/base'
-require 'sinatra/json'
-require 'sinatra/param'
-require 'sinatra/cross_origin'
-require 'sinatra/reloader'
-
 class ApplicationController < Sinatra::Base
   disable :run
   disable :static
@@ -30,7 +23,7 @@ class ApplicationController < Sinatra::Base
   end
   
   configure :production do
-    # Log to file as well
+    # Sinatra log request to file as well as STDOUT
     use Rack::CommonLogger, Logging.logger['Web']
   end
   

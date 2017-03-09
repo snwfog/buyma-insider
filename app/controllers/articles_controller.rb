@@ -1,8 +1,6 @@
 require_relative './application'
 
 class ArticlesController < ApplicationController
-  include ::Elasticsearch::Queryable
-  
   get '/' do
     param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
     param :page,        Integer, in: (1..200), default: 1
@@ -28,19 +26,50 @@ class ArticlesController < ApplicationController
 
   end
   
+  get '/_autocomplete' do
+    param :q,     String, required: true, transform: :downcase
+    param :field, String, transform: ->(field) { field.downcase.to_sym },
+                          in:        Article.fields.keys,
+                          default:   :name
+    param :limit, Integer, in: (1..10), default: 5
+
+    q, field, limit = params.values_at(*%w(q field limit))
+    body            = { query:     { query_string: { query: q } },
+                        size:      limit,
+                        highlight: {
+                          tags_schema:         :styled,
+                          fields:              Hash[field, Hash[]],
+                          require_field_match: false
+                        } }
+
+    results = elasticsearch_query body: body
+    if results.hits.total.zero?
+      json []
+    else
+      meta = results.hits.hits.map do |article|
+        Hash[:autocomplete, article.highlight.name,
+             :id, article._id,
+             :type, article._type,
+             :score, article._score]
+      end
+  
+      json Article.where(:id.in => results.hits.hits.map(&:_id)), meta: meta
+    end
+  end
+  
   get '/_search' do
-    param :q,           String
-    param :page,        Integer, in: (1..200), default: 1
-    param :limit,       Integer, in: (1..20), default: 20
+    param :q,            String, required: true, transform: :downcase
+    param :page,         Integer, in: (1..200), default: 1
+    param :limit,        Integer, in: (1..20), default: 20
 
     q, page, limit = params.values_at(*%w(q page limit))
-    results        = elasticsearch_query body: {
-      from:  (page - 1) * limit,
-      size:  limit,
-      query: {
-        query_string: {
-          query: q } } }
+    body = { from:  (page - 1) * limit,
+             size:  limit,
+             query: {
+               query_string: {
+                 query: q } } }
 
+    results = elasticsearch_query body: body
     if results.hits.total.zero?
       json []
     else

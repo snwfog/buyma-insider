@@ -1,6 +1,5 @@
 require 'bundler/setup'
-require 'dotenv/load'
-require 'require_all'
+Bundler.require(:default)
 
 module BuymaInsider
   NAME             = 'buyma_insider'
@@ -15,5 +14,4 @@ require_rel './models'
 require_rel './serializers'
 require_rel './controllers'
 require_rel './workers'
-
 

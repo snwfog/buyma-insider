@@ -3,7 +3,7 @@ require 'logging'
 layout   = Logging.layouts.pattern(pattern: '[%d] %-5l -- %c : %m\n')
 log_path = File.expand_path("../../../log/buyma-insider-#{ENV['RACK_ENV']}.log", __FILE__)
 
-Logging.logger.root.level = :info
+Logging.logger.root.level = :debug
 
 Logging.logger.root.add_appenders(
   Logging.appenders.stdout(layout: layout))
