@@ -1,5 +1,5 @@
 module Elasticsearch
-  class DocumentIndexWorker < Worker::Base
+  class IndexDocumentWorker < Worker::Base
     def perform(model)
       logger.info 'Syncing elasticsearch with %s' % model.to_h
     end

@@ -13,10 +13,11 @@ class CrawlSession
   field :id,          primary_key: true, required: true
   field :finished_at, type: Time
 
-  
   default_scope { order_by(created_at: :desc) }
 
-  [:items_count, :invalid_items_count, :traffic_size_kb].each do |m|
+  [:items_count,
+   :invalid_items_count,
+   :traffic_size_kb].each do |m|
     define_method(m) { crawl_histories.sum(m) }
   end
 

@@ -1,5 +1,3 @@
-require 'elasticsearch/document'
-
 require 'nobrainer'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/string/inflections'

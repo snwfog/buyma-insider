@@ -1,7 +1,3 @@
-require 'elasticsearch'
-require 'hashie'
-
-require 'elasticsearch/queryable'
 require_relative './application'
 
 class ArticlesController < ApplicationController
