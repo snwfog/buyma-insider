@@ -14,7 +14,7 @@ class PriceHistory
   field :history,    type: Array, default: -> { [] }
 
   def add_price_history!(price)
-    history << Hash[Time.now.utc.iso8601, price]
+    history << Hash[:timestamp, Time.now.utc.iso8601, :price, price]
     save!
   end
 end

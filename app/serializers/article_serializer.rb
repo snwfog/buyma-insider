@@ -2,7 +2,7 @@ require 'active_model_serializers'
 require 'securerandom'
 
 class ArticleSerializer < ActiveModel::Serializer
-  # has_one :price_history
+  has_one :price_history
 
   # cache key: :article
 
@@ -11,14 +11,9 @@ class ArticleSerializer < ActiveModel::Serializer
              :description,
              :price,
              :link,
-             :price_history,
              # :price_summary,
              :created_at,
              :updated_at
-
-  def price_history
-    object.price_history.history
-  end
 
   # def price_summary
   #   histories = object.price_history.history
@@ -32,19 +27,8 @@ class ArticleSerializer < ActiveModel::Serializer
   #   stats
   # end
 
-  # class PriceHistorySerializer < ActiveModel::Serializer
-  #   attributes :currency,
-  #              :history
-  #
-  #   def id
-  #     object.article_id
-  #   end
-  #
-  #   def history
-  #     object
-  #       .history
-  #       .each_pair
-  #       .map { |date, price| [created_at: date, price: price] }
-  #   end
-  # end
+  class PriceHistorySerializer < ActiveModel::Serializer
+    attributes :currency,
+               :history
+  end
 end

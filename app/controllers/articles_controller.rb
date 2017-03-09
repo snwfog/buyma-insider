@@ -25,23 +25,21 @@ class ArticlesController < ApplicationController
                                   latests_count: merchant.articles.latests.count,
                                   sales_count:   merchant.articles.sales.count,
                                   total_count:   merchant.articles.count }
+
   end
   
   get '/_search' do
     param :q,           String
     param :page,        Integer, in: (1..200), default: 1
     param :limit,       Integer, in: (1..20), default: 20
-    
+
     q, page, limit = params.values_at(*%w(q page limit))
-    results = elasticsearch_query(body: {
+    results        = elasticsearch_query body: {
       from:  (page - 1) * limit,
       size:  limit,
       query: {
         query_string: {
-          query: q
-        }
-      }
-    })
+          query: q } } }
 
     if results.hits.total.zero?
       json []

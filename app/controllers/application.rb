@@ -21,6 +21,9 @@ class ApplicationController < Sinatra::Base
   set :expose_headers,  ['content-type']
 # set :env, ENV['RACK_ENV'] # this is default
   
+  # Custom settings
+  enable :deep_serialization
+  
   configure :development do
     register Sinatra::Reloader
     also_reload './app/serializers/*.rb'
