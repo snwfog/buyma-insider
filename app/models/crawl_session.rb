@@ -13,7 +13,8 @@ class CrawlSession
   field :id,          primary_key: true, required: true
   field :finished_at, type: Time
 
-  default_scope { order_by(created_at: :desc) }
+  default_scope    { order_by(created_at: :desc) }
+  scope(:finished) { where(:finished_at.defined => true) }
 
   [:items_count,
    :invalid_items_count,

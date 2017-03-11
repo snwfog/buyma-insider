@@ -8,6 +8,6 @@ class CrawlSessionSerializer < ActiveModel::Serializer
              :finished_at,
              :items_count,
              :invalid_items_count,
-             :traffic_size,
-             :elapsed_time
+             :traffic_size_kb,
+             :elapsed_time_s
 end

@@ -1,10 +1,18 @@
 require 'active_model_serializers/serialization_context'
 
 class MerchantSerializer < ActiveModel::Serializer
-  has_many :articles
-  has_many :crawl_sessions
+  has_many :articles do
+    link :related, proc { "/merchants/#{object.id}/articles" }
+  end
   
-  has_one :metadatum do include_data true end
+  has_many :crawl_sessions do
+    link :related, proc { "/merchants/#{object.id}/crawl_sessions" }
+  end
+  
+  has_one :metadatum do
+    include_data true
+    link :related, proc { "/merchants/#{object.id}/metadatum" }
+  end
   
   # When this is declared, the association is automatically fetched...
   # has_many :articles do
@@ -15,12 +23,6 @@ class MerchantSerializer < ActiveModel::Serializer
              :total_articles_count,
              :last_sync_at
   
-  # Proc here, because its called with instance_eval
-  link :articles,       proc { "merchants/#{object.id}/articles" }
-  link :crawl_sessions, proc { "merchants/#{object.id}/crawl_sessions" }
-  link :metadatum,      proc { "merchants/#{object.id}/metadatum" }
-  
-  
   # These methods are here is okay..
   # The question to ask is, do we care about these values on model and backend?
   # If its only for UI display, then serializer is enough
@@ -30,8 +32,7 @@ class MerchantSerializer < ActiveModel::Serializer
   end
   
   def last_sync_at
-    if session = object.crawl_sessions
-                   .where(:finished_at.defined => true).first
+    if session = object.crawl_sessions.finished.first
       session.finished_at
     end
   end
