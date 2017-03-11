@@ -1,10 +1,5 @@
 class ApplicationController < Sinatra::Base
-  def self.inherited(controller)
-    use controller
-  end
-  
   register Sinatra::CrossOrigin
-  register Sinatra::Resources
   
   helpers Sinatra::Param
   helpers ::JsonHelper

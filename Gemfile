@@ -4,7 +4,6 @@ gem 'sinatra',                  github: 'sinatra/sinatra', branch: 'master'
 gem 'sinatra-contrib',          require: false
 gem 'sinatra-param',            github: 'snwfog/sinatra-param', branch: 'master', require: 'sinatra/param'
 gem 'sinatra-cross_origin',     require: 'sinatra/cross_origin'
-gem 'sinatra-resources',        require: 'sinatra/resources'
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'sidekiq'
 gem 'sidetiq'

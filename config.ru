@@ -1,4 +1,4 @@
-require './app/buyma_insider'
+require './config/application'
 
 # Auto-generate all routes from controller files
 # Rake::FileList
@@ -9,11 +9,11 @@ require './app/buyma_insider'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
-# map_controller('/merchants')
-# map_controller('/merchant_metadata')
-# map_controller('/crawl_histories')
-# map_controller('/crawl_sessions')
-# map_controller('/articles')
-# map_controller('/exchange_rates')
+map_controller('/merchants')
+map_controller('/merchant_metadata')
+map_controller('/crawl_histories')
+map_controller('/crawl_sessions')
+map_controller('/articles')
+map_controller('/exchange_rates')
 
-run Application
+# run BuymaInsider::Application

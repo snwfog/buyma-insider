@@ -1,5 +1,3 @@
-require_relative './application'
-
 class ExchangeRatesController < ApplicationController
   get '/' do
     param :limit, Integer, in: (1..100), transform: :to_sym, default: 20
