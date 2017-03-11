@@ -3,11 +3,9 @@ $:.unshift(File.expand_path('app'))
 
 require 'buyma_insider'
 require 'ostruct'
+
 load 'no_brainer/railtie/database.rake'
 
-# require 'bundler'
-
-# Bundler.require
 # include RethinkDB::Shortcuts
 # db_name = "#{BuymaInsider::NAME}_#{ENV.fetch('RACK_ENV')}"
 

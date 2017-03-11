@@ -100,13 +100,16 @@ class CrawlWorker < Worker::Base
       else
         history.completed!
       ensure
-        history.finished_at = Time.now.utc
+        history.finished_at = Time.now.utc.iso8601
         history.save!
         
         logger.info 'Crawling %s finished at %s' % [history.description, Time.now]
         logger.info history.attributes
       end
     end
+  ensure
+    @crawl_session.finished_at = Time.now.utc.iso8601
+    @crawl_session.save!
   end
   
   def total_elapsed_time

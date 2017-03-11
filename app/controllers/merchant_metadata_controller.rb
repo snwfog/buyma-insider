@@ -1,6 +1,3 @@
-require_relative './application'
-require 'active_model_serializers'
-
 class MerchantMetadataController < ApplicationController
   get '/' do
     json MerchantMetadatum.all

@@ -11,6 +11,7 @@ require_rel '../config/initializers/'
 
 require_rel './helpers'
 require_rel './models'
+require_rel './controllers'
 require_rel './serializers'
 require_rel './controllers'
 require_rel './workers'

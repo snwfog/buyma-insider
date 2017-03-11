@@ -1,5 +1,9 @@
 # Buyma Insider
 
+## TODO:
+- Add merchant index gateway that will scrape index pages
+- Add indexer persistent models
+
 ## SETUP
 
 - Unicorn in development can be run with local launch command
@@ -32,3 +36,8 @@ be pry -Iapp -rbuyma_insider
 ## NOTE
 
 - Use be ruby to run patches instead of pry, pry screws up sometimes the format
+
+## REST API endpoint used by frontend
+
+/exchange_rates/latest
+/crawl_sessions

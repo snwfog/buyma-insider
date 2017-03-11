@@ -1,23 +1,34 @@
 class ApplicationController < Sinatra::Base
+  def self.inherited(controller)
+    use controller
+  end
+  
+  register Sinatra::CrossOrigin
+  register Sinatra::Resources
+  
+  helpers Sinatra::Param
+  helpers ::JsonHelper
+  helpers ::ElasticsearchHelper
+  
   disable :run
   disable :static
   disable :views
   disable :show_exceptions
 
+  # Contrib
   enable :cross_origin
-  enable :allow_credentials
+  
+  # Custom
   enable :logging
 
-  set :allow_origin,    :any
-  set :allow_methods,   [:get, :post, :options]
-  set :max_age,         '1728000'
-  set :expose_headers,  ['content-type']
 # set :env, ENV['RACK_ENV'] # this is default
   
   # Custom settings
   enable :deep_serialization
   
   configure :development do
+    require 'sinatra/reloader'
+    
     register Sinatra::Reloader
     also_reload './app/serializers/*.rb'
   end
@@ -29,11 +40,6 @@ class ApplicationController < Sinatra::Base
   
   before do
     content_type :json
+    params.with_indifferent_access
   end
-  
-  register Sinatra::CrossOrigin
-  
-  helpers Sinatra::Param
-  helpers ::JsonHelper
-  helpers ::ElasticsearchHelper
 end
