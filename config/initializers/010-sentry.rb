@@ -1,5 +1,3 @@
-require 'sentry-raven'
-
 if ENV['RACK_ENV'] =~ /prod(udction)?/i
   Raven.inject_only :sidekiq
   Raven.configure do |config|

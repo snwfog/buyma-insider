@@ -5,10 +5,11 @@ module JsonHelper
   end
   
   module OverrideMethods
-    def json(object, options = {})
+    def json(object, opts = {})
+      defaults = Hash[:include, '**']
       if object
-        options = options.merge({ include: '**' }) if settings.deep_serialization
-        super ActiveModelSerializers::SerializableResource.new(object, options),
+        opts = defaults.merge(opts) if settings.deep_serialization
+        super ActiveModelSerializers::SerializableResource.new(object, opts),
               { json_encoder: :to_json }
       else
         not_found({ 'Not found' => 'No models was found with the request' }.to_json)

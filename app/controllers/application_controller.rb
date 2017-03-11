@@ -1,3 +1,5 @@
+require 'sinatra/json'
+
 class ApplicationController < Sinatra::Base
   register Sinatra::CrossOrigin
   
