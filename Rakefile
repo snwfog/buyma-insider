@@ -67,7 +67,7 @@ namespace :db do
   task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup]
   
   desc 'Create a new db patch'
-  task :patch, ['name'] do |t, args|
-    sh "touch ./db/patches/#{Time.now.to_s}_#{args['name']}.rb".gsub(/[-:\s]/, '_')
+  task :create_patch_file, ['name'] do |t, args|
+    touch "./db/patches/#{Time.now.to_s}_#{args.fetch('name', 'db_patch')}.rb".gsub!(/[-:\s]/, '_')
   end
 end
