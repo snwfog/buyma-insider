@@ -11,7 +11,8 @@ class MerchantSerializer < ActiveModel::Serializer
   
   has_one :metadatum do
     include_data true
-    link :related, proc { "/merchants/#{object.id}/metadatum" }
+    # Disable link if it is not an async relationship
+    # link :related, proc { "/merchants/#{object.id}/metadatum" }
   end
   
   # When this is declared, the association is automatically fetched...
