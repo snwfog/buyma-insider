@@ -32,14 +32,6 @@ class Merchant
   field :id,   primary_key: true, required: true, format: /[a-z]{3}/
   field :name, type: String, required: true
 
-  # This required so that active model serializer do
-  # not try to be smart and figuring out the serializer
-  # With this method, this method will be called imediately
-  # see ActiveModel::Serializer::serializer_for
-  def self.serializer_class
-    MerchantSerializer
-  end
-
   def indices
     @indices ||= index_pages.map do |path|
       indexer.new(path, merchant_metadatum)
