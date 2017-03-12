@@ -4,7 +4,8 @@ require 'rethinkdb'
 include RethinkDB::Shortcuts
 
 client = Elasticsearch::Client.new
-conn = r.connect(db: :buyma_insider_development)
+conn = r.connect(db: :"buyma_insider_#{ENV['RACK_ENV']}")
+conn.repl
 
 def get_article
   Article.new({

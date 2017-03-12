@@ -4,9 +4,9 @@ class CrawlHistory
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  belongs_to :crawl_session
+  belongs_to :crawl_session, index: true
   
-  belongs_to :merchant
+  belongs_to :merchant, index: true
   
   # default_scope { order_by(created_at: :asc) }
 

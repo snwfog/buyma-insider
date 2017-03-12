@@ -5,7 +5,7 @@ class MerchantMetadatum
  
   belongs_to :merchant, required: true, unique: true
 
-  field :id,           primary_key: true, required: true
+  field :id,           primary_key: true, index: true, required: true
   field :name,         type: String, required: true
   field :base_url,     type: String, required: true
   field :pager_css,    type: String
