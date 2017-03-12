@@ -8,4 +8,4 @@ require_relative './setup'
 
 r.table('articles').update do |article|
   { :sku => article['id'].split(':')[1] }
-end.run(conn)
+end.run

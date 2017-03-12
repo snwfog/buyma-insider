@@ -6,7 +6,7 @@ class CrawlSession
 
   has_many    :crawl_histories, scope: -> { order_by(created_at: :desc) }
   
-  belongs_to  :merchant, required: true
+  belongs_to  :merchant, index: true, required: true
   
   alias_method :started_at, :created_at
 

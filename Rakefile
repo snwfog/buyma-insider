@@ -56,18 +56,55 @@ namespace :db do
       m              = OpenStruct.new(merchant_datum)
       merchant       = Merchant.new(id: m.id, name: m.name)
       merchant.save!
-      
+
       metadatum = MerchantMetadatum.upsert!(merchant_datum.merge(merchant: merchant))
-      
+
       puts "Merchant #{metadatum.name}[#{metadatum.code}] created..."
     end
   end
-  
+
   desc 'nobrainer:drop + nobrainer:sync_schema + db:setup merchants'
   task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup]
-  
+
   desc 'Create a new db patch'
   task :create_patch_file, ['name'] do |t, args|
     touch "./db/patches/#{Time.now.to_s}_#{args.fetch(:name, 'db_patch')}.rb".gsub!(/[-:\s]/, '_')
+  end
+
+  desc 'Apply all new patches'
+  task :apply_patches do
+    require 'benchmark'
+
+    include RethinkDB::Shortcuts
+    r.connect(db: "buyma_insider_#{ENV['RACK_ENV']}").repl
+
+    applied_patches = r.table('meta_db_patches')
+                        .order_by('run_at')
+                        .pluck('name')
+                        .run
+                        .collect { |p| p['name'] }
+
+    puts 'Begin applying patches from db/patches'
+    time = Benchmark.measure {
+      Rake::FileList['./db/patches/*.rb']
+        .exclude(/setup/)
+        .delete_if { |path| applied_patches.include?(path.pathmap('%n')) }
+        .each do |patch_path|
+        begin
+          print "Applying #{patch_path}... "
+          load(patch_path)
+        rescue Exception => ex
+          puts 'Errored!'
+          puts ex.message
+        else
+          r.table('meta_db_patches')
+            .insert(Hash[:run_at, Time.now.iso8601, :name, patch_path.pathmap('%n')])
+            .run
+          puts 'Applied.'
+        end
+      end
+    }
+
+    puts 'Finished applying patches (%.02fs)' % time.real
   end
 end

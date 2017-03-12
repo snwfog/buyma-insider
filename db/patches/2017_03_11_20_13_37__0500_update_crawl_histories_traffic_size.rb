@@ -5,8 +5,8 @@ require_relative './setup'
 
 r.table('crawl_histories').update(lambda { |history|
   { :traffic_size_kb => history['traffic_size'] / 1000 }
-}).run(conn)
+}).run
 
 r.table('crawl_histories').replace(lambda { |history|
   history.without('traffic_size')
-}).run(conn)
+}).run

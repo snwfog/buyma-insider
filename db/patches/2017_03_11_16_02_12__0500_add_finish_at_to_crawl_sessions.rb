@@ -5,4 +5,4 @@ require_relative './setup'
 
 r.table('crawl_sessions').update(lambda { |session|
   r.table('crawl_histories').filter(:crawl_session_id => session['id']).pluck('finished_at').max()
-}, :non_atomic => true).run(conn)
+}, :non_atomic => true).run
