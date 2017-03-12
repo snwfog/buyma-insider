@@ -1,36 +1,45 @@
-require 'nobrainer'
 require 'active_support/core_ext/module/delegation'
 
 class Merchant
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
+  include Serializable
 
   delegate :base_url, :pager_css, :item_css, :index_pages,
            to: :merchant_metadatum
-  
+
   has_one :merchant_metadatum
-   
-  has_many :crawl_histories, scope: -> { order_by(created_at: :desc) }
+
+  # has_many :crawl_histories, scope: -> { order_by(created_at: :desc)
+  #                                          .limit(50) }
 
   has_many :crawl_sessions, scope: -> { order_by(created_at: :desc) }
 
   has_many :articles
-  
+
   after_initialize do
     extend("Merchants::#{name.capitalize}".safe_constantize)
   end
-  
+
   class_attribute :indexer
-  
+
   alias_method :code,       :id
   alias_method :metadatum,  :merchant_metadatum
   alias_method :metadatum=, :merchant_metadatum=
   alias_method :meta,       :merchant_metadatum
   alias_method :meta=,      :merchant_metadatum=
-  
+
   field :id,   primary_key: true, required: true, format: /[a-z]{3}/
   field :name, type: String, required: true
-  
+
+  # This required so that active model serializer do
+  # not try to be smart and figuring out the serializer
+  # With this method, this method will be called imediately
+  # see ActiveModel::Serializer::serializer_for
+  def self.serializer_class
+    MerchantSerializer
+  end
+
   def indices
     @indices ||= index_pages.map do |path|
       indexer.new(path, merchant_metadatum)

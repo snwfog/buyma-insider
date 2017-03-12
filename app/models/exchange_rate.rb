@@ -1,8 +1,7 @@
-require 'nobrainer'
-
 class ExchangeRate
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
+  include Serializable
 
   field :id,        primary_key: true, required: true
   field :base,      type: Enum, required: true, in: [:USD, :CAD, :JYP]

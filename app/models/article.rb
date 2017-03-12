@@ -1,4 +1,3 @@
-require 'nobrainer'
 require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/string/inflections'
 
@@ -6,6 +5,7 @@ class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   include ::Elasticsearch::Document
+  include Serializable
 
   EXPIRES_IN = 1.week
 
