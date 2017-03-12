@@ -1,6 +1,8 @@
 require 'active_model_serializers/serialization_context'
 
 class MerchantSerializer < ActiveModel::Serializer
+  cache key: :merchant, expires_in: 1.week
+
   has_many :articles do
     link :related, proc { "/merchants/#{object.id}/articles" }
   end

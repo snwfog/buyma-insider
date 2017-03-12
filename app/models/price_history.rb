@@ -1,11 +1,10 @@
-require 'nobrainer'
-
 ##
 # Models price information and history for an article
 #
 class PriceHistory
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
+  include Serializable
   
   belongs_to :article, index: true, required: true, unique: true
 

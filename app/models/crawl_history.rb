@@ -1,8 +1,7 @@
-require 'nobrainer'
-
 class CrawlHistory
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
+  include Serializable
 
   belongs_to :crawl_session, index: true
   

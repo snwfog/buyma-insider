@@ -1,7 +1,6 @@
-require 'nobrainer'
-
 class MerchantMetadatum
   include NoBrainer::Document
+  include Serializable
  
   belongs_to :merchant, required: true, unique: true
 

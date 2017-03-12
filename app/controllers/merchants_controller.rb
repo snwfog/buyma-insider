@@ -17,7 +17,7 @@ class MerchantsController < ApplicationController
           format:    /[a-z]{3}/
   
     if merchant = Merchant.find!(params[:merchant_id])
-      json merchant.crawl_sessions.finished
+      json merchant.crawl_sessions.limit(20).finished
     end
   end
 end
