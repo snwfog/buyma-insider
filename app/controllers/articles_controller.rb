@@ -1,10 +1,15 @@
 class ArticlesController < ApplicationController
   get '/' do
+    param :extension,   String, in: %w(_autocomplete _search), transform: :downcase
+    if extension = params[:extension]
+      return call env.merge('PATH_INFO' => "/#{extension}")
+    end
+  
     param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
     param :page,        Integer, in: (1..200), default: 1
     param :limit,       Integer, in: (1..20), default: 20
     param :filter,      String
-  
+    
     merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
   
     merchant = Merchant.find!(merchant_id)
@@ -44,14 +49,16 @@ class ArticlesController < ApplicationController
     if results.hits.total.zero?
       json []
     else
-      meta = results.hits.hits.map do |article|
+      autocompletes = results.hits.hits.map do |article|
         Hash[:autocomplete, article.highlight.name,
              :id, article._id,
              :type, article._type,
              :score, article._score]
       end
-    
-      json Article.where(:id.in => results.hits.hits.map(&:_id)), meta: meta
+
+      json Article.where(:id.in => results.hits.hits.map(&:_id)),
+           meta: { autocompletes: autocompletes,
+                   total:         results.hits.total }
     end
   end
 
