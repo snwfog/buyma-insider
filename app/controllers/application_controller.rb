@@ -37,6 +37,5 @@ class ApplicationController < Sinatra::Base
   
   before do
     content_type :json
-    params.with_indifferent_access
   end
 end

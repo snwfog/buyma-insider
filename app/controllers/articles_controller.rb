@@ -31,18 +31,20 @@ class ArticlesController < ApplicationController
 
   get '/_autocomplete' do
     param :q,     String, required: true, transform: :downcase
-    param :field, String, transform: -> (field) { field.downcase.to_sym },
-          in:        Article.fields.keys,
-          default:   :name
+    # TODO: Allow only single field for now, perhaps later allow multiple fields
+    param :field, String, transform: -> (f) { f.downcase.to_sym },
+                          in:        Article.fields.keys,
+                          default:   :name
     param :limit, Integer, in: (1..10), default: 5
-  
+
     q, field, limit = params.values_at(*%w(q field limit))
-    body            = { query:     { query_string: { query: q } },
+    body            = { query:     { query_string: { query:  q,
+                                                     fields: [field] } },
                         size:      limit,
                         highlight: {
                           tags_schema:         :styled,
                           fields:              Hash[field, Hash[]],
-                          require_field_match: false
+                          require_field_match: true
                         } }
   
     results = elasticsearch_query body: body
@@ -50,7 +52,7 @@ class ArticlesController < ApplicationController
       json []
     else
       autocompletes = results.hits.hits.map do |article|
-        Hash[:autocomplete, article.highlight.name,
+        Hash[:autocomplete, article.highlight[field],
              :id, article._id,
              :type, article._type,
              :score, article._score]

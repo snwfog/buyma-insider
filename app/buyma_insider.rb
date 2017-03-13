@@ -1,5 +1,7 @@
+require 'dotenv/load'
+
 require 'bundler/setup'
-Bundler.require(:default)
+Bundler.require(:default) # , ENV['RACK_ENV'])
 
 module BuymaInsider
   NAME             = 'buyma_insider'

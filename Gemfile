@@ -14,7 +14,7 @@ gem 'require_all'
 gem 'rake'
 gem 'rack'
 gem 'activesupport'
-gem 'dotenv', require: 'dotenv/load'
+gem 'dotenv',                   require: 'dotenv/load'
 gem 'connection_pool'
 gem 'hashie'
 
@@ -40,14 +40,14 @@ gem 'foreman'
 gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
-  gem 'shotgun'
+  gem 'shotgun', require: false
   gem 'rubocop', require: false
-  gem 'pry'
+  # gem 'pry'
   gem 'hirb'
   gem 'coolline'
   gem 'colorize'
   gem 'awesome_print'
-  gem 'table_print'
+  gem 'table_print', require: false
 end
 
 group :test do

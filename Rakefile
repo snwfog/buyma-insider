@@ -1,6 +1,7 @@
 $:.unshift(File.expand_path('app'))
 # $:.unshift(File.expand_path('db'))
 
+require 'dotenv/load'
 require 'buyma_insider'
 require 'ostruct'
 
@@ -106,5 +107,34 @@ namespace :db do
     }
 
     puts 'Finished applying patches (%.02fs)' % time.real
+  end
+end
+
+namespace :es do
+  desc 'Drop index, setup elasticsearch, and sync all articles'
+  task :reset => [:drop, :setup, :seed]
+  
+  desc 'Drop all indices'
+  task :drop do
+    $elasticsearch.indices.delete index: :_all
+  end
+  
+  desc 'Create index'
+  task :setup do
+    es_cfg = YAML.load_file('./config/elasticsearch.yml').symbolize_keys!
+    $elasticsearch.indices.create(es_cfg)
+  end
+  
+  desc 'Index existing documents'
+  task :seed do
+    time = Benchmark.measure do
+      Article.each do |article|
+        $elasticsearch.index index: :shakura,
+                             type:  :article,
+                             id:    article.id,
+                             body:  article.attributes.except(:id)
+      end
+    end
+    puts 'Seed elasticsearch in %.02fs' % time.real
   end
 end
