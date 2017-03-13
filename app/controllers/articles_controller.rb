@@ -36,11 +36,13 @@ class ArticlesController < ApplicationController
                           in:        Article.fields.keys,
                           default:   :name
     param :limit, Integer, in: (1..10), default: 5
+    param :page,  Integer, in: (1..200), default: 1
 
-    q, field, limit = params.values_at(*%w(q field limit))
+    q, field, page, limit = params.values_at(*%w(q field page limit))
     body            = { query:     { query_string: { query:  q,
                                                      fields: [field] } },
                         size:      limit,
+                        from:      (page - 1) * limit,
                         highlight: {
                           tags_schema:         :styled,
                           fields:              Hash[field, Hash[]],
