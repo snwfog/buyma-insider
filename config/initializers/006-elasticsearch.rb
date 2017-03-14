@@ -1,13 +1,17 @@
 # Elasticsearch configuration
 
-pool_cfg       = { size: 5, timeout: 5 }
+pool_cfg          = { size: 5, timeout: 5 }
+elasticsearch_cfg = Hash.new.tap do |h|
+  unless ENV['RACK_ENV'] =~ /prod(uction)?/
+    h[:logger] = Logging.logger[:Elasticsearch]
+    h[:trace]  = true
+  end
+end
+
+initializer    = lambda { Elasticsearch::Client.new(elasticsearch_cfg) }
 $elasticsearch = if ENV['RACK_ENV'] =~ /prod(uction)?/
-                   ConnectionPool.new(pool_cfg) do
-                     options          = {}
-                     options[:logger] = Logging.logger[:Elasticsearch]
-                     Elasticsearch::Client.new(options)
-                   end
+                   ConnectionPool.new(pool_cfg, &initializer)
                  else
-                   ConnectionPool::Wrapper.new(pool_cfg) { Elasticsearch::Client.new }
+                   ConnectionPool::Wrapper.new(pool_cfg, &initializer)
                  end
 

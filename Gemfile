@@ -26,6 +26,7 @@ gem 'seed-fu'
 
 # Searching
 gem 'elasticsearch'
+gem 'elasticsearch-dsl'
 
 # Integration
 gem 'sentry-raven', require: 'sentry-raven-without-integrations'
@@ -42,7 +43,7 @@ gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 group :development do
   gem 'shotgun', require: false
   gem 'rubocop', require: false
-  # gem 'pry'
+  gem 'pry'
   gem 'hirb'
   gem 'coolline'
   gem 'colorize'

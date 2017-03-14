@@ -1,6 +1,8 @@
 require 'sinatra/json'
 
 class ApplicationController < Sinatra::Base
+  include Elasticsearch::DSL
+  
   register Sinatra::CrossOrigin
   
   helpers Sinatra::Param

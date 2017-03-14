@@ -1,4 +1,6 @@
 class ArticlesController < ApplicationController
+  include Elasticsearch::DSL
+  
   get '/' do
     param :extension,   String, in: %w(_autocomplete _search), transform: :downcase
     if extension = params[:extension]
@@ -44,7 +46,7 @@ class ArticlesController < ApplicationController
                         size:      limit,
                         from:      (page - 1) * limit,
                         highlight: {
-                          tags_schema:         :styled,
+                          # tags_schema:         :styled,
                           fields:              Hash[field, Hash[]],
                           require_field_match: true
                         } }

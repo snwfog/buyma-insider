@@ -1,0 +1,12 @@
+query:
+  bool:
+    must:
+      query_string:
+        query: dress
+        fields:
+          - name
+    filter:
+      term:
+        merchant_id: :zar
+size: 5
+
