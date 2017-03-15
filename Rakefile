@@ -50,16 +50,23 @@ namespace :db do
   # Initialize merchant from config
   desc 'Setup merchants metadata'
   task :setup do
-    merchant_cfg_path = File.expand_path('../config/merchant.yml', __FILE__)
-    merchant_cfg      = YAML.load_file(merchant_cfg_path)
+    merchant_cfg = YAML.load_file('./config/merchant.yml')
     merchant_cfg.each_key do |merchant_name|
-      merchant_datum = merchant_cfg.fetch(merchant_name) { |name| raise KeyError, "Merchant #{name} not found" }
+      merchant_datum = merchant_cfg.fetch(merchant_name)
       m              = OpenStruct.new(merchant_datum)
-      merchant       = Merchant.new(id: m.id, name: m.name)
-      merchant.save!
-
-      metadatum = MerchantMetadatum.upsert!(merchant_datum.merge(merchant: merchant))
-
+      merchant       = Merchant.create!(id: m.id, name: m.name)
+      metadatum      = MerchantMetadatum.upsert!(id:        m.id,
+                                                 merchant:  merchant,
+                                                 name:      m.name,
+                                                 domain:    m.domain,
+                                                 pager_css: m.pager_css,
+                                                 item_css:  m.item_css,
+                                                 ssl:       m.ssl)
+      m.index_pages.each do |idx|
+        IndexPage.upsert!(merchant:      merchant,
+                          relative_path: idx)
+      end
+    
       puts "Merchant #{metadatum.name}[#{metadatum.code}] created..."
     end
   end

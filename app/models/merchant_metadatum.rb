@@ -1,16 +1,29 @@
 class MerchantMetadatum
   include NoBrainer::Document
   include CacheableSerializer
- 
-  belongs_to :merchant, required: true, unique: true
 
-  field :id,           primary_key: true, index: true, required: true
-  field :name,         type: String, required: true
-  field :base_url,     type: String, required: true
+  belongs_to :merchant, required: true,
+                        unique:   true
+
+  field :id,           primary_key: true,
+                       required:    true
+  
+  field :name,         type:     String,
+                       required: true
+  
+  field :domain,       type:     String,
+                       required: true,
+                       format:   %r{//[^/]+}
+  
   field :pager_css,    type: String
-  field :item_css,     type: String, required: true
-  field :index_pages,  type: Set, required: true
-  field :ssl,          type: Boolean
+  
+  field :item_css,     type:     String,
+                       required: true
+
+  field :ssl,          type:        Boolean,
+                       default:     false
+  # field :index_pages,  type: Set, required: true
+  # field :ssl,          type: Boolean
 
   alias_method :code,   :id
   alias_method :code=,  :id=

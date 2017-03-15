@@ -1,7 +1,7 @@
 ssense:
   id:           sse
   name:         ssense
-  base_url:     //www.ssense.com
+  domain:       //www.ssense.com
   pager_css:    div.browsing-pagination ul.nav
   item_css:     div.browsing-product-list div.browsing-product-item
   index_pages:
@@ -12,7 +12,7 @@ ssense:
 shoeme:
   id:           sho
   name:         shoeme
-  base_url:     //shoeme.ecomm-nav.com
+  domain:       //shoeme.ecomm-nav.com
   pager_css:    div.nxt-pagination
   item_css:     ul.product-list li.product-li
   index_pages:
@@ -26,7 +26,7 @@ shoeme:
 getoutside:
   id:           get
   name:         getoutside
-  base_url:     //www.getoutsideshoes.com
+  domain:       //www.getoutsideshoes.com
   pager_css:    div.pager
   item_css:     ul.products-grid li.item
   index_pages:
@@ -41,7 +41,7 @@ getoutside:
 zara:
   id:           zar
   name:         zara
-  base_url:     //www.zara.com/ca/en
+  domain:       //www.zara.com/ca/en
   pager_css:
   item_css:     ul.product-list li.product
   index_pages:

@@ -13,12 +13,27 @@ class Article
   
   belongs_to :merchant, index: true, required: true
 
-  field :id,          primary_key: true, required: true # merchant_id:sku
-  field :sku,         type: String, required: true, length: (1..100)
-  field :name,        type: String, required: true, length: (1..500)
-  field :price,       type: Float,  required: true # Latest price
-  field :description, type: String, length: (1..1000)
-  field :link,        type: String, required: true, length: (1..1000), format: %r(//.*)
+  field :id,          primary_key: true,
+                      required:    true # merchant_id:sku
+  
+  field :sku,         type:        String,
+                      required:    true,
+                      length:      (1..100)
+  
+  field :name,        type:        String,
+                      required:    true,
+                      length:      (1..500)
+  
+  field :price,       type:        Float,
+                      required:    true # Latest price
+  
+  field :description, type:        String,
+                      length:      (1..1000)
+  
+  field :link,        type:        String,
+                      required:    true,
+                      length:      (1..1000),
+                      format:      %r{//[.]+}
   
   alias_method :unique_id,  :id
   alias_method :desc,       :description

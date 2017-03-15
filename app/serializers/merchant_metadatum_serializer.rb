@@ -1,14 +1,13 @@
 require 'active_model_serializers'
 
 class MerchantMetadatumSerializer < ActiveModel::Serializer
-  # cache key: :merchant_metadatum
+  cache key: :merchant_metadatum
 
   attributes :id,
              :name,
-             :base_url,
+             :domain,
              :pager_css,
              :item_css,
-             :index_pages,
              :ssl
   
              # :new_articles_count,
@@ -18,5 +17,4 @@ class MerchantMetadatumSerializer < ActiveModel::Serializer
   #   # This is a chained criteria, not method call
   #   object.shinchyaku.count
   # end
-
 end

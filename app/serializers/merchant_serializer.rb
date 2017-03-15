@@ -11,11 +11,16 @@ class MerchantSerializer < ActiveModel::Serializer
     link :related, proc { "/merchants/#{object.id}/crawl_sessions" }
   end
   
+  has_many :index_pages do
+    include_data(true)
+  end
+  
   has_one :metadatum do
-    include_data true
+    include_data(true)
     # Disable link if it is not an async relationship
     # link :related, proc { "/merchants/#{object.id}/metadatum" }
   end
+  
   
   # When this is declared, the association is automatically fetched...
   # has_many :articles do
@@ -38,5 +43,10 @@ class MerchantSerializer < ActiveModel::Serializer
     if session = object.crawl_sessions.finished.first
       session.finished_at
     end
+  end
+
+  class IndexPageSerializer < ActiveModel::Serializer
+    attributes :id,
+               :full_url
   end
 end

@@ -5,7 +5,6 @@ require 'sentry-raven'
 class CrawlWorker < Worker::Base
   attr_accessor :merchant
   attr_accessor :crawl_session
-  attr_accessor :histories
   
   def initialize
     super
@@ -36,57 +35,51 @@ class CrawlWorker < Worker::Base
   def crawl
     @crawl_session = CrawlSession.create!(merchant: merchant)
     
-    merchant.indices.each do |indexer|
-      protocol = merchant.metadatum.ssl ? 'https' : 'http'
-      history  = CrawlHistory.create!(
-        merchant:      merchant,
+    merchant.index_pages.each do |index_page|
+      history = CrawlHistory.create!(
+        index_page:    index_page,
         crawl_session: crawl_session,
-        description:   "#{merchant.name} '#{indexer.to_s}'",
-        link:          indexer.to_s
+        description:   "#{merchant.name} '#{index_page}'"
       )
-      
-      histories << history
       
       begin
         logger.info("#{history.description} started at #{Time.now}")
         history.inprogress!
         history.save!
-        
-        indexer.each_page do |page_url|
-          logger.info("Requesting page '#{page_url}'")
+
+        logger.info("Requesting page '#{index_page}'")
+
+        # Add url to cache, break if already exists
+        next unless @url_cache.add? index_page
+
+        # Get link HTML and set @response if not in url cache
+        response = RestClient.get index_page.full_url, @std_headers
           
-          # Add url to cache, break if already exists
-          next unless @url_cache.add? page_url
+        logger.info("Received html '#{index_page}' (#{response.content_length} B)")
           
-          # Get link HTML and set @response if not in url cache
-          response = RestClient.get "#{protocol}:#{page_url}", @std_headers
+        # Parse into document from response
+        next if response.body.empty?
           
-          logger.info("Received html '#{page_url}' (#{response.content_length} B)")
-          
-          # Parse into document from response
-          next if response.body.empty?
-          
-          document = Nokogiri::HTML(response.body)
-          document.css(merchant.item_css).each do |it|
-            begin
-              attrs   = merchant.attrs_from_node(it)
-              article = Article.upsert!(attrs.merge(merchant: merchant))
-              article.update_price_history!
-              
-              history.items_count += 1
-            rescue Exception => ex
-              history.invalid_items_count += 1
-              
-              logger.warn 'Failed parsing a merchant item'
-              logger.warn it.to_html
-              logger.warn ex
-            ensure
-              logger.debug attrs
-            end
+        document = Nokogiri::HTML(response.body)
+        document.css(merchant.metadatum.item_css).each do |it|
+          begin
+            attrs   = merchant.attrs_from_node(it)
+            article = Article.upsert!(attrs.merge(merchant: merchant))
+            article.update_price_history!
+            
+            history.items_count += 1
+          rescue Exception => ex
+            history.invalid_items_count += 1
+            
+            logger.warn 'Failed parsing a merchant item'
+            logger.warn it.to_html
+            logger.warn ex
+          ensure
+            logger.debug attrs
           end
-          
-          history.traffic_size_kb += (response.content_length / 1000.0)
         end
+        
+        history.traffic_size_kb += (response.content_length / 1000.0)
       rescue Exception => ex
         history.aborted!
         # raise ex swallow error and log to sentry
@@ -117,19 +110,19 @@ class CrawlWorker < Worker::Base
   end
   
   def stats
-    histories.group_by(&:completed?)
+    crawl_session.crawl_histories.group_by(&:completed?)
   end
   
   def log_start
     logger.info 'Start crawling %s...' % merchant.name
     Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.name.to_s} crawl started..."
+                   title:        "#{merchant.name} crawl started..."
   end
   
   def log_end
     logger.info 'Finished crawling %s...' % merchant.name
     Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.name.to_s} crawl finished in #{'%.02f' % (total_elapsed_time / 60)}m.",
+                   title:        "#{merchant.name} crawl finished in #{'%.02f' % (total_elapsed_time / 60)}m.",
                    success:      stats.fetch(true, []).count,
                    failed:       stats.fetch(false, []).count
   end
