@@ -17,9 +17,9 @@ module Merchants
         {
           id:          "#{code}:#{node['data-productid']}",
           sku:         node['data-productid'],
-          name:        desc.content,
+          name:        desc.content.titleize,
           price:       price['data-price'][/[$]?[\d]{1,10}\.[\d]{2}/],
-          description: desc.content,
+          description: desc.content.capitalize,
           link:        item['href'],
         }
       end

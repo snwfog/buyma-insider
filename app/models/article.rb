@@ -33,7 +33,7 @@ class Article
   field :link,        type:        String,
                       required:    true,
                       length:      (1..1000),
-                      format:      %r{//[.]+}
+                      format:      %r{//.+}
   
   alias_method :unique_id,  :id
   alias_method :desc,       :description
@@ -58,7 +58,7 @@ class Article
   end
 
   def link=(link)
-    super(link.gsub(%r(^https?://), '//'))
+    super(link.gsub(%r{^https?://}, '//'))
   end
 
   def new?

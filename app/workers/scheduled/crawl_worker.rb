@@ -71,9 +71,9 @@ class CrawlWorker < Worker::Base
           rescue Exception => ex
             history.invalid_items_count += 1
             
-            logger.warn 'Failed parsing a merchant item'
+            logger.warn 'Failed creating article: %s' % ex.message
             logger.warn it.to_html
-            logger.warn ex
+            logger.warn attrs
           ensure
             logger.debug attrs
           end
