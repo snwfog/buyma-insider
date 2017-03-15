@@ -1,6 +1,6 @@
 class MerchantMetadatum
   include NoBrainer::Document
-  include Serializable
+  include CacheableSerializer
  
   belongs_to :merchant, required: true, unique: true
 

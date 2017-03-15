@@ -30,9 +30,10 @@ class ArticlesController < ApplicationController
                                   total_count:   merchant.articles.count }
 
   end
-
+  
   get '/_autocomplete' do
-    param :q,     String, required: true, transform: :downcase
+    param :q,     String, required:  true,
+                          transform: :downcase
     # TODO: Allow only single field for now, perhaps later allow multiple fields
     param :field, String, transform: -> (f) { f.downcase.to_sym },
                           in:        Article.fields.keys,
@@ -89,7 +90,9 @@ class ArticlesController < ApplicationController
   end
 
   get '/:id' do
-    param :id, String, required: true, format: /[a-z]{3}:[a-z0-9]+/
+    param :id, String, required:  true,
+                       transform: :downcase,
+                       format:    /[a-z]{3}:[a-z0-9]+/
     json Article.find?(params[:id])
   end
 end

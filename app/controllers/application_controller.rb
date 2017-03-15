@@ -1,5 +1,3 @@
-require 'sinatra/json'
-
 class ApplicationController < Sinatra::Base
   include Elasticsearch::DSL
   
@@ -23,6 +21,9 @@ class ApplicationController < Sinatra::Base
 # set :env, ENV['RACK_ENV'] # this is default
   
   # Custom settings
+  # This setting will let active model serializer serialize
+  # all declared relationship, instead of using the resource identifier
+  # default serializer that will return only id and type
   enable :deep_serialization
   
   configure :development do

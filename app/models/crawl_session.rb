@@ -1,7 +1,7 @@
 class CrawlSession
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include Serializable
+  include CacheableSerializer
 
   has_many    :crawl_histories, scope: -> { order_by(created_at: :desc) }
   

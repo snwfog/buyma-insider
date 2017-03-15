@@ -5,7 +5,7 @@ class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   include ::Elasticsearch::Document
-  include Serializable
+  include CacheableSerializer
 
   EXPIRES_IN = 1.week
 

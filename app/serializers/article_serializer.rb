@@ -1,11 +1,15 @@
-require 'active_model_serializers'
-require 'securerandom'
-
 class ArticleSerializer < ActiveModel::Serializer
-  has_one :price_history
-
-  # cache key: :article
-
+  cache key: :article
+  
+  has_one :price_history do
+    # If this block was present,
+    # the value of this block will ultimately be
+    # the association, leaving it commented
+    # and and include_data config is false, then
+    # relationship will render as meta: {} only
+    include_data true
+  end
+  
   attributes :id,
              :name,
              :description,
@@ -14,7 +18,12 @@ class ArticleSerializer < ActiveModel::Serializer
              # :price_summary,
              :created_at,
              :updated_at
-
+  
+  class PriceHistorySerializer < ActiveModel::Serializer
+    attributes :currency,
+               :history
+  end
+  
   # def price_summary
   #   histories = object.price_history.history
   #   stats     = Hash.new
@@ -27,8 +36,4 @@ class ArticleSerializer < ActiveModel::Serializer
   #   stats
   # end
 
-  class PriceHistorySerializer < ActiveModel::Serializer
-    attributes :currency,
-               :history
-  end
 end

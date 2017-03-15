@@ -3,7 +3,7 @@ require 'active_support/core_ext/module/delegation'
 class Merchant
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include Serializable
+  include CacheableSerializer
 
   delegate :base_url, :pager_css, :item_css, :index_pages,
            to: :merchant_metadatum

@@ -4,7 +4,7 @@
 class PriceHistory
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include Serializable
+  include CacheableSerializer
   
   belongs_to :article, index: true, required: true, unique: true
 

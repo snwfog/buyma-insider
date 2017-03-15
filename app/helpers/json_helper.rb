@@ -1,4 +1,3 @@
-require 'active_model_serializers'
 module JsonHelper
   def self.included(base_klazz)
     base_klazz.prepend(OverrideMethods)
