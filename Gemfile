@@ -49,7 +49,6 @@ group :development do
   gem 'pry'
   gem 'hirb'
   gem 'coolline'
-  gem 'colorize'
   gem 'awesome_print'
   gem 'table_print',           require: false
 end
@@ -62,8 +61,9 @@ group :test do
 # gem 'redis-stat'
 end
 
-case RUBY_PLATFORM
-when /darwin/
-  gem 'guard'
-  gem 'guard-minitest'
-end
+# Not used for now
+# case RUBY_PLATFORM
+# when /darwin/
+#   gem 'guard'
+#   gem 'guard-minitest'
+# end
