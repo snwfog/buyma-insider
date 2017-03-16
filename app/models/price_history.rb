@@ -6,9 +6,10 @@ class PriceHistory
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
   
-  belongs_to :article, index: true, required: true, unique: true
+  belongs_to :article, index: true,
+                       required: true,
+                       unique: true
 
-  field :id,         primary_key: true, required: true
   field :currency,   type: Text, length: (3..3), default: 'CAN'
   field :history,    type: Array, default: -> { [] }
 

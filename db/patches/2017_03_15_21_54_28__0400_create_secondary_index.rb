@@ -1,4 +1,4 @@
-require './setup'
+require_relative './setup'
 
 # Create secondary indices
 # Article.merchant_id
@@ -44,8 +44,10 @@ end
 #   r.table('articles').index_create('merchant_id').run
 # end
 
+# This will cause error
+# previously, the primary key was named article_id
 # PriceHistory.article_id
-unless r.table('price_histories').index_list().run
-         .include?('article_id')
-  r.table('price_histories').index_create('article_id').run
-end
+# unless r.table('price_histories').index_list().run
+#          .include?('article_id')
+#   r.table('price_histories').index_create('article_id').run
+# end
