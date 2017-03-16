@@ -36,6 +36,7 @@ gem 'sentry-raven',            require: 'sentry-raven-without-integrations'
 gem 'slackiq'
 gem 'money-open-exchange-rates' # Money + exchange rates
 
+# Logging
 gem 'httplog'
 gem 'logging'
 

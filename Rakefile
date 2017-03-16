@@ -32,8 +32,8 @@ task :ssh do
 end
 
 desc 'Cleanup log'
-task :cleanup do
-  %x(rm -rf ./log/*.log)
+task :log_clean do
+  rm_rf './log/*.log'
 end
 
 desc 'Environment'

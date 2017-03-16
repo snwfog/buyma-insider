@@ -45,5 +45,5 @@ zara:
   pager_css:
   item_css:     ul.product-list li.product
   index_pages:
-    - women/new-in-c805003.html
+    - woman/new-in-c805003.html
   ssl:          false

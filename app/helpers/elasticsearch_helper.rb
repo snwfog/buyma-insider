@@ -4,6 +4,8 @@ module ElasticsearchHelper
     options[:type]  ||= :article
     
     elastic_query_results = $elasticsearch.with { |conn| conn.search(options) }
+
+    # TODO: Hashie is slow
     Hashie::Mash.new(elastic_query_results)
   end
 end
