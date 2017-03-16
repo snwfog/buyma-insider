@@ -75,16 +75,20 @@ namespace :db do
   task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup]
 
   desc 'Create a new db patch'
-  task :create_patch_file, ['name'] do |t, args|
+  task :patch_generate, ['name'] do |t, args|
     touch "./db/patches/#{Time.now.to_s}_#{args.fetch(:name, 'db_patch')}.rb".gsub!(/[-:\s]/, '_')
   end
 
   desc 'Apply all new patches'
-  task :apply_patches do
+  task :patch_apply do
     require 'benchmark'
 
     include RethinkDB::Shortcuts
     r.connect(db: "buyma_insider_#{ENV['RACK_ENV']}").repl
+
+    unless r.table_list().run.include?('meta_db_patches')
+      raise '`meta_db_patches` table not found'.red
+    end
 
     applied_patches = r.table('meta_db_patches')
                         .order_by('run_at')
@@ -102,13 +106,13 @@ namespace :db do
           print "Applying #{patch_path}... "
           load(patch_path)
         rescue Exception => ex
-          puts 'Errored!'
+          puts 'Errored!'.red
           puts ex.message
         else
           r.table('meta_db_patches')
             .insert(Hash[:run_at, Time.now.iso8601, :name, patch_path.pathmap('%n')])
             .run
-          puts 'Applied.'
+          puts 'Applied.'.green
         end
       end
     }

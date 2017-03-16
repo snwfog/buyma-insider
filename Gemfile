@@ -11,7 +11,6 @@ gem 'nokogiri'
 gem 'rethinkdb'
 gem 'rest-client'
 gem 'require_all'
-gem 'rake'
 gem 'rack'
 gem 'activesupport'
 gem 'dotenv',                   require: 'dotenv/load'
@@ -28,8 +27,12 @@ gem 'seed-fu'
 gem 'elasticsearch'
 gem 'elasticsearch-dsl'
 
+# Tasks
+gem 'rake'
+gem 'colorize',                require: false
+
 # Integration
-gem 'sentry-raven', require: 'sentry-raven-without-integrations'
+gem 'sentry-raven',            require: 'sentry-raven-without-integrations'
 gem 'slackiq'
 gem 'money-open-exchange-rates' # Money + exchange rates
 
@@ -41,14 +44,14 @@ gem 'foreman'
 gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
-  gem 'shotgun', require: false
-  gem 'rubocop', require: false
+  gem 'shotgun',               require: false
+  gem 'rubocop',               require: false
   gem 'pry'
   gem 'hirb'
   gem 'coolline'
   gem 'colorize'
   gem 'awesome_print'
-  gem 'table_print', require: false
+  gem 'table_print',           require: false
 end
 
 group :test do
