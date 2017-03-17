@@ -1,4 +1,4 @@
-redis_cfg = BuymaInsider.configuration.redis.to_h
+redis_cfg = BuymaInsider.configuration.redis
 
 Sidekiq.configure_server do |cfg|
   cfg.redis = redis_cfg

@@ -17,6 +17,10 @@ class ApplicationController < Sinatra::Base
   
   # Custom
   enable :logging
+  
+  # Settings
+  # explicitly set this
+  set :environment, BuymaInsider.environment
 
 # set :env, ENV['RACK_ENV'] # this is default
   

@@ -1,6 +1,6 @@
 Slackiq.configure worker: ENV['SLACK_WEB_HOOK']
 
-unless ENV['RACK_ENV'] =~ /prod(uction)?/i
+unless BuymaInsider.production?
   class << Slackiq
     def notify(opts)
       @logger ||= Logging.logger[:'Slack Notification']

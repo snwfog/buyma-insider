@@ -1,5 +1,4 @@
-require 'net/http'
-if ENV['RACK_ENV'] =~ /prod(uction)?/i
+if BuymaInsider.production?
   Raven.inject_only :sidekiq
   Raven.configure do |config|
     config.dsn          = ENV['SENTRY_DSN']
