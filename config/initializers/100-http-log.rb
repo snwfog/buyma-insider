@@ -1,5 +1,10 @@
 # 100+ ids are for development
 
-HttpLog.configuration do |cfg|
+HttpLog.configure do |cfg|
   cfg.logger = Logging.logger[:HttpLog]
+  class << cfg.logger
+    def log(_severity, *args)
+      debug(*args)
+    end
+  end
 end

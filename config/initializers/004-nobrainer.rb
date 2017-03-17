@@ -97,7 +97,8 @@ NoBrainer.configure do |config|
   # config.criteria_cache_max_entries = 10_000
 end
 
-unless ENV['RACK_ENV'] =~ /^(unittest).*$/
-  NoBrainer.sync_schema # Synchronize table schema
-end
+# This should be run manually through patch
+# unless ENV['RACK_ENV'] =~ /^(unittest).*$/
+#   NoBrainer.sync_schema # Synchronize table schema
+# end
 

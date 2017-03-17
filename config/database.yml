@@ -1,29 +1,29 @@
 # RethinkDB
 
-default:            &default
-  host:             localhost
-  port:             28015
-#  db:              buyma_insider_development
+default: &default
+  host: localhost
+  port: 28015
+#  db: buyma_insider_development
 #  user:
 #  password:
 #  timeout:
 
 development:
-  <<:               *default
-  db:               buyma_insider_development
+  <<: *default
+  db: buyma_insider_development
 
 unittest:
-  <<:               *default
-  db:               buyma_insider_unittest
+  <<: *default
+  db: buyma_insider_unittest
 
 integrationtest:
-  <<:               *default
-  db:               buyma_insider_integrationtest
+  <<: *default
+  db: buyma_insider_integrationtest
 
 integrationtest:
-  <<:               *default
-  db:               buyma_insider_staging
+  <<: *default
+  db: buyma_insider_staging
 
 production:
-  <<:               *default
-  db:               buyma_insider_production
+  <<: *default
+  db: buyma_insider_production

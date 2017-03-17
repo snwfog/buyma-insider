@@ -1,4 +1,1 @@
-require './app/buyma_insider'
-
-module BuymaInsider
-end
+# Nothing to use for now

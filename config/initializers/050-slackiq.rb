@@ -1,6 +1,3 @@
-require 'slackiq'
-require 'logging'
-
 Slackiq.configure worker: ENV['SLACK_WEB_HOOK']
 
 unless ENV['RACK_ENV'] =~ /prod(uction)?/i

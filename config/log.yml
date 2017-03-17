@@ -1,0 +1,39 @@
+default:              &default
+  sinatra:            &default_process
+    severity:         debug
+    level:            &default_level
+      debug:          &default_severity
+        pattern:      "[%d] %-5l -- %c : %m\n"
+        location:     ./log/development.debug.log
+      info:
+        <<:           *default_severity
+        location:     ./log/development.log
+      warn:
+        <<:           *default_severity
+      error:
+        <<:           *default_severity
+      fatal:
+        <<:           *default_severity
+      unknown:
+        <<:           *default_severity
+  sidekiq:
+    <<:               *default_process
+    severity:         warn
+  httplog:
+    <<:               *default_process
+    severity:         warn
+
+development:
+  <<:                 *default
+
+production:
+  <<:                 *default
+  sinatra:
+    <<:               *default_process
+    severity:         warn
+  sidekiq:
+    <<:               *default_process
+    severity:         info
+  httplog:
+    <<:               *default_process
+    severity:         info
