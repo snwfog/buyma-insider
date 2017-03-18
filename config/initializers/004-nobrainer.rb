@@ -31,7 +31,7 @@ NoBrainer.configure do |config|
   # otherwise Logger.new(STDERR) with a WARN level.
   # If the logger is configured with a DEBUG level,
   # then each database query is emitted.
-  config.logger = Logging.logger[:NoBrainer]
+  config.logger = Logging.logger[:Database]
 
   # NoBrainer will colorize the queries if colorize_logger is true.
   # Specifically, NoBrainer will colorize management RQL queries in yellow,

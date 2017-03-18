@@ -13,7 +13,7 @@ module BuymaInsider
         Hashie::Mash.new.tap do |cfg|
           cfg.redis    = Hashie::Mash.new(YAML.load_file('./config/redis.yml')[environment])
           cfg.database = Hashie::Mash.new(YAML.load_file('./config/database.yml')[environment])
-          cfg.log      = Hashie::Mash.new(YAML.load_file('./config/log.yml')[environment])
+          cfg.logging  = Hashie::Mash.new(YAML.load_file('./config/logging.yml')[environment])
         end
       end
     end

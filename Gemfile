@@ -48,8 +48,8 @@ group :development do
   gem 'shotgun',               require: false
   gem 'rubocop',               require: false
   gem 'pry'
-  gem 'hirb'
-  gem 'coolline'
+  gem 'hirb',                  require: false
+  gem 'coolline',              require: false
   gem 'awesome_print'
   gem 'table_print',           require: false
 end

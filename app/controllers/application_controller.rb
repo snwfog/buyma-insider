@@ -39,7 +39,7 @@ class ApplicationController < Sinatra::Base
   
   configure :production do
     # Sinatra log request to file as well as STDOUT
-    use Rack::CommonLogger, Logging.logger['Web']
+    use Rack::CommonLogger, Logging.logger[:Sinatra]
   end
   
   before do

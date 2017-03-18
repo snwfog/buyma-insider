@@ -1,22 +1,22 @@
-app_log_cfg  = BuymaInsider.configuration.log.sinatra
-severity     = app_log_cfg.severity
-severity_cfg = app_log_cfg.level[severity]
-layout       = Logging.layouts.pattern(pattern: severity_cfg.pattern)
+logging_cfg = BuymaInsider.configuration.logging
 
-Logging.logger.root.level = severity
+# Create logging for all layers of application
+set_logging_configuration = -> (cfg, logger) do
+  logger.level = cfg.severity
+  severity_cfg = cfg.level[cfg.severity]
+  logger.add_appenders(
+    Logging.appenders.rolling_file(severity_cfg.location,
+                                   age:    severity_cfg.age,
+                                   layout: Logging.layouts.pattern(pattern: severity_cfg.pattern)))
+end
 
-Logging.logger.root.add_appenders(
-  Logging.appenders.stdout(layout: layout,
-                           level:  :info)) # STDOUT is always default to info
+# Get root logger
+Logging.logger.root.tap do |logger|
+  root_cfg = logging_cfg.delete(:root)
+  set_logging_configuration.call(root_cfg, logger)
+  logger.add_appenders.stdout if BuymaInsider.development? && STDOUT.tty?
+end
 
-Logging.logger.root.add_appenders(
-  Logging.appenders.rolling_file(severity_cfg.location,
-                                 age:    'daily',
-                                 layout: layout,
-                                 level:  severity))
-
-Logging.logger.root.add_appenders(
-  Logging.appenders.rolling_file(app_log_cfg.level.debug.location,
-                                 age:    'daily',
-                                 layout: layout,
-                                 level:  :debug))
+logging_cfg.each do |layer, logger_cfg|
+  Logging.logger[layer.capitalize].tap { |logger| set_logging_configuration.call(logger_cfg, logger) }
+end
