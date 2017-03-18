@@ -1,11 +1,13 @@
 class MerchantsController < ApplicationController
   before '/:merchant_id(/**)?' do
-    param :merchant_id, String, required: true,
-                                transform: :downcase,
-                                in: Merchant.all.map(&:id),
-                                format: /[a-z]{3}/
+    param :merchant_id, String,  required: true,
+                                 transform: :downcase,
+                                 in: Merchant.all.map(&:id),
+                                 format: /[a-z]{3}/
+    
     param :limit,       Integer, in: (1..20),
                                  default: 20
+    
     param :page,        Integer, in: (1..200),
                                  default: 1
 

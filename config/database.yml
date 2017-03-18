@@ -12,15 +12,11 @@ development:
   <<: *default
   db: buyma_insider_development
 
-unittest:
+test:
   <<: *default
-  db: buyma_insider_unittest
+  db: buyma_insider_test
 
-integrationtest:
-  <<: *default
-  db: buyma_insider_integrationtest
-
-integrationtest:
+staging:
   <<: *default
   db: buyma_insider_staging
 

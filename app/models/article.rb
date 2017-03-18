@@ -11,7 +11,8 @@ class Article
 
   has_one :price_history
   
-  belongs_to :merchant, index: true, required: true
+  belongs_to :merchant, index:    true,
+                        required: true
 
   field :id,          primary_key: true,
                       required:    true # merchant_id:sku

@@ -5,12 +5,15 @@ class CrawlSession
 
   has_many    :crawl_histories, scope: -> { order_by(created_at: :desc) }
   
-  belongs_to  :merchant, index: true, required: true
+  belongs_to  :merchant,        index:    true,
+                                required: true
   
   alias_method :started_at, :created_at
 
-  field :id,          primary_key: true, required: true
-  field :finished_at, type: Time
+  field :id,          primary_key: true,
+                      required:    true
+  
+  field :finished_at, type:        Time
 
   default_scope    { order_by(created_at: :desc) }
   scope(:finished) { where(:finished_at.defined => true) }

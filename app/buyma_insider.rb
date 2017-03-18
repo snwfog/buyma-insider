@@ -1,7 +1,7 @@
 require 'dotenv/load'
 
 require 'bundler/setup'
-Bundler.require(:default) # , ENV['RACK_ENV']) # disable for now, as it increases boot time
+Bundler.require(:default, ENV['RACK_ENV']) # disable for now, as it increases boot time
 
 module BuymaInsider
   NAME             = 'buyma_insider'

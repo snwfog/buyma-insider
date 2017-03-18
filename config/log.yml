@@ -22,8 +22,14 @@ default:              &default
   httplog:
     <<:               *default_process
     severity:         warn
+  database:
+    <<:               *default_process
+    severity:         debug
 
 development:
+  <<:                 *default
+
+test:
   <<:                 *default
 
 production:
