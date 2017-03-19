@@ -17,15 +17,22 @@ gem 'dotenv',                   require: 'dotenv/load'
 gem 'connection_pool'
 gem 'hashie'
 
+# Security / Login
+gem 'bcrypt'
+
 # Persistence
 gem 'nobrainer'
 gem 'redis'
 gem 'redis-activesupport'
 gem 'seed-fu'
 
+
 # Searching
 gem 'elasticsearch'
 gem 'elasticsearch-dsl'
+
+# Email
+gem 'mail'
 
 # Tasks
 gem 'rake'

@@ -11,9 +11,10 @@ module BuymaInsider
     def configuration
       @configuration ||= begin
         Hashie::Mash.new.tap do |cfg|
-          cfg.redis    = Hashie::Mash.new(YAML.load_file('./config/redis.yml')[environment])
-          cfg.database = Hashie::Mash.new(YAML.load_file('./config/database.yml')[environment])
-          cfg.logging  = Hashie::Mash.new(YAML.load_file('./config/logging.yml')[environment])
+          cfg.secret_token_base = ENV['SECRET_TOKEN_BASE']
+          cfg.redis             = Hashie::Mash.new(YAML.load_file('./config/redis.yml')[environment])
+          cfg.database          = Hashie::Mash.new(YAML.load_file('./config/database.yml')[environment])
+          cfg.logging           = Hashie::Mash.new(YAML.load_file('./config/logging.yml')[environment])
         end
       end
     end

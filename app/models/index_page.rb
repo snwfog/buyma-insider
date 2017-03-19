@@ -2,7 +2,7 @@ class IndexPage
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   
-  has_many   :crawl_histories
+  has_many   :crawl_histories, dependent: :destroy
   
   # has_many   :articles, through: :index_page_articles
   

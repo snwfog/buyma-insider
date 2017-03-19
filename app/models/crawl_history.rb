@@ -7,8 +7,7 @@ class CrawlHistory
   
   belongs_to :crawl_session, index: true
   
-  field :id,                  primary_key: true,
-                              required:    true
+  field :id,                  primary_key: true
   
   field :status,              type:        Enum,
                               in:          [:scheduled, :inprogress, :aborted, :completed],

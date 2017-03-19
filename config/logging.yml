@@ -34,12 +34,21 @@ test:
 
 production:
   <<:                 *default
+  root:
+    <<:               *default_process
+    severity:         info
+  database:
+    <<:               *default_process
+    severity:         info
   sinatra:
     <<:               *default_process
     severity:         warn
   sidekiq:
     <<:               *default_process
     severity:         info
-  httplog:
+  elasticsearch:
     <<:               *default_process
     severity:         info
+  httplog:
+    <<:               *default_process
+    severity:         warn

@@ -10,13 +10,13 @@ class Merchant
            :item_css,
            to: :merchant_metadatum
 
-  has_one :merchant_metadatum
+  has_one :merchant_metadatum, dependent: :restrict
 
-  has_many :crawl_sessions, scope: -> { order_by(created_at: :desc) }
+  has_many :crawl_sessions,    dependent: :restrict
 
-  has_many :articles
+  has_many :articles,          dependent: :restrict
 
-  has_many :index_pages
+  has_many :index_pages,       dependent: :restrict
 
   after_initialize do
     extend("Merchants::#{name.capitalize}".safe_constantize)

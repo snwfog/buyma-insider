@@ -3,18 +3,19 @@ class CrawlSession
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
 
-  has_many    :crawl_histories, scope: -> { order_by(created_at: :desc) }
+  has_many    :crawl_histories, dependent: :destroy
+                            
   
   belongs_to  :merchant,        index:    true,
                                 required: true
-  
-  alias_method :started_at, :created_at
 
   field :id,          primary_key: true,
                       required:    true
   
   field :finished_at, type:        Time
-
+  
+  alias_method :started_at, :created_at
+  
   default_scope    { order_by(created_at: :desc) }
   scope(:finished) { where(:finished_at.defined => true) }
 
