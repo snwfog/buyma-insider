@@ -8,7 +8,7 @@ class UserMetadatum
 
   field :id,            primary_key: true
 
-  field :last_name,     type:        string,
+  field :last_name,     type:        String,
                         required:    true,
                         max_length:  250
   
