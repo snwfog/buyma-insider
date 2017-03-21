@@ -4,6 +4,7 @@ class ApplicationController < Sinatra::Base
   register Sinatra::CrossOrigin
   
   helpers Sinatra::Param
+  helpers ::RouteHelper
   helpers ::JsonHelper
   helpers ::ElasticsearchHelper
   
@@ -30,6 +31,9 @@ class ApplicationController < Sinatra::Base
   # default serializer that will return only id and type
   enable :deep_serialization
   
+  # Global constants
+  set :SESSION_TOKEN, :_t
+  
   configure :development do
     require 'sinatra/reloader'
     
@@ -44,5 +48,17 @@ class ApplicationController < Sinatra::Base
   
   before do
     content_type :json
+  end
+  
+  def current_user
+    User.first
+  end
+  
+  def ensure_current_user
+    ensure_user_authenticated
+  end
+  
+  def ensure_user_authenticated
+    User.first # raise 'User not logged in'
   end
 end

@@ -8,8 +8,7 @@ def MerchantMetadatum.load
 end
 
 def get_test_article(attrs = {})
-  Article.new({
-                id:          "abc:#{Faker::Code.ean}",
+  Article.new({ id:          "abc:#{Faker::Code.ean}",
                 merchant_id: 'abc',
                 name:        Faker::Commerce.product_name,
                 price:       Faker::Commerce.price,

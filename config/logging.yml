@@ -1,6 +1,7 @@
 default:              &default
   root:               &default_process
     severity:         debug
+    additive:         false
     level:            &default_level
       debug:          &default_severity
         pattern:      "[%d] %-5l -- %c : %m\n"

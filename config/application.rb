@@ -1,1 +1,1 @@
-# Nothing to use for now
+require 'buyma_insider'

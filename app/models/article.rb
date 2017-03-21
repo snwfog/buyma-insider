@@ -8,8 +8,12 @@ class Article
   include CacheableSerializer
 
   EXPIRES_IN = 1.week
+  
+  has_many :user_watched_articles, dependent: :destroy
+  
+  has_many :user_sold_articles,    dependent: :destroy
 
-  has_one :price_history
+  has_one :price_history,          dependent: :destroy
   
   belongs_to :merchant, index:    true,
                         required: true
@@ -36,16 +40,30 @@ class Article
                       length:      (1..1000),
                       format:      %r{//.+}
   
-  alias_method :unique_id,  :id
+  around_save :watch_for_price_updates, unless: :new_record?
+  
   alias_method :desc,       :description
   alias_method :title,      :name
 
-  scope(:latests) { where(:created_at.gte => EXPIRES_IN.ago.utc) }
+  scope(:latests)          { where(:created_at.gte => EXPIRES_IN.ago.utc) }
   # TODO: To implement
-  scope(:sales)    { where(:price.lt => 1.00) }
+  scope(:sales)            { where(:price.lt => 1.00) }
+
+  def watch_for_price_updates
+    changes = self.changes
+    yield
+  
+    if changes.key?(:price)
+      old_value, new_value = changes.fetch(:price)
+      NoBrainer.logger.info {
+        '`%s` got %s at %.02f' % [self.name,
+                                  new_value > old_value ? 'expensive' : 'cheaper',
+                                  new_value] }
+    end
+  end
   
   def update_price_history!
-    price_history = PriceHistory.upsert!(article: self)
+    price_history ||= PriceHistory.upsert!(article: self)
     price_history.add_price_history!(price)
   end
 

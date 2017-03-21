@@ -1,6 +1,18 @@
 class ArticlesController < ApplicationController
   include Elasticsearch::DSL
   
+  before '/:id(/**)?' do
+    param :id, String, required:  true,
+                       transform: :downcase,
+                       format:    /[a-z]{3}:[a-z0-9]+/
+    
+    @article = Article.find?(params[:id])
+  end
+  
+  before '/:id/(watched|sold)', method: [:post, :delete] do
+    ensure_current_user
+  end
+  
   get '/' do
     param :extension,   String, in: %w(_autocomplete _search), transform: :downcase
     if extension = params[:extension]
@@ -90,9 +102,26 @@ class ArticlesController < ApplicationController
   end
 
   get '/:id' do
-    param :id, String, required:  true,
-                       transform: :downcase,
-                       format:    /[a-z]{3}:[a-z0-9]+/
-    json Article.find?(params[:id])
+    json @article
+  end
+  
+  post '/:id/watched' do
+    current_user.create_user_watched_article!(@article)
+    status :created
+  end
+  
+  post '/:id/sold' do
+    current_user.create_user_sold_article!(@article)
+    status :created
+  end
+  
+  delete '/:id/watched' do
+    current_user.destroy_user_watched_article!(@article)
+    status :ok
+  end
+
+  delete '/:id/sold' do
+    current_user.destroy_user_sold_article!(@article)
+    status :ok
   end
 end
