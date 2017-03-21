@@ -13,7 +13,11 @@ class UserArticle
 end
 
 class UserWatchedArticle < UserArticle
-
+  # Percentage discount or raise at point watcher
+  # will be notified, default to Float::MIN (any fluctuation)
+  field :interest_threshold_pc, type:    Float,
+                                in:      (1..100),
+                                default: Float::MIN
 end
 
 class UserSoldArticle < UserArticle

@@ -18,7 +18,7 @@ gem 'connection_pool'
 gem 'hashie'
 
 # Security / Login
-gem 'bcrypt', git: 'https://github.com/codahale/bcrypt-ruby.git', :require => 'bcrypt'
+gem 'bcrypt',                   github: 'codahale/bcrypt-ruby', :require => 'bcrypt'
 
 # Persistence
 gem 'nobrainer'

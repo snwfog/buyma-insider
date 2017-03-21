@@ -9,8 +9,7 @@ class IndexPage
   belongs_to :merchant, index:       true,
                         required:    true
   
-  field :id,            primary_key: true,
-                        required:    true
+  field :id,            primary_key: true
   
   field :relative_path, type:        String,
                         required:    true,
@@ -23,6 +22,7 @@ class IndexPage
   
     protocol << ':' << domain << '/' << relative_path
   end
+
   
   def to_s
     full_url

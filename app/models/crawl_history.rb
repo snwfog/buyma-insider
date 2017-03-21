@@ -29,5 +29,6 @@ class CrawlHistory
   
   alias_method :started_at, :created_at
   
-  default_scope { order_by(created_at: :desc) }
+  default_scope    { order_by(created_at: :desc) }
+  scope(:finished) { where(:finished_at.defined => true) }
 end

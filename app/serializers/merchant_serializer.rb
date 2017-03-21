@@ -1,7 +1,7 @@
 require 'active_model_serializers/serialization_context'
 
 class MerchantSerializer < ActiveModel::Serializer
-  cache key: :merchant, expires_in: 1.week
+  cache key: :merchant, expires_in: 5.minutes
 
   has_many :articles do
     link :related, proc { "/merchants/#{object.id}/articles" }
@@ -43,10 +43,5 @@ class MerchantSerializer < ActiveModel::Serializer
     if session = object.crawl_sessions.finished.first
       session.finished_at
     end
-  end
-
-  class IndexPageSerializer < ActiveModel::Serializer
-    attributes :id,
-               :full_url
   end
 end

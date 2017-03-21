@@ -3,6 +3,7 @@ class MerchantMetadatum
   include CacheableSerializer
 
   belongs_to :merchant, required: true,
+                        index:    true,
                         unique:   true
 
   field :id,           primary_key: true

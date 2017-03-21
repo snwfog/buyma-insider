@@ -5,12 +5,10 @@ class CrawlSession
 
   has_many    :crawl_histories, dependent: :destroy
                             
-  
   belongs_to  :merchant,        index:    true,
                                 required: true
 
-  field :id,          primary_key: true,
-                      required:    true
+  field :id,          primary_key: true
   
   field :finished_at, type:        Time
   
