@@ -20,5 +20,6 @@ test:
 staging:
   <<:               *default
 
+# Change this to sock on production
 production:
   <<:               *default

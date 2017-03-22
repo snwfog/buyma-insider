@@ -8,24 +8,27 @@ module CacheableAll
   end
   
   module PrependedSingletonMethods
+    @@_all ||= LruRedux::ThreadSafeCache.new(1_000)
     def all(*args)
       criteria = super()
-      if opts = args.pop and opts.is_a?(Hash) and opts[:cached] == :ok
-        cache_in_redis_and_return(criteria)
+      if opts = args.pop and opts[:cached] == :ok
+        key = "cache:models:#{self.class}s".downcase!
+        @@_all.getset(key) { criteria.to_a }
       else
         criteria
       end
     end
     
     private
-    def cache_in_redis_and_return(criteria)
-      $redis.with do |redis|
-        redis.with_namespace('cache:models:merchants') do
-          merchants = redis.get(:all) || criteria.to_a # fetch it
-          redis.setnx(:all, merchants, expires_in: 5.minutes)
-          merchants
-        end
-      end
-    end
+    # def cache_fetch(criteria, namespace)
+    #   $redis.with_namespace(namespace) do |redis|
+    #     unless @@_all = redis.get(:all)
+    #       @@_all = criteria.to_a
+    #       redis.set(:all, @@_all, expires_in: 5.minutes)
+    #     end
+    #
+    #     @@_all
+    #   end
+    # end
   end
 end

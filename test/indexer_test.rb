@@ -12,7 +12,7 @@ class IndexerTest < Minitest::Test
     @metadatum = MerchantMetadatum.load
     MerchantMetadatum.stub :all, @metadatum do
       @all       = Merchant::Base.all
-      @merchants = Merchant::Base.merchants
+      @merchants = Merchant::Base.merchants_lookup
     end
   end
 

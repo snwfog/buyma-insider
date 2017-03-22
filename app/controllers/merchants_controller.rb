@@ -1,10 +1,10 @@
 class MerchantsController < ApplicationController
   before '/:merchant_id(/**)?' do
-    @merchants = Hash[Merchant.all(cached: :ok).map { |m| [m.id, m] }]
+    @merchants_lookup = Hash[Merchant.all(cached: :ok).map { |m| [m.id, m] }]
     
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
-                                 in:        @merchants.keys,
+                                 in:        @merchants_lookup.keys,
                                  format:    %r{[a-z]{3}}
     
     param :limit,       Integer, in:      (1..20),
@@ -13,24 +13,22 @@ class MerchantsController < ApplicationController
     param :page,        Integer, in:      (1..200),
                                  default: 1
 
-    @merchant     = @merchants.fetch(params[:merchant_id])
+    @merchant     = @merchants_lookup.fetch(params[:merchant_id])
     @page, @limit = params.values_at(*%w(page limit))
   end
   
   get '/' do
-    json @merchants.values
+    json @merchants_lookup.values
   end
 
   get '/:merchant_id' do
     json @merchant
   end
-  
+
   get '/:merchant_id/crawl_sessions' do
-    if @merchant
-      json @merchant.crawl_sessions
-             .limit(@limit)
-             .finished
-    end
+    json @merchant.crawl_sessions
+           .limit(@limit)
+           .finished
   end
   
   get '/:merchant_id/articles' do

@@ -8,7 +8,7 @@ describe Merchant::Base do
 
   it 'should list all merchant' do
     expect(Merchant::Base.all.count).to be 4
-    expect(Merchant::Base.merchants.keys.count).to be 4
+    expect(Merchant::Base.merchants_lookup.keys.count).to be 4
   end
 
   it 'should fetch merchant' do

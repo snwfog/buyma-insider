@@ -17,7 +17,7 @@ class MerchantTest < Minitest::Test
 
   def test_should_fetch_merchant
     assert_respond_to Merchant::Base, :all
-    assert_respond_to Merchant::Base, :merchants
+    assert_respond_to Merchant::Base, :merchants_lookup
     assert_respond_to Merchant::Base, :[]
 
     MerchantMetadatum.stub :all, @metadatum do
