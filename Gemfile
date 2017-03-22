@@ -26,6 +26,8 @@ gem 'redis'
 gem 'redis-activesupport'
 gem 'seed-fu'
 
+# Caching
+gem 'lru_redux'
 
 # Searching
 gem 'elasticsearch'

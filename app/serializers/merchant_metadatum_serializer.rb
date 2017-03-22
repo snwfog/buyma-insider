@@ -1,5 +1,3 @@
-require 'active_model_serializers'
-
 class MerchantMetadatumSerializer < ActiveModel::Serializer
   cache key: :merchant_metadatum
 

@@ -4,7 +4,8 @@ class Merchant
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
-
+  include CacheableAll
+  
   delegate :base_url,
            :pager_css,
            :item_css,

@@ -1,5 +1,3 @@
-require 'active_model_serializers'
-
 class ExchangeRateSerializer < ActiveModel::Serializer
   DEFAULT_RATES = %w(JPY CAD USD)
 

@@ -43,7 +43,7 @@ production:
     severity:         info
   sinatra:
     <<:               *default_process
-    severity:         warn
+    severity:         info
   sidekiq:
     <<:               *default_process
     severity:         info
@@ -52,4 +52,4 @@ production:
     severity:         info
   httplog:
     <<:               *default_process
-    severity:         warn
+    severity:         info

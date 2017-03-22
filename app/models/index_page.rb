@@ -1,6 +1,7 @@
 class IndexPage
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
+  include CacheableSerializer
   
   has_many   :crawl_histories, dependent: :destroy
   

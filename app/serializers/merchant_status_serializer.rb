@@ -1,5 +1,3 @@
-require 'active_model_serializers'
-
 class MerchantStatusSerializer < ActiveModel::Serializer
   # cache key: :merchant_status
 

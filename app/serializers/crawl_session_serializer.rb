@@ -1,5 +1,3 @@
-require 'active_model_serializers'
-
 class CrawlSessionSerializer < ActiveModel::Serializer
   cache key: :crawl_session, expires_in: 1.day
 

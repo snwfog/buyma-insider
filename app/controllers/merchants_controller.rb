@@ -1,22 +1,24 @@
 class MerchantsController < ApplicationController
   before '/:merchant_id(/**)?' do
-    param :merchant_id, String,  required: true,
-                                 transform: :downcase,
-                                 in: Merchant.all.map(&:id),
-                                 format: /[a-z]{3}/
+    @merchants = Hash[Merchant.all(cached: :ok).map { |m| [m.id, m] }]
     
-    param :limit,       Integer, in: (1..20),
+    param :merchant_id, String,  required:  true,
+                                 transform: :downcase,
+                                 in:        @merchants.keys,
+                                 format:    %r{[a-z]{3}}
+    
+    param :limit,       Integer, in:      (1..20),
                                  default: 20
     
-    param :page,        Integer, in: (1..200),
+    param :page,        Integer, in:      (1..200),
                                  default: 1
 
-    @merchant     = Merchant.find!(params[:merchant_id])
+    @merchant     = @merchants.fetch(params[:merchant_id])
     @page, @limit = params.values_at(*%w(page limit))
   end
   
   get '/' do
-    json Merchant.all
+    json @merchants.values
   end
 
   get '/:merchant_id' do
@@ -38,11 +40,12 @@ class MerchantsController < ApplicationController
   end
 
   get '/:merchant_id/articles/_search' do
-    param :q,           String, required: true,
+    param :q,           String, required:  true,
                                 transform: :downcase
+    
     param :field,       String, transform: -> (f) { f.downcase.to_sym },
-                                in: Article.fields.keys,
-                                default: :name
+                                in:        Article.fields.keys,
+                                default:   :name
     
     q, field = params.values_at(*%w(q field))
 
