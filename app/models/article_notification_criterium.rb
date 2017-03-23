@@ -8,6 +8,8 @@ class ArticleNotificationCriterium
 
   field :id,          primary_key: true,
                       required:    true
+
+  private_class_method :new
   
   def notify?
     apply_criterium
@@ -18,9 +20,13 @@ class ArticleNotificationCriterium
   end
 end
 
-class DiscountThresholdArticleNotificationCriterium < ArticleNotificationCriterium
+class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
   field :threshold_pct, type:     Integer,
                         required: true,
                         default:  20,
                         in:       (0..100)
+  
+  def apply_criterium
+    
+  end
 end

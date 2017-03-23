@@ -1,4 +1,4 @@
-class UserWatchedArticleArticleNotificationCriterium
+class UserWatchedArticleNotificationCriterium
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   

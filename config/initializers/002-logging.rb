@@ -17,7 +17,7 @@ Logging.logger.root.tap do |logger|
   # Root logger don't accept additive attribute and is false by default
   set_logging_configuration.call(root_cfg, logger)
   if (BuymaInsider.development? || BuymaInsider.test?) && STDOUT.tty?
-    logger.add_appenders.stdout
+    logger.add_appenders(Logging.appenders.stdout)
   end
 end
 

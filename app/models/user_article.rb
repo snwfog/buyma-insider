@@ -10,10 +10,22 @@ class UserArticle
                        required: true
   
   index :ix_user_id_article_id, [:user_id, :article_id]
+  
+  def initialize(*args, &block)
+    if self.class == UserArticle
+      raise 'Must call new on child class only'
+    else
+      super
+    end
+  end
 end
 
 class UserWatchedArticle < UserArticle
-  has_many :user_watched_article_article_notification_criterium
+  has_many :watched_criteria, foreign_key: :user_watched_article_id,
+                              class_name:  UserWatchedArticleNotificationCriterium,
+                              dependent:   :destroy
+  
+  validates_presence_of :watched_criteria
 end
 
 class UserSoldArticle < UserArticle
