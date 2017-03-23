@@ -1,0 +1,1 @@
+ArticleNotificationCriterium.create!

@@ -119,6 +119,17 @@ namespace :db do
 
     puts 'Finished applying patches (%.02fs)' % time.real
   end
+  
+  desc 'Seed'
+  task :seed do
+    FileList['./db/fixtures/**.rb'].each do |fixture_file|
+      open(fixture_file) do |f|
+        printf 'Importing %s...' % fixture_file
+        eval(f.readline)
+        puts 'Done.'.green
+      end
+    end
+  end
 end
 
 namespace :es do

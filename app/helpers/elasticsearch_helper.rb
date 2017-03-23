@@ -3,8 +3,10 @@ module ElasticsearchHelper
     options[:index] ||= :shakura
     options[:type]  ||= :article
     
-    elastic_query_results = $elasticsearch.with { |conn| conn.search(options) }
-
+    elastic_query_results = $elasticsearch.with do |conn|
+      conn.search(options)
+    end
+    
     # TODO: Hashie is slow
     Hashie::Mash.new(elastic_query_results)
   end
