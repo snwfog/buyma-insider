@@ -1,1 +1,1 @@
-DiscountPercentArticleNotificationCriterium.create!(threshold_pct: 20)
+DiscountPercentArticleNotificationCriterium.create!(thresh)

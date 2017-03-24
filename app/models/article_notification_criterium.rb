@@ -11,6 +11,14 @@ class ArticleNotificationCriterium
 
   private_class_method :new
   
+  def initialize(*args, &block)
+    if self.class == ArticleNotificationCriterium
+      raise 'Base class `ArticleNotificationCriterium` is not allowed to be instantiated'
+    else
+      super
+    end
+  end
+  
   def notify?
     apply_criterium
   end
@@ -26,7 +34,7 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
                         default:  20,
                         in:       (0..100)
   
-  def apply_criterium
-    
+  def apply_criterium(article)
+    article.price_history.on_sale?
   end
 end

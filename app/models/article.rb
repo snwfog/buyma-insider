@@ -48,6 +48,8 @@ class Article
   scope(:latests)          { where(:created_at.gte => EXPIRES_IN.ago.utc) }
   # TODO: To implement
   scope(:sales)            { where(:price.lt => 1.00) }
+  
+  delegate :on_sale?, to: :price_history
 
   def watch_for_price_updates
     changes = self.changes

@@ -62,4 +62,13 @@ class PriceHistory
     history << Hash[:timestamp, Time.now.utc.iso8601, :price, price]
     save!
   end
+  
+  def on_sale?
+    prev, current = history.last(2)
+    if prev && current
+      prev[:price] > current[:price]
+    else
+      false
+    end
+  end
 end

@@ -13,7 +13,7 @@ class UserArticle
   
   def initialize(*args, &block)
     if self.class == UserArticle
-      raise 'Must call new on child class only'
+      raise 'Base class `UserArticle` is not allowed to be instantiated'
     else
       super
     end
