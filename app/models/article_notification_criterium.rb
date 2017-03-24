@@ -9,8 +9,6 @@ class ArticleNotificationCriterium
   field :id,          primary_key: true,
                       required:    true
 
-  private_class_method :new
-  
   def initialize(*args, &block)
     if self.class == ArticleNotificationCriterium
       raise 'Base class `ArticleNotificationCriterium` is not allowed to be instantiated'
@@ -19,11 +17,11 @@ class ArticleNotificationCriterium
     end
   end
   
-  def notify?
-    apply_criterium
+  def notify?(article)
+    apply_criterium(article)
   end
   
-  def apply_criterium
+  def apply_criterium(article)
     raise NotImplemented
   end
 end
@@ -33,8 +31,13 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
                         required: true,
                         default:  20,
                         in:       (0..100)
-  
+
   def apply_criterium(article)
-    article.price_history.on_sale?
+    if article.on_sale?
+      prev, current = article.price_history.history.last(2)
+      ((prev[:price] - current[:price]) / prev[:price].to_f) * 100 >= threshold_pct
+    else
+      false
+    end
   end
 end

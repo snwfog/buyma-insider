@@ -77,11 +77,15 @@ class Article
   def name=(name)
     super(name.titleize)
   end
+  
+  def price=(price)
+    super(price.to_f)
+  end
 
   def link=(link)
     super(link.gsub(%r{^https?://}, '//'))
   end
-
+  
   def new?
     (created_at + EXPIRES_IN) > Time.now.utc
   end

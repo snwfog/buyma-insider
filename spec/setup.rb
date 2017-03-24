@@ -15,14 +15,14 @@
 # end
 require 'buyma_insider'
 
-def get_article
+def get_article(opts)
   Article.new({ id:          "abc:#{Faker::Code.ean}",
                 merchant_id: 'zar',
                 sku:         Faker::Code.ean,
                 name:        Faker::Commerce.product_name,
                 price:       Faker::Commerce.price,
                 description: Faker::Commerce.product_name,
-                link:        '//test1.com', })
+                link:        '//test1.com', }.merge(opts))
 end
 
 def get_user
