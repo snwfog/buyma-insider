@@ -15,8 +15,8 @@ class Article
 
   has_one :price_history,          dependent: :destroy
   
-  belongs_to :merchant, index:    true,
-                        required: true
+  belongs_to :merchant,            index:    true,
+                                   required: true
 
   field :id,          primary_key: true,
                       required:    true # merchant_id:sku
@@ -41,13 +41,12 @@ class Article
                       format:      %r{//.+}
   
   around_save :watch_for_price_updates, unless: :new_record?
+  after_create :create_price_history!, unless: :price_history
   
   alias_method :desc,       :description
   alias_method :title,      :name
 
   scope(:latests)          { where(:created_at.gte => EXPIRES_IN.ago.utc) }
-  # TODO: To implement
-  scope(:sales)            { where(:price.lt => 1.00) }
   
   delegate :on_sale?, to: :price_history
 
@@ -67,6 +66,10 @@ class Article
   def update_price_history!
     price_history ||= PriceHistory.upsert!(article: self)
     price_history.add_price_history!(price)
+  end
+  
+  def create_price_history!
+    PriceHistory.create!(article: self)
   end
 
   # You should not mess with id...

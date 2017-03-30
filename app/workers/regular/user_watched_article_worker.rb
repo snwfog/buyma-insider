@@ -6,7 +6,7 @@ class UserWatchedArticleWorker < Worker::Base
     
     today = Time.now.utc.to_date
     article.user_watched_articles.each do |watched_article|
-      if watched_article.notify?
+      if watched_article.should_notify?
         watched_article.notify!(today)
       else
         next

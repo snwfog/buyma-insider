@@ -10,4 +10,6 @@ class UserWatchedArticleNotificationCriterium
 
   index :ix_user_watched_article_id_article_notification_criterium_id,
         [:user_watched_article_id, :article_notification_criterium_id]
+  
+  delegate :applicable?, to: :article_notification_criterium
 end

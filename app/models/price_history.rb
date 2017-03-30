@@ -8,8 +8,7 @@ class PriceHistory
   
   belongs_to :article, foreign_key: :article_id
 
-  field :article_id, primary_key: true,
-                     required:    true
+  field :article_id, primary_key: true
   
   field :currency,   type:    Text,
                      length:  (3..3),

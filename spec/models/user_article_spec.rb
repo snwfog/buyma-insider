@@ -7,34 +7,35 @@ describe UserArticle do
   # end
   
   describe UserWatchedArticle do
+    let(:user) { get_user.tap(&:save!) }
+    let(:article) { get_article.tap(&:save!) }
+  
     it 'should respect uniqueness scope per article and per type' do
-      user    = get_user.tap(&:save!)
-      article = get_article.tap(&:save!)
-      
       user.watch!(article)
-      expect { user.watch!(article) }.to raise_error(NoBrainer::Error::DocumentInvalid, /has already been taken/)
+      expect { user.watch!(article) }.to(raise_error(
+                                           NoBrainer::Error::DocumentInvalid,
+                                           /has already been taken/))
+    end
+    
+    it 'should have many watched criteria' do
+      user.watch!(article)
+      uw_article = user.user_watched_articles.first
+      expect(uw_article.article_notification_criteria.count).to eq(1)
+      expect(uw_article.article_notification_criteria.first).to be_a(ArticleNotificationCriterium)
+    end
+    
+    it 'should #notify' do
+      user.watch!(article)
+      uw_article = user.user_watched_articles.first
+      expect(uw_article.should_notify?).to eq(false)
     end
     
     it 'should eager load user' do
-      user = get_user
-      user.save
-      
-      article = get_article
-      article.save
-      
-      UserWatchedArticle.create!(user:    user,
-                                 article: article)
-      
+      UserWatchedArticle.create!(user: user, article: article)
       expect(article).to include(user)
     end
     
     it 'should validates' do
-      article = get_article
-      user    = get_user
-      
-      article.save!
-      user.save!
-      
       user_wa = UserWatchedArticle.new(article: article, user: user)
       expect(user_wa.valid?).to be_falsey
       expect(user_wa.errors.full_messages.first).to match(/criteria can't be blank/)
@@ -43,12 +44,6 @@ describe UserArticle do
   
   describe UserNotifiedArticle do
     it 'should enforce uniqueness per user/article/date' do
-      user = get_user
-      user.save!
-      
-      article = get_article
-      article.save!
-      
       user_notified_article = UserNotifiedArticle.new(user:    user,
                                                       article: article)
       

@@ -16,10 +16,10 @@ class UserArticle
 end
 
 class UserWatchedArticle < UserArticle
-  has_many :watched_criteria, foreign_key: :user_watched_article_id,
-                              class_name:  UserWatchedArticleNotificationCriterium,
-                              dependent:   :destroy
+  has_many :user_watched_article_notification_criteria, foreign_key: :user_watched_article_id,
+                                                        dependent:   :destroy
   
+  has_many :article_notification_criteria, through: :user_watched_article_notification_criteria
   # validate :watched_criteria, :ensure_presence_of_watched_criteria
   #
   # def ensure_presence_of_watched_criteria
@@ -30,8 +30,8 @@ class UserWatchedArticle < UserArticle
   #   end
   # end
   
-  def notify?
-    watched_criteria.all? do |criterium|
+  def should_notify?
+    article_notification_criteria.all? do |criterium|
       criterium.applicable?(article)
     end
   end
