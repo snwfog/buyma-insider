@@ -8,16 +8,39 @@ class ArticleNotificationCriterium
 
   field :id,          primary_key: true,
                       required:    true
+  
+  around_save :fetch_from_cache
 
-  def initialize(*args, &block)
-    if self.class == ArticleNotificationCriterium
-      raise 'Base class `ArticleNotificationCriterium` is not allowed to be instantiated'
-    else
-      super
-    end
+  # def initialize(*args, &block)
+  #   if self.class == ArticleNotificationCriterium
+  #     raise 'Base class `ArticleNotificationCriterium` is not allowed to be instantiated'
+  #   else
+  #     super
+  #   end
+  # end
+  def _cache
+    @@_cache ||= LruRedux::Cache.new(1_000)
   end
   
-  def notify?(article)
+  def exists_in_cache
+    !!_cache.get(_cache_key)
+  end
+
+  def _cache_key
+    case self
+    when DiscountPercentArticleNotificationCriterium
+      'discount_%i_pct' % self.threshold_pct
+    else
+      raise 'Unknown article notification criterium'
+    end
+  end
+
+  def fetch_from_cache
+    _cache.getset(_cache_key) { yield and self }
+  end
+
+
+  def applicable?(article)
     apply_criterium(article)
   end
   
@@ -29,8 +52,9 @@ end
 class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
   field :threshold_pct, type:     Integer,
                         required: true,
+                        unique:   true,
                         default:  20,
-                        in:       (0..100)
+                        in:       (0...100)
 
   def apply_criterium(article)
     if article.on_sale?

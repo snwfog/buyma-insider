@@ -38,7 +38,7 @@ end
 
 desc 'Environment'
 task :environment do
-  # Just an empty task that stub rails environment task
+  puts "Executing task for `#{ENV['RACK_ENV']}`".yellow
 end
 
 desc 'Crawl a merchant given merchant id'

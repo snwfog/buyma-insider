@@ -15,7 +15,7 @@
 # end
 require 'buyma_insider'
 
-def get_article(opts)
+def get_article(opts = {})
   Article.new({ id:          "abc:#{Faker::Code.ean}",
                 merchant_id: 'zar',
                 sku:         Faker::Code.ean,
@@ -29,3 +29,4 @@ def get_user
   User.new({ username:      :snwfog,
              password_hash: 'z'*60 })
 end
+

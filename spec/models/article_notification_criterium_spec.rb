@@ -8,7 +8,6 @@ describe ArticleNotificationCriterium do
   end
   
   describe DiscountPercentArticleNotificationCriterium do
-    
     let(:article) do
       article = get_article(price: 100.0)
       article.save!
@@ -22,13 +21,20 @@ describe ArticleNotificationCriterium do
       article.update_price_history!
 
       percent_9 = DiscountPercentArticleNotificationCriterium.new(threshold_pct: 9)
-      expect(percent_9.notify?(article)).to eq(true)
+      expect(percent_9.applicable?(article)).to eq(true)
       
       percent_10 = DiscountPercentArticleNotificationCriterium.new(threshold_pct: 10)
-      expect(percent_10.notify?(article)).to eq(true)
+      expect(percent_10.applicable?(article)).to eq(true)
 
       percent_20 = DiscountPercentArticleNotificationCriterium.new(threshold_pct: 20)
-      expect(percent_20.notify?(article)).to eq(false)
+      expect(percent_20.applicable?(article)).to eq(false)
+    end
+    
+    it 'should be cacheable'do
+      pct_9_1 = DiscountPercentArticleNotificationCriterium.create!(threshold_pct: 9)
+      pct_9_2 = DiscountPercentArticleNotificationCriterium.create!(threshold_pct: 9)
+      
+      expect(pct_9_1).to equal(pct_9_2)
     end
   end
 end
