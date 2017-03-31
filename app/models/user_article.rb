@@ -8,11 +8,18 @@ class UserArticle
   belongs_to :article, index:    true,
                        required: true
 
-  field :_type,        type: String # Eager create _type for polymorphic model
-  field :user_id,      unique: { scope: [:article_id, :_type] }
-  field :article_id,   unique: { scope: [:user_id,    :_type] }
+  field :_type,        type:     String # Eager create _type for polymorphic model
+  field :user_id,      unique:   { scope: [:article_id, :_type] }
+  field :article_id,   unique:   { scope: [:user_id,    :_type] }
+
+  # user_notified_article
+  field :notified_at,  type:     Date,
+                       index:    true,
+                       unique:   { scope: [:user_id, :article_id] }
   
   index :ix_user_id_article_id__type, [:user_id, :article_id, :_type]
+
+  validates_presence_of :notified_at, if: -> { _type.to_sym == :UserNotifiedArticle }
 end
 
 class UserWatchedArticle < UserArticle
@@ -30,16 +37,21 @@ class UserWatchedArticle < UserArticle
   #   end
   # end
   
-  def should_notify?
+  def all_criteria_applies?
     article_notification_criteria.all? do |criterium|
       criterium.applicable?(article)
     end
   end
-  
-  def notify!(date)
-    UserNotifiedArticle.create!(user:        user,
-                                article:     article,
-                                notified_at: date)
+
+  def notify!(notified_at)
+    create_user_notified_article!(notified_at)
+  end
+
+  def create_user_notified_article!(notified_at)
+    UserArticle.where(user:        user,
+                      article:     article,
+                      notified_at: notified_at)
+               .first_or_create!(_type: :UserNotifiedArticle)
   end
 end
 
@@ -49,24 +61,20 @@ class UserSoldArticle < UserArticle
 end
 
 class UserNotifiedArticle < UserArticle
-  field :notified_at, type:     Date,
-                      index:    true,
-                      required: true,
-                      default:  -> { Time.now.utc.to_date }
-
-  validate :notified_at, :ensure_unique_user_article_notified_at
-  
-  around_save :ensure_unique_user_article_notified_at
-
-  def ensure_unique_user_article_notified_at
-    NoBrainer::Lock.new("#{user.id}:#{article.id}:#{notified_at}").synchronize do
-      if UserNotifiedArticle.where(user_id:     user.id,
-                                   article_id:  article.id,
-                                   notified_at: notified_at).any?
-        errors.add(:base, 'User article notified at must be compositely unique')
-      else
-        yield if block_given?
-      end
-    end
-  end
+  # INFO: Comment this out for now
+  # validate :notified_at, :ensure_unique_user_article_notified_at
+  #
+  # around_save :ensure_unique_user_article_notified_at
+  #
+  # def ensure_unique_user_article_notified_at
+  #   NoBrainer::Lock.new("#{user.id}:#{article.id}:#{notified_at}").synchronize do
+  #     if UserNotifiedArticle.where(user_id:     user.id,
+  #                                  article_id:  article.id,
+  #                                  notified_at: notified_at).any?
+  #       errors.add(:base, 'User article notified at must be compositely unique')
+  #     else
+  #       yield if block_given?
+  #     end
+  #   end
+  # end
 end

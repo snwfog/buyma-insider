@@ -40,7 +40,7 @@ class Article
                       length:      (1..1000),
                       format:      %r{//.+}
   
-  around_save :watch_for_price_updates, unless: :new_record?
+  around_save  :watch_for_price_updates, unless: :new_record?
   after_create :create_price_history!, unless: :price_history
   
   alias_method :desc,       :description
@@ -56,6 +56,9 @@ class Article
   
     if changes.key?(:price)
       old_value, new_value = changes.fetch(:price)
+      # No need to load DB, just delegate to the job
+      # to load the watched users
+      UserWatchedArticleWorker.perform_async(id)
       NoBrainer.logger.info {
         '`%s` got %s at %.02f' % [self.name,
                                   new_value > old_value ? 'expensive' : 'cheaper',

@@ -49,7 +49,7 @@ class User
   
   def watch!(article, watch_criteria = [])
     if watch_criteria.empty?
-      # TODO: Parameterize this
+      # TODO: Parameterize this in a configuration
       watch_criteria << DiscountPercentArticleNotificationCriterium
                           .where(threshold_pct: 20)
                           .first_or_create!

@@ -1,24 +1,46 @@
 require_relative '../setup'
 
 describe UserWatchedArticleWorker do
-  let(:article) { article = get_article; article.save!; article }
-  let(:user) { user = get_user; user.save!; user }
+  let(:user) { user = get_user.tap(&:save!) }
+  let(:article) { article = get_article.tap(&:save!) }
   
   it 'should notify' do
-    user.watch!(article,
-                [DiscountPercentArticleNotificationCriterium
-                   .where(threshold_pct: 20)
-                   .first_or_create!])
+    user.watch!(article)
+    article.update_price_history!
+    
     current_price = article.price;
     article.price = current_price * 0.80
     article.save!
     article.update_price_history!
     
-    user_notified_article = UserNotifiedArticle
-                              .where(article: article, user: user)
-                              .where(_type: :UserNotifiedArticle)
-                              .to_a
+    UserWatchedArticleWorker.new.perform(article.id)
     
-    expect(user_notified_article.count).to be = 1
+    user_notified_article = UserNotifiedArticle
+                              .where(article: article,
+                                     user:    user)
+                              .where(_type: :UserNotifiedArticle)
+    expect(user_notified_article.count).to eq(1)
+  end
+  
+  it 'should unique notify article on user/article/notified_date' do
+    user.watch!(article)
+    article.update_price_history!
+    
+    article.price *= 0.80
+    article.save!
+    article.update_price_history!
+    
+    UserWatchedArticleWorker.new.perform(article.id)
+    
+    article.price *= 0.80
+    article.save!
+    
+    UserWatchedArticleWorker.new.perform(article.id)
+    
+    user_notified_article = UserNotifiedArticle
+                              .where(article: article,
+                                     user:    user)
+                              .where(_type: :UserNotifiedArticle)
+    expect(user_notified_article.count).to eq(1)
   end
 end

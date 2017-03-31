@@ -5,11 +5,10 @@ describe UserArticle do
   # it 'should not be instantiable' do
   #   expect { UserArticle.new }.to raise_error('NonInstantiableDocument')
   # end
+  let(:user) { get_user.tap(&:save!) }
+  let(:article) { get_article.tap(&:save!) }
   
   describe UserWatchedArticle do
-    let(:user) { get_user.tap(&:save!) }
-    let(:article) { get_article.tap(&:save!) }
-  
     it 'should respect uniqueness scope per article and per type' do
       user.watch!(article)
       expect { user.watch!(article) }.to(raise_error(
@@ -27,7 +26,7 @@ describe UserArticle do
     it 'should #notify' do
       user.watch!(article)
       uw_article = user.user_watched_articles.first
-      expect(uw_article.should_notify?).to eq(false)
+      expect(uw_article.all_criteria_applies?).to eq(false)
     end
     
     it 'should eager load user' do
