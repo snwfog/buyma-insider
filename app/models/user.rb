@@ -59,10 +59,10 @@ class User
   end
 
   def create_user_watched_article!(article, watch_criteria = [])
-    user_watched_article = UserArticle
+    user_watched_article = UserWatchedArticle
                              .create!(user:    self,
-                                      article: article,
-                                      _type:   :UserWatchedArticle)
+                                      article: article)
+    
     watch_criteria.each do |criterium|
       UserWatchedArticleNotificationCriterium
         .create!(user_watched_article_id:        user_watched_article.id,
@@ -74,7 +74,6 @@ class User
     self.user_watched_articles
       .where(user_id:    self.id,
              article_id: article.id)
-      .first!
       .destroy
   end
 
@@ -87,7 +86,6 @@ class User
     self.user_sold_articles
       .where(user_id:    self.id,
              article_id: article.id)
-      .first!
       .destroy
   end
 end
