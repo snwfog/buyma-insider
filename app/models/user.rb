@@ -72,9 +72,9 @@ class User
 
   def destroy_user_watched_article!(article)
     self.user_watched_articles
-      .where(user_id:    self.id,
-             article_id: article.id)
-      .destroy
+      .where(user:    self,
+             article: article)
+      .each(&:destroy)
   end
 
   def create_user_sold_article!(article)
@@ -84,8 +84,8 @@ class User
 
   def destroy_user_sold_article!(article)
     self.user_sold_articles
-      .where(user_id:    self.id,
-             article_id: article.id)
-      .destroy
+      .where(user:    self,
+             article: article)
+      .each(&:destroy)
   end
 end

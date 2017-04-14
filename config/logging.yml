@@ -5,11 +5,11 @@ default:              &default
     level:            &default_level
       debug:          &default_severity
         pattern:      "[%d] %-5l -- %c : %m\n"
-        location:     ./log/development.debug.log
+        location:     ./log/root.debug.log
         age:          daily
       info:
         <<:           *default_severity
-        location:     ./log/development.log
+        location:     ./log/root.log
       warn:
         <<:           *default_severity
       error:
