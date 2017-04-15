@@ -52,16 +52,4 @@ class ApplicationController < Sinatra::Base
   before do
     content_type :json
   end
-  
-  def current_user
-    User.first
-  end
-  
-  def ensure_current_user
-    ensure_user_authenticated
-  end
-  
-  def ensure_user_authenticated
-    User.first # raise 'User not logged in'
-  end
 end

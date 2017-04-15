@@ -10,6 +10,7 @@ require './config/application'
 # end
 
 map_controller('/sessions')
+map_controller('/users')
 map_controller('/merchants')
 map_controller('/merchant_metadata')
 map_controller('/crawl_histories')

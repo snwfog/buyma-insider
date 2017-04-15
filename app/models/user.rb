@@ -26,6 +26,8 @@ class User
   field :password_hash, type:        String,
                         required:    true,
                         length:      (60..60)
+  
+  field :last_seen_at,  type:        Time
 
   before_validation :ensure_password_is_hashed
   
