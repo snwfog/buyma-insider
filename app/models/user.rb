@@ -15,13 +15,19 @@ class User
 
   field :username,      type:        String,
                         required:    true,
+                        unique:      true,
                         max_length:  60
+  
+  field :email,         type:        String,
+                        unique:      true,
+                        required:    true,
+                        max_length:  500
 
   field :password_hash, type:        String,
                         required:    true,
                         length:      (60..60)
 
-  before_save :ensure_password_is_hashed
+  before_validation :ensure_password_is_hashed
   
   def password=(password)
     unless password.blank?
@@ -31,7 +37,7 @@ class User
   
   def ensure_password_is_hashed
     if @raw_password
-      self.password_hash = BCrypt::Password.new(@raw_password)
+      self.password_hash = BCrypt::Password.create(@raw_password.to_s)
     end
   end
   

@@ -1,3 +1,6 @@
+# When an article is updated, this task is fired.
+# It checks the watched article, then add this article into
+# user's notified article
 class UserWatchedArticleWorker < Worker::Base
   def perform(article_id)
     article = Article

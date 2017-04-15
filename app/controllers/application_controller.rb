@@ -4,9 +4,12 @@ class ApplicationController < Sinatra::Base
   register Sinatra::CrossOrigin
   
   helpers Sinatra::Param
+  helpers Sinatra::Cookies
+  
   helpers ::RouteHelper
   helpers ::JsonHelper
   helpers ::ElasticsearchHelper
+  helpers ::AuthenticationHelper
   
   disable :run
   disable :static

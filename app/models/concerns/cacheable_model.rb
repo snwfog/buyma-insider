@@ -1,4 +1,4 @@
-# Not working
+# @deprecated Not working
 module CacheableModel
   extend ActiveSupport::Concern
   

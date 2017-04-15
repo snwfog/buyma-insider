@@ -11,7 +11,7 @@ module JsonHelper
         super ActiveModelSerializers::SerializableResource.new(object, opts),
               { json_encoder: :to_json }
       else
-        not_found({ 'Not found' => 'No models was found with the request' }.to_json)
+        not_found({ 'error' => 'No models was found with the request' }.to_json)
       end
     end
   end

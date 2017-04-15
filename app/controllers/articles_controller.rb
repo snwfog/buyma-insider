@@ -25,22 +25,12 @@ class ArticlesController < ApplicationController
     param :filter,      String
     
     merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
-  
     merchant = Merchant.find!(merchant_id)
-    articles = if ['latests', 'sales'].include?(filter)
-                 merchant.articles.public_send(filter)
-               else
-                 merchant.articles
-               end
-  
-    json articles
+    json merchant.articles
            .offset((page - 1) * limit)
            .limit(limit), meta: { current_page:  page,
-                                  total_pages:   (articles.count / limit.to_f).ceil,
-                                  latests_count: merchant.articles.latests.count,
-                                  sales_count:   merchant.articles.sales.count,
+                                  total_pages:   merchant.articles.count / limit + 1,
                                   total_count:   merchant.articles.count }
-
   end
   
   get '/_autocomplete' do

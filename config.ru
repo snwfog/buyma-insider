@@ -9,6 +9,7 @@ require './config/application'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
+map_controller('/sessions')
 map_controller('/merchants')
 map_controller('/merchant_metadata')
 map_controller('/crawl_histories')

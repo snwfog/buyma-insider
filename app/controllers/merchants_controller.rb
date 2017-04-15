@@ -1,7 +1,9 @@
 class MerchantsController < ApplicationController
+  before do
+    @merchants_lookup ||= Hash[Merchant.all.map { |m| [m.id, m] }]
+  end
+  
   before '/:merchant_id(/**)?' do
-    @merchants_lookup = Hash[Merchant.all(cached: :ok).map { |m| [m.id, m] }]
-    
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
                                  in:        @merchants_lookup.keys,
@@ -34,7 +36,11 @@ class MerchantsController < ApplicationController
   get '/:merchant_id/articles' do
     json @merchant.articles
            .offset((@page - 1) * @limit)
-           .limit(@limit)
+           .limit(@limit),
+         meta: { current_page: @page,
+                 limit:        @limit,
+                 total_pages:  @merchant.articles.count / @limit + 1,
+                 total_count:  @merchant.articles.count }
   end
 
   get '/:merchant_id/articles/_search' do

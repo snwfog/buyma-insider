@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'sinatra',                  github: 'sinatra/sinatra', branch: 'master'
-gem 'sinatra-contrib',          require: 'sinatra/json'
+gem 'sinatra-contrib',          require: ['sinatra/json', 'sinatra/cookies']
 gem 'sinatra-param',            github: 'snwfog/sinatra-param', branch: 'master', require: 'sinatra/param'
 gem 'sinatra-cross_origin',     require: 'sinatra/cross_origin'
 gem 'active_model_serializers', '~> 0.10.0'

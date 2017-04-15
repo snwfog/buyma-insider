@@ -17,15 +17,16 @@ class PriceHistory
   field :history,    type:    Array,
                      default: -> { [] }
   
-  field :max_price,  type:    Float,
-                     default: Float::MIN
+  # field :max_price,  type:    Float,
+  #                    default: Float::MIN
+  #
+  # field :min_price,  type:    Float,
+  #                    default: Float::MAX
+  #
+  # field :avg_price,  type:    Float,
+  #                    default: 0.0
   
-  field :min_price,  type:    Float,
-                     default: Float::MAX
-  
-  field :avg_price,  type:    Float,
-                     default: 0.0
-  
+  alias_method :id, :article_id
   # around_save :calculate_price_stats, unless: :new_record?
   #
   # def calculate_price_stats

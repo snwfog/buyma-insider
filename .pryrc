@@ -17,7 +17,8 @@ def get_article
 end
 
 def get_user
-  User.new({ username:      :snwfog,
-             password_hash: 'z'*60 })
+  User.new({ username: Faker::Internet.user_name,
+             email:    Faker::Internet.email,
+             password: 123 })
 end
 
