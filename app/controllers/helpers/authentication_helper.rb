@@ -3,13 +3,15 @@ module AuthenticationHelper
   SESSION_KEY         = '_t'.freeze
   CURRENT_USER_KEY    = '_CURRENT_USER_KEY'.freeze
   
-  class UserNotFound < RuntimeError; end
-  class InvalidPassword < RuntimeError; end
-  class InvalidSession < RuntimeError; end
-  class NotAuthenticated < RuntimeError; end
+  class UserNotFound       < RuntimeError; end
+  class InvalidPassword    < RuntimeError; end
+  class InvalidSession     < RuntimeError; end
+  class NotAuthenticated   < RuntimeError; end
 
   def ensure_user_authenticated!
-    raise NotAuthenticated unless authenticated?
+    unless authenticated?
+      error(401, { error: 'session.unauthenticated' }.to_json)
+    end
   end
 
   def authenticated?
@@ -27,11 +29,14 @@ module AuthenticationHelper
   def post_authenticate!(user)
     @env        = Rack::Request.new(env)
     session_key = SecureRandom.hex(16)
-    
     cookies.set(SESSION_KEY, cookie_hash(session_key))
     session_cache do |redis|
       redis.set(session_key, user, expires_in: SESSION_EXPIRE_TIME)
     end
+  
+    UserSessionToken
+      .create!(user:  user,
+               token: session_key)
   end
   
   private

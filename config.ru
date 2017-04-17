@@ -9,6 +9,8 @@ require './config/application'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
+map '/' do; run StaticController end
+
 map_controller('/sessions')
 map_controller('/users')
 map_controller('/merchants')

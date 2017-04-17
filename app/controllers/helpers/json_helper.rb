@@ -14,5 +14,10 @@ module JsonHelper
         not_found({ 'error' => 'No models was found with the request' }.to_json)
       end
     end
+    
+    def as_model(json_api_document, options = {})
+      ActiveModelSerializers::Deserialization
+        .jsonapi_parse(json_api_document, options)
+    end
   end
 end

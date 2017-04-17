@@ -9,4 +9,10 @@ class UsersController < ApplicationController
   get '/:id' do
     json @user
   end
+  
+  post '/' do
+    request.body.rewind
+    user_payload = request.body.read
+    user_hash    = as_model(user_payload)
+  end
 end

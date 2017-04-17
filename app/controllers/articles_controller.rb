@@ -9,8 +9,8 @@ class ArticlesController < ApplicationController
     @article = Article.find?(params[:id])
   end
   
-  before '/:id/(watched|sold)', method: [:post, :delete] do
-    ensure_current_user
+  before '/:id/(watched|sold)', http_methods: [:post, :delete] do
+    ensure_user_authenticated!
   end
   
   get '/' do

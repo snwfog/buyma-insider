@@ -52,4 +52,9 @@ class ApplicationController < Sinatra::Base
   before do
     content_type :json
   end
+
+  error [UserNotFound, InvalidPassword, InvalidSession] do
+    # { error: 'login.invalid_username_or_password' }
+    status :bad_request
+  end
 end

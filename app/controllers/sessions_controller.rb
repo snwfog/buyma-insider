@@ -1,20 +1,32 @@
 class SessionsController < ApplicationController
+  options '/**' do; end
+  # # For testing purpose
+  # get '/' do
+  #   call env.merge('REQUEST_METHOD' => 'POST')
+  # end
+  
   # Create the session
-  get '/' do
-    param :username, String, required:  true,
-                             transform: :downcase
-    param :password, String, required: true
+  post '/' do
+    # param :username, String, required:  true,
+    #                          transform: :downcase
+    # param :password, String, required: true
+    #
+    # username, password = params.values_at('username', 'password')
+  
+    request.body.rewind
+    payload            = JSON.parse(request.body.read)
+    user_hash          = as_model(payload)
+    username, password = user_hash.values_at(:login, :password)
 
-    username, password = params.values_at('username', 'password')
     begin
-      user = User.where(username: username).first
-      raise UserNotFound unless user
-      raise InvalidPassword unless BCrypt::Password.new(user.password_hash) == password
+      user = User.where(username: username).first or raise UserNotFound
+      user.validate_password!(password)
     rescue
-      { error: 'login.invalid_username_or_password' }.to_json
+      # error(400, { error: 'login.invalid_username_or_password' }.to_json)
+      raise
     else
-      post_authenticate!(user)
-      json user
+      session_token = post_authenticate!(user)
+      json session_token, include: ''
     end
   end
 end

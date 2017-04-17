@@ -13,6 +13,7 @@ gem 'rest-client'
 gem 'require_all'
 gem 'rack'
 gem 'activesupport'
+gem 'actionpack',               require: ['action_controller/metal/strong_parameters']
 gem 'dotenv',                   require: 'dotenv/load'
 gem 'connection_pool'
 gem 'hashie'

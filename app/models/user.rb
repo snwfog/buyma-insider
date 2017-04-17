@@ -2,11 +2,11 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  has_many :user_watched_articles, dependent:  :destroy
+  has_many :user_watched_articles, dependent: :destroy
 
-  has_many :user_sold_articles,    dependent:  :destroy
+  has_many :user_sold_articles,    dependent: :destroy
   
-  has_one :user_auth_token,   dependent: :destroy
+  has_many :user_session_tokens,   dependent: :destroy
   
   has_one :user_metadatum,    dependent: :destroy
   
@@ -30,6 +30,14 @@ class User
   field :last_seen_at,  type:        Time
 
   before_validation :ensure_password_is_hashed
+  
+  def valid_password?(password)
+    BCrypt::Password.new(password_hash) == password
+  end
+  
+  def validate_password!(password)
+    raise InvalidPassword unless valid_password?(password)
+  end
   
   def password=(password)
     unless password.blank?

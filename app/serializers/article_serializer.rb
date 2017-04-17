@@ -7,6 +7,7 @@ class ArticleSerializer < ActiveModel::Serializer
     # the association, leaving it commented
     # and and include_data config is false, then
     # relationship will render as meta: {} only
+    # see active_model_serializers/adapter/json_api/relationship.rb
     include_data true
   end
   
