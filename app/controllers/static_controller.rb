@@ -10,7 +10,7 @@ class StaticController < ApplicationController
     }
     
     if user = current_user rescue nil
-      @bootstrap['current_user'] = user.to_json
+      @bootstrap['current_user'] = to_hash(user)
     end
     
     @bootstrap.to_json

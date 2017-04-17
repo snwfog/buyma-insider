@@ -15,6 +15,16 @@ module JsonHelper
       end
     end
     
+    def to_hash(object, opts = {})
+      defaults = Hash[:include, '**']
+      if object
+        opts = defaults.merge(opts) if settings.deep_serialization
+        ActiveModelSerializers::SerializableResource.new(object, opts).serializable_hash
+      else
+        {}
+      end
+    end
+    
     def as_model(json_api_document, options = {})
       ActiveModelSerializers::Deserialization
         .jsonapi_parse(json_api_document, options)
