@@ -1,6 +1,8 @@
 class ArticlesController < ApplicationController
   include Elasticsearch::DSL
   
+  options '/**' do; end
+  
   before '/:id(/**)?' do
     param :id, String, required:  true,
                        transform: :downcase,
@@ -96,8 +98,10 @@ class ArticlesController < ApplicationController
   end
   
   post '/:id/watched' do
-    current_user.create_user_watched_article!(@article)
+    watched_article = current_user
+                        .create_user_watched_article!(@article)
     status :created
+    json watched_article
   end
   
   post '/:id/sold' do

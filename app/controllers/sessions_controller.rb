@@ -26,6 +26,7 @@ class SessionsController < ApplicationController
       raise
     else
       session_token = post_authenticate!(user)
+      status :created
       json session_token, include: ''
     end
   end

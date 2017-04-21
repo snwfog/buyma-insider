@@ -17,14 +17,11 @@ class PriceHistory
   field :history,    type:    Array,
                      default: -> { [] }
   
-  # field :max_price,  type:    Float,
-  #                    default: Float::MIN
-  #
-  # field :min_price,  type:    Float,
-  #                    default: Float::MAX
-  #
-  # field :avg_price,  type:    Float,
-  #                    default: 0.0
+  field :max_price,  type:    Float,
+                     default: Float::MIN
+
+  field :min_price,  type:    Float,
+                     default: Float::MAX
   
   alias_method :id, :article_id
   # around_save :calculate_price_stats, unless: :new_record?
@@ -58,7 +55,6 @@ class PriceHistory
   def add_price_history!(price)
     self.max_price = [max_price, price].max
     self.min_price = [min_price, price].min
-    self.avg_price = (current_price + price) / 2
     history << Hash[:timestamp, Time.now.utc.iso8601, :price, price]
     save!
   end

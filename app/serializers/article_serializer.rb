@@ -22,7 +22,9 @@ class ArticleSerializer < ActiveModel::Serializer
   
   class PriceHistorySerializer < ActiveModel::Serializer
     attributes :currency,
-               :history
+               :history,
+               :max_price,
+               :min_price
   end
   
   # def price_summary

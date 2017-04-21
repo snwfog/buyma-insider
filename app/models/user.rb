@@ -84,6 +84,8 @@ class User
         .create!(user_watched_article_id:        user_watched_article.id,
                  article_notification_criterium: criterium)
     end
+    
+    user_watched_article
   end
 
   def destroy_user_watched_article!(article)
