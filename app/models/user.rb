@@ -99,6 +99,10 @@ class User
     UserSoldArticle.create!(user:    self,
                             article: article) and reload
   end
+  
+  def sold!(user_sold_article_json)
+    UserSoldArticle.create!(user_sold_article_json)
+  end
 
   def destroy_user_sold_article!(article)
     self.user_sold_articles

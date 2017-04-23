@@ -9,6 +9,10 @@ class UsersController < ApplicationController
   get '/:id/watched_articles' do
     json @user.user_watched_articles
   end
+
+  get '/:id/sold_articles' do
+    json @user.user_sold_articles
+  end
   
   get '/:id' do
     json @user

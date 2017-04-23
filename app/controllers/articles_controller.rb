@@ -97,25 +97,35 @@ class ArticlesController < ApplicationController
     json @article
   end
   
-  post '/:id/watched' do
-    watched_article = current_user
-                        .create_user_watched_article!(@article)
+  post '/:id/watch' do
+    user_watched_article = current_user.create_user_watched_article!(@article)
     status :created
-    json watched_article
+    json user_watched_article
   end
   
-  post '/:id/sold' do
-    current_user.create_user_sold_article!(@article)
-    status :created
+  post '/:id/sell' do
+    request.body.rewind
+    payload                = JSON.parse(request.body.read)
+    user_sold_article_json = as_model(payload)
+    # Use json instead of @article here, It give
+    # a performance because we don't have to load data
+    # This is different than /watch endpoint... for now
+    if current_user.id != user_sold_article_json[:user_id]
+      raise 'Only current user can create sold article'
+    else
+      user_sold_article      = current_user.sold!(user_sold_article_json)
+      status :created
+      json user_sold_article
+    end
   end
   
-  delete '/:id/watched' do
+  delete '/:id/watch' do
     current_user.destroy_user_watched_article!(@article)
-    status :ok
+    status :no_content
   end
 
-  delete '/:id/sold' do
+  delete '/:id/sell' do
     current_user.destroy_user_sold_article!(@article)
-    status :ok
+    status :no_content
   end
 end
