@@ -4,6 +4,7 @@ describe UserSoldArticle do
   let(:user) { get_user.tap(&:save!) }
   let(:article) { get_article.tap(&:save!) }
   let(:ex_rate) { get_exchange_rate.tap(&:save!) }
+  let(:shipping_service) { get_shipping_service.tap(&:save!) }
   
   it 'should update status with timestamp' do
     us_article = UserSoldArticle.create!(user:          user,

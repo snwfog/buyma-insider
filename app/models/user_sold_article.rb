@@ -53,6 +53,13 @@ class UserSoldArticle
       self.__send__("#{status}_at=", Time.now.utc.iso8601)
     end
   end
+
+  def shipping_service_ids=(shipping_service_ids)
+    ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
+      UserSoldArticleShippingService.create!(user_sold_article: self,
+                                             shipping_service:  shipping_service)
+    end
+  end
   
   private
   def set_price
