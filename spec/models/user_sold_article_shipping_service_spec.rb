@@ -14,5 +14,9 @@ describe UserSoldArticleShippingService do
     expect { UserSoldArticleShippingService
                .create!(user_sold_article: us_article,
                         shipping_service:  shipping_service) }.to_not raise_error
+
+    expect { UserSoldArticleShippingService
+               .create!(user_sold_article: us_article,
+                        shipping_service:  shipping_service) }.to raise_error NoBrainer::Error::DocumentInvalid
   end
 end

@@ -1,13 +1,13 @@
 ---
 service_name:   canada post small package
 rate:           11.0
-weight_in_kg:   1
+weight_in_kg:   1.0
 arrive_in_days: 14
 tracked:        false
 
 ---
 service_name:   canada post medium package
 rate:           21.0
-weight_in_kg:   2
+weight_in_kg:   2.0
 arrive_in_days: 14
 tracked:        false

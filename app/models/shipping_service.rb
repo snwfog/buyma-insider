@@ -8,7 +8,7 @@ class ShippingService
                          length:   (1..500)
   field :rate,           type:     Float,
                          required: true
-  field :weight_in_kg,   type:     Integer,
+  field :weight_in_kg,   type:     Float,
                          required: true
   field :arrive_in_days, type:     Integer,
                          required: true

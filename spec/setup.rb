@@ -38,7 +38,7 @@ def get_exchange_rate
 end
 
 def get_shipping_service
-  ShippingService.new(service_name:   'shipping service: integration test',
+  ShippingService.new(service_name:   "shipping service #{SecureRandom.hex(2)}: integration test",
                       rate:           1.0,
                       weight_in_kg:   1.2,
                       arrive_in_days: 1,
