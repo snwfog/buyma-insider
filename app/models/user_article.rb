@@ -12,9 +12,9 @@
 #   field :user_id,      unique:   { scope: [:article_id, :_type] }
 #   field :article_id,   unique:   { scope: [:user_id,    :_type] }
 #
-#   # user_notified_article
+#   # user_article_notified
 #
-#   validates_presence_of :notified_at, if: -> { _type.to_sym == :UserNotifiedArticle }
+#   validates_presence_of :notified_at, if: -> { _type.to_sym == :UserArticleNotified }
 #
 #   index :ix_user_id_article_id__type, [:user_id, :article_id, :_type]
 # end
@@ -48,7 +48,7 @@
 #     UserArticle.where(user:        user,
 #                       article:     article,
 #                       notified_at: notified_at)
-#                .first_or_create!(_type: :UserNotifiedArticle)
+#                .first_or_create!(_type: :UserArticleNotified)
 #   end
 # end
 #
@@ -57,7 +57,7 @@
 #                              required: true
 # end
 #
-# class UserNotifiedArticle < UserArticle
+# class UserArticleNotified < UserArticle
 #   # INFO: Comment this out for now
 #   # validate :notified_at, :ensure_unique_user_article_notified_at
 #   #
@@ -65,7 +65,7 @@
 #   #
 #   # def ensure_unique_user_article_notified_at
 #   #   NoBrainer::Lock.new("#{user.id}:#{article.id}:#{notified_at}").synchronize do
-#   #     if UserNotifiedArticle.where(user_id:     user.id,
+#   #     if UserArticleNotified.where(user_id:     user.id,
 #   #                                  article_id:  article.id,
 #   #                                  notified_at: notified_at).any?
 #   #       errors.add(:base, 'User article notified at must be compositely unique')

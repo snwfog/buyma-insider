@@ -4,7 +4,7 @@ class ArticleNotificationCriterium
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
   
-  has_many :user_watched_article_article_notification_criterium
+  has_many :user_article_watched_article_notification_criterium
 
   field :id,          primary_key: true,
                       required:    true

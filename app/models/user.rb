@@ -2,9 +2,9 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  has_many :user_watched_articles, dependent: :destroy
+  has_many :user_article_watcheds, dependent: :destroy
 
-  has_many :user_sold_articles,    dependent: :destroy
+  has_many :user_article_solds,    dependent: :destroy
   
   has_many :user_session_tokens,   dependent: :destroy
   
@@ -51,14 +51,14 @@ class User
     end
   end
   
-  def watched_articles
-    user_watched_articles
+  def article_watcheds
+    user_article_watcheds
       .eager_load(:article)
       .map(&:article)
   end
   
-  def sold_articles
-    user_sold_articles
+  def article_solds
+    user_article_solds
       .eager_load(:article)
       .map(&:article)
   end
@@ -71,41 +71,41 @@ class User
                           .first_or_create!
     end
     
-    create_user_watched_article!(article, watch_criteria)
+    create_user_article_watched!(article, watch_criteria)
   end
 
-  def create_user_watched_article!(article, watch_criteria = [])
-    user_watched_article = UserWatchedArticle
+  def create_user_article_watched!(article, watch_criteria = [])
+    user_article_watched = UserArticleWatched
                              .create!(user:    self,
                                       article: article)
     
     watch_criteria.each do |criterium|
-      UserWatchedArticleNotificationCriterium
-        .create!(user_watched_article_id:        user_watched_article.id,
+      UserArticleWatchedNotificationCriterium
+        .create!(user_article_watched_id:        user_article_watched.id,
                  article_notification_criterium: criterium)
     end
     
-    user_watched_article
+    user_article_watched
   end
 
-  def destroy_user_watched_article!(article)
-    self.user_watched_articles
+  def destroy_user_article_watched!(article)
+    self.user_article_watcheds
       .where(user:    self,
              article: article)
       .each(&:destroy)
   end
 
-  def create_user_sold_article!(article)
-    UserSoldArticle.create!(user:    self,
+  def create_user_article_sold!(article)
+    UserArticleSold.create!(user:    self,
                             article: article) and reload
   end
   
-  def sold!(user_sold_article_json)
-    UserSoldArticle.create!(user_sold_article_json)
+  def sold!(user_article_sold_json)
+    UserArticleSold.create!(user_article_sold_json)
   end
 
-  def destroy_user_sold_article!(article)
-    self.user_sold_articles
+  def destroy_user_article_sold!(article)
+    self.user_article_solds
       .where(user:    self,
              article: article)
       .each(&:destroy)

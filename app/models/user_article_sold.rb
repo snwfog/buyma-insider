@@ -1,4 +1,4 @@
-class UserSoldArticle
+class UserArticleSold
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
@@ -9,10 +9,10 @@ class UserSoldArticle
   belongs_to :exchange_rate,   index:    true,
                                required: true
   
-  has_many :user_sold_article_shipping_services, dependent: :destroy
-  has_many :shipping_services, through: :user_sold_article_shipping_services
+  has_many :user_article_sold_shipping_services, dependent: :destroy
+  has_many :shipping_services, through: :user_article_sold_shipping_services
 
-  index :ix_user_sold_article_user_id_article_id, [:user_id, :article_id]
+  index :ix_user_article_sold_user_id_article_id, [:user_id, :article_id]
 
   alias_method :sold_at,       :created_at
   alias_method :confirmed_at,  :created_at
@@ -56,7 +56,7 @@ class UserSoldArticle
 
   def shipping_service_ids=(shipping_service_ids)
     ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
-      UserSoldArticleShippingService.create!(user_sold_article: self,
+      UserArticleSoldShippingService.create!(user_article_sold: self,
                                              shipping_service:  shipping_service)
     end
   end

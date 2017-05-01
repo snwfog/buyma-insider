@@ -6,12 +6,12 @@ class UsersController < ApplicationController
     @user = User.find?(params[:id])
   end
   
-  get '/:id/watched_articles' do
-    json @user.user_watched_articles
+  get '/:id/article_watcheds' do
+    json @user.user_article_watcheds
   end
 
-  get '/:id/sold_articles' do
-    json @user.user_sold_articles
+  get '/:id/article_solds' do
+    json @user.user_article_solds
   end
   
   get '/:id' do

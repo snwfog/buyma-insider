@@ -1,4 +1,4 @@
-# Not used for now
+# @deprecated Not used for now
 class IndexPageArticle
   include NoBrainer::Document
   

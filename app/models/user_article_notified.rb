@@ -1,4 +1,4 @@
-class UserNotifiedArticle
+class UserArticleNotified
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
@@ -17,5 +17,5 @@ class UserNotifiedArticle
                        required: true,
                        unique:   { scope: [:user_id, :article_id] }
 
-  index :ix_user_notified_article_user_id_article_id, [:user_id, :article_id]
+  index :ix_user_article_notified_user_id_article_id, [:user_id, :article_id]
 end

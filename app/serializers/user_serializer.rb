@@ -1,12 +1,10 @@
 class UserSerializer < ActiveModel::Serializer
-  # user_watched_articles
-  has_many :watched_articles do
-    link :related, proc { "/users/#{object.id}/watched_articles" }
+  has_many :article_watcheds do
+    link :related, proc { "/users/#{object.id}/article_watcheds" }
   end
 
-  # user_sold_articles
-  has_many :sold_articles do
-    link :related, proc { "/users/#{object.id}/sold_articles"}
+  has_many :article_solds do
+    link :related, proc { "/users/#{object.id}/article_solds"}
   end
   
   attributes :username,

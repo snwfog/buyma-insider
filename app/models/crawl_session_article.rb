@@ -9,5 +9,6 @@ class CrawlSessionArticle
   
   field :article_id,         unique: { scope: :crawl_session_id }
   
-  index :ix_crawl_session_id_article_id, [:crawl_session_id, :article_id]
+  index :ix_crawl_session_article_crawl_session_id_article_id,
+        [:crawl_session_id, :article_id]
 end

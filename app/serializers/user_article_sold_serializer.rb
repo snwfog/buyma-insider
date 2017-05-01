@@ -1,4 +1,4 @@
-class UserSoldArticleSerializer < ActiveModel::Serializer
+class UserArticleSoldSerializer < ActiveModel::Serializer
   belongs_to :user do
     link :related, proc { "/users/#{object.user_id}" }
     # include_data true

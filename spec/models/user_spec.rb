@@ -14,7 +14,7 @@ describe User do
     
     it 'should create with default criterium' do
       user.watch!(article)
-      uw_article = user.user_watched_articles.first
+      uw_article = user.user_article_watcheds.first
       expect(uw_article.article_notification_criteria.length).to eq(1)
       
       article_criterium = uw_article
@@ -31,16 +31,16 @@ describe User do
   describe '#destroy articles' do
     it 'destroy user watched article' do
       uw_articles = Array.new(3) do
-        UserWatchedArticle.create!(user:    user,
+        UserArticleWatched.create!(user:    user,
                                    article: get_article.tap(&:save))
       end
       
-      expect(user.user_watched_articles.count).to eq(3)
+      expect(user.user_article_watcheds.count).to eq(3)
       to_destroy_uw = uw_articles.sample
-      user.destroy_user_watched_article!(to_destroy_uw.article)
-      user.user_watched_articles.reload
+      user.destroy_user_article_watched!(to_destroy_uw.article)
+      user.user_article_watcheds.reload
       
-      expect(user.user_watched_articles.count).to eq(2)
+      expect(user.user_article_watcheds.count).to eq(2)
     end
   end
 end

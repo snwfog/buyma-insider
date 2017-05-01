@@ -1,16 +1,16 @@
 # When an article is updated, this task is fired.
 # It checks the watched article, then add this article into
 # user's notified article
-class UserWatchedArticleWorker < Worker::Base
+class UserArticleWatchedWorker < Worker::Base
   def perform(article_id)
     article = Article
-                .eager_load(:user_watched_articles)
+                .eager_load(:user_article_watcheds)
                 .find!(article_id)
     
     today = Time.now.utc.to_date
-    article.user_watched_articles.each do |watched_article|
-      if watched_article.all_criteria_applies?
-        watched_article.notify!(today)
+    article.user_article_watcheds.each do |article_watched|
+      if article_watched.all_criteria_applies?
+        article_watched.notify!(today)
       end
     end
   end

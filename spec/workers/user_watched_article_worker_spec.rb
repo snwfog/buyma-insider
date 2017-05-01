@@ -1,6 +1,6 @@
 require_relative '../setup'
 
-describe UserWatchedArticleWorker do
+describe UserArticleWatchedWorker do
   let(:user) { user = get_user.tap(&:save!) }
   let(:article) { article = get_article.tap(&:save!) }
   
@@ -13,12 +13,12 @@ describe UserWatchedArticleWorker do
     article.save!
     article.update_price_history!
     
-    UserWatchedArticleWorker.new.perform(article.id)
+    UserArticleWatchedWorker.new.perform(article.id)
     
-    user_notified_article = UserNotifiedArticle
+    user_notified_article = UserArticleNotified
                               .where(article: article,
                                      user:    user)
-                              .where(_type: :UserNotifiedArticle)
+                              .where(_type: :UserArticleNotified)
     expect(user_notified_article.count).to eq(1)
   end
   
@@ -30,17 +30,17 @@ describe UserWatchedArticleWorker do
     article.save!
     article.update_price_history!
     
-    UserWatchedArticleWorker.new.perform(article.id)
+    UserArticleWatchedWorker.new.perform(article.id)
     
     article.price *= 0.80
     article.save!
     
-    UserWatchedArticleWorker.new.perform(article.id)
+    UserArticleWatchedWorker.new.perform(article.id)
     
-    user_notified_article = UserNotifiedArticle
+    user_notified_article = UserArticleNotified
                               .where(article: article,
                                      user:    user)
-                              .where(_type: :UserNotifiedArticle)
+                              .where(_type: :UserArticleNotified)
     expect(user_notified_article.count).to eq(1)
   end
 end

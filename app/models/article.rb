@@ -11,8 +11,8 @@ class Article
 
   belongs_to :merchant,             index:    true,
                                     required: true
-  has_many :user_watched_articles,  dependent: :destroy
-  has_many :user_sold_articles,     dependent: :destroy
+  has_many :user_article_watcheds,  dependent: :destroy
+  has_many :user_article_solds,     dependent: :destroy
   has_many :crawl_session_articles, dependent: :destroy
   has_one :price_history,           dependent: :destroy
   
@@ -52,7 +52,7 @@ class Article
       old_value, new_value = changes.fetch(:price)
       # No need to load DB, just delegate to the job
       # to load the watched users
-      UserWatchedArticleWorker.perform_async(id)
+      UserArticleWatchedWorker.perform_async(id)
       NoBrainer.logger.info {
         '`%s` got %s at %.02f' % [self.name,
                                   new_value > old_value ? 'expensive' : 'cheaper',

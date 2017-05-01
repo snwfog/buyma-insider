@@ -1,4 +1,4 @@
-class UserWatchedArticleSerializer < ActiveModel::Serializer
+class UserArticleWatchedSerializer < ActiveModel::Serializer
   belongs_to :user do
     link :related, proc { "/users/#{object.user_id}" }
     # include_data true
