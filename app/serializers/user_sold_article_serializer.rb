@@ -13,6 +13,14 @@ class UserSoldArticleSerializer < ActiveModel::Serializer
     link :related, proc { "/exchange_rates/#{object.exchange_rate_id}" }
   end
   
-  attributes :created_at,
+  attributes :status,
+             :price,
+             :sold_price,
+             :confirmed_at,
+             :shipped_at,
+             :cancelled_at,
+             :received_at,
+             :returned_at,
+             :created_at,
              :updated_at
 end

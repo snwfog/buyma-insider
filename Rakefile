@@ -122,12 +122,24 @@ namespace :db do
   
   desc 'Seed'
   task :seed do
-    FileList['./db/fixtures/**.rb'].each do |fixture_file|
-      open(fixture_file) do |f|
-        printf 'Importing %s...' % fixture_file
-        eval(f.readline)
-        puts 'Done.'.green
+    FileList['./db/fixtures/**.yml'].each do |fixture_yml|
+      printf 'Importing %s...' % fixture_yml
+      fixtures   = YAML::load_file(fixture_yml)
+      class_name = fixture_yml.pathmap('%n').singularize.classify
+      unless Object.const_defined? class_name
+        puts ('Could not find class `%s`' % class_name).red
+        next
       end
+      klazz = class_name.safe_constantize
+      YAML::load_stream(File.read(fixture_yml)) do |hash|
+        fixture_model = klazz.new(hash)
+        if fixture_model.valid?
+          fixture_model.save!
+        else
+          puts fixture_model.errors.full_messages.join('\n').red
+        end
+      end
+      puts 'Done.'.green
     end
   end
 end

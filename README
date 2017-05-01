@@ -1,6 +1,9 @@
 # Buyma Insider
 
-## TODO:
+## TO-IMPLEMENTS
+-
+
+## TODO
 - Migrate old rethinkdb data
 - Add merchant index gateway that will scrape index pages
 - Add indexer persistent models

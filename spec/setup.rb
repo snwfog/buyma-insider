@@ -31,3 +31,9 @@ def get_user
              password: 123 })
 end
 
+def get_exchange_rate
+  ExchangeRate.new(base:      :CAD,
+                   timestamp: Time.now,
+                   rates:     { CAD: 1 })
+end
+

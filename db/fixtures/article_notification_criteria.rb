@@ -1,1 +1,0 @@
-DiscountPercentArticleNotificationCriterium.create!(thresh)

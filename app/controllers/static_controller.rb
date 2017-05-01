@@ -6,7 +6,8 @@ class StaticController < ApplicationController
   
   get '/bootstrap' do
     @bootstrap ||= {
-      server_version: BuymaInsider::VERSION
+      server_version: BuymaInsider::VERSION,
+      shipping_services: to_hash(ShippingService.all),
     }
     
     if user = current_user rescue nil

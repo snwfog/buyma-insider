@@ -4,13 +4,11 @@ class UserWatchedArticle
 
   belongs_to :user,    index:    true,
                        required: true
-
   belongs_to :article, index:    true,
                        required: true
 
-  has_many :user_watched_article_notification_criteria, dependent:   :destroy
-
-  has_many :article_notification_criteria, through: :user_watched_article_notification_criteria
+  has_many   :user_watched_article_notification_criteria, dependent: :destroy
+  has_many   :article_notification_criteria,              through: :user_watched_article_notification_criteria
 
   field :user_id,      unique:   { scope: [:article_id] }
   field :article_id,   unique:   { scope: [:user_id] }

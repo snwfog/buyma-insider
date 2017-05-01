@@ -18,7 +18,7 @@ class ApplicationController < Sinatra::Base
 
   # Contrib
   enable :cross_origin
-  set    :allow_methods, [:post, :get, :options, :delete]
+  set    :allow_methods, [:post, :get, :patch, :put, :options, :delete]
   
   # Custom
   enable :logging

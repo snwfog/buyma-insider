@@ -13,6 +13,7 @@ map '/' do; run StaticController end
 
 map_controller('/sessions')
 map_controller('/users')
+map_controller('/user_sold_articles')
 map_controller('/merchants')
 map_controller('/merchant_metadata')
 map_controller('/crawl_histories')

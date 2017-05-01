@@ -1,5 +1,2 @@
-$redis = ConnectionPool.new(size: 5) do
-  Redis::Store.new(BuymaInsider.configuration.redis)
-end
-
+$redis ||= BuymaInsider.redis_for(:global)
 # set :cache, $redis

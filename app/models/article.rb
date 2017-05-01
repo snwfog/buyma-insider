@@ -8,40 +8,34 @@ class Article
   include CacheableSerializer
 
   EXPIRES_IN = 1.week
-  
-  has_many :user_watched_articles, dependent: :destroy
-  
-  has_many :user_sold_articles,    dependent: :destroy
 
-  has_one :price_history,          dependent: :destroy
+  belongs_to :merchant,             index:    true,
+                                    required: true
+  has_many :user_watched_articles,  dependent: :destroy
+  has_many :user_sold_articles,     dependent: :destroy
+  has_many :crawl_session_articles, dependent: :destroy
+  has_one :price_history,           dependent: :destroy
   
-  belongs_to :merchant,            index:    true,
-                                   required: true
 
   field :id,          primary_key: true,
                       required:    true # merchant_id:sku
-  
   field :sku,         type:        String,
                       required:    true,
                       length:      (1..100)
-  
   field :name,        type:        String,
                       required:    true,
                       length:      (1..500)
-  
   field :price,       type:        Float,
                       required:    true # Latest price
-  
   field :description, type:        String,
                       length:      (1..1000)
-  
   field :link,        type:        String,
                       required:    true,
                       length:      (1..1000),
                       format:      %r{//.+}
   
   around_save  :watch_for_price_updates, unless: :new_record?
-  after_create :create_price_history!, unless: :price_history
+  after_create :create_price_history!,   unless: :price_history
   
   alias_method :desc,       :description
   alias_method :title,      :name
@@ -70,10 +64,6 @@ class Article
     price_history ||= PriceHistory.upsert!(article: self)
     price_history.add_price_history!(price)
   end
-  
-  def create_price_history!
-    PriceHistory.create!(article: self)
-  end
 
   # You should not mess with id...
   # def id=(primary_key)
@@ -94,5 +84,10 @@ class Article
   
   def new?
     (created_at + EXPIRES_IN) > Time.now.utc
+  end
+  
+  private
+  def create_price_history!
+    PriceHistory.create!(article: self)
   end
 end

@@ -59,8 +59,7 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
   def apply_criterium(article)
     if article.on_sale?
       prev, current = article.price_history.history.last(2)
-      (((prev[:price] - current[:price]) / prev[:price].to_f) * 100)
-        .round >= threshold_pct
+      (((prev[:price] - current[:price]) / prev[:price].to_f) * 100).round >= threshold_pct
     else
       false
     end

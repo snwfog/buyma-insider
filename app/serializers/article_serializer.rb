@@ -17,10 +17,20 @@ class ArticleSerializer < ActiveModel::Serializer
              :price,
              :link,
              # :price_summary,
+             :synced_at,
              :created_at,
              :updated_at
+
+  def synced_at
+    object.crawl_session_articles
+      .order_by(created_at: :desc)
+      .first
+      &.created_at
+  end
   
   class PriceHistorySerializer < ActiveModel::Serializer
+    cache key: :price_history
+    
     attributes :currency,
                :history,
                :max_price,

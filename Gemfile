@@ -25,7 +25,9 @@ gem 'bcrypt',                   github: 'codahale/bcrypt-ruby', :require => 'bcr
 gem 'nobrainer'
 gem 'redis'
 gem 'redis-activesupport'
-gem 'seed-fu'
+
+# Bus / Messaging
+gem 'message_bus'
 
 # Caching
 gem 'lru_redux'

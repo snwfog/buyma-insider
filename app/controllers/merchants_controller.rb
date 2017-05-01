@@ -9,14 +9,25 @@ class MerchantsController < ApplicationController
                                  in:        @merchants_lookup.keys,
                                  format:    %r{[a-z]{3}}
     
-    param :limit,       Integer, in:      (1..20),
-                                 default: 20
+    param :limit,       Integer, in:        (1..20),
+                                 default:   20
     
-    param :page,        Integer, in:      (1..200),
-                                 default: 1
+    param :page,        Integer, in:        (1..200),
+                                 default:   1
+    
+    param :order,       String,  transform: :downcase,
+                                 in:        ['name:asc',
+                                             'name:desc',
+                                             'price:asc',
+                                             'price:desc',
+                                             'created_at:asc',
+                                             'created_at:desc',
+                                             'name',
+                                             'price',
+                                             'created_at']
 
-    @merchant     = @merchants_lookup.fetch(params[:merchant_id])
-    @page, @limit = params.values_at(*%w(page limit))
+    @merchant             = @merchants_lookup.fetch(params[:merchant_id])
+    @page, @limit, @order = params.values_at(*%w(page limit order))
   end
   
   get '/' do
@@ -36,6 +47,7 @@ class MerchantsController < ApplicationController
   
   get '/:merchant_id/articles' do
     json @merchant.articles
+           .order_by(@order)
            .offset((@page - 1) * @limit)
            .limit(@limit),
          meta: { current_page: @page,

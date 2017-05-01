@@ -65,6 +65,8 @@ class CrawlWorker < Worker::Base
           begin
             attrs   = merchant.attrs_from_node(it)
             article = Article.upsert!(attrs.merge(merchant: merchant))
+            CrawlSessionArticle.create!(crawl_session: @crawl_session,
+                                        article:       article)
             article.update_price_history!
 
             history.items_count += 1

@@ -23,7 +23,6 @@ class MerchantMetadatum
   field :ssl,          type:        Boolean,
                        default:     false
   # field :index_pages,  type: Set, required: true
-  # field :ssl,          type: Boolean
 
   alias_method :code,   :id
   alias_method :code=,  :id=
