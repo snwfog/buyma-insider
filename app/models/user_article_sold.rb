@@ -40,7 +40,8 @@ class UserArticleSold
   # field :sold_currency, type:    Enum,
   #                       in:      [:cad, :jpy]
 
-  before_save :set_price, unless: :price
+  before_save   :set_price, unless: :price
+  before_update :destroy_all_user_article_sold_shipping_services
 
   validates :sold_price, if:           :sold_price,
                          numericality: { greater_than_or_equal_to: 0.0 }
@@ -56,13 +57,17 @@ class UserArticleSold
 
   def shipping_service_ids=(shipping_service_ids)
     ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
-      UserArticleSoldShippingService.create!(user_article_sold: self,
-                                             shipping_service:  shipping_service)
+      UserArticleSoldShippingService.upsert!(user_article_sold: self,
+                                                      shipping_service:  shipping_service)
     end
   end
-  
+
   private
   def set_price
     self.price = article.price
+  end
+  
+  def destroy_all_user_article_sold_shipping_services
+    self.user_article_sold_shipping_services.destroy_all
   end
 end

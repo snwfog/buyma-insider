@@ -113,9 +113,9 @@ class ArticlesController < ApplicationController
     if current_user.id != user_article_sold_json[:user_id]
       raise 'Only current user can create sold article'
     else
-      user_sold_article      = current_user.sold!(user_article_sold_json)
+      user_article_sold      = current_user.sold!(user_article_sold_json)
       status :created
-      json user_sold_article
+      json user_article_sold
     end
   end
   

@@ -13,6 +13,10 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
     link :related, proc { "/exchange_rates/#{object.exchange_rate_id}" }
   end
   
+  has_many :shipping_services do
+    link :related, proc { "/user_article_solds/#{object.id}/shipping_services"}
+  end
+  
   attributes :status,
              :price,
              :sold_price,

@@ -64,7 +64,9 @@ class CrawlWorker < Worker::Base
         document.css(merchant.metadatum.item_css).each do |it|
           begin
             attrs   = merchant.attrs_from_node(it)
-            article = Article.upsert!(attrs.merge(merchant: merchant))
+            article = Article.upsert!(attrs.merge(merchant:   merchant,
+                                                  # Bust the serializer cache and touch the record
+                                                  updated_at: Time.now.utc.iso8601))
             CrawlSessionArticle.create!(crawl_session: @crawl_session,
                                         article:       article)
             article.update_price_history!

@@ -1,10 +1,14 @@
-class UserSoldArticlesController < ApplicationController
+class UserArticleSoldsController < ApplicationController
   options '/**' do; end
   
   before '/:id(/**)?' do
     param :id, String, required: true
     
     @user_article_sold = UserArticleSold.find!(params[:id])
+  end
+  
+  get '/:id/shipping_services' do
+    json @user_article_sold.shipping_services
   end
   
   get '/:id' do

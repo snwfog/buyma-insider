@@ -1,5 +1,5 @@
 class ArticleSerializer < ActiveModel::Serializer
-  cache key: :article
+  cache key: :article, expires_in: 24.hours
   
   has_one :price_history do
     # If this block was present,
