@@ -67,4 +67,10 @@ class PriceHistory
       false
     end
   end
+  
+  def discounted_pct
+    raise 'Article not on sale' unless on_sale?
+    prev, current = history.last(2)
+    (((prev[:price] - current[:price]) / prev[:price].to_f) * 100).round
+  end
 end

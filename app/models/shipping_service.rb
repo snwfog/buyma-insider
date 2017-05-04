@@ -5,7 +5,7 @@ class ShippingService
   field :service_name,   type:     String,
                          required: true,
                          unique:   true,
-                         length:   (1..500)
+                         length:   (1..50)
   field :rate,           type:     Float,
                          required: true
   field :weight_in_kg,   type:     Float,

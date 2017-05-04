@@ -4,7 +4,7 @@ require 'active_support/core_ext/string/inflections'
 class Article
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  include ElasticsearchSynceable
+  include ElasticsearchSync
   include CacheableSerializer
 
   EXPIRES_IN = 1.week
@@ -14,7 +14,7 @@ class Article
   has_many :user_article_watcheds,  dependent: :destroy
   has_many :user_article_solds,     dependent: :destroy
   has_many :crawl_session_articles, dependent: :destroy
-  has_one :price_history,           dependent: :destroy
+  has_one  :price_history,          dependent: :destroy
   
 
   field :id,          primary_key: true,
@@ -34,8 +34,8 @@ class Article
                       length:      (1..1000),
                       format:      %r{//.+}
   
-  around_save  :watch_for_price_updates, unless: :new_record?
-  after_create :create_price_history!,   unless: :price_history
+  # around_save  :watch_for_price_updates, unless: :new_record?
+  after_create :create_price_history!, unless: :price_history
   
   alias_method :desc,       :description
   alias_method :title,      :name
@@ -44,25 +44,24 @@ class Article
   
   delegate :on_sale?, to: :price_history
 
-  def watch_for_price_updates
-    changes = self.changes
-    yield
-  
-    if changes.key?(:price)
-      old_value, new_value = changes.fetch(:price)
-      # No need to load DB, just delegate to the job
-      # to load the watched users
-      UserArticleWatchedWorker.perform_async(id)
-      NoBrainer.logger.info {
-        '`%s` got %s at %.02f' % [self.name,
-                                  new_value > old_value ? 'expensive' : 'cheaper',
-                                  new_value] }
-    end
-  end
+  # def watch_for_price_updates
+  #   changes = self.changes
+  #   yield
+  #
+  #   if changes.key?(:price)
+  #     old_value, new_value = changes.fetch(:price)
+  #     # No need to load DB, just delegate to the job
+  #     # to load the watched users
+  #     UserArticleWatchedWorker.perform_async(id)
+  #     NoBrainer.logger.info {
+  #       '`%s` got %s at %.02f' % [self.name,
+  #                                 new_value > old_value ? 'expensive' : 'cheaper',
+  #                                 new_value] }
+  #   end
+  # end
   
   def update_price_history!
-    price_history ||= PriceHistory.upsert!(article: self)
-    price_history.add_price_history!(price)
+    self.price_history.add_price_history!(price)
   end
 
   # You should not mess with id...
@@ -88,6 +87,6 @@ class Article
   
   private
   def create_price_history!
-    PriceHistory.create!(article: self)
+    PriceHistory.create!(article: self) and reload
   end
 end

@@ -6,10 +6,14 @@ class ArticleNotificationCriterium
   
   has_many :user_article_watched_article_notification_criterium
 
-  field :id,          primary_key: true,
-                      required:    true
+  field :id,           primary_key: true,
+                       required:    true
+  field :name,         type:        String,
+                       required:    true,
+                       unique:      true,
+                       length:      (1..50)
   
-  around_save :fetch_from_cache
+  # around_save :fetch_from_cache
 
   # def initialize(*args, &block)
   #   if self.class == ArticleNotificationCriterium
@@ -18,26 +22,26 @@ class ArticleNotificationCriterium
   #     super
   #   end
   # end
-  def _cache
-    @@_cache ||= LruRedux::Cache.new(1_000)
-  end
-  
-  def exists_in_cache
-    !!_cache.get(_cache_key)
-  end
-
-  def _cache_key
-    case self
-    when DiscountPercentArticleNotificationCriterium
-      'discount_%i_pct' % self.threshold_pct
-    else
-      raise 'Unknown article notification criterium'
-    end
-  end
-
-  def fetch_from_cache
-    _cache.getset(_cache_key) { yield and self }
-  end
+  # def _cache
+  #   @@_cache ||= LruRedux::Cache.new(1_000)
+  # end
+  #
+  # def exists_in_cache
+  #   !!_cache.get(_cache_key)
+  # end
+  #
+  # def _cache_key
+  #   case self
+  #   when DiscountPercentArticleNotificationCriterium
+  #     'discount_%i_pct' % self.threshold_pct
+  #   else
+  #     raise 'Unknown article notification criterium'
+  #   end
+  # end
+  #
+  # def fetch_from_cache
+  #   _cache.getset(_cache_key) { yield and self }
+  # end
 
 
   def applicable?(article)
@@ -58,8 +62,7 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
 
   def apply_criterium(article)
     if article.on_sale?
-      prev, current = article.price_history.history.last(2)
-      (((prev[:price] - current[:price]) / prev[:price].to_f) * 100).round >= threshold_pct
+      article.price_history.discounted_pct >= threshold_pct
     else
       false
     end

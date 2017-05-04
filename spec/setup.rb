@@ -45,3 +45,8 @@ def get_shipping_service
                       tracked:        false)
 end
 
+def get_discount_percent_article_notification_criterium
+  DiscountPercentArticleNotificationCriterium.where(threshold_pct: 10)
+                                             .first_or_create
+end
+

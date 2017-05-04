@@ -14,11 +14,13 @@ map '/' do; run StaticController end
 map_controller('/sessions')
 map_controller('/users')
 map_controller('/user_article_solds')
+map_controller('/user_article_watcheds')
 map_controller('/merchants')
 map_controller('/merchant_metadata')
+map_controller('/articles')
+map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
 map_controller('/crawl_sessions')
-map_controller('/articles')
 map_controller('/exchange_rates')
 
 # run BuymaInsider::Application

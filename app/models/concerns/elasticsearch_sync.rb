@@ -1,4 +1,4 @@
-module ElasticsearchSynceable
+module ElasticsearchSync
   extend ActiveSupport::Concern
   
   def self.include(model_class)

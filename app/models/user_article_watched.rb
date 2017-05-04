@@ -14,10 +14,24 @@ class UserArticleWatched
   field :article_id,   unique:   { scope: [:user_id] }
   
   index :ix_user_article_watched_user_id_article_id, [:user_id, :article_id]
+  
+  # validates_presence_of :user_article_watched_notification_criteria
+  
+  alias_method :criteria, :article_notification_criteria
 
   def all_criteria_applies?
     article_notification_criteria.all? do |criterium|
       criterium.applicable?(article)
+    end
+  end
+
+  def article_notification_criterium_ids=(article_notification_criterium_ids)
+    ArticleNotificationCriterium
+      .where(:id.in => article_notification_criterium_ids)
+      .each do |article_notification_criterium|
+      UserArticleWatchedNotificationCriterium
+        .create!(user_article_watched:           self,
+                 article_notification_criterium: article_notification_criterium)
     end
   end
 
@@ -26,10 +40,9 @@ class UserArticleWatched
   end
 
   def create_user_article_notified!(notified_at)
-    UserArticleNotified
-      .create!(user:        user,
-               article:     article,
-               notified_at: notified_at)
+    UserArticleNotified.create!(user:        user,
+                                article:     article,
+                                notified_at: notified_at)
   rescue NoBrainer::Error::DocumentInvalid
     # TODO: Log this
     raise

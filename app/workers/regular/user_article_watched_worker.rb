@@ -5,7 +5,12 @@ class UserArticleWatchedWorker < Worker::Base
   def perform(article_id)
     article = Article
                 .eager_load(:user_article_watcheds)
-                .find!(article_id)
+                .find?(article_id)
+
+    unless article
+      logger.warn { 'Could not find article: %s' % article_id }
+      return
+    end
     
     today = Time.now.utc.to_date
     article.user_article_watcheds.each do |article_watched|

@@ -67,10 +67,11 @@ class CrawlWorker < Worker::Base
             article = Article.upsert!(attrs.merge(merchant:   merchant,
                                                   # Bust the serializer cache and touch the record
                                                   updated_at: Time.now.utc.iso8601))
+  
+            ArticleUpdatedWorker.perform_async(article.id)
             CrawlSessionArticle.create!(crawl_session: @crawl_session,
                                         article:       article)
             article.update_price_history!
-
             history.items_count += 1
           rescue Exception => ex
             history.invalid_items_count += 1

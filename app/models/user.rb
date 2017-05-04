@@ -62,30 +62,18 @@ class User
       .eager_load(:article)
       .map(&:article)
   end
-  
-  def watch!(article, watch_criteria = [])
-    if watch_criteria.empty?
-      # TODO: Parameterize this in a configuration
-      watch_criteria << DiscountPercentArticleNotificationCriterium
-                          .where(threshold_pct: 20)
-                          .first_or_create!
-    end
-    
-    create_user_article_watched!(article, watch_criteria)
+
+  def watch!(article, watch_criterium)
+    create_user_article_watched!(article, watch_criterium)
   end
 
-  def create_user_article_watched!(article, watch_criteria = [])
-    user_article_watched = UserArticleWatched
-                             .create!(user:    self,
-                                      article: article)
-    
-    watch_criteria.each do |criterium|
+  def create_user_article_watched!(article, watch_criterium)
+    UserArticleWatched.create!(user:    self,
+                               article: article).tap do |ua_watched|
       UserArticleWatchedNotificationCriterium
-        .create!(user_article_watched_id:        user_article_watched.id,
-                 article_notification_criterium: criterium)
+        .create!(user_article_watched:           ua_watched,
+                 article_notification_criterium: watch_criterium)
     end
-    
-    user_article_watched
   end
 
   def destroy_user_article_watched!(article)

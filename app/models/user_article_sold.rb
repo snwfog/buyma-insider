@@ -58,7 +58,7 @@ class UserArticleSold
   def shipping_service_ids=(shipping_service_ids)
     ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
       UserArticleSoldShippingService.upsert!(user_article_sold: self,
-                                                      shipping_service:  shipping_service)
+                                             shipping_service:  shipping_service)
     end
   end
 
