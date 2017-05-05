@@ -26,6 +26,7 @@ class UserArticleWatched
   end
 
   def article_notification_criterium_ids=(article_notification_criterium_ids)
+    user_article_watched_notification_criteria.destroy_all
     ArticleNotificationCriterium
       .where(:id.in => article_notification_criterium_ids)
       .each do |article_notification_criterium|
@@ -33,6 +34,7 @@ class UserArticleWatched
         .create!(user_article_watched:           self,
                  article_notification_criterium: article_notification_criterium)
     end
+    reload
   end
 
   def notify!(notified_at)

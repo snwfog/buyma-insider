@@ -41,7 +41,11 @@ class UserArticleSold
   #                       in:      [:cad, :jpy]
 
   before_save   :set_price, unless: :price
-  before_update :destroy_all_user_article_sold_shipping_services
+  
+  # This is called after ids=() assignment is called
+  # Making it useless
+  # before_update :destroy_all_user_article_sold_shipping_services
+  # before_save :destroy_all_user_article_sold_shipping_services
 
   validates :sold_price, if:           :sold_price,
                          numericality: { greater_than_or_equal_to: 0.0 }
@@ -56,10 +60,12 @@ class UserArticleSold
   end
 
   def shipping_service_ids=(shipping_service_ids)
+    user_article_sold_shipping_services.destroy_all
     ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
       UserArticleSoldShippingService.upsert!(user_article_sold: self,
                                              shipping_service:  shipping_service)
     end
+    reload
   end
 
   private
