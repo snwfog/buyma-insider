@@ -9,6 +9,10 @@ Sidekiq.configure_client do |cfg|
 end
 
 # Sidekiq::Logging.logger = Logging.logger[:Sidekiq]
-Sidekiq::Logging.logger.level =
-  BuymaInsider.configuration.logging.sidekiq.severity
+if BuymaInsider.production?
+  Sidekiq::Logging.logger.level =
+    BuymaInsider.configuration.logging.sidekiq.severity
+else
+  Sidekiq::Logging.logger = Logging.logger[:Sidekiq]
+end
 

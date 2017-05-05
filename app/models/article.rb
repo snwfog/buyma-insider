@@ -13,12 +13,13 @@ class Article
                                     required: true
   has_many :user_article_watcheds,  dependent: :destroy
   has_many :user_article_solds,     dependent: :destroy
-  has_many :crawl_session_articles, dependent: :destroy
+  has_many :crawl_history_articles, dependent: :destroy
   has_one  :price_history,          dependent: :destroy
   
 
   field :id,          primary_key: true,
-                      required:    true # merchant_id:sku
+                      required:    true, # merchant_id:sku
+                      format:      /[a-z]{3}:[a-z0-9]+/
   field :sku,         type:        String,
                       required:    true,
                       length:      (1..100)
@@ -35,8 +36,8 @@ class Article
                       format:      %r{//.+}
   
   # around_save  :watch_for_price_updates, unless: :new_record?
-  after_create :create_price_history!, unless: :price_history
-  
+  after_create  :create_price_history!,        unless: :price_history
+
   alias_method :desc,       :description
   alias_method :title,      :name
 

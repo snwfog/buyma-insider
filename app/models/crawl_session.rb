@@ -3,10 +3,9 @@ class CrawlSession
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
 
-  has_many    :crawl_histories,       dependent: :destroy
-  has_many    :crawl_session_article, dependent: :destroy
-  belongs_to  :merchant,              index:    true,
-                                      required: true
+  has_many    :crawl_histories,        dependent: :destroy
+  belongs_to  :merchant,               index:    true,
+                                       required: true
 
   field :id,          primary_key: true
   field :finished_at, type:        Time

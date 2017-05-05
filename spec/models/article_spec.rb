@@ -25,4 +25,12 @@ describe Article do
     article.save!
     expect(article.price_history).to equal(price_history)
   end
+  
+  context ElasticsearchSync do
+    it 'should sync with elasticsearch' do
+      article = get_article
+      article.save!
+      article.destroy
+    end
+  end
 end

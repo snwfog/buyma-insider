@@ -19,7 +19,7 @@ class UserArticleWatched
   
   alias_method :criteria, :article_notification_criteria
 
-  def all_criteria_applies?
+  def all_criteria_apply?
     article_notification_criteria.all? do |criterium|
       criterium.applicable?(article)
     end
@@ -34,19 +34,5 @@ class UserArticleWatched
         .create!(user_article_watched:           self,
                  article_notification_criterium: article_notification_criterium)
     end
-    reload
-  end
-
-  def notify!(notified_at)
-    create_user_article_notified!(notified_at)
-  end
-
-  def create_user_article_notified!(notified_at)
-    UserArticleNotified.create!(user:        user,
-                                article:     article,
-                                notified_at: notified_at)
-  rescue NoBrainer::Error::DocumentInvalid
-    # TODO: Log this
-    raise
   end
 end

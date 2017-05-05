@@ -46,41 +46,53 @@ class CrawlWorker < Worker::Base
         logger.info { '%s started at %s' % [history.description, Time.now] }
         history.inprogress!
         history.save!
-
+  
         logger.info { "Requesting page `#{index_page}`" }
-
+  
         # Add url to cache, break if already exists
         next unless @url_cache.add? index_page
-
+  
         # Get link HTML and set @response if not in url cache
         response = RestClient.get index_page.full_url, @std_headers
-
+  
         logger.info { 'Received html `%s` (%s} B)' % [index_page, response.content_length] }
-
+  
         # Parse into document from response
         next if response.body.empty?
-
+  
         document = Nokogiri::HTML(response.body)
         document.css(merchant.metadatum.item_css).each do |it|
           begin
-            attrs   = merchant.attrs_from_node(it)
-            article = Article.upsert!(attrs.merge(merchant:   merchant,
-                                                  # Bust the serializer cache and touch the record
-                                                  updated_at: Time.now.utc.iso8601))
-  
-            ArticleUpdatedWorker.perform_async(article.id)
-            CrawlSessionArticle.create!(crawl_session: @crawl_session,
-                                        article:       article)
+            attrs      = merchant.attrs_from_node(it)
+            article_id = attrs[:id]
+            raise 'No not valid id was found in parsed article attributes' unless article_id =~ /[a-z]{3}:[a-z0-9]+/
+            if article = Article.find(article_id)
+              # Bust the (serializer) cache and touch the record
+              article.update!(attrs.merge(updated_at: Time.now.utc.iso8601))
+              ArticleUpdatedWorker.perform_async(article.id)
+              CrawlHistoryArticle.create!(crawl_history: history,
+                                          article:       article,
+                                          status:        :updated)
+              history.updated_articles_count += 1
+            else
+              article = Article.create!(attrs.merge(merchant: merchant))
+              ArticleCreatedWorker.perform_async(article.id)
+              CrawlHistoryArticle.create!(crawl_history: history,
+                                          article:       article,
+                                          status:        :created)
+              history.created_articles_count += 1
+            end
+      
             article.update_price_history!
             history.items_count += 1
           rescue Exception => ex
             history.invalid_items_count += 1
-
+      
             logger.warn { 'Failed creating article: %s' % ex.message }
             logger.warn { attrs }
             logger.debug { it.to_html }
           else
-            logger.info { '%s upserted' % article.id }
+            logger.info { 'Article %s touch indexed' % article.id }
           ensure
             # logger.debug { attrs }
           end

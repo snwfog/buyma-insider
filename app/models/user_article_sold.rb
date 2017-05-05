@@ -46,6 +46,7 @@ class UserArticleSold
   # Making it useless
   # before_update :destroy_all_user_article_sold_shipping_services
   # before_save :destroy_all_user_article_sold_shipping_services
+  after_save :upsert_user_article_sold_shipping_services
 
   validates :sold_price, if:           :sold_price,
                          numericality: { greater_than_or_equal_to: 0.0 }
@@ -59,21 +60,30 @@ class UserArticleSold
     end
   end
 
-  def shipping_service_ids=(shipping_service_ids)
-    user_article_sold_shipping_services.destroy_all
-    ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
-      UserArticleSoldShippingService.upsert!(user_article_sold: self,
-                                             shipping_service:  shipping_service)
-    end
-    reload
-  end
+  attr_accessor :shipping_service_ids
+  # def shipping_service_ids=(shipping_service_ids)
+  #   @shipping_service_ids = shipping_service_ids
+  # end
 
   private
   def set_price
     self.price = article.price
   end
   
+  def upsert_user_article_sold_shipping_services
+    if shipping_service_ids.any?
+      user_article_sold_shipping_services.destroy_all
+      ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
+        UserArticleSoldShippingService.upsert!(user_article_sold: self,
+                                               shipping_service:  shipping_service)
+      end
+    end
+    # Calling this mess up the update process
+    # It rollsback everything, so do not call `#reload`
+    # reload
+  end
+  
   def destroy_all_user_article_sold_shipping_services
-    self.user_article_sold_shipping_services.destroy_all
+    user_article_sold_shipping_services.destroy_all
   end
 end
