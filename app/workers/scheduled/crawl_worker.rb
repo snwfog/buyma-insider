@@ -10,7 +10,6 @@ class CrawlWorker < Worker::Base
     super
 
     @url_cache   = Set.new
-    @histories   = []
     @std_headers = {
       x_forwarded_for:  Faker::Internet.ip_v4_address,
       x_forwarded_host: Faker::Internet.ip_v4_address,
@@ -49,7 +48,7 @@ class CrawlWorker < Worker::Base
   
         logger.info { "Requesting page `#{index_page}`" }
   
-        # Add url to cache, break if already exists
+        # Add url to cache, skip if already exists
         next unless @url_cache.add? index_page
   
         # Get link HTML and set @response if not in url cache

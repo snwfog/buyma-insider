@@ -155,7 +155,7 @@ namespace :es do
   
   desc 'Create index'
   task :setup do
-    es_cfg = YAML.load_file('./config/elasticsearch.yml').symbolize_keys!
+    es_cfg = YAML.load_file('./config/elasticsearch/indices.yml').symbolize_keys!
     $elasticsearch.indices.create(es_cfg)
   end
   
@@ -170,5 +170,27 @@ namespace :es do
       end
     end
     puts 'Seed elasticsearch in %.02fs' % time.real
+  end
+  
+  desc 'Rebuild filters'
+  task :rebuild_filters do
+    FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
+      filter_name = wl_filename.pathmap('%n')
+      printf 'Creating filters `%s_stop_filter`...' % filter_name
+      word_lists = File
+                     .open(wl_filename)
+                     .map(&:strip)
+                     .to_a
+                     .reject {|r| r.start_with?(?#) || r.empty? }
+                     .uniq
+                     .sort
+      File.open("./config/elasticsearch/filters/#{filter_name}_stop_filter.yml", 'w') do |filter_file|
+        filter_file.puts('# Generated from `%s` on `%s`' % [wl_filename, Time.now.strftime('%F %H:%M')])
+        filter_file.puts(YAML::dump("#{filter_name}_stop_filter" => { 'type'      => 'stop',
+                                                                      'stopwords' => word_lists }))
+      end
+      
+      puts 'Done!'.green
+    end
   end
 end

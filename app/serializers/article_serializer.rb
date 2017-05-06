@@ -22,7 +22,7 @@ class ArticleSerializer < ActiveModel::Serializer
              :updated_at
 
   def synced_at
-    object.crawl_session_articles
+    object.crawl_history_articles
       .order_by(created_at: :desc)
       .first
       &.created_at

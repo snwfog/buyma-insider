@@ -18,7 +18,7 @@ class Article
   
 
   field :id,          primary_key: true,
-                      required:    true, # merchant_id:sku
+                      required:    true, # merchant_id + ':' + sku
                       format:      /[a-z]{3}:[a-z0-9]+/
   field :sku,         type:        String,
                       required:    true,

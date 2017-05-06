@@ -17,6 +17,12 @@
 - Daemonize command option is not added for unicorn, but
   could be if needed, just modify Procfile
 - Make sure to set the ENVIRONMENT variable when running elsewhere
+
+### Elasticsearch
+
+- Setup indices
+- Setup mappings
+- Setup analyzers
 ```
 
 ### Docker

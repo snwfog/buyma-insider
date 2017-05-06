@@ -3,7 +3,10 @@ class ArticlesController < ApplicationController
   
   options '/**' do; end
   
+  # Do not do this filter if routes start with _
+  # before '/(?<!_):id(/**)?' do
   before '/:id(/**)?' do
+    pass if params[:id]&.start_with? '_'
     param :id, String, required:  true,
                        transform: :downcase,
                        format:    /[a-z]{3}:[a-z0-9]+/

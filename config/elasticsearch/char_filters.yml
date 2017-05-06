@@ -1,0 +1,4 @@
+article_char_filter:
+  type: mapping
+  mappings:
+    - t-shirt => tshirt

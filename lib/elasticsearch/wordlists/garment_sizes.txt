@@ -1,0 +1,30 @@
+# '#' can be used for comments, will be ignored
+# Duplicates will be stripped, but double check first
+
+xxxs
+xxx-sm
+xxx-small
+xxs
+xx-sm
+xx-small
+xs
+x-sm
+x-small
+s
+sm
+small
+m
+medium
+md
+l
+lg
+large
+xl
+x-lg
+x-large
+xxl
+xx-lg
+xx-large
+xxxl
+xxx-lg
+xxx-large
