@@ -1,15 +1,32 @@
-article_analyzer:
-  type: custom
-  char_filter:
-    - article_char_filter
-  tokenizer: standard
+analysis:
   filter:
-    - standard
-    - lowercase                    
-    - asciifolding                # Fold to ascii
-    - apostrophe                  # Remove apostrophe
-    - stop                        # Remove common english stop words
-    - colors_stop_filter          # Remove colors
-    - garment_types_stop_filter   # Remove types
-    - garment_sizes_stop_filter   # Remove sizes
-    - snowball                    # Simplify terms to base, remove plurials
+    colors_stop_filter:
+      type: stop
+      stopword_path: 'asdf'
+    garment_sizes_stop_filter:
+      type: stop
+    garment_types_stop_filter:
+      type: stop
+
+  char_filter:
+    article_name_char_filter:
+      type: mapping
+      mappings:
+        - t-shirt => tshirt
+
+  analyzer:
+    article_name_analyzer:
+      type: custom
+      char_filter:
+        - article_name_char_filter
+      tokenizer: standard
+      filter:
+        - standard
+        - lowercase
+        - asciifolding                # Fold to ascii
+        - apostrophe                  # Remove apostrophe
+        - stop                        # Remove common english stop words
+        - colors_stop_filter          # Remove colors
+        - garment_types_stop_filter   # Remove types
+        - garment_sizes_stop_filter   # Remove sizes
+        - snowball                    # Simplify terms to base, remove plurials

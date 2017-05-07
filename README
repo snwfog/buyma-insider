@@ -18,6 +18,9 @@
   could be if needed, just modify Procfile
 - Make sure to set the ENVIRONMENT variable when running elsewhere
 
+### Docker / VirtualBox
+- vboxmanage controlvm default natpf1 rethinkdb,tcp,127.0.0.1,8080,,8080
+
 ### Elasticsearch
 
 - Setup indices

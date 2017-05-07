@@ -184,6 +184,10 @@ namespace :es do
                      .reject {|r| r.start_with?(?#) || r.empty? }
                      .uniq
                      .sort
+      File.open("./config/elasticsearch/config/wordlists/#{filter_name}.txt", ?w) do |wordlist_file|
+        wordlist_file.puts(word_lists)
+      end
+      
       File.open("./config/elasticsearch/filters/#{filter_name}_stop_filter.yml", 'w') do |filter_file|
         filter_file.puts('# Generated from `%s` on `%s`' % [wl_filename, Time.now.strftime('%F %H:%M')])
         filter_file.puts(YAML::dump("#{filter_name}_stop_filter" => { 'type'      => 'stop',
