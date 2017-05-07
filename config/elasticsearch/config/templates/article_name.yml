@@ -1,0 +1,20 @@
+_source: false
+query:
+  bool:
+    must:
+      match:
+        name: '{{article_name_query}}'
+    filter:
+      range:
+        created_at:
+          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
+#    must_not:
+#      range:
+#        updated_at:
+#          lt: now+2y
+from: '{{from}}{{^from}}0{{/from}}'
+size: '{{size}}{{^size}}20{{/size}}'
+#params:
+#  article_name_query: leather crossbody
+#  from: 0
+#  size: 5

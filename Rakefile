@@ -155,28 +155,76 @@ namespace :es do
   
   desc 'Create index'
   task :setup do
-    index_cfg = YAML.load_file('./config/elasticsearch/settings.index.yml')
-    $elasticsearch.indices.create(es_cfg)
+    dir                  = './config/elasticsearch'
+    settings             = {}
+    settings['settings'] = YAML.load_file('%s/settings.index.yml' % dir)
+    settings['settings'].merge!(YAML.load_file('%s/settings.analysis.yml' % dir))
+    settings.merge!(YAML.load_file('%s/mappings.yml' % dir))
+    merchant_ids = YAML.load_file('./config/merchant.yml').values.map { |m| m['id'] }
+    # pp settings
+    merchant_ids.each do |m_id|
+      puts 'Creating index for `%s`'.yellow % m_id
+      $elasticsearch.indices.create index: m_id,
+                                    body:  settings
+    end
   end
   
   desc 'Index existing documents'
   task :seed do
-    time = Benchmark.measure do
+    time = Benchmark.realtime do
       Article.each do |article|
-        $elasticsearch.index index: :shakura,
+        $elasticsearch.index index: article.merchant_id,
                              type:  :article,
                              id:    article.id,
                              body:  article.attributes.except(:id)
       end
     end
-    puts 'Seed elasticsearch in %.02fs' % time.real
+    puts 'Seeded elasticsearch in %.02fs' % time
   end
   
-  desc 'Rebuild filters'
-  task :rebuild_filters do
+  desc 'Build templates'
+  task :build_templates do
+    puts <<~SQL.yellow
+      Setup the templates for the queries
+    SQL
+    
+    dest_dir = './config/elasticsearch/config/scripts'
+    FileList['./config/elasticsearch/config/templates/*.yml'].each do |template_file|
+      template_hash = YAML::load_file(template_file)
+      template_name = template_file.pathmap('%n')
+      printf 'Generating template file `%s`...' % template_name
+      File.open('%s/%s_search.mustache' % [dest_dir, template_name], ?w) do |mustache_file|
+        mustache_file.write(JSON.pretty_generate(template_hash))
+        mustache_file.flush
+      end
+      puts 'Done!'.green
+    end
+  end
+  
+  desc 'Register templates'
+  task :register_templates do
+    puts 'Registering templates'.yellow
+    
+    FileList['./config/elasticsearch/config/templates/*.yml'].each do |template_file|
+      template_name = template_file.pathmap('%n')
+      puts 'Registering `%s_search`...'.yellow % template_name
+      template_hash = YAML::load_file(template_file)
+      $elasticsearch.put_template id:   "#{template_name}_search",
+                                  body: { template: template_hash }
+      puts 'Done!'.green
+    end
+  end
+  
+  desc 'Build filters'
+  task :build_filters do
+    puts <<~SQL.yellow
+      To setup the wordlists, make sure that the ./config/elasticsearch/config
+      folder is properly setup whether the host machine is win or mac
+      SELECT * FROM dbo.Test
+    SQL
     FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
       filter_name = wl_filename.pathmap('%n')
-      printf 'Creating stopwords file `%s`...' % filter_name
+      printf 'Generating stopwords file `%s`...' % filter_name
       word_lists = File
                      .open(wl_filename)
                      .map(&:strip)
@@ -197,5 +245,9 @@ namespace :es do
       # end
       puts 'Done!'.green
     end
+  end
+  
+  desc 'Test'
+  task :test do
   end
 end
