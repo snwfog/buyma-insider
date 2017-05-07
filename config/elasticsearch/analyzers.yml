@@ -2,17 +2,21 @@ analysis:
   filter:
     colors_stop_filter:
       type: stop
-      stopword_path: 'asdf'
+      ignore_case: true
+      stopwords_path: stopwords/colors.txt
     garment_sizes_stop_filter:
       type: stop
+      ignore_case: true
+      stopwords_path: stopwords/garment_sizes.txt
     garment_types_stop_filter:
       type: stop
+      ignore_case: true
+      stopwords_path: stopwords/garment_types.txt
 
   char_filter:
     article_name_char_filter:
       type: mapping
-      mappings:
-        - t-shirt => tshirt
+      mappings_path: char_filter_mappings/article_name_mappings.txt
 
   analyzer:
     article_name_analyzer:

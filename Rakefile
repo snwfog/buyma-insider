@@ -176,24 +176,25 @@ namespace :es do
   task :rebuild_filters do
     FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
       filter_name = wl_filename.pathmap('%n')
-      printf 'Creating filters `%s_stop_filter`...' % filter_name
+      printf 'Creating stopwords file `%s`...' % filter_name
       word_lists = File
                      .open(wl_filename)
                      .map(&:strip)
                      .to_a
-                     .reject {|r| r.start_with?(?#) || r.empty? }
+                     .reject { |r| r.start_with?(?#) || r.empty? }
                      .uniq
                      .sort
-      File.open("./config/elasticsearch/config/wordlists/#{filter_name}.txt", ?w) do |wordlist_file|
+    
+      dir = './config/elasticsearch/config/stopwords'
+      File.open('%s/%s.txt' % [dir, filter_name], ?w) do |wordlist_file|
         wordlist_file.puts(word_lists)
       end
-      
-      File.open("./config/elasticsearch/filters/#{filter_name}_stop_filter.yml", 'w') do |filter_file|
-        filter_file.puts('# Generated from `%s` on `%s`' % [wl_filename, Time.now.strftime('%F %H:%M')])
-        filter_file.puts(YAML::dump("#{filter_name}_stop_filter" => { 'type'      => 'stop',
-                                                                      'stopwords' => word_lists }))
-      end
-      
+    
+      # File.open("./config/elasticsearch/filters/#{filter_name}_stop_filter.yml", 'w') do |filter_file|
+      #   filter_file.puts('# Generated from `%s` on `%s`' % [wl_filename, Time.now.strftime('%F %H:%M')])
+      #   filter_file.puts(YAML::dump("#{filter_name}_stop_filter" => { 'type'      => 'stop',
+      #                                                                 'stopwords' => word_lists }))
+      # end
       puts 'Done!'.green
     end
   end
