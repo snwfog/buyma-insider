@@ -1,0 +1,71 @@
+analysis:
+  filter:
+    colors_stop_filter:
+      type:                          stop
+      ignore_case:                   true
+      stopwords_path:                stopwords/colors.txt
+    garment_sizes_stop_filter:
+      type:                          stop
+      ignore_case:                   true
+      stopwords_path:                stopwords/garment_sizes.txt
+    garment_types_stop_filter:
+      type:                          stop
+      ignore_case:                   true
+      stopwords_path:                stopwords/garment_types.txt
+    url_stop_filter:
+      type:                          stop
+      ignore_case:                   true
+      stopwords:
+        - http
+        - https
+        - www
+        - ftp
+
+  char_filter:
+    article_char_filter:
+      type:                          mapping
+      mappings_path:                 char_filter_mappings/article_mappings.txt
+
+  analyzer:
+    article_name_analyzer:
+      type:                          custom
+      char_filter:
+        - article_char_filter
+      tokenizer:                     standard
+      filter:
+        - standard
+        - lowercase
+        - asciifolding                # Fold to ascii
+        - apostrophe                  # Remove apostrophe
+        - stop                        # Remove common english stop words
+        - colors_stop_filter          # Remove colors
+        - garment_types_stop_filter   # Remove types
+        - garment_sizes_stop_filter   # Remove sizes
+        - snowball                    # Simplify terms to base, remove plurials
+
+    article_description_analyzer:
+      type:                          custom
+      char_filter:
+        - article_char_filter
+      tokenizer:                     standard
+      filter:
+        - standard
+        - lowercase
+        - asciifolding                # Fold to ascii
+        - apostrophe                  # Remove apostrophe
+        - stop                        # Remove common english stop words
+        - colors_stop_filter          # Remove colors
+        - garment_types_stop_filter   # Remove types
+        - garment_sizes_stop_filter   # Remove sizes
+        - snowball                    # Simplify terms to base, remove plurials
+
+    article_link_analyzer:
+      type:                          custom
+      tokenizer:                     standard
+      filter:
+        - standard
+        - lowercase
+        - asciifolding
+        - url_stop_filter
+
+

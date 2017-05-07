@@ -8,7 +8,7 @@ mappings:
         type:              keyword
       name:
         type:              text
-        analyzer:          article_name
+        analyzer:          article_name_analyzer
         fields:
           raw:
             type:          keyword
@@ -18,9 +18,10 @@ mappings:
         scaling_factor:    100
       description:
         type:              text
+        analyzer:          article_description_analyzer
       link:
         type:              text
-        analyzer:          simple
+        analyzer:          article_link_analyzer
       created_at:
         type:              date
       updated_at:

@@ -155,7 +155,7 @@ namespace :es do
   
   desc 'Create index'
   task :setup do
-    es_cfg = YAML.load_file('./config/elasticsearch/indices.yml').symbolize_keys!
+    index_cfg = YAML.load_file('./config/elasticsearch/settings.index.yml')
     $elasticsearch.indices.create(es_cfg)
   end
   
