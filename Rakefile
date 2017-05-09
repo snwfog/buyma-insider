@@ -181,20 +181,27 @@ namespace :es do
     end
     puts 'Seeded elasticsearch in %.02fs' % time
   end
-  
+
   desc 'Build templates'
   task :build_templates do
     puts <<~SQL.yellow
       Setup the templates for the queries
     SQL
-    
-    dest_dir = './config/elasticsearch/config/scripts'
+  
+    dest_dir        = './config/elasticsearch/config/scripts'
+    replace_to_json = /"({{#toJson}}([^{]+){{\/toJson}})"/
+  
     FileList['./config/elasticsearch/config/templates/*.yml'].each do |template_file|
       template_hash = YAML::load_file(template_file)
       template_name = template_file.pathmap('%n')
       printf 'Generating template file `%s`...' % template_name
       File.open('%s/%s_search.mustache' % [dest_dir, template_name], ?w) do |mustache_file|
-        mustache_file.write(JSON.pretty_generate(template_hash))
+        json_str = JSON.pretty_generate(template_hash)
+        if json_str =~ replace_to_json
+          json_str.gsub!(replace_to_json, '\1')
+        end
+        
+        mustache_file.write(json_str)
         mustache_file.flush
       end
       puts 'Done!'.green

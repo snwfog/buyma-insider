@@ -1,6 +1,4 @@
 class ArticlesController < ApplicationController
-  include Elasticsearch::DSL
-  
   options '/**' do; end
   
   # Do not do this filter if routes start with _
@@ -49,17 +47,11 @@ class ArticlesController < ApplicationController
     param :page,  Integer, in: (1..200), default: 1
 
     q, field, page, limit = params.values_at(*%w(q field page limit))
-    body            = { query:     { query_string: { query:  q,
-                                                     fields: [field] } },
-                        size:      limit,
-                        from:      (page - 1) * limit,
-                        highlight: {
-                          # tags_schema:         :styled,
-                          fields:              Hash[field, Hash[]],
-                          require_field_match: true
-                        } }
-  
-    results = elasticsearch_query body: body
+    results = elasticsearch_search_template(:article_name_search, :article,
+                                            params: {
+                                              article_name_query: q,
+                                              size:               limit,
+                                              from:               [page - 1, 0].min * limit })
     if results.hits.total.zero?
       json []
     else
@@ -77,22 +69,29 @@ class ArticlesController < ApplicationController
   end
 
   get '/_search' do
-    param :q,            String, required: true, transform: :downcase
-    param :page,         Integer, in: (1..200), default: 1
-    param :limit,        Integer, in: (1..20), default: 20
-  
+    param :q,            String,  required:  true,
+                                  transform: :downcase
+    param :page,         Integer, in:        (1..200),
+                                  default:   1
+    param :limit,        Integer, in:        (1..20),
+                                  default:   20
+
     q, page, limit = params.values_at(*%w(q page limit))
-    body = { from:  (page - 1) * limit,
-             size:  limit,
-             query: {
-               query_string: {
-                 query: q } } }
-  
-    results = elasticsearch_query body: body
-    if results.hits.total.zero?
-      json []
+    results        = $elasticsearch.search_template(index: :_all,
+                                                    type:  :article,
+                                                    body:  {
+                                                      id:     :article_name_search,
+                                                      params: {
+                                                        article_name_query: q,
+                                                        size:               limit,
+                                                        from:               [page - 1, 0].min * limit
+                                                      } })
+    if results.dig(*%w(hits hits)).any?
+      json Article.where(:id.in => results
+                                     .dig(*%w(hits hits))
+                                     .map { |article| article['_id'] })
     else
-      json Article.where(:id.in => results.hits.hits.map(&:_id))
+      json []
     end
   end
 
