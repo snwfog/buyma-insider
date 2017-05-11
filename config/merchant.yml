@@ -1,34 +1,34 @@
 ssense:
-  id:           sse
-  name:         ssense
-  domain:       //www.ssense.com
-  pager_css:    div.browsing-pagination ul.nav
-  item_css:     div.browsing-product-list div.browsing-product-item
+  id:               sse
+  name:             ssense
+  domain:           //www.ssense.com
+  pager_css:        div.browsing-pagination ul.nav
+  item_css:         div.browsing-product-list div.browsing-product-item
   index_pages:
     - en-ca/men
     - en-ca/women
-  ssl:          true
+  ssl:              true
 
 shoeme:
-  id:           sho
-  name:         shoeme
-  domain:       //shoeme.ecomm-nav.com
-  pager_css:    div.nxt-pagination
-  item_css:     ul.product-list li.product-li
+  id:               sho
+  name:             shoeme
+  domain:           //shoeme.ecomm-nav.com
+  pager_css:        div.nxt-pagination
+  item_css:         ul.product-list li.product-li
   index_pages:
     - collections/womens-shoes
     - collections/mens-shoes
     - collections/kids
     - collections/all-bags
     - collections/sale
-  ssl:          false
+  ssl:              false
 
 getoutside:
-  id:           get
-  name:         getoutside
-  domain:       //www.getoutsideshoes.com
-  pager_css:    div.pager
-  item_css:     ul.products-grid li.item
+  id:               get
+  name:             getoutside
+  domain:           //www.getoutsideshoes.com
+  pager_css:        div.pager
+  item_css:         ul.products-grid li.item
   index_pages:
     - new-arrivals.html
     - mens.html
@@ -36,14 +36,24 @@ getoutside:
     - kid-s.html
     - accessories.html
     - sale.html
-  ssl:          false
+  ssl:              false
 
 zara:
-  id:           zar
-  name:         zara
-  domain:       //www.zara.com/ca/en
+  id:               zar
+  name:             zara
+  domain:           //www.zara.com/ca/en
   pager_css:
-  item_css:     ul.product-list li.product
+  item_css:         ul.product-list li.product
   index_pages:
     - woman/new-in-c805003.html
-  ssl:          false
+  ssl:              false
+
+octobersveryown:
+  id:               ovo
+  name:             octobersveryown
+  domain:           //ca.octobersveryown.com
+  pager_css:
+  item_css:         grid__item
+  index_pages:
+    - collections/all
+  ssl:              true

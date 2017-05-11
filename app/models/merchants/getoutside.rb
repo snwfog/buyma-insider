@@ -32,14 +32,12 @@ module Merchants
         article_id         = price_node['id'][/[\d]{1,10}/]
         price              = (price_node.at_css('span.price') || price_node).content[/[$]?[\d]{1,10}\.[\d]{2}/]
         
-        {
-          id:          "#{code}:#{article_id}",
+        { id:          "#{code}:#{article_id}",
           sku:         article_id,
           name:        product_image_link['title'],
           price:       price,
           description: node.at_css('h2.product-name a').content,
-          link:        product_image_link['href'],
-        }
+          link:        product_image_link['href'] }
       end
     end
   end

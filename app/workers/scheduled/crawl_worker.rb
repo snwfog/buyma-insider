@@ -52,7 +52,14 @@ class CrawlWorker < Worker::Base
         next unless @url_cache.add? index_page
   
         # Get link HTML and set @response if not in url cache
-        response = RestClient.get index_page.full_url, @std_headers
+        response = RestClient::Request.execute(
+          url:         index_page.full_url,
+          method:      :get,
+          headers:     @std_headers,
+          verify_ssl:  merchant.metadatum.ssl?,
+          ssl_ca_file: ENV['SSL_CERT_FILE'],
+          ssl_version: 'SSLv3')
+        # response = RestClient.get index_page.full_url, @std_headers
   
         logger.info { 'Received html `%s` (%s} B)' % [index_page, response.content_length] }
   

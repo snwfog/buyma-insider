@@ -3,7 +3,8 @@ module ElasticsearchHelper
     $elasticsearch.with do |conn|
       conn.search_template(index: :_all,
                            type:  type,
-                           body:  params)
+                           body:  { file:   template_name,
+                                    params: params })
     end
   end
   

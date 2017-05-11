@@ -36,7 +36,7 @@ class ArticleParserTest < Minitest::Test
       def klazz.base_url
         '//www.ssense.com'
       end
-    end.extend(Merchant::Ssense::Parser)
+    end.extend(Merchants::Ssense::Parser)
 
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article_hash[:description]
@@ -59,10 +59,10 @@ class ArticleParserTest < Minitest::Test
     FRAG
 
     parser = Class.new { |klazz| def klazz.code; 'zar'; end }
-               .extend(Merchant::Zara::Parser)
+               .extend(Merchants::Zara::Parser)
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
-    assert_equal 'VELVET TOGGLE JACKET', article_hash[:description]
-    assert_equal 'VELVET TOGGLE JACKET', article_hash[:name]
+    assert_equal 'Velvet Toggle Jacket', article_hash[:name]
+    assert_equal 'Velvet toggle jacket', article_hash[:description]
     assert_equal 139.00, ('%.02f' % article_hash[:price].to_f).to_f
     assert_equal 'zar:3711654', article_hash[:id]
     assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article_hash[:link]
@@ -95,7 +95,7 @@ class ArticleParserTest < Minitest::Test
     FRAG
 
     parser = Class.new { |klazz| def klazz.code; 'get'; end }
-               .extend(Merchant::Getoutside::Parser)
+               .extend(Merchants::Getoutside::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -142,7 +142,7 @@ class ArticleParserTest < Minitest::Test
     FRAG
 
     parser = Class.new { |klazz| def klazz.code; 'get'; end }
-               .extend(Merchant::Getoutside::Parser)
+               .extend(Merchants::Getoutside::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -185,7 +185,7 @@ class ArticleParserTest < Minitest::Test
     FRAG
 
     parser = Class.new { |klazz| def klazz.code; 'sho'; end }
-               .extend(Merchant::Shoeme::Parser)
+               .extend(Merchants::Shoeme::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -195,5 +195,42 @@ class ArticleParserTest < Minitest::Test
     assert_equal 125.00, ('%.02f' % article_hash[:price].to_f).to_f
     assert_equal "sho:#{Digest::MD5.hexdigest('The North Face - Thermoball Roll-Down Bootie II')}", article_hash[:id]
     assert_equal '//www.shoeme.ca/products/northface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88', article_hash[:link]
+  end
+  
+  def test_should_parse_octobersveryown
+    frag = <<~FRAG
+      <div class="grid__item prod-xlarge--one-fifth prod-large--one-quarter prod-medium--one-half " style="position:relative">
+        <a href="/collections/all/products/ovo-athletics-tee-red" class="grid__image">
+          <img src="//cdn.shopify.com/s/files/1/0973/7782/products/OVO_ATHLETIC_TEE_SS17_RED_FRONT_large.jpg?v=1492102380" alt="OVO ATHLETICS TEE – RED" title="OVO ATHLETICS TEE – RED">
+        </a>
+        <p class="h6">
+          <a href="/collections/all/products/ovo-athletics-tee-red">OVO ATHLETICS TEE – RED</a>
+        </p>
+        <p>$40.00</p>
+      </div>
+    FRAG
+  
+    parser = Class.new do |klazz|
+      def klazz.code
+        'ovo'
+      end
+      
+      def klazz.base_url
+        '//ca.octobersveryown.com'
+      end
+    end
+    
+    parser.extend(Merchants::Octobersveryown::Parser)
+    article_hash = parser
+                     .attrs_from_node(
+                       Nokogiri::HTML::DocumentFragment
+                         .parse(frag)
+                         .at_css('div'))
+  
+    assert_equal 'Ovo Athletics Tee – Red', article_hash[:name]
+    assert_equal 'Ovo athletics tee – red', article_hash[:description]
+    assert_equal 40.00, article_hash[:price]
+    assert_equal "ovo:#{Digest::MD5.hexdigest('Ovo Athletics Tee – Red'.titleize)}", article_hash[:id]
+    assert_equal '//ca.octobersveryown.com/collections/all/products/ovo-athletics-tee-red', article_hash[:link]
   end
 end

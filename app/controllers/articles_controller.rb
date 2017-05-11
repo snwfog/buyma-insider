@@ -17,7 +17,8 @@ class ArticlesController < ApplicationController
   end
   
   get '/' do
-    param :extension,   String, in: %w(_autocomplete _search), transform: :downcase
+    param :extension, String, in:        %w(_autocomplete _search),
+                              transform: :downcase
     if extension = params[:extension]
       return call env.merge('PATH_INFO' => "/#{extension}")
     end
@@ -35,38 +36,6 @@ class ArticlesController < ApplicationController
                                   total_pages:   merchant.articles.count / limit + 1,
                                   total_count:   merchant.articles.count }
   end
-  
-  get '/_autocomplete' do
-    param :q,     String, required:  true,
-                          transform: :downcase
-    # TODO: Allow only single field for now, perhaps later allow multiple fields
-    param :field, String, transform: -> (f) { f.downcase.to_sym },
-                          in:        Article.fields.keys,
-                          default:   :name
-    param :limit, Integer, in: (1..10), default: 5
-    param :page,  Integer, in: (1..200), default: 1
-
-    q, field, page, limit = params.values_at(*%w(q field page limit))
-    results = elasticsearch_search_template(:article_name_search, :article,
-                                            params: {
-                                              article_name_query: q,
-                                              size:               limit,
-                                              from:               [page - 1, 0].min * limit })
-    if results.hits.total.zero?
-      json []
-    else
-      autocompletes = results.hits.hits.map do |article|
-        Hash[:autocomplete, article.highlight[field],
-             :id, article._id,
-             :type, article._type,
-             :score, article._score]
-      end
-
-      json Article.where(:id.in => results.hits.hits.map(&:_id)),
-           meta: { autocompletes: autocompletes,
-                   total:         results.hits.total }
-    end
-  end
 
   get '/_search' do
     param :q,            String,  required:  true,
@@ -77,16 +46,13 @@ class ArticlesController < ApplicationController
                                   default:   20
 
     q, page, limit = params.values_at(*%w(q page limit))
-    results        = $elasticsearch.search_template(index: :_all,
-                                                    type:  :article,
-                                                    body:  {
-                                                      id:     :article_name_search,
-                                                      params: {
-                                                        article_name_query: q,
-                                                        size:               limit,
-                                                        from:               [page - 1, 0].min * limit
-                                                      } })
-    if results.dig(*%w(hits hits)).any?
+
+    results = elasticsearch_search_template(:article_name_search, :article,
+                                            article_name_query: q,
+                                            size:               limit,
+                                            from:               [page - 1, 0].min * limit)
+    if results.dig(*%w(hits hits))
+      # WARNING: This method is not sorted wrt to elastic relevancy
       json Article.where(:id.in => results
                                      .dig(*%w(hits hits))
                                      .map { |article| article['_id'] })
@@ -95,8 +61,57 @@ class ArticlesController < ApplicationController
     end
   end
 
+  # get '/_autocomplete' do
+  #   param :q,     String, required:  true,
+  #                         transform: :downcase
+  #   # TODO: Allow only single field for now, perhaps later allow multiple fields
+  #   param :field, String, transform: -> (f) { f.downcase.to_sym },
+  #                         in:        Article.fields.keys,
+  #                         default:   :name
+  #   param :limit, Integer, in: (1..10), default: 5
+  #   param :page,  Integer, in: (1..200), default: 1
+  #
+  #   q, field, page, limit = params.values_at(*%w(q field page limit))
+  #   results = elasticsearch_search_template(:article_name_search, :article,
+  #                                           params: {
+  #                                             article_name_query: q,
+  #                                             size:               limit,
+  #                                             from:               [page - 1, 0].min * limit })
+  #
+  #   if results.hits.total.zero?
+  #     json []
+  #   else
+  #     autocompletes = results.hits.hits.map do |article|
+  #       Hash[:autocomplete, article.highlight[field],
+  #            :id, article._id,
+  #            :type, article._type,
+  #            :score, article._score]
+  #     end
+  #
+  #     # WARNING: This method is not sorted wrt to elastic relevancy
+  #     json Article.where(:id.in => results.hits.hits.map(&:_id)),
+  #          meta: { autocompletes: autocompletes,
+  #                  total:         results.hits.total }
+  #   end
+  # end
+
   get '/:id' do
     json @article
+  end
+
+  get '/:id/article_relateds' do
+    results = elasticsearch_search_template(:article_related_search, :article,
+                                            article_name_query:   @article.name,
+                                            excluded_article_ids: [@article.id],
+                                            size:                 6)
+    if results.dig(*%w(hits hits))
+      # WARNING: This method is not sorted wrt to elastic relevancy
+      json Article.where(:id.in => results
+                                     .dig(*%w(hits hits))
+                                     .map { |article| article['_id'] })
+    else
+      json []
+    end
   end
   
   post '/:id/watch' do

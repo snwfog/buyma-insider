@@ -11,6 +11,11 @@ class ArticleSerializer < ActiveModel::Serializer
     include_data true
   end
   
+  has_many :article_relateds do
+    link :related, proc { "/articles/#{object.id}/article_relateds"}
+  end
+  
+  
   attributes :id,
              :name,
              :description,

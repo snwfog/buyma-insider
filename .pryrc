@@ -33,3 +33,13 @@ def get_user
              email:    Faker::Internet.email,
              password: 123 })
 end
+
+require 'net/http'
+OracleProxyHttp = Net::HTTP::Proxy('adc-proxy.oracle.com', 80)
+def fetch(uri, **opts)
+  opts[:use_ssl] = true
+  OracleProxyHttp.start(uri.hostname, uri.port, opts) do |http|
+    http.request(Net::HTTP::Get.new(uri))
+  end
+end
+

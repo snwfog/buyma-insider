@@ -14,14 +14,12 @@ module Merchants
         desc  = node.at_css('div.product-info a.name._item')
         price = node.at_css('div.product-info div.price._product-price span')
         
-        {
-          id:          "#{code}:#{node['data-productid']}",
+        { id:          "#{code}:#{node['data-productid']}",
           sku:         node['data-productid'],
           name:        desc.content.titleize,
           price:       price['data-price'][/[$]?[\d]{1,10}\.[\d]{2}/],
           description: desc.content.capitalize,
-          link:        item['href'],
-        }
+          link:        item['href'] }
       end
     end
   end
