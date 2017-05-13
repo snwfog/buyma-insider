@@ -48,6 +48,7 @@ class ArticleParseWorker < Worker::Base
         logger.debug { it.to_html }
       else
       ensure
+        history.save
         # logger.debug { attrs }
       end
     end

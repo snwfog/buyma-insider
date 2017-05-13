@@ -87,7 +87,7 @@ namespace :db do
   end
 
   desc 'nobrainer:drop + nobrainer:sync_schema + db:setup merchants'
-  task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup]
+  task :reset => ['nobrainer:drop', 'nobrainer:sync_schema', :setup, :seed]
 
   desc 'Create a new db patch'
   task :patch_generate, ['name'] do |t, args|

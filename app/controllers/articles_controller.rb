@@ -23,14 +23,20 @@ class ArticlesController < ApplicationController
       return call env.merge('PATH_INFO' => "/#{extension}")
     end
   
-    param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
-    param :page,        Integer, in: (1..200), default: 1
-    param :limit,       Integer, in: (1..20), default: 20
+    param :merchant_id, String,  required:  true,
+                                 transform: :downcase,
+                                 format:    /[a-z]{3}/
+    param :page,        Integer, in:        (1..200),
+                                 default:   1
+    param :limit,       Integer, in:        (1..20),
+                                 default:   20
     param :filter,      String
     
     merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
     merchant = Merchant.find!(merchant_id)
-    json merchant.articles
+    json merchant
+           .articles
+           .eager_load(:price_history)
            .offset((page - 1) * limit)
            .limit(limit), meta: { current_page:  page,
                                   total_pages:   merchant.articles.count / limit + 1,
@@ -38,24 +44,31 @@ class ArticlesController < ApplicationController
   end
 
   get '/_search' do
-    param :q,            String,  required:  true,
-                                  transform: :downcase
-    param :page,         Integer, in:        (1..200),
-                                  default:   1
-    param :limit,        Integer, in:        (1..20),
-                                  default:   20
+    param :q,           String,  required:  true,
+                                 transform: :downcase
+    param :page,        Integer, in:        (1..200),
+                                 default:   1
+    param :limit,       Integer, in:        (1..20),
+                                 default:   20
 
     q, page, limit = params.values_at(*%w(q page limit))
 
-    results = elasticsearch_search_template(:article_name_search, :article,
-                                            article_name_query: q,
-                                            size:               limit,
-                                            from:               [page - 1, 0].min * limit)
+    results = elasticsearch_search_with_template(:article_name_search,
+                                                 :article,
+                                                 article_name_query: q,
+                                                 size:               limit,
+                                                 from:               [page - 1, 0].min * limit)
+    
     if results.dig(*%w(hits hits))
       # WARNING: This method is not sorted wrt to elastic relevancy
-      json Article.where(:id.in => results
-                                     .dig(*%w(hits hits))
-                                     .map { |article| article['_id'] })
+      json Article
+             .eager_load(:price_history)
+             .where(:id.in => results
+                                .dig(*%w(hits hits))
+                                .map { |article| article['_id'] }),
+           meta: { current_page: page,
+                   total_pages:  results.dig(*%w(hits total)) / limit + 1,
+                   total_count:  results.dig(*%w(hits total)) }
     else
       json []
     end
@@ -72,7 +85,7 @@ class ArticlesController < ApplicationController
   #   param :page,  Integer, in: (1..200), default: 1
   #
   #   q, field, page, limit = params.values_at(*%w(q field page limit))
-  #   results = elasticsearch_search_template(:article_name_search, :article,
+  #   results = elasticsearch_search_with_template(:article_name_search, :article,
   #                                           params: {
   #                                             article_name_query: q,
   #                                             size:               limit,
@@ -100,15 +113,17 @@ class ArticlesController < ApplicationController
   end
 
   get '/:id/article_relateds' do
-    results = elasticsearch_search_template(:article_related_search, :article,
-                                            article_name_query:   @article.name,
-                                            excluded_article_ids: [@article.id],
-                                            size:                 6)
+    results = elasticsearch_search_with_template(:article_related_search, :article,
+                                                 article_name_query:   @article.name,
+                                                 excluded_article_ids: [@article.id],
+                                                 size:                 6)
     if results.dig(*%w(hits hits))
       # WARNING: This method is not sorted wrt to elastic relevancy
-      json Article.where(:id.in => results
-                                     .dig(*%w(hits hits))
-                                     .map { |article| article['_id'] })
+      json Article
+             .eager_load(:price_history)
+             .where(:id.in => results
+                                .dig(*%w(hits hits))
+                                .map { |article| article['_id'] })
     else
       json []
     end
