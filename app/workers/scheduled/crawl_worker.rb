@@ -1,150 +1,119 @@
-require 'set'
 require 'faker'
 require 'sentry-raven'
+require 'net_http_ssl_fix'
 
 class CrawlWorker < Worker::Base
-  attr_accessor :merchant
-  attr_accessor :crawl_session
-
+  attr_reader :merchant
+  attr_reader :crawl_session
+  
   def initialize
     super
-
-    @url_cache   = Set.new
+    
     @std_headers = {
       x_forwarded_for:  Faker::Internet.ip_v4_address,
       x_forwarded_host: Faker::Internet.ip_v4_address,
       user_agent:       BuymaInsider::SPOOF_USER_AGENT,
-      accept_encoding:  'gzip, deflate',
+      accept_encoding:  'gzip',
       cache_control:    'no-cache',
       pragma:           'no-cache'
     }
+  
   end
-
+  
   def perform(merchant_id)
-    @merchant = Merchant.find!(merchant_id)
+    @merchant  = Merchant.find!(merchant_id)
+    @cache_dir = "./tmp/cache/crawl/#{merchant.id}"
+    FileUtils.mkdir(@cache_dir) unless File.directory?(@cache_dir)
+    
     Raven.capture do
       log_start
-
+      
       crawl
-
+      
       log_end
     end
   end
-
+  
   def crawl
     @crawl_session = CrawlSession.create!(merchant: merchant)
-
+    
     merchant.index_pages.each do |index_page|
-      history = CrawlHistory.create!(
-        index_page:    index_page,
-        crawl_session: crawl_session,
-        description:   "#{merchant.name} '#{index_page}'"
-      )
-
+      cached_filepath = '%s/%s' % [@cache_dir, index_page.cache_filename]
+      
       begin
-        logger.info { '%s started at %s' % [history.description, Time.now] }
-        history.inprogress!
-        history.save!
-  
-        logger.info { "Requesting page `#{index_page}`" }
-  
-        # Add url to cache, skip if already exists
-        next unless @url_cache.add? index_page
-  
-        # Get link HTML and set @response if not in url cache
-        response = RestClient::Request.execute(
-          url:         index_page.full_url,
-          method:      :get,
-          headers:     @std_headers,
-          verify_ssl:  merchant.metadatum.ssl?,
-          ssl_ca_file: ENV['SSL_CERT_FILE'],
-          ssl_version: 'SSLv3')
-        # response = RestClient.get index_page.full_url, @std_headers
-  
-        logger.info { 'Received html `%s` (%s} B)' % [index_page, response.content_length] }
-  
-        # Parse into document from response
-        next if response.body.empty?
-  
-        document = Nokogiri::HTML(response.body)
-        document.css(merchant.metadatum.item_css).each do |it|
-          begin
-            attrs      = merchant.attrs_from_node(it)
-            article_id = attrs[:id]
-            raise 'No valid id was found in parsed article attributes' unless article_id =~ /[a-z]{3}:[a-z0-9]+/
-            if article = Article.find?(article_id)
-              # Bust the (serializer) cache and touch the record
-              article.update!(attrs.merge(updated_at: Time.now.utc.iso8601))
-              ArticleUpdatedWorker.perform_async(article.id)
-              CrawlHistoryArticle.create!(crawl_history: history,
-                                          article:       article,
-                                          status:        :updated)
-              history.updated_articles_count += 1
-              logger.info { 'Article %s created...' % article_id }
-            else
-              article = Article.create!(attrs.merge(merchant: merchant))
-              ArticleCreatedWorker.perform_async(article.id)
-              CrawlHistoryArticle.create!(crawl_history: history,
-                                          article:       article,
-                                          status:        :created)
-              history.created_articles_count += 1
-              logger.info { 'Article %s updated...' % article_id }
-            end
-      
-            article.update_price_history!
-            history.items_count += 1
-          rescue Exception => ex
-            history.invalid_items_count += 1
-      
-            logger.warn { 'Failed creating article: %s' % ex.message }
-            logger.warn { attrs }
-            logger.debug { it.to_html }
-          else
-          ensure
-            # logger.debug { attrs }
+        last_history    = CrawlHistory.where(index_page: index_page).first
+        current_history = CrawlHistory.create!(index_page:    index_page,
+                                               crawl_session: crawl_session,
+                                               status:        :inprogress,
+                                               description:   "#{merchant.name} '#{index_page}'")
+        
+        logger.info { '%s started at %s' % [current_history.description, Time.now] }
+        current_headers = @std_headers.dup
+        if File::exist?(cached_filepath) && test(?C, cached_filepath) >= 1.weeks.ago
+          if last_history&.etag && !last_history&.weak?
+            current_headers[:if_none_match] = last_history.etag
           end
         end
-
-        history.traffic_size_kb += (response.content_length / 1000.0)
+        
+        begin
+          raw_tempfile = fetch_page(index_page.full_url,
+                                    merchant.meta.ssl?,
+                                    current_headers)
+        rescue RestClient::NotModified
+          current_history.update!(traffic_size_kb:  0.0,
+                                  response_headers: last_history.headers,
+                                  response_code:    :not_modified)
+          
+          FileUtils.touch(cached_filepath)
+        else
+          current_history.update!(traffic_size_kb:  raw_tempfile.file.size / 1000.0,
+                                  response_headers: raw_tempfile.headers.to_h,
+                                  response_code:    :ok)
+          
+          FileUtils.cp(raw_tempfile.file.path, cached_filepath)
+        ensure
+          current_history.save!
+        end
+        
       rescue Exception => ex
-        history.aborted!
+        current_history.aborted!
         # raise ex swallow error and log to sentry
         Raven.capture_exception(ex)
-        logger.error history.description
+        logger.error current_history.description
         logger.error ex
         if ex.is_a? RestClient::Exception
           logger.error ex.http_headers
         end
         logger.error ex.backtrace
       else
-        history.completed!
+        current_history.completed!
       ensure
-        history.finished_at = Time.now.utc.iso8601
-        history.save!
-
-        logger.info { 'Crawling %s finished at %s' % [history.description, Time.now] }
-        logger.info { history.attributes }
+        current_history.finished_at = Time.now.utc.iso8601
+        current_history.save!
+        
+        logger.info { 'Crawling %s finished at %s' % [current_history.description, Time.now] }
+        logger.info { current_history.attributes }
       end
     end
   ensure
     @crawl_session.finished_at = Time.now.utc.iso8601
     @crawl_session.save!
   end
-
+  
   def total_elapsed_time
     crawl_session.elapsed_time_s
   end
-
+  
   def stats
     crawl_session.crawl_histories.group_by(&:completed?)
   end
-
+  
   def log_start
     logger.info { 'Start crawling %s...' % merchant.name }
     Slackiq.notify webhook_name: :worker,
                    title:        "#{merchant.name} crawl started..."
   end
-
+  
   def log_end
     logger.info { 'Finished crawling %s...' % merchant.name }
     Slackiq.notify webhook_name: :worker,
@@ -152,5 +121,24 @@ class CrawlWorker < Worker::Base
                    success:      stats.fetch(true, []).count,
                    failed:       stats.fetch(false, []).count
   end
+  
+  private
+  
+  def fetch_page(uri, verify_ssl, retries = 3, **headers)
+    retry_count = 0
+    begin
+      logger.info { "`GET` #{uri}" }
+      RestClient::Request.execute(url:          uri,
+                                  method:       :get,
+                                  verify_ssl:   verify_ssl,
+                                  raw_response: true,
+                                  headers:      headers)
+    rescue OpenSSL::SSL::SSLError
+      retry_count += 1
+      retry if retry_count <= retries
+      nil
+    end
+  end
 end
+
 

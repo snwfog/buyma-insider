@@ -2,3 +2,7 @@ currency:
   principal: cad
   secondary: jpy
   tertiary:  usd
+worker:
+  crawl:
+    cache_dir: ./tmp/cache/crawl
+

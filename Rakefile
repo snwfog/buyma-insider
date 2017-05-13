@@ -41,9 +41,24 @@ task :environment do
   puts "Executing task for `#{ENV['RACK_ENV']}`".yellow
 end
 
-desc 'Crawl a merchant given merchant id'
-task :crawl, [:merchant_id] do |_, args|
+desc 'Fetch a merchant indices and cache the pages'
+task :fetch, [:merchant_id] do |_, args|
   CrawlWorker.new.perform(args.fetch(:merchant_id))
+end
+
+desc 'Parse article using cached '
+task :parse, [:crawl_history_id] do |_, args|
+  ArticleParseWorker.new.perform(args.fetch(:crawl_history_id))
+end
+
+desc 'Crawl a merchant given merchant id'
+task :crawl, [:merchant_id] => [:fetch] do |_, args|
+  CrawlSession.order_by(created_at: :desc).first.tap do |crawl_session|
+    crawl_session.crawl_histories.each do |crawl_history|
+      puts 'Parsing articles for index `%s`' % crawl_history.description
+      ArticleParseWorker.new.perform(crawl_history.id)
+    end
+  end
 end
 
 namespace :db do
@@ -66,8 +81,8 @@ namespace :db do
         IndexPage.upsert!(merchant:      merchant,
                           relative_path: idx)
       end
-    
-      puts "Merchant #{metadatum.name}[#{metadatum.code}] created..."
+
+      puts 'Merchant %20s[%s] created...' % [metadatum.name, metadatum.code]
     end
   end
 

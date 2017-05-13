@@ -1,4 +1,3 @@
-require 'active_model_serializers'
 require 'active_support/descendants_tracker'
 
 class MerchantStatus < ActiveModelSerializers::Model

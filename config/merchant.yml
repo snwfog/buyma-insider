@@ -46,14 +46,14 @@ zara:
   item_css:         ul.product-list li.product
   index_pages:
     - woman/new-in-c805003.html
-  ssl:              false
+  ssl:              true
 
 octobersveryown:
   id:               ovo
   name:             octobersveryown
   domain:           //ca.octobersveryown.com
   pager_css:
-  item_css:         grid__item
+  item_css:         main.main-content div.grid__item
   index_pages:
     - collections/all
   ssl:              true

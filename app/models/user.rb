@@ -8,7 +8,7 @@ class User
   
   has_many :user_session_tokens,   dependent: :destroy
   
-  has_one :user_metadatum,    dependent: :destroy
+  has_one :user_metadatum,         dependent: :destroy
   
 
   field :id,            primary_key: true

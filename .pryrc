@@ -36,9 +36,17 @@ end
 
 require 'net/http'
 OracleProxyHttp = Net::HTTP::Proxy('adc-proxy.oracle.com', 80)
-def fetch(uri, **opts)
+
+def proxy_fetch(uri, **opts)
   opts[:use_ssl] = true
   OracleProxyHttp.start(uri.hostname, uri.port, opts) do |http|
+    http.request(Net::HTTP::Get.new(uri))
+  end
+end
+
+def fetch(uri, **opts)
+  opts[:use_ssl] = true
+  Net::HTTP::start(uri.hostname, uri.port, opts) do |http|
     http.request(Net::HTTP::Get.new(uri))
   end
 end

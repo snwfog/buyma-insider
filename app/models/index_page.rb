@@ -14,7 +14,7 @@ class IndexPage
   
   field :relative_path, type:        String,
                         required:    true,
-                        uniq:        true,
+                        unique:      true,
                         length:      (1..1000)
 
   def full_url
@@ -23,7 +23,10 @@ class IndexPage
   
     protocol << ':' << domain << '/' << relative_path
   end
-
+  
+  def cache_filename
+    relative_path.tr('\\/:*?"<>|.', ?_)
+  end
   
   def to_s
     full_url

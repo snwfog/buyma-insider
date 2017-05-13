@@ -24,8 +24,9 @@ class MerchantMetadatum
                        default:     false
   # field :index_pages,  type: Set, required: true
 
-  alias_method :code,   :id
-  alias_method :code=,  :id=
+  alias_method :code,     :id
+  alias_method :code=,    :id=
+  alias_method :base_url, :domain
 
   def latests
     # This is a flat criteria, might look wrong

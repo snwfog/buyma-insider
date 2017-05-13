@@ -5,7 +5,7 @@ class Merchant
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
   
-  delegate :base_url,
+  delegate :domain,
            :pager_css,
            :item_css,
            to: :merchant_metadatum
