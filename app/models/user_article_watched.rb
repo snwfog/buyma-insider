@@ -10,8 +10,8 @@ class UserArticleWatched
   has_many   :user_article_watched_notification_criteria, dependent: :destroy
   has_many   :article_notification_criteria,              through: :user_article_watched_notification_criteria
 
-  field :user_id,      unique:   { scope: [:article_id] }
-  field :article_id,   unique:   { scope: [:user_id] }
+  field :user_id,      unique: { scope: [:article_id] }
+  field :article_id,   unique: { scope: [:user_id] }
   
   index :ix_user_article_watched_user_id_article_id, [:user_id, :article_id]
   

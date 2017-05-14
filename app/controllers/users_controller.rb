@@ -14,6 +14,10 @@ class UsersController < ApplicationController
     json @user.user_article_solds
   end
   
+  get '/:id/article_notifieds' do
+    json @user.user_article_notifieds
+  end
+  
   get '/:id' do
     json @user
   end

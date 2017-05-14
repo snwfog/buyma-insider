@@ -12,12 +12,17 @@ class UserArticleWatchedWorker < Worker::Base
       return
     end
     
-    today = Time.now.utc.to_date
     article.user_article_watcheds.each do |article_watched|
-      if article_watched.all_criteria_apply?
-        UserArticleNotified.create!(user:        article_watched.user,
-                                    article:     article_watched.article,
-                                    notified_at: today)
+      article_watched.article_notification_criteria.each do |criterium|
+        if criterium.applicable?(article)
+          ua_notified = UserArticleNotified
+                          .upsert!(user:    article_watched.user,
+                                   article: article_watched.article)
+          
+          UserArticleNotifiedNotificationCriterium
+            .create!(user_article_notified:          ua_notified,
+                     article_notification_criterium: criterium)
+        end
       end
     end
   end

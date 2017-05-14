@@ -26,6 +26,7 @@ class ArticleParseWorker < Worker::Base
           CrawlHistoryArticle.upsert!(crawl_history: history,
                                       article:       article,
                                       status:        :updated)
+          ArticleUpdatedWorker.perform_async(article.id)
           history.updated_articles_count += 1
           logger.info { 'Article %s created...' % article_id }
         else

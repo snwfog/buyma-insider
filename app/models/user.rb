@@ -2,13 +2,15 @@ class User
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  has_many :user_article_watcheds, dependent: :destroy
+  has_many :user_article_watcheds,  dependent: :destroy
 
-  has_many :user_article_solds,    dependent: :destroy
+  has_many :user_article_solds,     dependent: :destroy
   
-  has_many :user_session_tokens,   dependent: :destroy
+  has_many :user_article_notifieds, dependent: :destroy
   
-  has_one :user_metadatum,         dependent: :destroy
+  has_many :user_session_tokens,    dependent: :destroy
+  
+  has_one :user_metadatum,          dependent: :destroy
   
 
   field :id,            primary_key: true
@@ -52,15 +54,15 @@ class User
   end
   
   def article_watcheds
-    user_article_watcheds
-      .eager_load(:article)
-      .map(&:article)
+    user_article_watcheds.eager_load(:article).map(&:article)
   end
   
   def article_solds
-    user_article_solds
-      .eager_load(:article)
-      .map(&:article)
+    user_article_solds.eager_load(:article).map(&:article)
+  end
+  
+  def article_notifieds
+    user_article_notified.eager_load(:article).map(&:article)
   end
 
   def watch!(article, watch_criterium)

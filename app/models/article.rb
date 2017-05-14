@@ -62,7 +62,8 @@ class Article
   # end
   
   def update_price_history!
-    self.price_history.add_price_history!(price)
+    price_history.add_price_history!(price)
+    save!
   end
 
   # You should not mess with id...
