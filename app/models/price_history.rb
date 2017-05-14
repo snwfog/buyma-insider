@@ -9,20 +9,15 @@ class PriceHistory
   belongs_to :article, foreign_key: :article_id
 
   field :article_id, primary_key: true
-  
   field :currency,   type:    Text,
                      length:  (3..3),
                      default: 'CAN'
-  
   field :history,    type:    Array,
                      default: -> { [] }
-  
   field :max_price,  type:    Float,
                      default: Float::MIN
-
   field :min_price,  type:    Float,
                      default: Float::MAX
-  
   alias_method :id, :article_id
   # around_save :calculate_price_stats, unless: :new_record?
   #

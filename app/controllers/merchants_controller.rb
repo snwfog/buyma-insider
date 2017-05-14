@@ -48,7 +48,8 @@ class MerchantsController < ApplicationController
   get '/:merchant_id/articles' do
     json @merchant
            .articles
-           .eager_load(:price_history)
+           .eager_load(:price_history,
+                       :crawl_history_articles)
            .order_by(@order)
            .offset((@page - 1) * @limit)
            .limit(@limit),

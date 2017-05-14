@@ -14,4 +14,6 @@ class CrawlHistoryArticle
   
   index :ix_crawl_history_articles_crawl_history_id_article_id,
         [:crawl_history_id, :article_id]
+
+  default_scope { order_by(created_at: :desc) }
 end
