@@ -15,7 +15,10 @@ class ApplicationController < Sinatra::Base
   disable :static
   disable :views
   disable :show_exceptions
-
+  
+  # Sinatra
+  set :root, File.expand_path('../../../', File.path(__FILE__))
+  
   # Contrib
   enable :cross_origin
   set    :allow_methods, [:post, :get, :patch, :put, :options, :delete]
@@ -43,6 +46,8 @@ class ApplicationController < Sinatra::Base
     
     register Sinatra::Reloader
     also_reload './app/serializers/*.rb'
+    
+    enable :static
   end
   
   configure :production do

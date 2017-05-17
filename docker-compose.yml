@@ -7,6 +7,8 @@ services:
     ports:
       - "28015:28015"
       - "8080:8080"
+#    volumes:
+#      - /c/Users/cchyang/docker_volumes/buyma_insider/rethinkdb/data:/data
   redis:
     container_name: redis
     image: redis

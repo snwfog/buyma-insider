@@ -121,8 +121,10 @@ namespace :db do
           print "Applying #{patch_path}... "
           load(patch_path)
         rescue Exception => ex
-          puts 'Errored!'.red
+          puts
+          puts 'Error applying patch. Execution is terminated. Subsequent patches are not applied.'.red
           puts ex.message
+          exit
         else
           r.table('meta_db_patches')
             .insert(Hash[:run_at, Time.now.iso8601, :name, patch_path.pathmap('%n')])

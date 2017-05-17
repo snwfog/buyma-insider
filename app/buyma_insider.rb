@@ -34,7 +34,7 @@ module BuymaInsider
     end
     
     # copy&pasted from sinatra
-    def development?; environment == /dev/  end # dev or development
+    def development?; environment =~ /dev/  end # dev or development
     def production?;  environment =~ /prod/ end # prod or production
     def test?;        environment =~ /test/ end # test or unittest or integrationtest
   end

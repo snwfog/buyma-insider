@@ -7,12 +7,16 @@ default:        &default
     pool_size:  5
   sinatra:
     <<:         *default_process
+    db:         0
   serializer:
     <<:         *default_process
-  sidekiq:
-    <<:         *default_process
+    db:         1
   message_bus:
     <<:         *default_process
+    db:         2
+  sidekiq:
+    <<:         *default_process
+    db:         3
 
 
 #  password:
