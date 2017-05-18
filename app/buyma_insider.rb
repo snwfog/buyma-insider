@@ -35,6 +35,7 @@ module BuymaInsider
     
     # copy&pasted from sinatra
     def development?; environment =~ /dev/  end # dev or development
+    def staging?;     environment =~ /stag/ end # stag or stage or staging
     def production?;  environment =~ /prod/ end # prod or production
     def test?;        environment =~ /test/ end # test or unittest or integrationtest
   end
