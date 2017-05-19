@@ -1,4 +1,7 @@
-require './config/application'
+require 'sidekiq/web'
+require 'sidetiq/web'
+
+require_relative './config/application'
 
 # Auto-generate all routes from controller files
 # Rake::FileList
@@ -9,7 +12,8 @@ require './config/application'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
-map '/' do; run StaticController end
+map('/sidekiq') { run Sidekiq::Web }
+map('/')        { run StaticController }
 
 map_controller('/sessions')
 map_controller('/users')
@@ -23,5 +27,3 @@ map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
 map_controller('/crawl_sessions')
 map_controller('/exchange_rates')
-
-# run BuymaInsider::Application

@@ -1,3 +1,4 @@
+# Used mostly for testing elasticsearch queries
 query:
   bool:
     must:

@@ -17,6 +17,7 @@ default:        &default
   sidekiq:
     <<:         *default_process
     db:         3
+    marshalling: false
 
 
 #  password:
