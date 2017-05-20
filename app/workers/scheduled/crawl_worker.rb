@@ -1,6 +1,5 @@
 require 'faker'
 require 'sentry-raven'
-require 'net_http_ssl_fix'
 
 class CrawlWorker < Worker::Base
   attr_reader :merchant
