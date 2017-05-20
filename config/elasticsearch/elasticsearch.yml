@@ -1,11 +1,11 @@
 # Require explicit index creation
-action.auto_create_index:      false
+action.auto_create_index: false
 
 # Require manual setup document mapping
 # This is deprecated, must be set individually
 # on an index using index API or use index template
-#index.mapper.dynamic:          false
+#index.mapper.dynamic: false
 
 # Closed indices has no overhead except metadata
 # and is blocked for r/w
-cluster.indices.close.enable:  false
+cluster.indices.close.enable: false

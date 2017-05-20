@@ -9,7 +9,8 @@ class StaticController < ApplicationController
                   "buyma-insider-client:index:#{fetch_revision}"
                 else
                   $redis.with do |store|
-                    "buyma-insider-client:index:#{store.get('buyma-insider-client:index:current')}"
+                    current_version = store.get('buyma-insider-client:index:current', raw: true)
+                    "buyma-insider-client:index:#{current_version}"
                   end
                 end
     
