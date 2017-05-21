@@ -30,6 +30,7 @@ module AuthenticationHelper
     current_user
   rescue Exception => ex
     logger.error { ex }
+    nil
   end
   
   def post_authenticate!(user)
