@@ -1,5 +1,5 @@
 def map_controller(route)
-  map(route) do
+  map("/#{BuymaInsider::API_VERSION}" + route) do
     run "#{route}_controller".classify.constantize
   end
 end

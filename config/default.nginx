@@ -1,5 +1,5 @@
 daemon off;
-error_log /Users/snw/www/buyma_insider/log/nginx-error.log debug;
+error_log syslog:tag=buyma_insider-nginx debug;
 # set the max limit to 128, ulimit -a macosx returns 256
 # worker_rlimit_nofile 128;
 
@@ -9,8 +9,6 @@ events {
 }
 
 http {
-  include             mime.types;
-  etag                off;
 
   upstream buyma_insider {
     server unix:/Users/snw/www/buyma_insider/tmp/sockets/unicorn.sock fail_timeout=0;
@@ -19,21 +17,29 @@ http {
   server {
     listen              8080;
     server_name         localhost;
+    server_tokens       off; # nginx versions
+
+    set                 $app_path /Users/snw/www/buyma_insider;
+
+    include             mime.types;
+    etag                off;
+
+    root                $app_path;
 
     keepalive_timeout   30s;
     sendfile            on;
     tcp_nopush          on;
     # tcp_nodelay        on;
 
-    access_log          /Users/snw/www/buyma_insider/log/nginx-access.log;
+    access_log          $app_path/log/nginx-access.log;
+    error_log           $app_path/log/nginx-error.log debug;
 
     location / {
-      root              /Users/snw/www/buyma_insider;
-      try_files         $uri/index.html $uri @buyma_insider;
+      try_files         $uri @buyma_insider;
     }
 
     location ~ \.(jpe?g|gif|png|css|js|ico|xml|rss|txt|map|eot|svg|ttf|woff|woff2)$ {
-      root              /Users/snw/www/buyma_insider/public;
+      root              $app_path/public;
       # Requires the gzip static modules
       # Will look for gz version by default unless changed
       gzip_static       on;
@@ -42,6 +48,7 @@ http {
     location @buyma_insider {
       proxy_pass        http://buyma_insider;
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header  X-Real-IP $remote_addr;
       proxy_set_header  Host $http_host;
       proxy_redirect    off;
     }

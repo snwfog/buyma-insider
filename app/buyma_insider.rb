@@ -3,8 +3,9 @@ require 'bundler/setup'
 Bundler.require(:default, ENV['RACK_ENV']) # disable for now, as it increases boot time
 
 module BuymaInsider
-  NAME             = 'buyma_insider'
-  VERSION          = '0.1.0'
+  NAME             = 'buyma_insider'.freeze
+  VERSION          = '0.1.0'.freeze
+  API_VERSION      = 'api/v1'.freeze
   SPOOF_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.54 Safari/537.36'
   
   class << self
