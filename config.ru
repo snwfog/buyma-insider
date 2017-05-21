@@ -12,9 +12,7 @@ require_relative './config/application'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
-map('/sidekiq') { run Sidekiq::Web }
-map('/')        { run StaticController }
-
+map('/') { run StaticController }
 map_controller('/sessions')
 map_controller('/users')
 map_controller('/user_article_solds')
@@ -27,3 +25,7 @@ map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
 map_controller('/crawl_sessions')
 map_controller('/exchange_rates')
+
+if BuymaInsider.development?
+  map('/sidekiq') { run Sidekiq::Web }
+end

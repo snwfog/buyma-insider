@@ -14,6 +14,9 @@
 - Nginx has to be setup in production, but locally
   unicorn is directly listening on port 5000 and
   localhost, so nginx don't have to be setup
+- - Nginx can be installed with --with-debug (dev, staging)
+- - Nginx must be installed with --with-gzip-static
+- - Using homebrew `brew tap homebrew/nginx`
 - Daemonize command option is not added for unicorn, but
   could be if needed, just modify Procfile
 - Make sure to set the ENVIRONMENT variable when running elsewhere

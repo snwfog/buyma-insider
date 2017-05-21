@@ -9,6 +9,9 @@ events {
 }
 
 http {
+  include             mime.types;
+  etag                off;
+
   upstream buyma_insider {
     server unix:/Users/snw/www/buyma_insider/tmp/sockets/unicorn.sock fail_timeout=0;
   }
@@ -22,10 +25,19 @@ http {
     tcp_nopush          on;
     # tcp_nodelay        on;
 
-    root                /Users/snw/www/buyma_insider/public;
-    try_files           $uri/index.html $uri @buyma_insider;
-
     access_log          /Users/snw/www/buyma_insider/log/nginx-access.log;
+
+    location / {
+      root              /Users/snw/www/buyma_insider;
+      try_files         $uri/index.html $uri @buyma_insider;
+    }
+
+    location ~ \.(jpe?g|gif|png|css|js|ico|xml|rss|txt)$ {
+      root              /Users/snw/www/buyma_insider/public;
+      # Requires the gzip static modules
+      # Will look for gz version by default unless changed
+      gzip_static       on;
+    }
 
     location @buyma_insider {
       proxy_pass        http://buyma_insider;
@@ -34,7 +46,7 @@ http {
       proxy_redirect    off;
     }
 
-    error_page          500 502 503 504 /500.html;
+    # error_page          500 502 503 504 /500.html;
     # Compression
     # Enable Gzip compressed.
     gzip                on;
@@ -75,9 +87,9 @@ http {
       application/xml
       font/opentype
       image/svg+xml
-      image/x-icon
-      text/css
-      text/plain
+    # image/x-icon
+    # text/css
+    # text/plain
       text/x-component;
     # text/html is always compressed by HttpGzipModule
   }

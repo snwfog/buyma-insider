@@ -24,7 +24,9 @@ class ApplicationController < Sinatra::Base
   set    :allow_methods, [:post, :get, :patch, :put, :options, :delete]
   
   # Custom
-  enable :logging
+  enable :logging # CommonLogger from sinatra
+  # Doesn't work, because this set to self.class.logger
+  # set    :logger, BuymaInsider.logger_for(:Sinatra) # Allow controller logging
   
   # Settings
   # explicitly set this
@@ -62,5 +64,9 @@ class ApplicationController < Sinatra::Base
   error [UserNotFound, InvalidPassword, InvalidSession] do
     # { error: 'login.invalid_username_or_password' }
     status :bad_request
+  end
+  
+  def logger
+    BuymaInsider.logger_for(:Sinatra)
   end
 end

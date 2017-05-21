@@ -28,6 +28,13 @@ module BuymaInsider
         Redis::Store.new(redis_cfg)
       end
     end
+
+    def logger_for(process)
+      unless Logging::Repository.instance.has_logger?(process)
+        raise 'Logger `%process` does not exists' % process
+      end
+      Logging.logger[process]
+    end
     
     def environment
       ENV['RACK_ENV'] || :development

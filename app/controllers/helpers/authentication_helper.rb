@@ -26,6 +26,12 @@ module AuthenticationHelper
     end
   end
   
+  def current_user?
+    current_user
+  rescue Exception => ex
+    logger.error { ex }
+  end
+  
   def post_authenticate!(user)
     @env        = Rack::Request.new(env)
     session_key = SecureRandom.hex(16)
@@ -63,6 +69,6 @@ module AuthenticationHelper
       secure:   false }
   end
 end
-  
-  
-  
+
+
+
