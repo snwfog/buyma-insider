@@ -22,7 +22,7 @@ module AuthenticationHelper
     @current_user ||= begin
       session_key = cookies[SESSION_KEY]
       raise InvalidSession unless session_key
-      get_cached_session_user || User.first
+      get_cached_session_user
     end
   end
   

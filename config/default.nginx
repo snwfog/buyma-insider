@@ -32,7 +32,7 @@ http {
       try_files         $uri/index.html $uri @buyma_insider;
     }
 
-    location ~ \.(jpe?g|gif|png|css|js|ico|xml|rss|txt)$ {
+    location ~ \.(jpe?g|gif|png|css|js|ico|xml|rss|txt|map|eot|svg|ttf|woff|woff2)$ {
       root              /Users/snw/www/buyma_insider/public;
       # Requires the gzip static modules
       # Will look for gz version by default unless changed
