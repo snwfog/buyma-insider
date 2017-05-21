@@ -1,5 +1,5 @@
 daemon off;
-error_log syslog:tag=buyma_insider-nginx debug;
+error_log syslog:server=localhost,tag=buyma_insider_nginx debug;
 # set the max limit to 128, ulimit -a macosx returns 256
 # worker_rlimit_nofile 128;
 
@@ -31,8 +31,10 @@ http {
     tcp_nopush          on;
     # tcp_nodelay        on;
 
-    access_log          $app_path/log/nginx-access.log;
-    error_log           $app_path/log/nginx-error.log debug;
+    access_log          /Users/snw/www/buyma_insider/log/nginx-access.log;
+    error_log           /Users/snw/www/buyma_insider/log/nginx-error.log debug;
+    # This dont work
+    # set $app_path
 
     location / {
       try_files         $uri @buyma_insider;
