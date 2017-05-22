@@ -12,7 +12,7 @@ class ArticleSerializer < ActiveModel::Serializer
   end
   
   has_many :article_relateds do
-    link :related, proc { "/articles/#{object.id}/article_relateds"}
+    link :related, 'article_relateds'
   end
   
   

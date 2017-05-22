@@ -1,7 +1,11 @@
 class StaticController < ApplicationController
   post '/login' do
-    # TODO: Parameterize this
-    redirect to('http://localhost:4200/', false)
+    redirect_to_index
+  end
+  
+  post '/logout' do
+    destroy_session!
+    redirect_to_index
   end
   
   get '/bootstrap' do
@@ -17,7 +21,7 @@ class StaticController < ApplicationController
     
     @bootstrap.to_json
   end
-
+  
   SHORT_UUID_V4_REGEXP = /\A[0-9a-f]{7}\z/i
   # from https://github.com/ghedamat/ember-deploy-demo/blob/master/edd-rails/app/controllers/demo_controller.rb
   get '/(*)' do
@@ -32,16 +36,28 @@ class StaticController < ApplicationController
                     "buyma-insider-client:index:#{current_version}"
                   end
                 end
-  
+    
     raise 'Index key not found' unless index_key
     index = $redis.with { |store| store.get(index_key, raw: true) }
     index
   end
-
+  
+  private
+  
   def fetch_revision
     rev = params[:revision]
     if rev =~ SHORT_UUID_V4_REGEXP
       rev
+    end
+  end
+
+  def redirect_to_index
+    if origin = env['HTTP_ORIGIN']
+      # cors
+      absolute = true
+      redirect(to(origin, absolute))
+    else
+      redirect(to('/', !absolute))
     end
   end
 end

@@ -8,6 +8,7 @@ default:          &default
   sinatra:
     <<:           *default_process
     db:           0
+    # marshalling:  false, use raw instead
   serializer:
     <<:           *default_process
     db:           1
