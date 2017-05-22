@@ -17,11 +17,11 @@ module AuthenticationHelper
   def authenticated?
     !!current_user
   end
-  
+
   def current_user
     @current_user ||= begin
-      session_key = cookies[SESSION_KEY]
-      raise InvalidSession unless session_key
+      unhashed_token = cookies[SESSION_KEY]
+      raise InvalidSession unless unhashed_token
       session_cached_user
     end
   end
@@ -32,36 +32,45 @@ module AuthenticationHelper
     logger.error { ex }
     nil
   end
-  
+
   def post_authenticate!(user)
     # @env        = Rack::Request.new(env)
-    session_key = SecureRandom.hex(16)
-    cookies.set(SESSION_KEY, cookie_hash(session_key))
+    unhashed_token = SecureRandom.hex(16)
+    hashed_token   = hash_token(unhashed_token)
+    cookies.set(SESSION_KEY, cookie_hash(unhashed_token))
     session_cache do |redis|
-      redis.set(session_key, user, expires_in: SESSION_EXPIRE_TIME)
+      redis.set(hashed_token, user,
+                expires_in: SESSION_EXPIRE_TIME)
     end
-    
-    UserSessionToken
-      .create!(user:  user,
-               token: session_key)
-  end
   
+    UserAuthToken
+      .create!(user:  user,
+               token: hashed_token)
+  end
+
   def destroy_session!
-    session_key = cookies[SESSION_KEY]
-    raise InvalidSession unless session_key
+    unhashed_token = cookies[SESSION_KEY]
+    raise InvalidSession unless unhashed_token
     session_cache do |redis|
-      redis.del(session_key)
+      redis.del(hash_token(unhashed_token))
     end
   end
   
   private
   
+  def hash_token(token)
+    # Escape string table
+    # https://github.com/ruby/ruby/blob/trunk/doc/syntax/literals.rdoc#strings
+    Digest::SHA1.base64digest(token + SECRET)
+  end
+
   def session_cached_user
     session_cache do |redis|
-      session_key = cookies[SESSION_KEY]
-      user        = redis.get(session_key)
+      unhashed_token = cookies[SESSION_KEY]
+      hashed_token   = hash_token(unhashed_token)
+      user           = redis.get(hashed_token)
       raise UserNotFound unless !!user
-      redis.expire(session_key, SESSION_EXPIRE_TIME)
+      redis.expire(hashed_token, SESSION_EXPIRE_TIME)
       user
     end
   end
