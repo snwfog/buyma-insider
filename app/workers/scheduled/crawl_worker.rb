@@ -22,9 +22,9 @@ class CrawlWorker < Worker::Base
   def perform(merchant_id)
     @merchant  = Merchant.find!(merchant_id)
     @cache_dir = "./tmp/cache/crawl/#{merchant.id}"
-    FileUtils.mkdir(@cache_dir) unless File.directory?(@cache_dir)
+    FileUtils::mkdir(@cache_dir) unless File::directory?(@cache_dir)
     
-    Raven.capture do
+    Raven::capture do
       log_start
       
       crawl
@@ -40,17 +40,27 @@ class CrawlWorker < Worker::Base
       cached_filepath = '%s/%s' % [@cache_dir, index_page.cache_filename]
       
       begin
-        last_history    = CrawlHistory.where(index_page: index_page).first
-        current_history = CrawlHistory.create!(index_page:    index_page,
-                                               crawl_session: crawl_session,
-                                               status:        :inprogress,
-                                               description:   "#{merchant.name} '#{index_page}'")
+        last_history = CrawlHistory
+                         .where(index_page: index_page)
+                         .first
         
-        logger.info { '%s started at %s' % [current_history.description, Time.now] }
+        current_history = CrawlHistory
+                            .create!(index_page:    index_page,
+                                     crawl_session: crawl_session,
+                                     status:        :inprogress,
+                                     description:   "#{merchant.name} [#{index_page}]")
+        
+        logger.info { 'Started crawling `%s`' % current_history.description }
         current_headers = @std_headers.dup
-        if File::exist?(cached_filepath) && test(?C, cached_filepath) >= 1.weeks.ago
-          if last_history&.etag && !last_history&.weak?
-            current_headers[:if_none_match] = last_history.etag
+        if File::exist?(cached_filepath)
+          logger.info { 'Index cache `%s` exists' % cached_filepath }
+          if test(?M, cached_filepath) >= 1.weeks.ago
+            logger.info { 'Index cache is less than a week old, try use etag header' }
+            if last_history&.etag && !last_history&.weak?
+              current_headers[:if_none_match] = last_history.etag
+            end
+          else
+            logger.info { 'Index cache is over a week old, last modified at %s' % File.mtime(cached_filepath) }
           end
         end
         
@@ -58,40 +68,42 @@ class CrawlWorker < Worker::Base
           raw_tempfile = fetch_page(index_page.full_url,
                                     merchant.meta.ssl?,
                                     current_headers)
+          logger.info { 'Received index into temp file `%s`' % raw_tempfile.file.path }
         rescue RestClient::NotModified
           current_history.update!(traffic_size_kb:  0.0,
-                                  response_headers: last_history.headers,
+                                  response_headers: last_history.response_headers,
                                   response_code:    :not_modified)
           
-          FileUtils.touch(cached_filepath)
+          logger.debug { 'Index %s has not been modified' % index_page.full_url }
+          FileUtils::touch(cached_filepath)
         else
           current_history.update!(traffic_size_kb:  raw_tempfile.file.size / 1000.0,
                                   response_headers: raw_tempfile.headers.to_h,
                                   response_code:    :ok)
           
+          logger.info { 'Storing index `%s` into `%s`' % [raw_tempfile.file.path, cached_filepath] }
           FileUtils.cp(raw_tempfile.file.path, cached_filepath)
         ensure
           current_history.save!
         end
-        
       rescue Exception => ex
         current_history.aborted!
         # raise ex swallow error and log to sentry
         Raven.capture_exception(ex)
-        logger.error current_history.description
-        logger.error ex
+        logger.error { current_history.description }
+        logger.error { ex }
         if ex.is_a? RestClient::Exception
-          logger.error ex.http_headers
+          logger.error { ex.http_headers }
         end
-        logger.error ex.backtrace
+        logger.error { ex.backtrace }
       else
         current_history.completed!
       ensure
         current_history.finished_at = Time.now.utc.iso8601
         current_history.save!
         
-        logger.info { 'Crawling %s finished at %s' % [current_history.description, Time.now] }
-        logger.info { current_history.attributes }
+        logger.info { 'Finished crawling  `%s`' % current_history.description }
+        logger.info { JSON.pretty_generate(current_history.attributes) }
       end
     end
   ensure
@@ -123,10 +135,13 @@ class CrawlWorker < Worker::Base
   
   private
   
+  # Fetch uri
+  # return RestClient::RawResponse
   def fetch_page(uri, verify_ssl, retries = 3, **headers)
     retry_count = 0
     begin
       logger.info { "`GET` #{uri}" }
+      logger.debug { JSON.pretty_generate(headers) }
       RestClient::Request.execute(url:          uri,
                                   method:       :get,
                                   verify_ssl:   verify_ssl,
@@ -134,6 +149,7 @@ class CrawlWorker < Worker::Base
                                   headers:      headers)
     rescue OpenSSL::SSL::SSLError
       retry_count += 1
+      logger.warn { 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count] }
       retry if retry_count <= retries
       nil
     end

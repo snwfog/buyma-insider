@@ -1,58 +1,57 @@
-default:              &default
-  root:               &default_process
-    severity:         debug
-    additive:         false
-    level:            &default_level
-      debug:          &default_severity
+default:           &default
+  root:            &default_process
+    severity:      info
+    additive:      true
+    level:         &default_level
+      debug:       &default_severity
         pattern:      "[%d] %-5l -- %c : %m\n"
-        location:     ./log/root.debug.log
-        age:          daily
+        location:  ./log/root.debug.log
+        age:       daily
       info:
-        <<:           *default_severity
-        location:     ./log/root.log
+        <<:        *default_severity
+        location:  ./log/root.log
       warn:
-        <<:           *default_severity
+        <<:        *default_severity
       error:
-        <<:           *default_severity
+        <<:        *default_severity
       fatal:
-        <<:           *default_severity
+        <<:        *default_severity
   sinatra:
-    <<:               *default_process
+    <<:            *default_process
+    severity:      debug
   database:
-    <<:               *default_process
+    <<:            *default_process
+    severity:      debug
   sidekiq:
-    <<:               *default_process
+    <<:            *default_process
+    severity:      debug
   elasticsearch:
-    <<:               *default_process
+    <<:            *default_process
+    severity:      debug
   httplog:
-    <<:               *default_process
+    <<:            *default_process
+    severity:      debug
 
 development:
-  <<:                 *default
+  <<:              *default
 
 test:
-  <<:                 *default
+  <<:              *default
 
 staging:
-  <<:                 *default
+  <<:              *default
 
 production:
-  <<:                 *default
+  <<:              *default
   root:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process
   database:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process
   sinatra:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process
   sidekiq:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process
   elasticsearch:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process
   httplog:
-    <<:               *default_process
-    severity:         info
+    <<:            *default_process

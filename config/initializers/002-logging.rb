@@ -1,26 +1,23 @@
 logging_cfg = BuymaInsider.configuration.logging.dup
-
-# Create logging for all layers of application
-set_logging_configuration = -> (cfg, logger) do
-  logger.level    = cfg.severity
-  logger.additive = cfg.additive unless logger.is_a?(Logging::RootLogger)
-  severity_cfg    = cfg.level[cfg.severity]
-  logger.add_appenders(
-    Logging.appenders.rolling_file(severity_cfg.location,
-                                   age:    severity_cfg.age,
-                                   layout: Logging.layouts.pattern(pattern: severity_cfg.pattern)))
-end
-
-# Get root logger
-Logging.logger.root.tap do |logger|
-  root_cfg = logging_cfg.delete(:root)
-  # Root logger don't accept additive attribute and is false by default
-  set_logging_configuration.call(root_cfg, logger)
-  if (BuymaInsider.development? || BuymaInsider.test?) && STDOUT.tty?
-    logger.add_appenders(Logging.appenders.stdout)
-  end
-end
-
 logging_cfg.each do |layer, logger_cfg|
-  Logging.logger[layer.capitalize].tap { |logger| set_logging_configuration.call(logger_cfg, logger) }
+  # Root logger don't accept additive attribute and is false by default
+  # When its root, not in prod and has tty?
+  # - add a STDOUT appenders
+  # - set severity to info
+  if layer =~ /root/
+    root_logger = Logging.logger.root
+    if !BuymaInsider.production? || STDOUT.tty?
+      root_logger.add_appenders(Logging.appenders.stdout(level: logger_cfg.severity))
+    end
+  else
+    Logging.logger[layer.capitalize].tap do |logger|
+      logger.level    = logger_cfg.severity
+      logger.additive = logger_cfg.additive
+      severity_cfg    = logger_cfg.level[logger_cfg.severity]
+      logger.add_appenders(
+        Logging.appenders.rolling_file(severity_cfg.location,
+                                       age:    severity_cfg.age,
+                                       layout: Logging.layouts.pattern(pattern: severity_cfg.pattern)))
+    end
+  end
 end

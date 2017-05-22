@@ -33,7 +33,10 @@ end
 
 desc 'Cleanup log'
 task :log_clean do
-  rm_rf './log/*.log'
+  FileList['./log/**/*.log'].each do |log_file|
+    puts 'Cleaning `%s`' % log_file
+    sh "cat /dev/null > #{log_file}"
+  end
 end
 
 desc 'Environment'

@@ -5,14 +5,22 @@ class ArticleParseWorker < Worker::Base
     cache_filename = history.index_page.cache_filename
     cache_dir      = "./tmp/cache/crawl/#{merchant.id}"
     cache_filepath = '%s/%s' % [cache_dir, cache_filename]
+    index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
     
-    cache_file_content = File.open(cache_filepath, 'rb') { |file| file.read }
-    body               = read_cache_file(cache_file_content,
-                                         history.content_encoding)
+    logger.info { 'Parsing article for index %s' % index_summary }
+    if File.exist?(cache_filepath)
+      logger.info { 'Found! Reading from cache file content...' }
+      cache_file_content = File.open(cache_filepath, 'rb') { |file| file.read }
+    else
+      raise 'Cache file not found %s' % index_summary
+    end
     
-    item_css = merchant.metadatum.item_css
-    document = Nokogiri::HTML(body, nil, 'utf-8')
-    document.css(item_css).each do |it|
+    body          = read_cache_file(cache_file_content, history.content_encoding)
+    item_css      = merchant.metadatum.item_css
+    document      = Nokogiri::HTML(body, nil, 'utf-8')
+    article_nodes = document.css(item_css)
+    logger.info { 'Start parsing files with `%i` articles' % article_nodes.count }
+    article_nodes.each do |it|
       begin
         attrs      = merchant.attrs_from_node(it)
         article_id = attrs[:id]
@@ -28,7 +36,7 @@ class ArticleParseWorker < Worker::Base
                                       status:        :updated)
           ArticleUpdatedWorker.perform_async(article.id)
           history.updated_articles_count += 1
-          logger.info { 'Article %s created...' % article_id }
+          logger.info { 'Article %s updated...' % article_id }
         else
           article = Article.create!(attrs.merge(merchant: merchant))
           CrawlHistoryArticle.create!(crawl_history: history,
@@ -36,7 +44,7 @@ class ArticleParseWorker < Worker::Base
                                       status:        :created)
           ArticleCreatedWorker.perform_async(article.id)
           history.created_articles_count += 1
-          logger.info { 'Article %s updated...' % article_id }
+          logger.info { 'Article %s created...' % article_id }
         end
         
         article.update_price_history!
@@ -50,11 +58,10 @@ class ArticleParseWorker < Worker::Base
       else
       ensure
         history.save
-        # logger.debug { attrs }
       end
     end
     
-    logger.info 'Finished'
+    logger.info { 'Finished parsing `%s`' % index_summary }
   end
   
   private

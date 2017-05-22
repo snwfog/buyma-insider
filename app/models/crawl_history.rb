@@ -52,7 +52,7 @@ class CrawlHistory
   #                              if:        :completed?
   
   def etag
-    self.response_headers[:etag]
+    response_headers && response_headers[:etag]
   end
   
   def weak?
@@ -60,11 +60,11 @@ class CrawlHistory
   end
   
   def last_modified
-    self.response_headers[:last_modified]
+    last_modified && response_headers[:last_modified]
   end
   
   def content_encoding
-    self.response_headers[:content_encoding]
+    content_encoding && response_headers[:content_encoding]
   end
   
   def cache_resolve?
