@@ -1,5 +1,5 @@
 module AuthenticationHelper
-  SESSION_EXPIRE_TIME = 1.week.to_i # TODO: SiteSetting
+  SESSION_EXPIRE_TIME = 1.week # TODO: SiteSetting
   SESSION_KEY         = '_t'.freeze
   CURRENT_USER_KEY    = '_CURRENT_USER_KEY'.freeze
   
@@ -40,7 +40,7 @@ module AuthenticationHelper
     cookies.set(SESSION_KEY, cookie_hash(unhashed_token))
     session_cache do |redis|
       redis.set(hashed_token, user,
-                expires_in: SESSION_EXPIRE_TIME)
+                expires_in: SESSION_EXPIRE_TIME.to_i)
     end
   
     UserAuthToken
@@ -57,7 +57,8 @@ module AuthenticationHelper
   end
   
   private
-  
+
+  SECRET = SecureRandom.hex(64) # TODO: GlobalSettings
   def hash_token(token)
     # Escape string table
     # https://github.com/ruby/ruby/blob/trunk/doc/syntax/literals.rdoc#strings
@@ -70,7 +71,7 @@ module AuthenticationHelper
       hashed_token   = hash_token(unhashed_token)
       user           = redis.get(hashed_token)
       raise UserNotFound unless !!user
-      redis.expire(hashed_token, SESSION_EXPIRE_TIME)
+      redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
       user
     end
   end
@@ -87,7 +88,7 @@ module AuthenticationHelper
     { value:    value,
       httponly: true,
       path:     '/',
-      expires:  SESSION_EXPIRE_TIME,
+      expires:  SESSION_EXPIRE_TIME.from_now,
       secure:   false }
   end
 end

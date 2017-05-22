@@ -13,13 +13,13 @@ describe UserAuthToken do
   end
   
   it 'should be unique per user per token' do
-    hashed_token = Digest::SHA1.base64digest(SecureRandom.hex(16))
-    user_session = UserAuthToken.new(user: user, token: hashed_token)
-    expect(user_session.valid?).to be(true)
-    user_session.save!
+    hashed_token    = Digest::SHA1.base64digest(SecureRandom.hex(16))
+    user_auth_token = UserAuthToken.new(user: user, token: hashed_token)
+    expect(user_auth_token.valid?).to be(true)
+    user_auth_token.save!
     
-    user_session = UserAuthToken.new(user: user, token: hashed_token)
-    expect(user_session.valid?).to be(false)
-    expect(user_session.errors.full_messages).to include('Token has already been taken')
+    user_auth_token = UserAuthToken.new(user: user, token: hashed_token)
+    expect(user_auth_token.valid?).to be(false)
+    expect(user_auth_token.errors.full_messages).to include('Token has already been taken')
   end
 end

@@ -1,4 +1,4 @@
-class UserSessionTokenSerializer < ActiveModel::Serializer
+class UserAuthTokenSerializer < ActiveModel::Serializer
   belongs_to :user do
     include_data true
   end
