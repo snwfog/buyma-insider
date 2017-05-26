@@ -1,0 +1,7 @@
+set log syslog
+set daemon 120
+set httpd
+	port 2812
+	allow snw:'123'
+
+set onreboot start

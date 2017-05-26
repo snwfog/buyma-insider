@@ -59,6 +59,7 @@ gem 'foreman'
 gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
+  gem 'capistrano'
   gem 'shotgun',               require: false
   gem 'rubocop',               require: false
   gem 'pry'
