@@ -4,11 +4,11 @@ class MerchantSerializer < ActiveModel::Serializer
   cache key: :merchant, expires_in: 5.minutes
 
   has_many :articles do
-    link :related, proc { "/merchants/#{object.id}/articles" }
+    link :related, proc { 'articles' }
   end
   
   has_many :crawl_sessions do
-    link :related, proc { "/merchants/#{object.id}/crawl_sessions" }
+    link :related, proc { 'crawl_sessions' }
   end
   
   has_many :index_pages do
