@@ -7,6 +7,7 @@ gem 'sinatra-cross_origin',     require: 'sinatra/cross_origin'
 
 gem 'active_model_serializers', '~> 0.10.0'
 gem 'sidekiq'
+gem 'sidekiq-cron'
 gem 'nokogiri'
 gem 'rest-client'
 gem 'require_all'

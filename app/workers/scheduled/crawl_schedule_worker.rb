@@ -9,8 +9,6 @@ require 'active_support/core_ext/time/calculations'
 # finish on time, e.g. before 6 a.m.
 #
 class CrawlScheduleWorker < Worker::Base
-  recurrence { daily.hour_of_day(20) }
-  
   def initialize
     @start_time = Time.now.beginning_of_day.tomorrow + 1.hour
   end
