@@ -10,10 +10,18 @@ check process nginx with pidfile <%= app_dir %>/tmp/pids/nginx.pid
   group www
   start program = "<%= bin_path %>/nginx" with timeout 60 seconds
   stop program = "<%= bin_path %>/nginx -s quit"
-check process unicorn with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
+
+check process unicorn_master with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
   group www
   start program = "<%= app_dir %>/bin/unicorn -I<%= app_dir %>/app -c<%= app_dir %>/config/unicorn.rb"
   stop program = "kill -QUIT `cat <%= app_dir %>/tmp/pids/unicorn.pid`"
+
+<% unicorn_worker.each do |worker, index| %>
+  check process unicorn_worker_<%= index %> with pidfile <%= app_dir %>/tmp/pids/unicorn.<%= index %>.pid
+  group www
+  start program = "/bin/cat /dev/null"
+  stop program = "/usr/local/bin/unicorn kill_worker <%= index %>"
+<% end %>
 
 check process rethinkdb with pidfile <%= app_dir %>/tmp/pids/rethinkdb.pid
   group database

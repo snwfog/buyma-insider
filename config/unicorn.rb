@@ -1,19 +1,21 @@
+# set path for bundler
+# ENV['BUNDLE_GEMFILE'] = File.expand_path('../Gemfile', File.dirname(__FILE__))
+# require 'bundler/setup'
+
 # set path to application
-app_dir = File.expand_path('../..', __FILE__)
+app_dir           = File.expand_path('../..', __FILE__)
 working_directory app_dir
+worker_processes  2
 
-# Set master PID location
-pid "#{app_dir}/tmp/pids/unicorn.pid"
+# set master PID location
+pid               "#{app_dir}/tmp/pids/unicorn.pid"
+preload_app       true
+timeout           30
 
-# Set unicorn options
-worker_processes 2
-preload_app false
-timeout 30
+# set up socket location
+listen            "#{app_dir}/tmp/sockets/unicorn.sock", backlog: 64
 
-# Set up socket location
-listen "#{app_dir}/tmp/sockets/unicorn.sock", :backlog => 64
-
-# Logging
-stderr_path "#{app_dir}/log/unicorn-stderr-#{ENV['RACK_ENV']}.log"
-stdout_path "#{app_dir}/log/unicorn-stdout-#{ENV['RACK_ENV']}.log"
+# logging
+stderr_path       "#{app_dir}/log/unicorn-stderr.log"
+stdout_path       "#{app_dir}/log/unicorn-stdout.log"
 
