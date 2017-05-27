@@ -1,4 +1,5 @@
 daemon off;
+pid <%= app_dir %>/current/tmp/pids/nginx.pid;
 error_log syslog:server=localhost,tag=buyma_insider_nginx debug;
 # set the max limit to 128, ulimit -a macosx returns 256
 # worker_rlimit_nofile 128;
@@ -11,7 +12,7 @@ events {
 http {
 
   upstream buyma_insider {
-    server unix:/Users/snw/www/buyma_insider/tmp/sockets/unicorn.sock fail_timeout=0;
+    server unix:<%= app_dir %>/tmp/sockets/unicorn.sock fail_timeout=0;
   }
 
   server {
@@ -19,7 +20,7 @@ http {
     server_name         localhost;
     server_tokens       off; # nginx versions
 
-    set                 $app_path /Users/snw/www/buyma_insider;
+    set                 $app_path der;
 
     include             mime.types;
     etag                off;
@@ -31,8 +32,8 @@ http {
     tcp_nopush          on;
     # tcp_nodelay        on;
 
-    access_log          /Users/snw/www/buyma_insider/log/nginx-access.log;
-    error_log           /Users/snw/www/buyma_insider/log/nginx-error.log debug;
+    access_log          <%= app_dir %>/log/nginx-access.log;
+    error_log           <%= app_dir %>/log/nginx-error.log debug;
     # This dont work
     # set $app_path
 

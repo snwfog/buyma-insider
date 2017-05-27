@@ -1,0 +1,33 @@
+set log syslog
+set daemon 120
+set httpd
+    port 2812
+    allow snw:"123"
+
+set onreboot start
+
+check process nginx with pidfile <%= app_dir %>/tmp/pids/nginx.pid
+  group web
+  start program = "<%= bin_path %>/nginx" with timeout 60 seconds
+  stop program = "<%= bin_path %>/nginx -s quit"
+check process unicorn with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
+  group web
+  start program = "<%= app_dir %>/bin/unicorn -I<%= app_dir %>/app -c<%= app_dir %>/config/unicorn.rb"
+  stop program = "kill -QUIT `cat <%= app_dir %>/tmp/pids/unicorn.pid`"
+
+check process rethinkdb with pidfile <%= app_dir %>/tmp/pids/rethinkdb.pid
+  group database
+  start program = "<%= bin_path %>/brew services start rethinkdb" with timeout 60 seconds
+  stop program = "<%= bin_path %>/brew services stop rethinkdb"
+check process redis with pidfile /usr/local/var/run/redis.pid
+  group database
+  start program = "<%= bin_path %>/brew services start redis" with timeout 60 seconds
+  stop program = "<%= bin_path %>/brew services stop redis"
+
+<% sidekiq.each_with_index do |sidekiq, index| %>
+check process <%= sidekiq %>_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
+  group sidekiq
+  start program = ""
+  stop program = ""
+<% end %>
+

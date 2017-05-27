@@ -1,2 +1,10 @@
 AllCops:
   TargetRubyVersion: 2.3
+  Style/TrailingWhitespace:
+    Enabled: false
+  Style/SingleLineMethods:
+    Enabled: false
+  Layout/EndOfLine:
+    Enabled: false
+  Style/EndOfLine:
+    EnforcedStyle: lf
