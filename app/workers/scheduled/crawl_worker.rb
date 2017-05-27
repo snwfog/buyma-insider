@@ -4,6 +4,10 @@ require 'sentry-raven'
 class CrawlWorker < Worker::Base
   attr_reader :merchant
   attr_reader :crawl_session
+
+  sidekiq_options queue:     :crawl,
+                  retry:     false,
+                  backtrace: true
   
   def initialize
     super

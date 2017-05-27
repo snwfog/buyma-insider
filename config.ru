@@ -1,5 +1,4 @@
 require 'sidekiq/web'
-require 'sidetiq/web'
 
 require_relative './config/application'
 

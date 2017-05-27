@@ -7,11 +7,11 @@ set httpd
 set onreboot start
 
 check process nginx with pidfile <%= app_dir %>/tmp/pids/nginx.pid
-  group web
+  group www
   start program = "<%= bin_path %>/nginx" with timeout 60 seconds
   stop program = "<%= bin_path %>/nginx -s quit"
 check process unicorn with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
-  group web
+  group www
   start program = "<%= app_dir %>/bin/unicorn -I<%= app_dir %>/app -c<%= app_dir %>/config/unicorn.rb"
   stop program = "kill -QUIT `cat <%= app_dir %>/tmp/pids/unicorn.pid`"
 
@@ -26,7 +26,7 @@ check process redis with pidfile /usr/local/var/run/redis.pid
 
 <% sidekiq.each_with_index do |sidekiq, index| %>
 check process <%= sidekiq %>_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
-  group sidekiq
+  group worker
   start program = ""
   stop program = ""
 <% end %>
