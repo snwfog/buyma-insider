@@ -6,8 +6,7 @@
 # server "example.com", user: "deploy", roles: %w{app db web}, my_property: :my_value
 # server "example.com", user: "deploy", roles: %w{app web}, other_property: :other_value
 # server "db.example.com", user: "deploy", roles: %w{db}
-
-
+server 'retina.local', user: ENV['SSH_USER']
 
 # role-based syntax
 # ==================

@@ -60,6 +60,8 @@ gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
   gem 'capistrano'
+  gem 'capistrano-bundler'
+  gem 'capistrano-rbenv'
   gem 'shotgun',               require: false
   gem 'rubocop',               require: false
   gem 'pry'
