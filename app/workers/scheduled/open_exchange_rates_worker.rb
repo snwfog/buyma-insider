@@ -1,8 +1,6 @@
 require 'money/bank/open_exchange_rates_bank'
 
 class OpenExchangeRatesWorker < Worker::Base
-  recurrence { hourly }
-  
   def perform
     oer        = Money::Bank::OpenExchangeRatesBank.new
     oer.app_id = ENV['OPEN_EXCHANGE_RATES_API']

@@ -22,7 +22,8 @@ module ElasticsearchSync
                       else
                         logger.error { 'Unrecognized model operation callback `%s`' % operation }
                       end
-          ::Elasticsearch::IndexDocumentWorker.perform_async(id, operation)
+          ::Elasticsearch::IndexDocumentWorker.perform_async(article_id: id,
+                                                             operation: operation)
         else
           logger.error { 'Could not find model callback in stacktraces `%s`' % caller }
         end
