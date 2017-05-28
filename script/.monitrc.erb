@@ -1,7 +1,7 @@
 <%
   # You can inline erb variables
-  app_dir  = '/usr/local/www/current/buyma_insider'
-  bin_path = '/usr/local/bin'
+  app_dir = '/usr/local/www/current/buyma_insider'
+  bin_dir = '/usr/local/bin'
   unicorn_workers   = 2 # correspond to workers instance in unicorn
   sidekiq_processes = 1 # number of sidekiq processes
 %>
@@ -17,8 +17,8 @@ set onreboot start
 
 check process nginx with pidfile <%= app_dir %>/tmp/pids/nginx.pid
   group www
-  start program = "<%= bin_path %>/nginx" with timeout 60 seconds
-  stop program = "<%= bin_path %>/nginx -s quit"
+  start program = "<%= bin_dir %>/nginx" with timeout 60 seconds
+  stop program = "<%= bin_dir %>/nginx -s quit"
 
 check process unicorn_master with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
   group www
@@ -34,23 +34,23 @@ check process unicorn_master with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
 
 check process rethinkdb with pidfile <%= app_dir %>/tmp/pids/rethinkdb.pid
   group database
-  start program = "<%= bin_path %>/brew services start rethinkdb" with timeout 60 seconds
-  stop program = "<%= bin_path %>/brew services stop rethinkdb"
+  start program = "<%= bin_dir %>/brew services start rethinkdb" with timeout 60 seconds
+  stop program = "<%= bin_dir %>/brew services stop rethinkdb"
 
 check process redis with pidfile /usr/local/var/run/redis.pid
   group database
-  start program = "<%= bin_path %>/brew services start redis" with timeout 60 seconds
-  stop program = "<%= bin_path %>/brew services stop redis"
+  start program = "<%= bin_dir %>/brew services start redis" with timeout 60 seconds
+  stop program = "<%= bin_dir %>/brew services stop redis"
 
 check process elasticsearch with pidfile /usr/local/var/run/elasticsearch.pid
   group database
-  start program = "<%= bin_path %>/elasticsearch -d --pid /usr/local/var/run/elasticsearch.pid"
+  start program = "<%= bin_dir %>/elasticsearch -d --pid /usr/local/var/run/elasticsearch.pid"
   stop program = "kill -QUIT `cat /usr/local/var/run/elasticsearch.pid`"
 
 <% 1.upto(sidekiq_processes).each do |index| %>
-check process <%= sidekiq %>_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
+check process sidekiq_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
   group worker
   start program = ""
-  stop program = ""
+  stop program = "/usr/bin/kill -TERM `cat <%= app_dir %>/tmp/pids/sidekiq.pid`"
 <% end %>
 

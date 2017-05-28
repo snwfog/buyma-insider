@@ -21,6 +21,7 @@
   could be if needed, just modify Procfile
 - Make sure to set the ENVIRONMENT variable when running elsewhere
 - Make sure that a proper HTTPS certificate is installed (https://gist.github.com/fnichol/867550)
+- `foreman export launchd ./tmp/plist --log /usr/local/var/log`
 
 ### Docker / VirtualBox
 - vboxmanage controlvm default natpf1 rethinkdb,tcp,127.0.0.1,8080,,8080

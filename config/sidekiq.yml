@@ -1,12 +1,12 @@
-pidfile:       ./tmp/pids/sidekiq.pid
-logfile:       ./log/sidekiq.log
-concurrency:   5
-queues:
+:pidfile:       ./tmp/pids/sidekiq.pid
+:logfile:       ./log/sidekiq.log
+:concurrency:   5
+:queues:
   - [critical, 4]
   - [crawl, 2]
   - default
-staging:
-  concurrency: 5
-production:
-  concurrency: 5
+:staging:
+  :concurrency: 5
+:production:
+  :concurrency: 5
 
