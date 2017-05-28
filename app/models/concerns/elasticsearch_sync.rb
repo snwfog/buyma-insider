@@ -4,14 +4,17 @@ module ElasticsearchSync
   def self.included(model_class)
     model_class.class_eval do
       alias_method :to_h, :attributes
-      
+
+      # TODO: What about delete and save, and maybe more operations
       after_create  :index_elasticsearch_document, if: :changed?
       after_update  :index_elasticsearch_document, if: :changed?
       after_destroy :index_elasticsearch_document
       
       def index_elasticsearch_document
-        stack_regexp = %r(/no_brainer/document/callbacks)
+        stack_regexp = %r{/no_brainer/document/callbacks}
         if stack_line = caller.grep(stack_regexp)&.first
+          
+          # TODO: What about delete and save, and maybe more operations
           operation = case stack_line.split.pop
                       when /create/
                         :create

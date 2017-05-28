@@ -1,3 +1,12 @@
+<%
+  # You can inline erb variables
+  app_dir  = '/usr/local/www/current/buyma_insider'
+  bin_path = '/usr/local/bin'
+  unicorn_workers   = 2 # correspond to workers instance in unicorn
+  sidekiq_processes = 1 # number of sidekiq processes
+%>
+
+
 set log syslog
 set daemon 120
 set httpd
@@ -16,7 +25,7 @@ check process unicorn_master with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
   start program = "<%= app_dir %>/bin/unicorn -I<%= app_dir %>/app -c<%= app_dir %>/config/unicorn.rb"
   stop program = "kill -QUIT `cat <%= app_dir %>/tmp/pids/unicorn.pid`"
 
-<% unicorn_worker.each do |worker, index| %>
+<% 1.upto(unicorn_workers).each do |index| %>
   check process unicorn_worker_<%= index %> with pidfile <%= app_dir %>/tmp/pids/unicorn.<%= index %>.pid
   group www
   start program = "/bin/cat /dev/null"
@@ -27,12 +36,18 @@ check process rethinkdb with pidfile <%= app_dir %>/tmp/pids/rethinkdb.pid
   group database
   start program = "<%= bin_path %>/brew services start rethinkdb" with timeout 60 seconds
   stop program = "<%= bin_path %>/brew services stop rethinkdb"
+
 check process redis with pidfile /usr/local/var/run/redis.pid
   group database
   start program = "<%= bin_path %>/brew services start redis" with timeout 60 seconds
   stop program = "<%= bin_path %>/brew services stop redis"
 
-<% sidekiq.each_with_index do |sidekiq, index| %>
+check process elasticsearch with pidfile /usr/local/var/run/elasticsearch.pid
+  group database
+  start program = "<%= bin_path %>/elasticsearch -d --pid /usr/local/var/run/elasticsearch.pid"
+  stop program = "kill -QUIT `cat /usr/local/var/run/elasticsearch.pid`"
+
+<% 1.upto(sidekiq_processes).each do |index| %>
 check process <%= sidekiq %>_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
   group worker
   start program = ""

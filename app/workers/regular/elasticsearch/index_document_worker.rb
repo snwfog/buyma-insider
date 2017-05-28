@@ -10,9 +10,17 @@ module Elasticsearch
       index      = article.merchant.code
       type       = :article
       # TODO: Race condition here, article might be concurrently updated
-      $elasticsearch.index(index: index,
-                           type:  :article,
-                           body:  article.attributes.except(:id))
+      case operation
+      when :create
+      when :update
+        $elasticsearch.index(index: index,
+                             type:  type,
+                             body:  article.attributes.except(:id))
+      when :destroy
+        # Not yet supported
+      else
+        raise 'Unsupported elasticsearch index operation `%s`' % operation
+      end
     end
   end
 end
