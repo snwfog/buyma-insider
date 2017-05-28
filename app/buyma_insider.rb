@@ -7,7 +7,7 @@ module BuymaInsider
   VERSION          = '0.1.0'.freeze
   API_VERSION      = 'api/v1'.freeze
   SPOOF_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.54 Safari/537.36'
-  
+
   class << self
     def configuration
       @configuration ||= begin
@@ -19,14 +19,14 @@ module BuymaInsider
         end
       end
     end
-    
+
     # Return a redis pool for an app area that
     # requires redis connection, settings from redis.yml
     def redis_for(process)
       redis_cfg = configuration.redis[process.to_sym]
-      pool_size = redis_cfg.delete(:pool_size)
+      pool_size = redis_cfg.dup.delete(:pool_size)
       ConnectionPool.new(size: pool_size) do
-        Redis::Store.new(redis_cfg)
+        Redis::Store::Factory.create(redis_cfg)
       end
     end
 
@@ -36,11 +36,11 @@ module BuymaInsider
       end
       Logging.logger[process]
     end
-    
+
     def environment
       ENV['RACK_ENV'] || :development
     end
-    
+
     # copy&pasted from sinatra
     def development?; environment =~ /dev/  end # dev or development
     def staging?;     environment =~ /stag/ end # stag or stage or staging
@@ -61,4 +61,3 @@ require_rel './serializers'
 require_rel './controllers'
 require_rel './channels'
 require_rel './workers'
-

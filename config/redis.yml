@@ -19,6 +19,8 @@ default:          &default
     <<:           *default_process
     db:           3
     marshalling:  false
+    # concurrency + 5 see https://github.com/mperham/sidekiq/issues/117#issuecomment-168971492
+    pool_size:    10
 
 
 #  password:

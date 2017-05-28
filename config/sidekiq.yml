@@ -1,5 +1,6 @@
 :pidfile:       ./tmp/pids/sidekiq.pid
 :logfile:       ./log/sidekiq.log
+:backtrace:     true
 :concurrency:   5
 :queues:
   - [critical, 4]
@@ -9,4 +10,3 @@
   :concurrency: 5
 :production:
   :concurrency: 5
-
