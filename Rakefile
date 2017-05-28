@@ -201,20 +201,24 @@ namespace :es do
     end
     puts 'Seeded elasticsearch in %.02fs' % time
   end
+  
+  desc 'Build config'
+  task :build_configs => [:build_templates, :build_stopwords, :build_char_filter_mappings]
 
   desc 'Build templates'
   task :build_templates do
     puts <<~SQL.yellow
-      Setup the templates for the queries
+      Generating search templates...
     SQL
   
-    dest_dir        = './config/elasticsearch/config/scripts'
+    dest_dir        = './tmp/configs/elasticsearch/config/scripts'
     replace_to_json = /"({{#toJson}}([^{]+){{\/toJson}})"/
+    FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
   
-    FileList['./config/elasticsearch/config/templates/*.yml'].each do |template_file|
+    FileList['./config/elasticsearch/search_templates/*.yml'].each do |template_file|
       template_hash = YAML::load_file(template_file)
       template_name = template_file.pathmap('%n')
-      printf 'Generating template file `%s`...' % template_name
+      printf 'Generating search template `%s`...' % template_name
       File.open('%s/%s_search.mustache' % [dest_dir, template_name], ?w) do |mustache_file|
         json_str = JSON.pretty_generate(template_hash)
         if json_str =~ replace_to_json
@@ -226,8 +230,11 @@ namespace :es do
       end
       puts 'Done!'.green
     end
+    
+    puts 'Copy search templates under /<es_install_location>/config/scripts'.yellow
   end
   
+  # @deprecated Use build template and place under script template folder
   desc 'Register templates'
   task :register_templates do
     puts 'Registering templates'.yellow
@@ -242,16 +249,21 @@ namespace :es do
     end
   end
   
-  desc 'Build filters'
-  task :build_filters do
+  desc 'Build stopword lists'
+  task :build_stopwords do
     puts <<~SQL.yellow
+      Generating stopword lists...
       To setup the wordlists, make sure that the ./config/elasticsearch/config
       folder is properly setup whether the host machine is win or mac
       SELECT * FROM dbo.Test
     SQL
+  
+    dest_dir = './tmp/configs/elasticsearch/config/stopwords'
+    FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
+    
     FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
       filter_name = wl_filename.pathmap('%n')
-      printf 'Generating stopwords file `%s`...' % filter_name
+      printf 'Generating stopwords `%s`...' % filter_name
       word_lists = File
                      .open(wl_filename)
                      .map(&:strip)
@@ -260,21 +272,29 @@ namespace :es do
                      .uniq
                      .sort
     
-      dir = './config/elasticsearch/config/stopwords'
-      File.open('%s/%s.txt' % [dir, filter_name], ?w) do |wordlist_file|
+      File.open('%s/%s.txt' % [dest_dir, filter_name], ?w) do |wordlist_file|
         wordlist_file.puts(word_lists)
       end
-    
-      # File.open("./config/elasticsearch/filters/#{filter_name}_stop_filter.yml", 'w') do |filter_file|
-      #   filter_file.puts('# Generated from `%s` on `%s`' % [wl_filename, Time.now.strftime('%F %H:%M')])
-      #   filter_file.puts(YAML::dump("#{filter_name}_stop_filter" => { 'type'      => 'stop',
-      #                                                                 'stopwords' => word_lists }))
-      # end
       puts 'Done!'.green
     end
+  
+    puts 'Copy stopwords under /<es_install_location>/config/stopwords'.yellow
   end
   
-  desc 'Test'
-  task :test do
+  
+  desc 'Build character filter mappings'
+  task :build_char_filter_mappings do
+    puts 'Generating character filter mappings...'.yellow
+    
+    dest_dir = './tmp/configs/elasticsearch/config/char_filter_mappings'
+    FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
+    
+    FileList['./config/elasticsearch/char_filter_mappings/*.txt'].each do |char_filter_mapping|
+      printf 'Generating char_filter_mapping %s...' % char_filter_mapping
+      FileUtils.cp(char_filter_mapping, dest_dir + '/')
+      puts 'Done!'.green
+    end
+    
+    puts 'Copy character filter mappings under /<es_install_location>/config/char_filter_mappings'.yellow
   end
 end
