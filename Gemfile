@@ -56,7 +56,7 @@ gem 'logging'
 
 # Deployment
 gem 'foreman'
-gem 'unicorn.sh' if RUBY_PLATFORM =~ /darwin/
+gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 group :development do
   gem 'capistrano'
