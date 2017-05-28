@@ -2,8 +2,8 @@ module Elasticsearch
   class IndexDocumentWorker < Worker::Base
     def perform(args)
       # index, type, attributes)
-      article_id = args.fetch(:article_id)
-      operation  = args.fetch(:operation)
+      article_id = args.fetch('article_id')
+      operation  = args.fetch('operation')
       article    = Article
                      .eager_load(:merchant)
                      .find(article_id) # Will raise unless found
@@ -11,12 +11,12 @@ module Elasticsearch
       type       = :article
       # TODO: Race condition here, article might be concurrently updated
       case operation
-      when :create
-      when :update
+      when /create/
+      when /update/
         $elasticsearch.index(index: index,
                              type:  type,
                              body:  article.attributes.except(:id))
-      when :destroy
+      when /destroy/
         # Not yet supported
       else
         raise 'Unsupported elasticsearch index operation `%s`' % operation
