@@ -15,13 +15,10 @@ default:          &default
   message_bus:
     <<:           *default_process
     db:           2
-  sidekiq:
+  sidekiq:        &default_sidekiq
     <<:           *default_process
     db:           3
     marshalling:  false
-    # concurrency + 5 see https://github.com/mperham/sidekiq/issues/117#issuecomment-168971492
-    pool_size:    10
-
 
 #  password:
 #  path:
@@ -37,7 +34,14 @@ test:
 
 staging:
   <<:             *default
+  sidekiq:
+    <<:           *default_sidekiq
+    # concurrency + 5 see https://github.com/mperham/sidekiq/issues/117#issuecomment-168971492
+    pool_size:    10
 
 # Change this to sock on production
 production:
   <<:             *default
+  sidekiq:
+    <<:           *default_sidekiq
+    pool_size:    20

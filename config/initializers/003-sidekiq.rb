@@ -1,7 +1,10 @@
 redis_pool = BuymaInsider.redis_for(:sidekiq)
 
-Sidekiq.configure_server { |cfg| cfg.redis = redis_pool }
+# Client and server share the same pool
+# Make sure that the pool contain enough connection
+# for all workers
 Sidekiq.configure_client { |cfg| cfg.redis = redis_pool }
+Sidekiq.configure_server { |cfg| cfg.redis = redis_pool }
 
 # Sidekiq::Logging.logger = Logging.logger[:Sidekiq]
 if BuymaInsider.development?
