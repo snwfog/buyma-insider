@@ -15,6 +15,7 @@ module Elasticsearch
       when /update/
         $elasticsearch.index(index: index,
                              type:  type,
+                             id:    article.id,
                              body:  article.attributes.except(:id))
       when /destroy/
         # Not yet supported

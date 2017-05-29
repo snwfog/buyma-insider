@@ -1,10 +1,31 @@
 AllCops:
   TargetRubyVersion: 2.3
-  Style/TrailingWhitespace:
-    Enabled: false
-  Style/SingleLineMethods:
-    Enabled: false
-  Layout/EndOfLine:
-    Enabled: false
-  Style/EndOfLine:
-    EnforcedStyle: lf
+  # Include common Ruby source files.
+  Include:
+    - '**/*.gemspec'
+    - '**/*.jb'
+    - '**/*.jbuilder'
+    - '**/*.rake'
+    - '**/*.ru'
+    - '**/*.ruby'
+    - '**/*.spec'
+    - '**/*.thor'
+    - '**/*.watchr'
+    - '**/.irbrc'
+    - '**/.pryrc'
+    - '**/config.ru'
+    - '**/Capfile'
+    - '**/Gemfile'
+    - '**/Guardfile'
+    - '**/Rakefile'
+  Exclude:
+    - 'vendor/**/*'
+# From: https://raw.githubusercontent.com/bbatsov/rubocop/master/config/enabled.yml
+Style/SingleLineMethods:
+  Enabled: false
+Style/EndOfLine:
+  EnforcedStyle: lf
+Layout/EndOfLine:
+  Enabled: false
+Layout/TrailingWhitespace:
+  Enabled: false

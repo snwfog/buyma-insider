@@ -212,7 +212,7 @@ namespace :es do
     SQL
   
     dest_dir        = './tmp/configs/elasticsearch/config/scripts'
-    replace_to_json = /"({{#toJson}}([^{]+){{\/toJson}})"/
+    replace_to_json = %r/"({{#toJson}}([^{]+){{\/toJson}})"/
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
   
     FileList['./config/elasticsearch/search_templates/*.yml'].each do |template_file|

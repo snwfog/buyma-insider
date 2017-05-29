@@ -7,11 +7,11 @@ class ArticleUpdatedWorker < Worker::Base
       return
     end
 
-    Elasticsearch::IndexDocumentWorker.perform_async(article_id: article.id,
+    Elasticsearch::IndexDocumentWorker.perform_async(article_id: article_id,
                                                      operation:  :update)
 
     if article.user_article_watcheds.any?
-      UserArticleWatchedWorker.perform_async(article.id)
+      UserArticleWatchedWorker.perform_async(article_id)
     end
   end
 end

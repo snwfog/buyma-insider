@@ -1,3 +1,19 @@
+<%
+  environment = :development
+%>
+
 cluster.name: elasticsearch_buyma_insider
+# Do not automatically create index
+action.auto_create_index: false
+# Bind to all interface
 path.data: /usr/local/var/elasticsearch/
 path.logs: /usr/local/var/log/elasticsearch/
+
+<% unless environment == /production/ %>
+  network.host: [_local_, _site_]
+#  network.host: takes special values as well...
+#    _[networkInterface]_ Addresses of a network interface, for example _en0_.
+#    _local_ Any loopback addresses on the system, for example 127.0.0.1.
+#    _site_ Any site-local addresses on the system, for example 192.168.0.1.
+#    _global_ Any globally-scoped addresses on the system, for example 8.8.8.8.
+<% end %>

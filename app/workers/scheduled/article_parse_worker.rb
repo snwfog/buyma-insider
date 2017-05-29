@@ -34,7 +34,7 @@ class ArticleParseWorker < Worker::Base
           CrawlHistoryArticle.upsert!(crawl_history: history,
                                       article:       article,
                                       status:        :updated)
-          ArticleUpdatedWorker.perform_async(article.id)
+          ArticleUpdatedWorker.perform_async(article_id)
           history.updated_articles_count += 1
           logger.info { 'Article %s updated...' % article_id }
         else
@@ -42,7 +42,7 @@ class ArticleParseWorker < Worker::Base
           CrawlHistoryArticle.create!(crawl_history: history,
                                       article:       article,
                                       status:        :created)
-          ArticleCreatedWorker.perform_async(article.id)
+          ArticleCreatedWorker.perform_async(article_id)
           history.created_articles_count += 1
           logger.info { 'Article %s created...' % article_id }
         end
