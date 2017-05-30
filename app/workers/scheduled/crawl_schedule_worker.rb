@@ -2,7 +2,6 @@ require 'active_support/core_ext/numeric/time'
 require 'active_support/core_ext/time/calculations'
 
 ##
-#
 # Will take all the merchant crawler,
 # compute the average of the current time they takes
 # to run, then schedule them so they can

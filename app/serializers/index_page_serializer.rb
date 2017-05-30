@@ -7,7 +7,15 @@ class IndexPageSerializer < ActiveModel::Serializer
   
   attributes :id,
              :full_url,
+             :relative_path,
+             :last_synced_at,
              :health
+  
+  def last_synced_at
+    if crawl_history = object.crawl_histories.first
+      crawl_history.created_at
+    end
+  end
   
   def health
     crawl_histories                                    = object.crawl_histories.limit(10)

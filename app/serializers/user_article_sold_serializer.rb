@@ -1,20 +1,24 @@
 class UserArticleSoldSerializer < ActiveModel::Serializer
   belongs_to :user do
-    link :related, proc { "/users/#{object.user_id}" }
     # include_data true
+    link :related, proc {
+      "/#{BuymaInsider::API_VERSION}/users/#{object.user_id}" }
   end
   
   belongs_to :article do
-    link :related, proc { "/articles/#{object.article_id}" }
     include_data true
+    link :related, proc {
+      "/#{BuymaInsider::API_VERSION}/articles/#{object.article_id}" }
   end
   
   belongs_to :exchange_rate do
-    link :related, proc { "/exchange_rates/#{object.exchange_rate_id}" }
+    link :related, proc {
+      "/#{BuymaInsider::API_VERSION}/exchange_rates/#{object.exchange_rate_id}" }
   end
   
   has_many :shipping_services do
-    link :related, proc { "/user_article_solds/#{object.id}/shipping_services"}
+    link :related, proc {
+      "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services"}
   end
   
   attributes :status,

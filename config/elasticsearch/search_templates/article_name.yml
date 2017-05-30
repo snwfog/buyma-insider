@@ -4,11 +4,10 @@ query:
     must:
       match:
         name: '{{article_name_query}}'
-    filter:
-      range:
-        # TODO: This is very limited, probably should change to updated_at
-        created_at:
-          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
+#    filter:
+#      range:
+#        created_at:
+#          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
 #    must_not:
 #      range:
 #        updated_at:

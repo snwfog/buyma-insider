@@ -25,6 +25,7 @@ class StaticController < ApplicationController
   SHORT_UUID_V4_REGEXP = /\A[0-9a-f]{7}\z/i
   # from https://github.com/ghedamat/ember-deploy-demo/blob/master/edd-rails/app/controllers/demo_controller.rb
   get '/(*)' do
+    return 404 if request.accept? 'application/vnd.api+json'
     content_type 'text/html'
     index_key = if BuymaInsider.development?
                   'buyma-insider-client:index:__development__'

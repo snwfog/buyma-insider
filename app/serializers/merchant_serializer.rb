@@ -29,7 +29,7 @@ class MerchantSerializer < ActiveModel::Serializer
   
   attributes :name,
              :total_articles_count,
-             :last_sync_at
+             :last_synced_at
   
   # These methods are here is okay..
   # The question to ask is, do we care about these values on model and backend?
@@ -39,8 +39,8 @@ class MerchantSerializer < ActiveModel::Serializer
     object.articles.count
   end
   
-  def last_sync_at
-    if session = object.crawl_sessions.finished.first
+  def last_synced_at
+    if session = object.crawl_sessions&.finished&.first
       session.finished_at
     end
   end

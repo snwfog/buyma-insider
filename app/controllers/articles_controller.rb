@@ -58,17 +58,16 @@ class ArticlesController < ApplicationController
                                                  article_name_query: q,
                                                  size:               limit,
                                                  from:               [page - 1, 0].min * limit)
-    
-    if results.dig(*%w(hits hits))
-      # WARNING: This method is not sorted wrt to elastic relevancy
+
+    if documents = results.dig(*%w(hits hits))
       json Article
              .eager_load(:price_history)
-             .where(:id.in => results
-                                .dig(*%w(hits hits))
-                                .map { |article| article['_id'] }),
+             .where(:id.in => documents.map { |article| article['_id'] }),
            meta: { current_page: page,
                    total_pages:  results.dig(*%w(hits total)) / limit + 1,
-                   total_count:  results.dig(*%w(hits total)) }
+                   total_count:  results.dig(*%w(hits total)),
+                   scores:       documents.map { |article|
+                     Hash[:article_id, article['_id'], :score, article['_score']] } }
     else
       json []
     end
