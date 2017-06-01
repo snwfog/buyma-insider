@@ -1,21 +1,20 @@
 source 'https://rubygems.org'
 
+gem 'require_all'
+gem 'dotenv',                   require: 'dotenv/load'
+gem 'rack'
+gem 'activesupport',            require: ['active_support',
+                                          'active_support/core_ext/module/delegation']
+gem 'actionpack',               require: ['action_controller/metal/strong_parameters']
+
 gem 'sinatra',                  github: 'sinatra/sinatra', branch: 'master'
 gem 'sinatra-contrib',          require: ['sinatra/json', 'sinatra/cookies']
 gem 'sinatra-param',            github: 'snwfog/sinatra-param', branch: 'master', require: 'sinatra/param'
 gem 'sinatra-cross_origin',     require: 'sinatra/cross_origin'
 
 gem 'active_model_serializers', '~> 0.10.0'
-gem 'sidekiq'
-gem 'sidekiq-cron'
 gem 'nokogiri'
 gem 'rest-client'
-gem 'require_all'
-gem 'rack'
-gem 'activesupport'
-gem 'actionpack',               require: ['action_controller/metal/strong_parameters']
-gem 'dotenv',                   require: 'dotenv/load'
-gem 'connection_pool'
 gem 'hashie'
 
 # Security / Login
@@ -27,6 +26,7 @@ gem 'rethinkdb'
 gem 'nobrainer'
 gem 'redis'
 gem 'redis-activesupport'
+gem 'connection_pool'
 
 # Bus / Messaging
 gem 'message_bus'
@@ -40,6 +40,11 @@ gem 'elasticsearch-dsl'
 
 # Email
 gem 'mail'
+
+# Job
+gem 'sidekiq'
+gem 'sidekiq-cron'
+gem 'sidekiq-unique-jobs' # Experimental
 
 # Tasks
 gem 'rake'

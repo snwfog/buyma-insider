@@ -46,7 +46,7 @@ end
 
 desc 'Fetch a merchant indices and cache the pages'
 task :fetch, [:merchant_id] do |_, args|
-  CrawlWorker.new.perform(args.fetch(:merchant_id))
+  MerchantCrawlWorker.new.perform(args.fetch(:merchant_id))
 end
 
 desc 'Parse article using cached '

@@ -3,8 +3,9 @@ class CrawlHistory
   include NoBrainer::Document::Timestamps
   include CacheableSerializer
 
-  belongs_to :index_page,             index: true
-  belongs_to :crawl_session,          index: true
+  belongs_to :index_page,             index:     true,
+                                      required:  true
+  belongs_to :crawl_session,          index:     true
   has_many   :crawl_history_articles, dependent: :destroy
 
   field :id,                     primary_key: true
@@ -28,6 +29,8 @@ class CrawlHistory
                                  # default:     ->(){{}}
   field :response_code,          type:        Symbol
                                  # in:          Rack::Utils::SYMBOL_TO_STATUS_CODE.keys
+  field :finished_at,            type:        Time,
+                                 index:       true
 
   # field :etag,                   type:        String
   # field :last_modified,          type:        Time
@@ -35,12 +38,12 @@ class CrawlHistory
   #                                in:          [:gzip, :deflate, :none],
   #                                default:     :none
   #
-  field :finished_at,            type:        Time
-
+  
   alias_method :started_at, :created_at
 
-  default_scope    { order_by(created_at: :desc) }
-  scope(:finished) { where(:finished_at.defined => true) }
+  default_scope     { order_by(created_at: :desc) }
+  scope(:finished)  { where(:finished_at.defined => true).order_by(finished_at: :desc) }
+  scope(:completed) { where(status: :completed).order_by(finished_at: :desc) }
 
   validate :presence_of_response_headers_if_completed
   validate :presence_of_response_code_if_completed

@@ -6,17 +6,16 @@ client = Elasticsearch::Client.new
 conn   = r.connect(db: :"buyma_insider_#{BuymaInsider.environment}")
 conn.repl
 
-$es                         = $elasticsearch
-search_template_tester      = Tempfile.create(['search_template_tester', '.yml'], './tmp')
-search_template_tester_path = search_template_tester.path
-search_q                    = -> () { YAML::load_file(search_template_tester_path) }
-
-def search_template(body)
-  $elasticsearch.search_template(index: :_all, type: :article, body: body)
-end
-
-puts 'Tester file `%s`' % search_template_tester_path
-search_template_tester.close
+$es = $elasticsearch
+# def search_with_template(body)
+#   $elasticsearch.search_template(index: :_all, type: :article, body: body)
+# end
+#
+# def get_search_template_tester
+#   search_template_tester = Tempfile.create(['search_template_tester', '.yml'], './tmp')
+#   puts search_template_tester.path
+#   search_q = -> () { YAML::load_file(search_template_tester_path) }
+# end
 
 def get_article
   Article.new({ id:          "abc:#{Faker::Code.ean}",

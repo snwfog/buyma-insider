@@ -1,7 +1,7 @@
 require_relative '../setup'
 
-describe CrawlWorker do
+describe MerchantCrawlWorker do
   it 'should crawl' do
-    CrawlWorker.new.perform(:ovo)
+    MerchantCrawlWorker.new.perform(:ovo)
   end
 end

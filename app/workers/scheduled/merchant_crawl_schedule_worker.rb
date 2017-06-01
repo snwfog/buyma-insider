@@ -7,7 +7,7 @@ require 'active_support/core_ext/time/calculations'
 # to run, then schedule them so they can
 # finish on time, e.g. before 6 a.m.
 #
-class CrawlScheduleWorker < Worker::Base
+class MerchantCrawlScheduleWorker < Worker::Base
   def initialize
     @start_time = Time.now.beginning_of_day.tomorrow + 1.hour
   end
@@ -25,7 +25,7 @@ class CrawlScheduleWorker < Worker::Base
     
     merchant_crawl_time = merchant_crawl_time.sort_by(&:last) # sort_by array's last, which is the elapsed time
     merchant_crawl_time.each do |merchant, _elapsed_time|
-      CrawlWorker.perform_at @start_time, merchant.id
+      MerchantCrawlWorker.perform_at @start_time, merchant.id
       Slackiq.notify webhook_name: :worker,
                      title:        %(#{merchant.name.capitalize} crawler scheduled to start @ #{@start_time.strftime('%F %T')})
       
