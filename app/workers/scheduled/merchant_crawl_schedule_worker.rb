@@ -13,23 +13,10 @@ class MerchantCrawlScheduleWorker < Worker::Base
   end
   
   def perform
-    merchant_crawl_time = Merchant.all.map do |merchant|
-      elapsed_time_s_last_10 = merchant.crawl_sessions.limit(10).map(&:elapsed_time_s)
-      avg_time_s             = if elapsed_time_s_last_10.empty?
-                                 0.0
-                               else
-                                 elapsed_time_s_last_10.inject(0.0, :+) / elapsed_time_s_last_10.size
-                               end
-      [merchant, avg_time_s]
-    end
-    
-    merchant_crawl_time = merchant_crawl_time.sort_by(&:last) # sort_by array's last, which is the elapsed time
-    merchant_crawl_time.each do |merchant, _elapsed_time|
-      MerchantCrawlWorker.perform_at @start_time, merchant.id
-      Slackiq.notify webhook_name: :worker,
-                     title:        %(#{merchant.name.capitalize} crawler scheduled to start @ #{@start_time.strftime('%F %T')})
-      
-      @start_time += 30.minutes
+    Merchant.each do |merchant|
+      MerchantCrawlWorker.perform_async merchant.id
+      Slackiq.notify(webhook_name: :worker,
+                     title:        '%s crawler scheduled' % merchant.name.capitalize)
     end
   end
 end

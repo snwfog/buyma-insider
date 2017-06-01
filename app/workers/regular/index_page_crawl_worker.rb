@@ -28,7 +28,6 @@ class IndexPageCrawlWorker < Worker::Base
     @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
     @last_crawl_history    = @index_page.crawl_histories.finished.first
     @current_crawl_history = CrawlHistory.create!(index_page: @index_page,
-                                                  # crawl_session: crawl_session,
                                                   status:      :inprogress,
                                                   description: "#{@merchant.name} [#{@index_page}]")
     logger.info { 'Started crawling index `%s`' % @current_crawl_history.description }

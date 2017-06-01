@@ -9,8 +9,8 @@ class CrawlHistoriesController < ApplicationController
   
     merchant_id, limit = params.values_at(:merchant_id, :limit)
   
-    json CrawlSession
-           .where(merchant_id: merchant_id)
-           .limit(limit)
+    # json CrawlSession
+    #        .where(merchant_id: merchant_id)
+    #        .limit(limit)
   end
 end

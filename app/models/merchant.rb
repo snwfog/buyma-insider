@@ -12,8 +12,6 @@ class Merchant
 
   has_one :merchant_metadatum, dependent: :restrict
 
-  has_many :crawl_sessions,    dependent: :restrict
-
   has_many :articles,          dependent: :restrict
 
   has_many :index_pages,       dependent: :restrict

@@ -5,7 +5,6 @@ class CrawlHistory
 
   belongs_to :index_page,             index:     true,
                                       required:  true
-  belongs_to :crawl_session,          index:     true
   has_many   :crawl_history_articles, dependent: :destroy
 
   field :id,                     primary_key: true

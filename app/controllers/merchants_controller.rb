@@ -37,13 +37,6 @@ class MerchantsController < ApplicationController
   get '/:merchant_id' do
     json @merchant
   end
-
-  get '/:merchant_id/crawl_sessions' do
-    json @merchant
-           .crawl_sessions
-           .limit(@limit)
-           .finished
-  end
   
   get '/:merchant_id/articles' do
     json @merchant

@@ -3,7 +3,6 @@ require 'sentry-raven'
 
 class MerchantCrawlWorker < Worker::Base
   attr_reader :merchant
-  attr_reader :crawl_session
   # sidekiq_options queue:     :crawl,
   #                 retry:     false,
   #                 backtrace: true
@@ -11,7 +10,6 @@ class MerchantCrawlWorker < Worker::Base
     @merchant           = Merchant.find!(merchant_id)
     @merchant_cache_dir = "./tmp/cache/crawl/#{merchant.id}"
     FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
-    @crawl_session = CrawlSession.create!(merchant: merchant)
     
     log_start
     @merchant.index_pages.each do |index_page|
@@ -29,26 +27,16 @@ class MerchantCrawlWorker < Worker::Base
   
   end
   
-  def total_elapsed_time
-    crawl_session.elapsed_time_s
-  end
-  
-  def stats
-    crawl_session.crawl_histories.group_by(&:completed?)
-  end
-  
   def log_start
-    logger.info { 'Start crawling %s...' % merchant.name }
-    Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.name} crawl started..."
+    logger.info { 'Start crawling %s...' % @merchant.name }
+    Slackiq.notify(webhook_name: :worker,
+                   title:        "#{@merchant.name} crawl started...")
   end
   
   def log_end
-    logger.info { 'Finished crawling %s...' % merchant.name }
-    Slackiq.notify webhook_name: :worker,
-                   title:        "#{merchant.name} crawl finished in #{'%.02f' % (total_elapsed_time / 60)}m.",
-                   success:      stats.fetch(true, []).count,
-                   failed:       stats.fetch(false, []).count
+    logger.info { 'Finished crawling %s...' % @merchant.name }
+    Slackiq.notify(webhook_name: :worker,
+                   title:        "#{@merchant.name} crawl finished in #{'%.02f' % (total_elapsed_time / 60)}m.")
   end
 
 end

@@ -7,10 +7,6 @@ class MerchantSerializer < ActiveModel::Serializer
     link :related, proc { 'articles' }
   end
   
-  has_many :crawl_sessions do
-    link :related, proc { 'crawl_sessions' }
-  end
-  
   has_many :index_pages do
     include_data(true)
   end
@@ -37,11 +33,5 @@ class MerchantSerializer < ActiveModel::Serializer
   # If its used for business logic, then should go to the model
   def total_articles_count
     object.articles.count
-  end
-  
-  def last_synced_at
-    if session = object.crawl_sessions&.finished&.first
-      session.finished_at
-    end
   end
 end

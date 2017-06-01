@@ -1,7 +1,7 @@
 class ArticleParseWorker < Worker::Base
   def perform(crawl_history_id)
     history        = CrawlHistory.find!(crawl_history_id)
-    merchant       = history.crawl_session.merchant
+    merchant       = history.index_page.merchant
     cache_filename = history.index_page.cache_filename
     cache_dir      = "./tmp/cache/crawl/#{merchant.id}"
     cache_filepath = '%s/%s' % [cache_dir, cache_filename]
