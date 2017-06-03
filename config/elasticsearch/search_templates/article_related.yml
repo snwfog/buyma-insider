@@ -4,10 +4,10 @@ query:
     must:
       match:
         name: '{{article_name_query}}'
-    filter:
-      range:
-        created_at:
-          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
+#    filter:
+#      range:
+#        created_at:
+#          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
     must_not:
       ids:
         values: '{{#toJson}}excluded_article_ids{{/toJson}}'

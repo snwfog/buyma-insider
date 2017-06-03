@@ -87,13 +87,4 @@ class MerchantsController < ApplicationController
       json @merchant.articles.where(:id.in => results.hits.hits.map(&:_id))
     end
   end
-  
-  post '/:merchant_id/index_pages/:index_page_id/_refresh' do
-    param :index_page_id, String,  required:  true
-    param :refresh,       Boolean
-    
-    if index_page = IndexPage.find(params[:index_page_id])
-      
-    end
-  end
 end

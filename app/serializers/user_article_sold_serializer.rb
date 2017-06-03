@@ -12,8 +12,9 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
   end
   
   belongs_to :exchange_rate do
-    link :related, proc {
-      "/#{BuymaInsider::API_VERSION}/exchange_rates/#{object.exchange_rate_id}" }
+    # link :related, proc {
+    #   "/#{BuymaInsider::API_VERSION}/exchange_rates/#{object.exchange_rate_id}" }
+    include_data(true)
   end
   
   has_many :shipping_services do

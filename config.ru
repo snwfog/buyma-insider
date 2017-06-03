@@ -22,9 +22,8 @@ map_controller('/merchant_metadata')
 map_controller('/articles')
 map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
-map_controller('/crawl_sessions')
+map_controller('/index_pages')
 map_controller('/exchange_rates')
-
 
 if BuymaInsider.development?
   map('/sidekiq') { run Sidekiq::Web }

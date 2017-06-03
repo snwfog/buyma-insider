@@ -1,4 +1,7 @@
 class IndexPageCrawlWorker < Worker::Base
+  sidekiq_options unique:                :until_and_while_executing,
+                  log_duplicate_payload: true
+  
   attr_reader :standard_headers
   attr_reader :index_page
   attr_reader :index_page_cache_path
@@ -18,7 +21,7 @@ class IndexPageCrawlWorker < Worker::Base
   
   def perform(args)
     index_page_id       = args.fetch('index_page_id')
-    is_lazy             = args.fetch('lazy', true)
+    is_lazy             = !args.fetch('no_cache', false)
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @merchant           = @index_page.merchant
     @merchant_cache_dir = "./tmp/cache/crawl/#{@merchant.id}"
@@ -27,7 +30,7 @@ class IndexPageCrawlWorker < Worker::Base
     
     @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
     @last_crawl_history    = @index_page.crawl_histories.finished.first
-    @current_crawl_history = CrawlHistory.create!(index_page: @index_page,
+    @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
                                                   status:      :inprogress,
                                                   description: "#{@merchant.name} [#{@index_page}]")
     logger.info { 'Started crawling index `%s`' % @current_crawl_history.description }

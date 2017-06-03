@@ -34,4 +34,8 @@ class MerchantSerializer < ActiveModel::Serializer
   def total_articles_count
     object.articles.count
   end
+  
+  def last_synced_at
+    nil
+  end
 end

@@ -2,18 +2,18 @@ module AuthenticationHelper
   SESSION_EXPIRE_TIME = 1.week # TODO: SiteSetting
   SESSION_KEY         = '_t'.freeze
   CURRENT_USER_KEY    = '_CURRENT_USER_KEY'.freeze
-  
+
   UserNotFound     = Class.new(RuntimeError)
   InvalidPassword  = Class.new(RuntimeError)
   InvalidSession   = Class.new(RuntimeError)
   NotAuthenticated = Class.new(RuntimeError)
-  
+
   def ensure_user_authenticated!
     unless authenticated?
       error(401, { error: 'session.unauthenticated' }.to_json)
     end
   end
-  
+
   def authenticated?
     !!current_user
   end
@@ -25,7 +25,7 @@ module AuthenticationHelper
       session_cached_user
     end
   end
-  
+
   def current_user?
     current_user
   rescue Exception => ex
@@ -39,13 +39,13 @@ module AuthenticationHelper
     hashed_token   = hash_token(unhashed_token)
     cookies.set(SESSION_KEY, cookie_hash(unhashed_token))
     session_cache do |redis|
-      redis.set(hashed_token, user,
+      redis.set(hashed_token,
+                user,
                 expires_in: SESSION_EXPIRE_TIME.to_i)
     end
-  
-    UserAuthToken
-      .create!(user:  user,
-               token: hashed_token)
+
+    UserAuthToken.create!(user:  user,
+                          token: hashed_token)
   end
 
   def destroy_session!
@@ -55,7 +55,7 @@ module AuthenticationHelper
       redis.del(hash_token(unhashed_token))
     end
   end
-  
+
   private
 
   SECRET = SecureRandom.hex(64) # TODO: GlobalSettings
@@ -75,7 +75,7 @@ module AuthenticationHelper
       user
     end
   end
-  
+
   def session_cache
     $redis.with do |redis_store|
       redis_store.with_namespace(:session) do |redis|
@@ -83,7 +83,7 @@ module AuthenticationHelper
       end
     end
   end
-  
+
   def cookie_hash(value)
     { value:    value,
       httponly: true,
@@ -92,6 +92,3 @@ module AuthenticationHelper
       secure:   false }
   end
 end
-
-
-

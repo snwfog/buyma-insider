@@ -10,18 +10,15 @@ class UserArticleWatchedsController < ApplicationController
   get '/:id/article_notification_criteria' do
     json @ua_watched.article_notification_criteria
   end
-  
+
   patch '/:id' do
     request.body.rewind
-    payload = JSON.parse(request.body.read)
-    ua_watched_json = as_model(payload)
-    if current_user.id != ua_watched_json[:user_id]
-      raise 'Only current user can update watched article'
-    else
-      @ua_watched.update!(ua_watched_json)
-      status :ok
-      json @ua_watched
-    end
+    payload                    = JSON.parse(request.body.read)
+    ua_watched_json            = as_model(payload)
+    ua_watched_json['user_id'] = current_user.id
+    @ua_watched.update!(ua_watched_json)
+    status :ok
+    json @ua_watched
   end
   
   get '/:id' do

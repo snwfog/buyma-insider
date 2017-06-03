@@ -129,10 +129,10 @@ class ArticlesController < ApplicationController
   end
   
   post '/:id/watch' do
-    wa_watched = current_user
-                   .watch!(@article, DiscountPercentArticleNotificationCriterium
+    default_notification_criterium = DiscountPercentArticleNotificationCriterium
                                        .where(threshold_pct: 10)
-                                       .first_or_create)
+                                       .first_or_create
+    wa_watched = current_user.watch!(@article, default_notification_criterium)
     status :created
     json wa_watched
   end

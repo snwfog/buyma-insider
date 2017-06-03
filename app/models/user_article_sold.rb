@@ -71,7 +71,7 @@ class UserArticleSold
   end
   
   def upsert_user_article_sold_shipping_services
-    if shipping_service_ids.any?
+    if shipping_service_ids&.any?
       user_article_sold_shipping_services.destroy_all
       ShippingService.where(:id.in => shipping_service_ids).each do |shipping_service|
         UserArticleSoldShippingService.upsert!(user_article_sold: self,
