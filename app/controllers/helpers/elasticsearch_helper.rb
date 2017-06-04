@@ -1,5 +1,5 @@
 module ElasticsearchHelper
-  def elasticsearch_search_with_template(template_name, type = :article, **params)
+  def elasticsearch_search_by_template(template_name, type = :article, **params)
     $elasticsearch.with do |conn|
       conn.search_template(index: :_all,
                            type:  type,

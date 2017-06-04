@@ -178,36 +178,46 @@ namespace :es do
   end
   
   desc 'Create index'
-  task :setup do
-    dir                  = './config/elasticsearch'
+  task :setup => [:drop] do
     settings             = {}
-    settings['settings'] = YAML.load_file('%s/settings.index.yml' % dir)
-    settings['settings'].merge!(YAML.load_file('%s/settings.analysis.yml' % dir))
-    settings.merge!(YAML.load_file('%s/mappings.yml' % dir))
+    settings['settings'] = YAML.load_file('./config/elasticsearch/settings.index.yml')
+    settings['settings'].merge!(YAML.load_file('./config/elasticsearch/settings.analysis.yml'))
+    mappings     = FileList['./config/elasticsearch/mappings/**/*.yml']
     merchant_ids = YAML.load_file('./config/merchant.yml').values.map { |m| m['id'] }
-    # pp settings
-    merchant_ids.each do |m_id|
-      puts 'Creating index for `%s`'.yellow % m_id
-      $elasticsearch.indices.create index: m_id,
+    merchant_ids.each do |merchant_id|
+      puts 'Creating index for `%s`'.yellow % merchant_id
+      $elasticsearch.indices.create index: merchant_id,
                                     body:  settings
+      mappings.each do |mapping_file|
+        puts '+- Creating index for `%s`'.yellow % merchant_id
+        mapping_setting = YAML.load_file(mapping_file)
+        type            = mapping_file.pathmap('%n')
+        $elasticsearch.indices.put_mapping index: merchant_id,
+                                           type:  type,
+                                           body:  { "#{type}": mapping_setting }
+      end
     end
   end
   
   desc 'Index existing documents'
   task :seed do
     time = Benchmark.realtime do
-      Article.each do |article|
+      Article.eager_load(:price_history).each do |article|
+        price_history      = article.price_history.attributes.except(:article_id,
+                                                                     :min_price,
+                                                                     :max_price)
+        article_attributes = article.attributes.except(:id).merge(price_history: price_history)
         $elasticsearch.index index: article.merchant_id,
                              type:  :article,
                              id:    article.id,
-                             body:  article.attributes.except(:id)
+                             body:  article_attributes
       end
     end
     puts 'Seeded elasticsearch in %.02fs' % time
   end
   
   desc 'Build config'
-  task :build_configs => [:build_templates, :build_stopwords, :build_char_filter_mappings]
+  task :build_all => [:build_templates, :build_stopwords, :build_char_filter_mappings]
 
   desc 'Build templates'
   task :build_templates do

@@ -1,3 +1,4 @@
+# @deprecated, use search_templates/*.yml
 mappings:
   _default_:
     dynamic:                 strict

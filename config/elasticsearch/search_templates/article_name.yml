@@ -12,6 +12,7 @@ query:
 #      range:
 #        updated_at:
 #          lt: now+2y
+sort: '{{#toJson}}order_by{{/toJson}}'
 from: '{{from}}{{^from}}0{{/from}}'
 size: '{{size}}{{^size}}20{{/size}}'
 #params:

@@ -50,14 +50,30 @@ class ArticlesController < ApplicationController
                                  default:   1
     param :limit,       Integer, in:        (1..20),
                                  default:   20
+    param :order,       String,  transform: :downcase,
+                        in:      ['name:asc',
+                                  'name:desc',
+                                  'price:asc',
+                                  'price:desc',
+                                  'created_at:asc',
+                                  'created_at:desc',
+                                  'name',
+                                  'price',
+                                  'created_at']
 
-    q, page, limit = params.values_at(*%w(q page limit))
+    q, page, limit, order = params.values_at(*%w(q page limit order))
 
-    results = elasticsearch_search_with_template(:article_name_search,
-                                                 :article,
-                                                 article_name_query: q,
-                                                 size:               limit,
-                                                 from:               [page - 1, 0].min * limit)
+    order_by = if order
+                 order_key, order_direction = order.split(':')
+                 order_direction            ||= 'asc'
+                 Hash[order_key, order_direction]
+               end
+    results  = elasticsearch_search_by_template(:article_name_search,
+                                                :article,
+                                                article_name_query: q,
+                                                order_by:           order_by || [],
+                                                size:               limit,
+                                                from:               [page - 1, 0].min * limit)
 
     if documents = results.dig(*%w(hits hits))
       json Article
@@ -112,10 +128,10 @@ class ArticlesController < ApplicationController
   end
 
   get '/:id/article_relateds' do
-    results = elasticsearch_search_with_template(:article_related_search, :article,
-                                                 article_name_query:   @article.name,
-                                                 excluded_article_ids: [@article.id],
-                                                 size:                 6)
+    results = elasticsearch_search_by_template(:article_related_search, :article,
+                                               article_name_query:   @article.name,
+                                               excluded_article_ids: [@article.id],
+                                               size:                 6)
     if results.dig(*%w(hits hits))
       # WARNING: This method is not sorted wrt to elastic relevancy
       json Article
