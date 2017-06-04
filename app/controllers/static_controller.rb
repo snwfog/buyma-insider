@@ -2,30 +2,32 @@ class StaticController < ApplicationController
   post '/login' do
     redirect_to_index
   end
-  
+
   post '/logout' do
     destroy_session!
     redirect_to_index
   end
-  
+
   get '/bootstrap' do
     @bootstrap ||= {
       server_version:                BuymaInsider::VERSION,
       shipping_services:             to_hash(ShippingService.all),
       article_notification_criteria: to_hash(ArticleNotificationCriterium.all)
     }
-    
+
     if user = current_user?
       @bootstrap['current_user'] = to_hash(user)
     end
-    
+
     @bootstrap.to_json
   end
-  
+
   SHORT_UUID_V4_REGEXP = /\A[0-9a-f]{7}\z/i
   # from https://github.com/ghedamat/ember-deploy-demo/blob/master/edd-rails/app/controllers/demo_controller.rb
   get '/(*)' do
-    return 404 if request.accept? 'application/vnd.api+json'
+    # requested_json = request.accept? 'application/vnd.api+json'
+    requested_html = request.accept? 'text/html'
+    return 404 unless requested_html
     content_type 'text/html'
     index_key = if BuymaInsider.development?
                   'buyma-insider-client:index:__development__'
@@ -37,14 +39,14 @@ class StaticController < ApplicationController
                     "buyma-insider-client:index:#{current_version}"
                   end
                 end
-    
+
     raise 'Index key not found' unless index_key
     index = $redis.with { |store| store.get(index_key, raw: true) }
     index
   end
-  
+
   private
-  
+
   def fetch_revision
     rev = params[:revision]
     if rev =~ SHORT_UUID_V4_REGEXP
