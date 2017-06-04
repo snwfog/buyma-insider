@@ -145,6 +145,7 @@ class ArticlesController < ApplicationController
   end
   
   post '/:id/watch' do
+    ensure_user_authenticated!
     default_notification_criterium = DiscountPercentArticleNotificationCriterium
                                        .where(threshold_pct: 10)
                                        .first_or_create
@@ -154,6 +155,7 @@ class ArticlesController < ApplicationController
   end
   
   post '/:id/sell' do
+    ensure_user_authenticated!
     request.body.rewind
     payload      = JSON.parse(request.body.read)
     ua_sold_json = as_model(payload)
@@ -170,11 +172,13 @@ class ArticlesController < ApplicationController
   end
   
   delete '/:id/watch' do
+    ensure_user_authenticated!
     current_user.destroy_user_article_watched!(@article)
     status :no_content
   end
 
   delete '/:id/sell' do
+    ensure_user_authenticated!
     current_user.destroy_user_article_sold!(@article)
     status :no_content
   end

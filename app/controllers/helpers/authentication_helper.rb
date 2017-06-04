@@ -16,6 +16,8 @@ module AuthenticationHelper
 
   def authenticated?
     !!current_user
+  rescue InvalidSession, UserNotFound
+    false
   end
 
   def current_user
