@@ -36,7 +36,7 @@ class ArticleParseWorker < Worker::Base
                                       status:        :updated)
           ArticleUpdatedWorker.perform_async(article_id)
           history.updated_articles_count += 1
-          logger.info { 'Article %s updated...' % article_id }
+          logger.info { 'Updated %s ...' % article_id }
         else
           article = Article.create!(attrs.merge(merchant: merchant))
           CrawlHistoryArticle.create!(crawl_history: history,
@@ -44,7 +44,7 @@ class ArticleParseWorker < Worker::Base
                                       status:        :created)
           ArticleCreatedWorker.perform_async(article_id)
           history.created_articles_count += 1
-          logger.info { 'Article %s created...' % article_id }
+          logger.info { 'Created %s ...' % article_id }
         end
         
         article.update_price_history!
@@ -55,13 +55,13 @@ class ArticleParseWorker < Worker::Base
         logger.warn { 'Failed creating article: %s' % ex.message }
         logger.warn { attrs }
         logger.debug { it.to_html }
-      else
       ensure
         history.save
       end
     end
-    
-    logger.info { 'Finished parsing `%s`' % index_summary }
+
+    logger.info { 'Finished parsing %s' % index_summary }
+    history
   end
   
   private

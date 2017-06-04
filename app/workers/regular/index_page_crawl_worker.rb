@@ -26,9 +26,10 @@ class IndexPageCrawlWorker < Worker::Base
     @merchant           = @index_page.merchant
     @merchant_cache_dir = "./tmp/cache/crawl/#{@merchant.id}"
     FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
+    @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
+    
     @standard_headers.merge(lazy_headers) if is_lazy
     
-    @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
     @last_crawl_history    = @index_page.crawl_histories.finished.first
     @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
                                                   status:      :inprogress,
@@ -57,6 +58,8 @@ class IndexPageCrawlWorker < Worker::Base
     logger.error { ex }
     logger.error { ex.http_headers } if ex.is_a? RestClient::Exception
     logger.error { ex.backtrace }
+  else
+    @current_crawl_history
   ensure
     @current_crawl_history.finished_at = Time.now
     @current_crawl_history.save!
