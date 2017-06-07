@@ -1,13 +1,13 @@
 class IndexPageCrawlWorker < Worker::Base
   sidekiq_options unique:                :until_and_while_executing,
                   log_duplicate_payload: true
-  
+
   attr_reader :standard_headers
   attr_reader :index_page
   attr_reader :index_page_cache_path
   attr_reader :merchant
   attr_reader :merchant_cache_dir
-  
+
   def initialize
     @standard_headers = {
       x_forwarded_for:  Faker::Internet.ip_v4_address,
@@ -18,7 +18,7 @@ class IndexPageCrawlWorker < Worker::Base
       pragma:           'no-cache'
     }
   end
-  
+
   def perform(args)
     index_page_id       = args.fetch('index_page_id')
     is_lazy             = !args.fetch('no_cache', false)
@@ -27,9 +27,9 @@ class IndexPageCrawlWorker < Worker::Base
     @merchant_cache_dir = "./tmp/cache/crawl/#{@merchant.id}"
     FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
     @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
-    
+
     @standard_headers.merge(lazy_headers) if is_lazy
-    
+
     @last_crawl_history    = @index_page.crawl_histories.finished.first
     @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
                                                   status:      :inprogress,
@@ -49,7 +49,7 @@ class IndexPageCrawlWorker < Worker::Base
     @current_crawl_history.update!(traffic_size_kb:  0.0,
                                    response_headers: @last_crawl_history.response_headers,
                                    response_code:    :not_modified)
-    
+
     logger.debug { 'Index has not been modified `%s`' % @index_page.full_url }
     FileUtils::touch(@index_page_cache_path)
   rescue Exception => ex
@@ -63,12 +63,12 @@ class IndexPageCrawlWorker < Worker::Base
   ensure
     @current_crawl_history.finished_at = Time.now
     @current_crawl_history.save!
-    logger.info { 'Finished crawling  `%s`' % @current_crawl_history.description }
+    logger.info { 'Finished crawling `%s`' % @current_crawl_history.description }
     logger.info { JSON.pretty_generate(@current_crawl_history.attributes) }
   end
-  
+
   private
-  
+
   def lazy_headers
     if @last_crawl_history&.etag and not @last_crawl_history&.weak?
       logger.info { 'Strong etag `%s` exists' % @index_page_cache_path.etag }
