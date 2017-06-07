@@ -63,6 +63,7 @@ class ApplicationController < Sinatra::Base
 
   error [UserNotFound, InvalidPassword, InvalidSession] do
     # { error: 'login.invalid_username_or_password' }
+    # TODO: Unauthorized...
     status :bad_request
   end
   

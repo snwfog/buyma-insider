@@ -6,9 +6,12 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
   end
   
   belongs_to :article do
+    # IMPT:
+    # Having include_data and link cause
+    # Ember to rerender, and it seems to confuse ember
     include_data true
-    link :related, proc {
-      "/#{BuymaInsider::API_VERSION}/articles/#{object.article_id}" }
+    # link :related, proc {
+    #   "/#{BuymaInsider::API_VERSION}/articles/#{object.article_id}" }
   end
   
   belongs_to :exchange_rate do

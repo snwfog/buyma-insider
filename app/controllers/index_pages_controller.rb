@@ -11,8 +11,13 @@ class IndexPagesController < ApplicationController
     if IndexPageCrawlWorker.perform_async(index_page_id: @index_page.id,
                                           no_cache:      true)
       status :created
+      json @index_page.reload
     else
       status :conflict and halt
     end
+  end
+  
+  get '/:id' do
+    json @index_page
   end
 end
