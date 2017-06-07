@@ -1,6 +1,6 @@
 class ArticlesController < ApplicationController
   options '/**' do; end
-  
+
   # Do not do this filter if routes start with _
   # before '/(?<!_):id(/**)?' do
   before '/:id(/**)?' do
@@ -8,21 +8,21 @@ class ArticlesController < ApplicationController
     param :id, String, required:  true,
                        transform: :downcase,
                        format:    /[a-z]{3}:[a-z0-9]+/
-    
+
     @article = Article.find?(params[:id])
   end
-  
+
   before '/:id/(watched|sold)', http_methods: [:post, :delete] do
     ensure_user_authenticated!
   end
-  
+
   get '/' do
     param :extension, String, in:        %w(_autocomplete _search),
                               transform: :downcase
     if extension = params[:extension]
       return call env.merge('PATH_INFO' => "/#{extension}")
     end
-  
+
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
                                  format:    /[a-z]{3}/
@@ -31,7 +31,7 @@ class ArticlesController < ApplicationController
     param :limit,       Integer, in:        (1..20),
                                  default:   20
     param :filter,      String
-    
+
     merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
     merchant = Merchant.find!(merchant_id)
     json merchant
@@ -143,7 +143,7 @@ class ArticlesController < ApplicationController
       json []
     end
   end
-  
+
   post '/:id/watch' do
     ensure_user_authenticated!
     default_notification_criterium = DiscountPercentArticleNotificationCriterium
@@ -153,7 +153,7 @@ class ArticlesController < ApplicationController
     status :created
     json wa_watched
   end
-  
+
   post '/:id/sell' do
     ensure_user_authenticated!
     request.body.rewind
@@ -170,7 +170,7 @@ class ArticlesController < ApplicationController
       json ua_sold
     end
   end
-  
+
   delete '/:id/watch' do
     ensure_user_authenticated!
     current_user.destroy_user_article_watched!(@article)
