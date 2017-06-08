@@ -5,10 +5,11 @@ require 'capistrano/setup'
 # Include default deployment tasks
 require 'capistrano/deploy'
 require 'capistrano/scm/git'
+
 install_plugin Capistrano::SCM::Git
 
 # Ensure rbenv specified ruby is used
-require 'capistrano/rbenv'
+require 'capistrano/rbenv' unless ENV['SKIP_RBENV']
 
 # Ensure that we can install bundled gems
 require 'capistrano/bundler'
