@@ -1,6 +1,9 @@
-class ArticleParseWorker < Worker::Base
-  def perform(crawl_history_id)
-    history        = CrawlHistory.find!(crawl_history_id)
+class IndexPageParseWorker < Worker::Base
+  def perform(index_page_id)
+    history        = CrawlHistory
+                       .where(index_page_id: index_page_id)
+                       .where(status: :completed)
+                       .first
     merchant       = history.index_page.merchant
     cache_filename = history.index_page.cache_filename
     cache_dir      = "./tmp/cache/crawl/#{merchant.id}"
@@ -59,7 +62,7 @@ class ArticleParseWorker < Worker::Base
         history.save
       end
     end
-
+    
     logger.info { 'Finished parsing %s' % index_summary }
     history
   end

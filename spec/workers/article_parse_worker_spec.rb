@@ -1,8 +1,8 @@
 require_relative '../setup'
 
-describe ArticleParseWorker do
+describe IndexPageParseWorker do
   it 'should parse and create articles' do
     crawl_history = CrawlHistory.where(status: :completed).first
-    ArticleParseWorker.new.perform(crawl_history.id)
+    IndexPageParseWorker.new.perform(crawl_history.id)
   end
 end
