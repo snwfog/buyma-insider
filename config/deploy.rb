@@ -9,7 +9,7 @@ set :repo_url, 'git@github.com:snwfog/buyma_insider.git'
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
-set :deploy_to, '/usr/local/var/www/buyma_insider'
+# set :deploy_to, '/usr/local/var/www/buyma_insider'
 
 # rbenv
 # set :rbenv_type, :user

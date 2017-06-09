@@ -1,10 +1,12 @@
+set :deploy_to, '/var/www/buyma_insider'
+
 server ENV['TESTING_SSH_SERVER'],
        user:        ENV['TESTING_SSH_USER'],
        roles:       :all,
        ssh_options: {
-         keys:          [ENV['TESTING_SSH_IDENTITY_FILE_PATH']],
-         forward_agent: false,
-         auth_methods:  %w(publickey password)
+         # keys:          [ENV['TESTING_SSH_IDENTITY_FILE_PATH']],
+         forward_agent: true,
+         # auth_methods:  %w(publickey)
        }
 
 # server-based syntax

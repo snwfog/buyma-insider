@@ -19,7 +19,13 @@ namespace :linux do
       execute 'apt-get', '-y', 'upgrade'
       execute 'apt-get', '-y', 'update'
       execute 'apt-get', '-y', 'install', 'build-essential'
-      execute 'apt-get', '-y', 'install', 'git-core'
+      execute 'apt-get', '-y', 'install', 'git-core', 'curl',
+                                          'zlib1g-dev', 'build-essential',
+                                          'libssl-dev', 'libreadline-dev',
+                                          'libyaml-dev', 'libsqlite3-dev',
+                                          'libxml2-dev', 'libxslt1-dev',
+                                          'libcurl4-openssl-dev',
+                                          'libffi-dev'
     end
   end
   
