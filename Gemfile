@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'bundler'
 gem 'require_all'
 gem 'dotenv',                   require: 'dotenv/load'
 gem 'rack'
