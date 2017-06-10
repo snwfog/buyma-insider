@@ -1,7 +1,7 @@
 namespace :linux do
   desc 'Provision linux remote server'
   task provision: [:distro_upgrade, :setup_rbenv, :setup_ruby_build]
-  
+
   desc 'Verify os'
   task :verify_os do
     on roles(:all) do |host|
@@ -11,15 +11,15 @@ namespace :linux do
       end
     end
   end
-  
+
   desc 'Distro upgrade'
   task distro_upgrade: [:verify_os] do
     on roles(:all) do
-      execute 'apt-get', '-y', 'dist-upgrade'
-      execute 'apt-get', '-y', 'upgrade'
-      execute 'apt-get', '-y', 'update'
-      execute 'apt-get', '-y', 'install', 'build-essential'
-      execute 'apt-get', '-y', 'install', 'git-core', 'curl',
+      execute 'sudo', 'apt-get', '-y', 'dist-upgrade'
+      execute 'sudo', 'apt-get', '-y', 'upgrade'
+      execute 'sudo', 'apt-get', '-y', 'update'
+      execute 'sudo', 'apt-get', '-y', 'install', 'build-essential'
+      execute 'sudo', 'apt-get', '-y', 'install', 'git-core', 'curl',
                                           'zlib1g-dev', 'build-essential',
                                           'libssl-dev', 'libreadline-dev',
                                           'libyaml-dev', 'libsqlite3-dev',
@@ -28,16 +28,19 @@ namespace :linux do
                                           'libffi-dev'
     end
   end
-  
+
   desc 'Setup rbenv'
   task setup_rbenv: [:verify_os] do
     on roles(:all) do
       within('~') do
         execute %Q(git clone https://github.com/rbenv/rbenv.git ~/.rbenv)
+        execute %Q(echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> ~/.bashrc)
+        execute %Q(echo 'eval "$(rbenv init -)"' >> ~/.bashrc)
+        execute %Q(echo "gem: --no-document" > ~/.gemrc)
       end
     end
   end
-  
+
   desc 'Setup ruby-build'
   task setup_ruby_build: [:verify_os] do
     on roles(:all) do

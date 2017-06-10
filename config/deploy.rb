@@ -16,7 +16,7 @@ set :repo_url, 'git@github.com:snwfog/buyma_insider.git'
 set :rbenv_ruby, '2.3.1'
 set :rbenv_ruby, File.read('.ruby-version').strip
 # set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
-# set :rbenv_map_bins, %w{rake gem bundle ruby rails}
+# set :rbenv_map_bins, %w{rake gem bundle ruby}
 # set :rbenv_roles, :all # default value
 
 # bundler
@@ -28,6 +28,7 @@ set :rbenv_ruby, File.read('.ruby-version').strip
 # set :bundle_path, -> { shared_path.join('bundle') }             # this is default. set it to nil for skipping the --path flag.
 # set :bundle_without, %w{development test}.join(' ')             # this is default
 # set :bundle_flags, '--deployment --quiet'                       # this is default
+set :bundle_flags, '--quiet'                       # this is default
 # set :bundle_env_variables, {}                                   # this is default
 # set :bundle_clean_options, ""                                   # this is default. Use "--dry-run" if you just want to know what gems would be deleted, without actually deleting them
 
