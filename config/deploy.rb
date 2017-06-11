@@ -73,6 +73,7 @@ set :ssh_options, { forward_agent: true,
 
 before 'deploy:check:linked_files', 'upload_linked_files'
 after  'deploy:published',          'setup_erb_config'
+after  'deploy:published',          'download_erb_config'
 
 desc 'Generate and upload template configs'
 task :setup_erb_config do
@@ -89,5 +90,12 @@ task :upload_linked_files do
     FileList[*fetch(:app_linked_files)].each do |file|
       upload!(file, "#{shared_path}/config")
     end
+  end
+end
+
+desc 'Download generated template to local for mirroring'
+task :download_erb_config do
+  on roles(:all) do
+    download! "#{current_path}/logging.yml", './logging.yml'
   end
 end
