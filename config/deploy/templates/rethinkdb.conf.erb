@@ -100,4 +100,4 @@ http-port=8088
 
 ## The name for this server (as will appear in the metadata).
 ## If not specified, it will be randomly chosen from a short list of names.
-server-name=staging
+server-name=<%= fetch(:application) %>_<%= fetch(:stage) %>
