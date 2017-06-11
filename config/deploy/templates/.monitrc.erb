@@ -13,7 +13,7 @@ check process nginx with pidfile <%= shared_path %>/tmp/pids/nginx.pid
 
 check process unicorn_master with pidfile <%= shared_path %>/tmp/pids/unicorn.pid
   group www
-  start program = "RACK_ENV=<%= fetch(:stage) %> <%= shared_path %>/bin/unicorn -D -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
+  start program = "<%= shared_path %>/bin/unicorn --daemonize --env <%= fetch(:stage) %> --include <%= current_path %>/app --config-file <%= current_path %>/config/unicorn.rb"
   stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
 
 <% 1.upto(fetch(:unicorn_workers)).each do |index| %>
@@ -41,6 +41,11 @@ check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsear
 <% 1.upto(fetch(:sidekiq_processes)).each do |index| %>
 check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid
   group worker
-  start program = "/bin/cat /dev/null"
-  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
+  start program = "<%= shared_path %>/bin/sidekiq --daemon --environment <%= fetch(:stage) %> --require <%= current_path %>/config/application.rb --logfile <%= shared_path %>/log/sidekiq_<%= index %>.log --concurrency 5"
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid`"
 <% end %>
+
+check process sidekiq_web with pidfile <%= shared_path %>/tmp/pids/sidekiq_web.pid
+  group worker
+  start program = "<%= shared_path %>/bin/rackup -o 0.0.0.0 -p 9090 -D -P <%= shared_path %>/tmp/pids/sidekiq_web.pid <%= current_path %>/script/sidekiq_web.ru"
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq_web.pid`"

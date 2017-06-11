@@ -1,12 +1,12 @@
-:pidfile:       <%= shared_path %>/tmp/pids/sidekiq.pid
-:logfile:       <%= shared_path %>/log/sidekiq.log
+# :pidfile:       <%= shared_path %>/tmp/pids/sidekiq.pid # specified in monit
+# :logfile:       <%= shared_path %>/log/sidekiq.log # specifed in monit
+# :concurrency:   5 # specified in monit
+# :staging:
+#   :concurrency: 5
+# :production:
+#   :concurrency: 5
 :backtrace:     true
-:concurrency:   5
 :queues:
   - [critical, 4]
   - [crawl, 2]
   - default
-:staging:
-  :concurrency: 5
-:production:
-  :concurrency: 5
