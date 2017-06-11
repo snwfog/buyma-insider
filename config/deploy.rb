@@ -57,7 +57,7 @@ set :app_erb_config_files, ['redis.conf.erb',
                             'default.nginx.erb',
                             'elasticsearch.yml.erb',
                             'sidekiq.yml.erb',
-                            'logging.yml.erb'
+                            'logging.yml.erb',
                             '.monitrc.erb',
                             '.env.erb']
 set :bin_dir, '/usr/local/bin'
