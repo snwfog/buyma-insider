@@ -41,7 +41,7 @@ check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsear
 <% 1.upto(fetch(:sidekiq_processes)).each do |index| %>
 check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid
   group worker
-  start program = "<%= shared_path %>/bin/sidekiq --daemon --environment <%= fetch(:stage) %> --require <%= current_path %>/config/application.rb --logfile <%= shared_path %>/log/sidekiq_<%= index %>.log --concurrency 5"
+  start program = "<%= shared_path %>/bin/sidekiq --daemon --environment <%= fetch(:stage) %> --require <%= current_path %>/config/application.rb --pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid --logfile <%= shared_path %>/log/sidekiq_<%= index %>.log --concurrency 5"
   stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid`"
 <% end %>
 
