@@ -23,7 +23,7 @@ set :rbenv_ruby, File.read('.ruby-version').strip
 # set :bundle_bins, fetch(:bundle_bins, []).push('my_new_binary')
 # set :bundle_roles, :all                                         # this is default
 # set :bundle_servers, -> { release_roles(fetch(:bundle_roles)) } # this is default
-# set :bundle_binstubs, -> { shared_path.join('bin') }            # default: nil
+set :bundle_binstubs, -> { shared_path.join('bin') }            # default: nil
 # set :bundle_gemfile, -> { release_path.join('MyGemfile') }      # default: nil
 # set :bundle_path, -> { shared_path.join('bundle') }             # this is default. set it to nil for skipping the --path flag.
 # set :bundle_without, %w{development test}.join(' ')             # this is default
@@ -56,8 +56,11 @@ set :app_erb_config_files, ['redis.conf.erb',
                             'rethinkdb.conf.erb',
                             'default.nginx.erb',
                             'elasticsearch.yml.erb',
-                            'sidekiq.yml.erb']
-
+                            'sidekiq.yml.erb',
+                            '.monitrc.erb']
+set :bin_dir, '/usr/local/bin'
+set :unicorn_workers, 2
+set :sidekiq_processes, 1
 append :templating_paths, 'config/deploy/templates'
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }

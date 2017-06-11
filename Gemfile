@@ -65,6 +65,9 @@ gem 'logging'
 gem 'foreman'
 gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
+# Misc
+gem 'faker'
+
 group :development do
   gem 'capistrano'
   gem 'capistrano-bundler'
@@ -82,7 +85,6 @@ end
 group :test do
   gem 'minitest'
   gem 'rspec'
-  gem 'faker'
   gem 'nyan-cat-formatter'
 # gem 'redis-stat'
 end

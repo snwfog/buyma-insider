@@ -1,12 +1,3 @@
-<%
-  # You can inline erb variables
-  app_dir = '/usr/local/www/current/buyma_insider'
-  bin_dir = '/usr/local/bin'
-  unicorn_workers   = 2 # correspond to workers instance in unicorn
-  sidekiq_processes = 1 # number of sidekiq processes
-%>
-
-
 set log syslog
 set daemon 120
 set httpd
@@ -17,40 +8,40 @@ set onreboot start
 
 check process nginx with pidfile <%= shared_path %>/tmp/pids/nginx.pid
   group www
-  start program = "<%= bin_dir %>/nginx" with timeout 60 seconds
-  stop program = "<%= bin_dir %>/nginx -s quit"
+  start program = "<%= fetch(:bin_dir) %>/nginx -c <%= current_path %>/default.nginx" with timeout 60 seconds
+  stop program = "<%= fetch(:bin_dir) %>/nginx -s quit"
 
 check process unicorn_master with pidfile <%= shared_path %>/tmp/pids/unicorn.pid
   group www
-  start program = "<%= app_dir %>/bin/unicorn -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
-  stop program = "kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
+  start program = "<%= shared_path %>/bin/unicorn -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
+  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
 
-<% 1.upto(unicorn_workers).each do |index| %>
-  check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pids/unicorn.<%= index %>.pid
+<% 1.upto(fetch(:unicorn_workers)).each do |index| %>
+check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pids/unicorn.<%= index %>.pid
   group www
   start program = "/bin/cat /dev/null"
-  stop program = "/usr/local/bin/unicorn kill_worker <%= index %>"
+  stop program = "<%= shared_path %>/bin/unicorn kill_worker <%= index %>"
 <% end %>
 
-check process rethinkdb with pidfile <%= app_dir %>/tmp/pids/rethinkdb.pid
+check process rethinkdb with pidfile <%= shared_path %>/tmp/pids/rethinkdb.pid
   group database
-  start program = "<%= bin_dir %>/brew services start rethinkdb" with timeout 60 seconds
-  stop program = "<%= bin_dir %>/brew services stop rethinkdb"
+  start program = "<%= fetch(:bin_dir) %>/brew services start rethinkdb" with timeout 60 seconds
+  stop program = "<%= fetch(:bin_dir) %>/brew services stop rethinkdb"
 
-check process redis with pidfile /usr/local/var/run/redis.pid
+check process redis with pidfile <%= shared_path %>/tmp/pids/redis.pid
   group database
-  start program = "<%= bin_dir %>/brew services start redis" with timeout 60 seconds
-  stop program = "<%= bin_dir %>/brew services stop redis"
+  start program = "<%= fetch(:bin_dir) %>/brew services start redis" with timeout 60 seconds
+  stop program = "<%= fetch(:bin_dir) %>/brew services stop redis"
 
-check process elasticsearch with pidfile /usr/local/var/run/elasticsearch.pid
+check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid
   group database
-  start program = "<%= bin_dir %>/elasticsearch -d --pid /usr/local/var/run/elasticsearch.pid"
-  stop program = "kill -QUIT `cat /usr/local/var/run/elasticsearch.pid`"
+  start program = "<%= fetch(:bin_dir) %>/elasticsearch -d --pid <%= shared_path %>/tmp/pids/elasticsearch.pid"
+  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`"
 
-<% 1.upto(sidekiq_processes).each do |index| %>
-check process sidekiq_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
+<% 1.upto(fetch(:sidekiq_processes)).each do |index| %>
+check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid
   group worker
-  start program = ""
-  stop program = "/usr/bin/kill -TERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
+  start program = "/bin/cat /dev/null"
+  stop program = "/bin/kill -TERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
 <% end %>
 
