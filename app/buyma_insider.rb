@@ -1,5 +1,6 @@
-Bundler.require(:default, ENV['RACK_ENV']) # INFO: it increases boot time
+require 'dotenv'
 Dotenv.load! File.expand_path('../../.env', __FILE__)
+Bundler.require(:default, ENV['RACK_ENV']) # INFO: it increases boot time
 
 module BuymaInsider
   NAME             = 'buyma_insider'.freeze

@@ -181,7 +181,7 @@ namespace :es do
   task :setup => [:drop] do
     settings             = {}
     settings['settings'] = YAML.load_file(File.expand_path('../config/elasticsearch/settings.index.yml', __FILE__))
-    settings['settings'].merge!(YAML.load_file(File.expand_path('../config/elasticsearch/settings.analysis.yml', __FILE__))
+    settings['settings'].merge!(YAML.load_file(File.expand_path('../config/elasticsearch/settings.analysis.yml', __FILE__)))
     mappings     = FileList[File.expand_path('../config/elasticsearch/mappings/**/*.yml', __FILE__)]
     merchant_ids = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__)).values.map { |m| m['id'] }
     merchant_ids.each do |merchant_id|
