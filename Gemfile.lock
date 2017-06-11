@@ -254,6 +254,7 @@ GEM
     unicode_utils (1.4.0)
 
 PLATFORMS
+	ruby
   x64-mingw32
 
 DEPENDENCIES
