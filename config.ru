@@ -1,5 +1,3 @@
-require 'sidekiq/web'
-
 require_relative './config/application'
 
 # Auto-generate all routes from controller files
@@ -24,7 +22,3 @@ map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
 map_controller('/index_pages')
 map_controller('/exchange_rates')
-
-if BuymaInsider.development?
-  map('/sidekiq') { run Sidekiq::Web }
-end
