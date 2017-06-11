@@ -42,9 +42,8 @@ set :bundle_flags, '--quiet'                                      # this is defa
 
 # Default value for :pty is false
 # set :pty, true
-set :app_linked_files, ['config/sidekiq.yml',
-                        'config/sidekiq-cron.yml',
-                        'config/unicorn.rb']
+set :app_linked_files, ['config/unicorn.rb',
+                        'config/sidekiq-cron.yml']
 
 append :linked_files, *fetch(:app_linked_files)
 # Default value for linked_dirs is []
@@ -53,11 +52,14 @@ append :linked_dirs, 'log',
                      'tmp/cache',
                      'tmp/sockets'
 
-set    :app_erb_config_files, ['redis.conf.erb',
-                               'rethinkdb.conf.erb',
-                               'default.nginx.erb',
-                               'elasticsearch.yml.erb']
-append :templating_paths,     'config/deploy/templates'
+set :app_erb_config_files, ['redis.conf.erb',
+                            'rethinkdb.conf.erb',
+                            'default.nginx.erb',
+                            'elasticsearch.yml.erb',
+                            'sidekiq.yml.erb',
+                            'unicorn.rb']
+
+append :templating_paths, 'config/deploy/templates'
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
 # Default value for keep_releases is 5
@@ -82,7 +84,7 @@ namespace :deploy do
     task :upload_linked_files do
       on roles(:all) do
         FileList[*fetch(:app_linked_files)].each do |file|
-          upload!(file, "#{fetch(:release_path)}/config")
+          upload!(file, "#{shared_path}/config")
         end
       end
     end

@@ -1,5 +1,5 @@
-:pidfile:       ./tmp/pids/sidekiq.pid
-:logfile:       ./log/sidekiq.log
+:pidfile:       <%= shared_path %>/tmp/pids/sidekiq.pid
+:logfile:       <%= shared_path %>/log/sidekiq.log
 :backtrace:     true
 :concurrency:   5
 :queues:
