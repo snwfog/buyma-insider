@@ -1,4 +1,4 @@
-daemon off;
+daemon on;
 pid <%= shared_path %>/tmp/pids/nginx.pid;
 error_log syslog:server=localhost,tag=<%= fetch(:application) %>_nginx debug;
 # set the max limit to 128, ulimit -a macosx returns 256
@@ -19,13 +19,9 @@ http {
     listen              8080;
     server_name         localhost;
     server_tokens       off; # nginx versions
-
-    set                 $app_path der;
-
-#    include             mime.types;
+    # include             mime.types;
     etag                off;
-
-    root                $app_path;
+    root                <%= shared_path %>/public;
 
     keepalive_timeout   30s;
     sendfile            on;
@@ -34,15 +30,15 @@ http {
 
     access_log          <%= shared_path %>/log/nginx-access.log;
     error_log           <%= shared_path %>/log/nginx-error.log debug;
-    # This dont work
-    # set $app_path
+    # set $app_path     # This dont work
 
     location / {
       try_files         $uri @buyma_insider;
     }
 
     location ~ \.(jpe?g|gif|png|css|js|ico|xml|rss|txt|map|eot|svg|ttf|woff|woff2)$ {
-      root              $app_path/public;
+      # root            <%= shared_path %>;
+      try_files         $uri =404;
       # Requires the gzip static modules
       # Will look for gz version by default unless changed
       gzip_static       on;

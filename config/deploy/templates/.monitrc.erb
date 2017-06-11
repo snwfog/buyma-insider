@@ -13,7 +13,7 @@ check process nginx with pidfile <%= shared_path %>/tmp/pids/nginx.pid
 
 check process unicorn_master with pidfile <%= shared_path %>/tmp/pids/unicorn.pid
   group www
-  start program = "<%= shared_path %>/bin/unicorn -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
+  start program = "<%= shared_path %>/bin/unicorn -D -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
   stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
 
 <% 1.upto(fetch(:unicorn_workers)).each do |index| %>
