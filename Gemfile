@@ -67,6 +67,7 @@ gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 
 # Misc
 gem 'faker'
+gem 'pry'                      require: false# for debugging
 
 group :development do
   gem 'capistrano'
@@ -75,7 +76,6 @@ group :development do
   gem 'capistrano-template'
   gem 'shotgun',               require: false
   gem 'rubocop',               require: false
-  gem 'pry'
   gem 'hirb',                  require: false
   gem 'coolline',              require: false
   gem 'awesome_print'
