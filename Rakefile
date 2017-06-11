@@ -1,15 +1,10 @@
-$:.unshift(File.expand_path('app'))
-# $:.unshift(File.expand_path('db'))
-
-require 'dotenv/load'
-require 'buyma_insider'
+require_relative './config/application'
 require 'ostruct'
 
 load 'no_brainer/railtie/database.rake'
 
 # include RethinkDB::Shortcuts
 # db_name = "#{BuymaInsider::NAME}_#{ENV.fetch('RACK_ENV')}"
-
 desc 'Clean up config'
 task :align do
   sh 'align ./config/**/*.yml'
@@ -72,7 +67,7 @@ namespace :db do
   # Initialize merchant from config
   desc 'Setup merchants metadata'
   task :setup do
-    merchant_cfg = YAML.load_file('./config/merchant.yml')
+    merchant_cfg = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
     merchant_cfg.each_key do |merchant_name|
       merchant_datum = merchant_cfg.fetch(merchant_name)
       m              = OpenStruct.new(merchant_datum)
@@ -120,7 +115,7 @@ namespace :db do
 
     puts 'Begin applying patches from db/patches'
     time = Benchmark.measure {
-      Rake::FileList['./db/patches/*.rb']
+      Rake::FileList[File.expand_path('../db/patches/*.rb', __FILE__)]
         .exclude(/setup/)
         .delete_if { |path| applied_patches.include?(path.pathmap('%n')) }
         .each do |patch_path|
@@ -143,10 +138,10 @@ namespace :db do
 
     puts 'Finished applying patches (%.02fs)' % time.real
   end
-  
+
   desc 'Seed'
   task :seed do
-    FileList['./db/fixtures/**.yml'].each do |fixture_yml|
+    FileList[File.expand_path('../db/fixtures/**.yml', __FILE__)].each do |fixture_yml|
       printf 'Importing %s...' % fixture_yml
       fixtures   = YAML::load_file(fixture_yml)
       class_name = fixture_yml.pathmap('%n').singularize.classify
@@ -166,24 +161,29 @@ namespace :db do
       puts 'Done.'.green
     end
   end
+
+  desc 'Schedule job'
+  task :schedule_jobs do
+    OpenExchangeRatesWorker.perform_async
+  end
 end
 
 namespace :es do
   desc 'Drop index, setup elasticsearch, and sync all articles'
   task :reset => [:drop, :setup, :seed]
-  
+
   desc 'Drop all indices'
   task :drop do
     $elasticsearch.indices.delete index: :_all
   end
-  
+
   desc 'Create index'
   task :setup => [:drop] do
     settings             = {}
-    settings['settings'] = YAML.load_file('./config/elasticsearch/settings.index.yml')
-    settings['settings'].merge!(YAML.load_file('./config/elasticsearch/settings.analysis.yml'))
-    mappings     = FileList['./config/elasticsearch/mappings/**/*.yml']
-    merchant_ids = YAML.load_file('./config/merchant.yml').values.map { |m| m['id'] }
+    settings['settings'] = YAML.load_file(File.expand_path('../config/elasticsearch/settings.index.yml', __FILE__))
+    settings['settings'].merge!(YAML.load_file(File.expand_path('../config/elasticsearch/settings.analysis.yml', __FILE__))
+    mappings     = FileList[File.expand_path('../config/elasticsearch/mappings/**/*.yml', __FILE__)]
+    merchant_ids = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__)).values.map { |m| m['id'] }
     merchant_ids.each do |merchant_id|
       puts 'Creating index for `%s`'.yellow % merchant_id
       $elasticsearch.indices.create index: merchant_id,
@@ -198,7 +198,7 @@ namespace :es do
       end
     end
   end
-  
+
   desc 'Index existing documents'
   task :seed do
     time = Benchmark.realtime do
@@ -215,7 +215,7 @@ namespace :es do
     end
     puts 'Seeded elasticsearch in %.02fs' % time
   end
-  
+
   desc 'Build config'
   task :build_all => [:build_templates, :build_stopwords, :build_char_filter_mappings]
 
@@ -224,11 +224,11 @@ namespace :es do
     puts <<~SQL.yellow
       Generating search templates...
     SQL
-  
+
     dest_dir        = './tmp/configs/elasticsearch/config/scripts'
     replace_to_json = %r/"({{#toJson}}([^{]+){{\/toJson}})"/
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
-  
+
     FileList['./config/elasticsearch/search_templates/*.yml'].each do |template_file|
       template_hash = YAML::load_file(template_file)
       template_name = template_file.pathmap('%n')
@@ -238,21 +238,21 @@ namespace :es do
         if json_str =~ replace_to_json
           json_str.gsub!(replace_to_json, '\1')
         end
-        
+
         mustache_file.write(json_str)
         mustache_file.flush
       end
       puts 'Done!'.green
     end
-    
+
     puts 'Copy search templates under /<es_install_location>/config/scripts'.yellow
   end
-  
+
   # @deprecated Use build template and place under script template folder
   desc 'Register templates'
   task :register_templates do
     puts 'Registering templates'.yellow
-    
+
     FileList['./config/elasticsearch/config/templates/*.yml'].each do |template_file|
       template_name = template_file.pathmap('%n')
       puts 'Registering `%s_search`...'.yellow % template_name
@@ -262,7 +262,7 @@ namespace :es do
       puts 'Done!'.green
     end
   end
-  
+
   desc 'Build stopword lists'
   task :build_stopwords do
     puts <<~SQL.yellow
@@ -271,10 +271,10 @@ namespace :es do
       folder is properly setup whether the host machine is win or mac
       SELECT * FROM dbo.Test
     SQL
-  
+
     dest_dir = './tmp/configs/elasticsearch/config/stopwords'
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
-    
+
     FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
       filter_name = wl_filename.pathmap('%n')
       printf 'Generating stopwords `%s`...' % filter_name
@@ -285,30 +285,30 @@ namespace :es do
                      .reject { |r| r.start_with?(?#) || r.empty? }
                      .uniq
                      .sort
-    
+
       File.open('%s/%s.txt' % [dest_dir, filter_name], ?w) do |wordlist_file|
         wordlist_file.puts(word_lists)
       end
       puts 'Done!'.green
     end
-  
+
     puts 'Copy stopwords under /<es_install_location>/config/stopwords'.yellow
   end
-  
-  
+
+
   desc 'Build character filter mappings'
   task :build_char_filter_mappings do
     puts 'Generating character filter mappings...'.yellow
-    
+
     dest_dir = './tmp/configs/elasticsearch/config/char_filter_mappings'
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
-    
+
     FileList['./config/elasticsearch/char_filter_mappings/*.txt'].each do |char_filter_mapping|
       printf 'Generating char_filter_mapping %s...' % char_filter_mapping
       FileUtils.cp(char_filter_mapping, dest_dir + '/')
       puts 'Done!'.green
     end
-    
+
     puts 'Copy character filter mappings under /<es_install_location>/config/char_filter_mappings'.yellow
   end
 end
