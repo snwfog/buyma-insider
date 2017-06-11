@@ -26,7 +26,7 @@ module BuymaInsider
       redis_cfg = configuration.redis[process.to_sym]
       pool_size = redis_cfg.dup.delete(:pool_size)
       ConnectionPool.new(size: pool_size) do
-        Redis::Store::Factory.create(redis_cfg)
+        Redis::Store::Factory.create(redis_cfg.to_h.symbolize_keys!)
       end
     end
 
