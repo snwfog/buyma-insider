@@ -1,0 +1,57 @@
+default:           &default
+  root:            &default_process
+    severity:      info
+    additive:      true
+    level:         &default_level
+      debug:       &default_severity
+        pattern:   "[%d] %-5l -- %c : %m\n"
+        location:  <%= shared_path %>/log/root.debug.log
+        age:       daily
+      info:
+        <<:        *default_severity
+        location:  <%= shared_path %>/log/root.log
+      warn:
+        <<:        *default_severity
+      error:
+        <<:        *default_severity
+      fatal:
+        <<:        *default_severity
+  sinatra:
+    <<:            *default_process
+    severity:      debug
+  database:
+    <<:            *default_process
+    severity:      debug
+  sidekiq:
+    <<:            *default_process
+    severity:      debug
+  elasticsearch:
+    <<:            *default_process
+    severity:      debug
+  httplog:
+    <<:            *default_process
+    severity:      debug
+
+development:
+  <<:              *default
+
+test:
+  <<:              *default
+
+staging:
+  <<:              *default
+
+production:
+  <<:              *default
+  root:
+    <<:            *default_process
+  database:
+    <<:            *default_process
+  sinatra:
+    <<:            *default_process
+  sidekiq:
+    <<:            *default_process
+  elasticsearch:
+    <<:            *default_process
+  httplog:
+    <<:            *default_process
