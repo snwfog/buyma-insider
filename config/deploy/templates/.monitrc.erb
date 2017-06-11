@@ -15,18 +15,18 @@ set httpd
 
 set onreboot start
 
-check process nginx with pidfile <%= app_dir %>/tmp/pids/nginx.pid
+check process nginx with pidfile <%= shared_path %>/tmp/pids/nginx.pid
   group www
   start program = "<%= bin_dir %>/nginx" with timeout 60 seconds
   stop program = "<%= bin_dir %>/nginx -s quit"
 
-check process unicorn_master with pidfile <%= app_dir %>/tmp/pids/unicorn.pid
+check process unicorn_master with pidfile <%= shared_path %>/tmp/pids/unicorn.pid
   group www
-  start program = "<%= app_dir %>/bin/unicorn -I<%= app_dir %>/app -c<%= app_dir %>/config/unicorn.rb"
-  stop program = "kill -QUIT `cat <%= app_dir %>/tmp/pids/unicorn.pid`"
+  start program = "<%= app_dir %>/bin/unicorn -I<%= current_path %>/app -c<%= current_path %>/config/unicorn.rb"
+  stop program = "kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
 
 <% 1.upto(unicorn_workers).each do |index| %>
-  check process unicorn_worker_<%= index %> with pidfile <%= app_dir %>/tmp/pids/unicorn.<%= index %>.pid
+  check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pids/unicorn.<%= index %>.pid
   group www
   start program = "/bin/cat /dev/null"
   stop program = "/usr/local/bin/unicorn kill_worker <%= index %>"
@@ -51,6 +51,6 @@ check process elasticsearch with pidfile /usr/local/var/run/elasticsearch.pid
 check process sidekiq_<%= index %> with pidfile <%= app_dir %>/tmp/pids/<%= sidekiq %>_<%= index %>.pid
   group worker
   start program = ""
-  stop program = "/usr/bin/kill -TERM `cat <%= app_dir %>/tmp/pids/sidekiq.pid`"
+  stop program = "/usr/bin/kill -TERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
 <% end %>
 

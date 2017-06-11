@@ -1,4 +1,3 @@
-<%= fetch(:application) %>
 daemon off;
 pid <%= shared_path %>/tmp/pids/nginx.pid;
 error_log syslog:server=localhost,tag=<%= fetch(:application) %>_nginx debug;

@@ -42,11 +42,11 @@ set :bundle_flags, '--quiet'                                      # this is defa
 
 # Default value for :pty is false
 # set :pty, true
-set :app_linked_files, ['config/unicorn.rb',
-                        'config/sidekiq-cron.yml']
 
-append :linked_files, *fetch(:app_linked_files)
-# Default value for linked_dirs is []
+# set :app_linked_files, ['config/unicorn.rb',
+#                         'config/sidekiq-cron.yml']
+# append :linked_files, *fetch(:app_linked_files)
+
 append :linked_dirs, 'log',
                      'tmp/pids',
                      'tmp/cache',
@@ -56,8 +56,7 @@ set :app_erb_config_files, ['redis.conf.erb',
                             'rethinkdb.conf.erb',
                             'default.nginx.erb',
                             'elasticsearch.yml.erb',
-                            'sidekiq.yml.erb',
-                            'unicorn.rb']
+                            'sidekiq.yml.erb']
 
 append :templating_paths, 'config/deploy/templates'
 # Default value for default_env is {}
@@ -67,26 +66,23 @@ set :keep_releases, 3
 set :ssh_options, { forward_agent: true,
                     auth_methods:  %w(publickey) }
 
-namespace :deploy do
-  namespace :check do
-    before :linked_files, [:setup_erb_config, :upload_linked_files]
-    
-    desc 'Generate and upload template configs'
-    task :setup_erb_config do
-      on roles(:all) do
-        FileList[*fetch(:app_erb_config_files)].each do |file|
-          template file
-        end
-      end
+before 'deploy:check:linked_files', 'upload_linked_files'
+after  'deploy:published',          'setup_erb_config'
+
+desc 'Generate and upload template configs'
+task :setup_erb_config do
+  on roles(:all) do
+    FileList[*fetch(:app_erb_config_files)].each do |file|
+      template file
     end
-    
-    desc 'Setup linked files'
-    task :upload_linked_files do
-      on roles(:all) do
-        FileList[*fetch(:app_linked_files)].each do |file|
-          upload!(file, "#{shared_path}/config")
-        end
-      end
+  end
+end
+
+desc 'Setup linked files'
+task :upload_linked_files do
+  on roles(:all) do
+    FileList[*fetch(:app_linked_files)].each do |file|
+      upload!(file, "#{shared_path}/config")
     end
   end
 end
