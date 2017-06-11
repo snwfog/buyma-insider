@@ -1,13 +1,14 @@
-set :deploy_to, '/var/www/buyma_insider'
-
-server ENV['TESTING_SSH_SERVER'],
-       user:        ENV['TESTING_SSH_USER'],
-       roles:       :all,
-       ssh_options: {
-         # keys:          [ENV['TESTING_SSH_IDENTITY_FILE_PATH']],
-         forward_agent: true,
-         # auth_methods:  %w(publickey)
-       }
+# server ENV['TESTING_SSH_SERVER'],
+#        user:        ENV['TESTING_SSH_USER'],
+#        roles:       :all,
+#        ssh_options: {
+#          # keys:          [ENV['TESTING_SSH_IDENTITY_FILE_PATH']],
+#          forward_agent: true,
+#          # auth_methods:  %w(publickey)
+#        }
+#
+# set :deploy_to, '/usr/local/var/www/buyma_insider'
+# set :rbenv_custom_path, '/usr/local/Cellar/rbenv/1.1.0'
 
 # server-based syntax
 # ======================

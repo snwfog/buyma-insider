@@ -2,7 +2,7 @@
 lock '3.8.1'
 
 set :application, 'buyma_insider'
-set :repo_url, 'git@github.com:snwfog/buyma_insider.git'
+set :repo_url,    'git@github.com:snwfog/buyma_insider.git'
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -13,7 +13,7 @@ set :repo_url, 'git@github.com:snwfog/buyma_insider.git'
 
 # rbenv
 # set :rbenv_type, :user
-set :rbenv_ruby, '2.3.1'
+# set :rbenv_ruby, '2.3.1'
 set :rbenv_ruby, File.read('.ruby-version').strip
 # set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 # set :rbenv_map_bins, %w{rake gem bundle ruby}
@@ -28,7 +28,7 @@ set :rbenv_ruby, File.read('.ruby-version').strip
 # set :bundle_path, -> { shared_path.join('bundle') }             # this is default. set it to nil for skipping the --path flag.
 # set :bundle_without, %w{development test}.join(' ')             # this is default
 # set :bundle_flags, '--deployment --quiet'                       # this is default
-set :bundle_flags, '--quiet'                       # this is default
+set :bundle_flags, '--quiet'                                      # this is default
 # set :bundle_env_variables, {}                                   # this is default
 # set :bundle_clean_options, ""                                   # this is default. Use "--dry-run" if you just want to know what gems would be deleted, without actually deleting them
 
@@ -42,15 +42,49 @@ set :bundle_flags, '--quiet'                       # this is default
 
 # Default value for :pty is false
 # set :pty, true
+set :app_linked_files, ['config/sidekiq.yml',
+                        'config/sidekiq-cron.yml',
+                        'config/unicorn.rb']
 
-# Default value for :linked_files is []
-# append :linked_files, "config/database.yml", "config/secrets.yml"
-
+append :linked_files, *fetch(:app_linked_files)
 # Default value for linked_dirs is []
-# append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/system"
+append :linked_dirs, 'log',
+                     'tmp/pids',
+                     'tmp/cache',
+                     'tmp/sockets'
 
+set    :app_erb_config_files, ['redis.conf.erb',
+                               'rethinkdb.conf.erb',
+                               'default.nginx.erb',
+                               'elasticsearch.yml.erb']
+append :templating_paths,     'config/deploy/templates'
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
-
 # Default value for keep_releases is 5
-# set :keep_releases, 5
+set :keep_releases, 3
+set :ssh_options, { forward_agent: true,
+                    auth_methods:  %w(publickey) }
+
+namespace :deploy do
+  namespace :check do
+    before :linked_files, [:setup_erb_config, :upload_linked_files]
+    
+    desc 'Generate and upload template configs'
+    task :setup_erb_config do
+      on roles(:all) do
+        FileList[*fetch(:app_erb_config_files)].each do |file|
+          template file
+        end
+      end
+    end
+    
+    desc 'Setup linked files'
+    task :upload_linked_files do
+      on roles(:all) do
+        FileList[*fetch(:app_linked_files)].each do |file|
+          upload!(file, "#{fetch(:release_path)}/config")
+        end
+      end
+    end
+  end
+end

@@ -5,6 +5,7 @@ require 'capistrano/setup'
 # Include default deployment tasks
 require 'capistrano/deploy'
 require 'capistrano/scm/git'
+require 'capistrano/capistrano_plugin_template'
 
 install_plugin Capistrano::SCM::Git
 

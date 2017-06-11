@@ -69,6 +69,7 @@ group :development do
   gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rbenv'
+  gem 'capistrano-template'
   gem 'shotgun',               require: false
   gem 'rubocop',               require: false
   gem 'pry'

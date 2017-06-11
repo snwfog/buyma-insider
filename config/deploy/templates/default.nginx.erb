@@ -1,6 +1,7 @@
+<%= fetch(:application) %>
 daemon off;
-pid <%= app_dir %>/current/tmp/pids/nginx.pid;
-error_log syslog:server=localhost,tag=buyma_insider_nginx debug;
+pid <%= shared_path %>/tmp/pids/nginx.pid;
+error_log syslog:server=localhost,tag=<%= fetch(:application) %>_nginx debug;
 # set the max limit to 128, ulimit -a macosx returns 256
 # worker_rlimit_nofile 128;
 
@@ -12,7 +13,7 @@ events {
 http {
 
   upstream buyma_insider {
-    server unix:<%= app_dir %>/tmp/sockets/unicorn.sock fail_timeout=0;
+    server unix:<%= shared_path %>/tmp/sockets/unicorn.sock fail_timeout=0;
   }
 
   server {
@@ -32,8 +33,8 @@ http {
     tcp_nopush          on;
     # tcp_nodelay        on;
 
-    access_log          <%= app_dir %>/log/nginx-access.log;
-    error_log           <%= app_dir %>/log/nginx-error.log debug;
+    access_log          <%= shared_path %>/log/nginx-access.log;
+    error_log           <%= shared_path %>/log/nginx-error.log debug;
     # This dont work
     # set $app_path
 

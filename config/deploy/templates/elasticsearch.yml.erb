@@ -1,15 +1,11 @@
-<%
-  environment = :development
-%>
-
-cluster.name: elasticsearch_buyma_insider
+cluster.name: elasticsearch_<%= fetch(:application) %>
 # Do not automatically create index
 action.auto_create_index: false
 # Bind to all interface
-path.data: /usr/local/var/elasticsearch/
-path.logs: /usr/local/var/log/elasticsearch/
+path.data: <%= shared_path %>/elasticsearch/
+path.logs: <%= shared_path %>/log/elasticsearch/
 
-<% unless environment == /production/ %>
+<% unless fetch(:stage) == /production/ %>
   network.host: [_local_, _site_]
 #  network.host: takes special values as well...
 #    _[networkInterface]_ Addresses of a network interface, for example _en0_.
