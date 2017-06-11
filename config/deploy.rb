@@ -57,7 +57,8 @@ set :app_erb_config_files, ['redis.conf.erb',
                             'default.nginx.erb',
                             'elasticsearch.yml.erb',
                             'sidekiq.yml.erb',
-                            '.monitrc.erb']
+                            '.monitrc.erb',
+                            '.env.erb']
 set :bin_dir, '/usr/local/bin'
 set :unicorn_workers, 2
 set :sidekiq_processes, 1

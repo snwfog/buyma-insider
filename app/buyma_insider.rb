@@ -1,6 +1,5 @@
-require 'dotenv/load'
-require 'bundler/setup'
-Bundler.require(:default, ENV['RACK_ENV']) # disable for now, as it increases boot time
+Bundler.require(:default, ENV['RACK_ENV']) # INFO: it increases boot time
+Dotenv.load! File.expand_path('../../.env', __FILE__)
 
 module BuymaInsider
   NAME             = 'buyma_insider'.freeze
@@ -13,9 +12,9 @@ module BuymaInsider
       @configuration ||= begin
         Hashie::Mash.new.tap do |cfg|
           cfg.secret_token_base = ENV['SECRET_TOKEN_BASE']
-          cfg.redis             = Hashie::Mash.new(YAML.load_file('./config/redis.yml')[environment])
-          cfg.database          = Hashie::Mash.new(YAML.load_file('./config/database.yml')[environment])
-          cfg.logging           = Hashie::Mash.new(YAML.load_file('./config/logging.yml')[environment])
+          cfg.redis             = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/redis.yml', __FILE__))[environment])
+          cfg.database          = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/database.yml', __FILE__))[environment])
+          cfg.logging           = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/logging.yml', __FILE__))[environment])
         end
       end
     end

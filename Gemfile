@@ -1,8 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'bundler'
+gem 'bundler',                  require: 'bundler/setup'
 gem 'require_all'
-gem 'dotenv',                   require: 'dotenv/load'
+gem 'dotenv'
 gem 'rack'
 gem 'activesupport',            require: ['active_support',
                                           'active_support/core_ext/module/delegation']
