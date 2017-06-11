@@ -25,7 +25,7 @@ check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pi
 
 check process rethinkdb with pidfile <%= shared_path %>/tmp/pids/rethinkdb.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/rethinkdb --config-file <%= current_path %>/rethinkdb.conf " with timeout 60 seconds
+  start program = "<%= fetch(:bin_dir) %>/rethinkdb --daemon --config-file <%= current_path %>/rethinkdb.conf" with timeout 60 seconds
   stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/rethinkdb.pid`"
 
 check process redis with pidfile <%= shared_path %>/tmp/pids/redis.pid
@@ -35,12 +35,12 @@ check process redis with pidfile <%= shared_path %>/tmp/pids/redis.pid
 
 check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/elasticsearch -d --pid <%= shared_path %>/tmp/pids/elasticsearch.pid"
-  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`"
+  start program = "<%= fetch(:bin_dir) %>/elasticsearch --daemonize --pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid"
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`"
 
 <% 1.upto(fetch(:sidekiq_processes)).each do |index| %>
 check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid
   group worker
   start program = "/bin/cat /dev/null"
-  stop program = "/bin/kill -TERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq.pid`"
 <% end %>
