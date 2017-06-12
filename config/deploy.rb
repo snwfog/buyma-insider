@@ -57,7 +57,7 @@ set :app_erb_config_files, ['redis.conf.erb',
                             'default.nginx.erb',
                             'elasticsearch.yml.erb',
                             'sidekiq.yml.erb',
-                            'logging.yml.erb',
+                            'logging.yml',
                             '.monitrc.erb',
                             '.env.erb']
 set :bin_dir, '/usr/local/bin'
@@ -73,7 +73,6 @@ set :ssh_options, { forward_agent: true,
 
 before 'deploy:check:linked_files', 'upload_linked_files'
 after  'deploy:published',          'setup_erb_config'
-after  'deploy:published',          'download_erb_config'
 
 desc 'Generate and upload template configs'
 task :setup_erb_config do
@@ -93,9 +92,10 @@ task :upload_linked_files do
   end
 end
 
-desc 'Download generated template to local for mirroring'
-task :download_erb_config do
-  on roles(:all) do
-    download! "#{current_path}/logging.yml", './logging.yml'
-  end
-end
+# @deprecated
+# desc 'Download generated template to local for mirroring'
+# task :download_erb_config do
+#   on roles(:all) do
+#     download! "#{current_path}/logging.yml", './logging.yml'
+#   end
+# end
