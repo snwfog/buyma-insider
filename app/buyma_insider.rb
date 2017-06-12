@@ -15,7 +15,7 @@ module BuymaInsider
           cfg.secret_token_base = ENV['SECRET_TOKEN_BASE']
           cfg.redis             = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/redis.yml', __FILE__))[environment])
           cfg.database          = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/database.yml', __FILE__))[environment])
-          cfg.logging           = Hashie::Mash.new(YAML.load_file(File.expand_path('../../logging.yml', __FILE__))[environment])
+          cfg.logging           = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/logging.yml', __FILE__))[environment])
         end
       end
     end
