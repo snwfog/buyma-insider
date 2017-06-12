@@ -34,7 +34,7 @@ class IndexPageCrawlWorker < Worker::Base
     @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
                                                   status:      :inprogress,
                                                   description: "#{@merchant.name} [#{@index_page}]")
-    logger.info { 'Started crawling index `%s`' % @current_crawl_history.description }
+    logger.info 'Started crawling index `%s`' % @current_crawl_history.description
     if raw_resp_tempfile = fetch_page_with_capture(@index_page.full_url,
                                                    @merchant.meta.ssl?,
                                                    @standard_headers)
@@ -42,7 +42,7 @@ class IndexPageCrawlWorker < Worker::Base
                                      response_headers: raw_resp_tempfile.headers.to_h,
                                      response_code:    :ok,
                                      status:           :completed)
-      logger.info { 'Caching index `%s` into `%s`' % [raw_resp_tempfile.file.path, @index_page_cache_path] }
+      logger.info 'Caching index `%s` into `%s`' % [raw_resp_tempfile.file.path, @index_page_cache_path]
       FileUtils.cp(raw_resp_tempfile.file.path, @index_page_cache_path)
     end
   rescue RestClient::NotModified
@@ -50,33 +50,32 @@ class IndexPageCrawlWorker < Worker::Base
                                    response_headers: @last_crawl_history.response_headers,
                                    response_code:    :not_modified)
 
-    logger.debug { 'Index has not been modified `%s`' % @index_page.full_url }
+    logger.debug 'Index has not been modified `%s`' % @index_page.full_url
     FileUtils::touch(@index_page_cache_path)
   rescue Exception => ex
     @current_crawl_history.aborted!
-    logger.error { @current_crawl_history.description }
-    logger.error { ex }
-    logger.error { ex.http_headers } if ex.is_a? RestClient::Exception
-    logger.error { ex.backtrace }
+    logger.error @current_crawl_history.description
+    logger.error ex
+    logger.error ex.http_headers if ex.is_a? RestClient::Exception
+    logger.error ex.backtrace
   else
     @current_crawl_history
   ensure
     @current_crawl_history.finished_at = Time.now
     @current_crawl_history.save!
-    logger.info { 'Finished crawling `%s`' % @current_crawl_history.description }
-    logger.info { JSON.pretty_generate(@current_crawl_history.attributes) }
+    logger.info 'Finished crawling `%s`' % @current_crawl_history.description
+    logger.info JSON.pretty_generate(@current_crawl_history.attributes)
   end
 
   private
 
   def lazy_headers
     if @last_crawl_history&.etag and not @last_crawl_history&.weak?
-      logger.info { 'Strong etag `%s` exists' % @index_page_cache_path.etag }
+      logger.info 'Strong etag `%s` exists' % @index_page_cache_path.etag
       { if_none_match: @last_crawl_history.etag }
     elsif File::exist?(@index_page_cache_path)
       index_page_cache_file_mtime = File::mtime(@index_page_cache_path)
-      logger.info { 'Index cache `%s` exists and was modified on `%s`' % [@index_page_cache_path,
-                                                                          index_page_cache_file_mtime] }
+      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page_cache_path, index_page_cache_file_mtime]
       { if_modified_since: index_page_cache_file_mtime.httpdate }
     else
       {}

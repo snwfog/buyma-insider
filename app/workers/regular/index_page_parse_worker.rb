@@ -10,9 +10,9 @@ class IndexPageParseWorker < Worker::Base
     cache_filepath = '%s/%s' % [cache_dir, cache_filename]
     index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
 
-    logger.info { 'Parsing article for index %s' % index_summary }
+    logger.info 'Parsing article for index %s' % index_summary
     if File.exist?(cache_filepath)
-      logger.info { 'Found! Reading from cache file content...' }
+      logger.info 'Found! Reading from cache file content...'
       cache_file_content = File.open(cache_filepath, 'rb') { |file| file.read }
     else
       raise 'Cache file not found %s' % index_summary
@@ -22,7 +22,7 @@ class IndexPageParseWorker < Worker::Base
     item_css      = merchant.metadatum.item_css
     document      = Nokogiri::HTML(body, nil, 'utf-8')
     article_nodes = document.css(item_css)
-    logger.info { 'Start parsing files with `%i` articles' % article_nodes.count }
+    logger.info 'Start parsing files with `%i` articles' % article_nodes.count
     article_nodes.each do |it|
       begin
         attrs      = merchant.attrs_from_node(it)
@@ -55,15 +55,15 @@ class IndexPageParseWorker < Worker::Base
       rescue Exception => ex
         history.invalid_items_count += 1
 
-        logger.warn { 'Failed creating article: %s' % ex.message }
-        logger.warn { attrs }
-        logger.debug { it.to_html }
+        logger.warn  'Failed creating article: %s' % ex.message
+        logger.warn  attrs
+        logger.debug it.to_html
       ensure
         history.save
       end
     end
 
-    logger.info { 'Finished parsing %s' % index_summary }
+    logger.info 'Finished parsing %s' % index_summary
     history
   end
 

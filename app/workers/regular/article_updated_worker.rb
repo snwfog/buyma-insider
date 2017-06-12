@@ -3,7 +3,7 @@ class ArticleUpdatedWorker < Worker::Base
     article = Article.find?(article_id)
 
     unless article
-      logger.warn { 'Could not find article: %s' % article_id }
+      logger.warn 'Could not find article: %s' % article_id
       return
     end
 

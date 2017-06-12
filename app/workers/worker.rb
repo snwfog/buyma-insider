@@ -10,8 +10,8 @@ module Worker
     # return RestClient::RawResponse
     def fetch_page_with_capture(uri, verify_ssl, retries = 3, **headers)
       retry_count = 0
-      logger.info { "`GET` #{uri}" }
-      logger.debug { JSON.pretty_generate(headers) }
+      logger.info "`GET` #{uri}"
+      logger.debug JSON.pretty_generate(headers)
 
       RestClient::Request.execute(url:          uri,
                                   method:       :get,
@@ -21,12 +21,12 @@ module Worker
 
     rescue OpenSSL::SSL::SSLError
       retry_count += 1
-      logger.warn { 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count] }
+      logger.warn 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count]
       retry if retry_count <= retries
       nil
     rescue Exception => ex
       Sentry.capture_exception(ex)
-      logger.error { 'Fail fetch index page %s' % uri }
+      logger.error 'Fail fetch index page %s' % uri
       raise
     end
   end
