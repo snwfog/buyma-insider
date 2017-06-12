@@ -6,10 +6,10 @@ class IndexPageParseWorker < Worker::Base
                        .first
     merchant       = history.index_page.merchant
     cache_filename = history.index_page.cache_filename
-    cache_dir      = "./tmp/cache/crawl/#{merchant.id}"
+    cache_dir      = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
     cache_filepath = '%s/%s' % [cache_dir, cache_filename]
     index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
-    
+
     logger.info { 'Parsing article for index %s' % index_summary }
     if File.exist?(cache_filepath)
       logger.info { 'Found! Reading from cache file content...' }
@@ -17,7 +17,7 @@ class IndexPageParseWorker < Worker::Base
     else
       raise 'Cache file not found %s' % index_summary
     end
-    
+
     body          = read_cache_file(cache_file_content, history.content_encoding)
     item_css      = merchant.metadatum.item_css
     document      = Nokogiri::HTML(body, nil, 'utf-8')
@@ -27,9 +27,9 @@ class IndexPageParseWorker < Worker::Base
       begin
         attrs      = merchant.attrs_from_node(it)
         article_id = attrs[:id]
-        
+
         raise 'No valid id was found in parsed article attributes' unless article_id =~ /[a-z]{3}:[a-z0-9]+/
-        
+
         if article = Article.find?(article_id)
           # Bust the (serializer) cache and touch the record
           article.update!(attrs.merge(updated_at: Time.now.utc.iso8601))
@@ -49,12 +49,12 @@ class IndexPageParseWorker < Worker::Base
           history.created_articles_count += 1
           logger.info { 'Created %s ...' % article_id }
         end
-        
+
         article.update_price_history!
         history.items_count += 1
       rescue Exception => ex
         history.invalid_items_count += 1
-        
+
         logger.warn { 'Failed creating article: %s' % ex.message }
         logger.warn { attrs }
         logger.debug { it.to_html }
@@ -62,13 +62,13 @@ class IndexPageParseWorker < Worker::Base
         history.save
       end
     end
-    
+
     logger.info { 'Finished parsing %s' % index_summary }
     history
   end
-  
+
   private
-  
+
   def read_cache_file(body, encoding = nil)
     RestClient::Request.decode(encoding, body)
   end

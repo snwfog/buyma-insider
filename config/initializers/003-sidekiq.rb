@@ -6,8 +6,9 @@ redis_pool = BuymaInsider.redis_for(:sidekiq)
 Sidekiq.configure_client { |cfg| cfg.redis = redis_pool }
 Sidekiq.configure_server { |cfg| cfg.redis = redis_pool }
 
-if File.exists?('./config/sidekiq-cron.yml') && Sidekiq.server?
-  Sidekiq::Cron::Job.load_from_hash(YAML.load_file('./config/sidekiq-cron.yml'))
+sidekiq_cron_cfg_file = File.expand_path('../../sidekiq-cron.yml', __FILE__)
+if File.exists?(sidekiq_cron_cfg_file) && Sidekiq.server?
+  Sidekiq::Cron::Job.load_from_hash(YAML.load_file(sidekiq_cron_cfg_file))
 end
 
 # Sidekiq::Logging.logger = Logging.logger[:Sidekiq]
@@ -20,4 +21,3 @@ else
   Sidekiq::Logging.logger.level =
     BuymaInsider.configuration.logging.sidekiq.severity
 end
-

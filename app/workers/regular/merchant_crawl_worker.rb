@@ -8,9 +8,9 @@ class MerchantCrawlWorker < Worker::Base
   #                 backtrace: true
   def perform(merchant_id)
     @merchant           = Merchant.find!(merchant_id)
-    @merchant_cache_dir = "./tmp/cache/crawl/#{merchant.id}"
+    @merchant_cache_dir = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
     FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
-    
+
     log_start
     @merchant.index_pages.each do |index_page|
       index_page_cache_path = @merchant_cache_dir + '/' + index_page.cache_filename
@@ -24,15 +24,15 @@ class MerchantCrawlWorker < Worker::Base
       end
     end
     log_end
-  
+
   end
-  
+
   def log_start
     logger.info { 'Start crawling %s...' % @merchant.name }
     Slackiq.notify(webhook_name: :worker,
                    title:        "#{@merchant.name} crawl started...")
   end
-  
+
   def log_end
     logger.info { 'Finished crawling %s...' % @merchant.name }
     Slackiq.notify(webhook_name: :worker,
@@ -40,5 +40,3 @@ class MerchantCrawlWorker < Worker::Base
   end
 
 end
-
-
