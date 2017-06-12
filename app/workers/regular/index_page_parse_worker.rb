@@ -6,7 +6,7 @@ class IndexPageParseWorker < Worker::Base
                        .first
     merchant       = history.index_page.merchant
     cache_filename = history.index_page.cache_filename
-    cache_dir      = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
+    cache_dir      = File.expand_path("../../../../tmp/cache/crawl/#{merchant.id}", __FILE__)
     cache_filepath = '%s/%s' % [cache_dir, cache_filename]
     index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
 
