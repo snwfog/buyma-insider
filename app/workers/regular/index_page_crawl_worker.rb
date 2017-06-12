@@ -25,7 +25,7 @@ class IndexPageCrawlWorker < Worker::Base
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @merchant           = @index_page.merchant
     @merchant_cache_dir = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
-    FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
+    FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
     @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
 
     @standard_headers.merge(lazy_headers) if is_lazy

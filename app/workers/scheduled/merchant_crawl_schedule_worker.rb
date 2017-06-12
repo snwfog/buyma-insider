@@ -9,7 +9,7 @@ class MerchantCrawlScheduleWorker < Worker::Base
       MerchantCrawlWorker.perform_async merchant.id
       scheduled_merchants << merchant.name
     end
-    
+
     msg = scheduled_merchants.map { |name| "`#{name}`" }.join(' ')
     Slackiq.notify(webhook_name: :worker, ':shipit: Merchant Refresh Scheduled' => msg)
   end
