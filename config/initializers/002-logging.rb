@@ -14,8 +14,9 @@ logging_cfg.each do |layer, logger_cfg|
       logger.level    = logger_cfg.severity
       logger.additive = logger_cfg.additive
       severity_cfg    = logger_cfg.level[logger_cfg.severity]
+      log_location    = File.expand_path("../../../#{severity_cfg.location}", __FILE__)
       logger.add_appenders(
-        Logging.appenders.rolling_file(File.expand_path("../../#{severity_cfg.location}", __FILE__),
+        Logging.appenders.rolling_file(log_location,
                                        age:    severity_cfg.age,
                                        layout: Logging.layouts.pattern(pattern: severity_cfg.pattern)))
     end

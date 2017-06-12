@@ -55,8 +55,8 @@ class IndexPageParseWorker < Worker::Base
       rescue Exception => ex
         history.invalid_items_count += 1
 
-        logger.warn  'Failed creating article: %s' % ex.message
-        logger.warn  attrs
+        logger.warn 'Failed creating article: %s' % ex.message
+        logger.warn attrs
         logger.debug it.to_html
       ensure
         history.save

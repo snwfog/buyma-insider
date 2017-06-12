@@ -1,3 +1,4 @@
+#
 class IndexPagesController < ApplicationController
   options '/**' do; end
 
@@ -8,8 +9,9 @@ class IndexPagesController < ApplicationController
   end
 
   post '/:id/_refresh' do
-    if IndexPageCrawlWorker.perform_async(index_page_id: @index_page.id,
-                                          no_cache:      true)
+    if IndexPageCrawlWorker.perform_async(index_page_id:   @index_page.id,
+                                          no_cache:        true,
+                                          schedule_parser: true)
       status :created
       json @index_page.reload
     else

@@ -22,6 +22,7 @@ class IndexPageCrawlWorker < Worker::Base
   def perform(args)
     index_page_id       = args.fetch('index_page_id')
     is_lazy             = !args.fetch('no_cache', false)
+    is_schedule_parser  = args.fetch('schedule_parser', false)
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @merchant           = @index_page.merchant
     @merchant_cache_dir = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
@@ -59,6 +60,11 @@ class IndexPageCrawlWorker < Worker::Base
     logger.error ex.http_headers if ex.is_a? RestClient::Exception
     logger.error ex.backtrace
   else
+    if is_schedule_parser
+      logger.info 'Scheduling an index page parser'
+      IndexPageParseWorker.perform_async(index_page_id)
+    end
+    
     @current_crawl_history
   ensure
     @current_crawl_history.finished_at = Time.now

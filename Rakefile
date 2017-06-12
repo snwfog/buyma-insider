@@ -55,10 +55,10 @@ task :crawl, [:merchant_id] do |_, args|
   merchant    = Merchant.find(merchant_id)
   merchant.index_pages.each do |index_page|
     puts 'Crawling page `%s`' % index_page.full_url
-    crawl_history = IndexPageCrawlWorker.new .perform('index_page_id' => index_page.id)
+    crawl_history = IndexPageCrawlWorker.new.perform('index_page_id' => index_page.id)
     raise 'Crawl failed...' unless crawl_history.completed?
     puts 'Parsing articles...'
-    crawl_history = IndexPageParseWorker.new .perform(index_page.id)
+    crawl_history = IndexPageParseWorker.new.perform(index_page.id)
     puts 'items_count: %d, invalid_items_count: %d' % [crawl_history.items_count, crawl_history.invalid_items_count]
   end
 end
