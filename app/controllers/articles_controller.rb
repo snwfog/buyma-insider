@@ -68,13 +68,12 @@ class ArticlesController < ApplicationController
                  order_direction            ||= 'asc'
                  Hash[order_key, order_direction]
                end
-    results  = elasticsearch_search_by_template(:article_name_search,
-                                                :article,
+    results  = elasticsearch_search_by_template(:article_search, :article,
                                                 article_name_query: q,
                                                 order_by:           order_by || [],
                                                 size:               limit,
                                                 from:               [page - 1, 0].min * limit)
-
+    
     if documents = results.dig(*%w(hits hits))
       json Article
              .eager_load(:price_history)

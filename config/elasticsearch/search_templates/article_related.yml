@@ -4,19 +4,10 @@ query:
     must:
       match:
         name: '{{article_name_query}}'
-#    filter:
-#      range:
-#        created_at:
-#          gte: '{{created_at}}{{^created_at}}now-1w{{/created_at}}'
+        name.strict_keyword: '{{article_name_query}}'
     must_not:
       ids:
         values: '{{#toJson}}excluded_article_ids{{/toJson}}'
-#      range:
-#        updated_at:
-#          lt: now+2y
+# sort: order by most relevant
 from: '{{from}}{{^from}}0{{/from}}'
 size: '{{size}}{{^size}}20{{/size}}'
-#params:
-#  article_name_query: leather crossbody
-#  from: 0
-#  size: 5

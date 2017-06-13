@@ -225,11 +225,11 @@ namespace :es do
       Generating search templates...
     SQL
 
-    dest_dir        = './tmp/configs/elasticsearch/config/scripts'
+    dest_dir        = File.expand_path('../tmp/configs/elasticsearch/config/scripts', __FILE__)
     replace_to_json = %r/"({{#toJson}}([^{]+){{\/toJson}})"/
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
 
-    FileList['./config/elasticsearch/search_templates/*.yml'].each do |template_file|
+    FileList[File.expand_path('../config/elasticsearch/search_templates/*.yml', __FILE__)].each do |template_file|
       template_hash = YAML::load_file(template_file)
       template_name = template_file.pathmap('%n')
       printf 'Generating search template `%s`...' % template_name

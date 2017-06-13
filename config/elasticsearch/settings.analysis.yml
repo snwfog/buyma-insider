@@ -27,7 +27,24 @@ analysis:
       mappings_path:                 char_filter_mappings/article_mappings.txt
 
   analyzer:
+    # This is a loose analyzer
     article_name_analyzer:
+      type: custom
+      char_filter:
+        - article_char_filter
+      tokenizer:                     standard
+      filter:
+        - standard
+        - lowercase
+        - asciifolding                # Fold to ascii
+        - apostrophe                  # Remove apostrophe
+        - stop                        # Remove common english stop words
+        - snowball                    # Simplify terms to base, remove plurials
+
+    # This is a strict analyzer, which is
+    # heavily filtered, field indexed with this
+    # analyzer will be given a boost
+    article_name_strict_keyword_analyzer:
       type:                          custom
       char_filter:
         - article_char_filter

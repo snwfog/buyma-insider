@@ -28,6 +28,9 @@ class IndexPageParseWorker < Worker::Base
         attrs      = merchant.attrs_from_node(it)
         article_id = attrs[:id]
 
+        logger.debug 'Article properties'
+        logger.debug JSON.pretty_generate(attrs)
+
         raise 'No valid id was found in parsed article attributes' unless article_id =~ /[a-z]{3}:[a-z0-9]+/
 
         if article = Article.find?(article_id)

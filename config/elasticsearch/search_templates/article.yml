@@ -4,6 +4,12 @@ query:
     must:
       match:
         name: '{{article_name_query}}'
+    should:
+      - match:
+          name.strict_keyword:
+            query: '{{article_name_query}}'
+            boost: 3 # 3 is arbitrary
+    minimum_should_match: 0 # this is the default
 #    filter:
 #      range:
 #        created_at:

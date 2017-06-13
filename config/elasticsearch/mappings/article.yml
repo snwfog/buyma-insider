@@ -8,7 +8,11 @@ properties:
     type:                    text
     analyzer:                article_name_analyzer
     fields:
+      strict_keyword:
+        type:                 text
+        analyzer: article_name_strict_keyword_analyzer
       raw:
+        # Does this needs to be boosted?
         type:                keyword
         ignore_above:        500
   price:

@@ -1,0 +1,16 @@
+_source: false
+query:
+  bool:
+    must:
+      match:
+        name: '{{article_name_query}}'
+        merchant_id: '{{merchant_id}}'
+    should:
+      - match:
+          name.strict_keyword:
+            query: '{{article_name_query}}'
+            boost: 3
+    minimum_should_match: 0
+sort: '{{#toJson}}order_by{{/toJson}}'
+from: '{{from}}{{^from}}0{{/from}}'
+size: '{{size}}{{^size}}20{{/size}}'
