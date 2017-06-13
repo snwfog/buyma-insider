@@ -48,6 +48,8 @@ set :bundle_flags, '--no-deployment --quiet'                                    
 # append :linked_files, *fetch(:app_linked_files)
 
 append :linked_dirs, 'log',
+                     'tmp/configs',
+                     'tmp/volumes',
                      'tmp/pids',
                      'tmp/cache',
                      'tmp/sockets'
