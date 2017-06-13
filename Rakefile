@@ -299,6 +299,7 @@ namespace :es do
 
   desc 'Build character filter mappings'
   task :build_char_filter_mappings do
+    puts
     puts 'Generating character filter mappings...'.yellow
 
     dest_dir = File.expand_path('../tmp/configs/elasticsearch/config/char_filter_mappings', __FILE__)

@@ -120,6 +120,7 @@ GEM
       colorize
     i18n (0.8.1)
     jsonapi-renderer (0.1.2)
+    kgio (2.11.0)
     little-plugger (1.1.4)
     logging (2.2.0)
       little-plugger (~> 1.1)
@@ -183,6 +184,7 @@ GEM
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     rainbow (2.2.1)
+    raindrops (0.18.0)
     rake (12.0.0)
     redis (3.3.3)
     redis-activesupport (5.0.2)
@@ -259,6 +261,9 @@ GEM
     unf_ext (0.0.7.2-x64-mingw32)
     unicode-display_width (1.1.3)
     unicode_utils (1.4.0)
+    unicorn (5.3.0)
+      kgio (~> 2.6)
+      raindrops (~> 0.7)
 
 PLATFORMS
   ruby
@@ -317,6 +322,7 @@ DEPENDENCIES
   sinatra-param!
   slackiq
   table_print
+  unicorn
 
 BUNDLED WITH
    1.15.1
