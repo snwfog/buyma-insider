@@ -265,6 +265,7 @@ namespace :es do
 
   desc 'Build stopword lists'
   task :build_stopwords do
+    puts
     puts <<~SQL.yellow
       Generating stopword lists...
       To setup the wordlists, make sure that the ./config/elasticsearch/config
@@ -272,10 +273,10 @@ namespace :es do
       SELECT * FROM dbo.Test
     SQL
 
-    dest_dir = './tmp/configs/elasticsearch/config/stopwords'
+    dest_dir = File.expand_path('../tmp/configs/elasticsearch/config/stopwords', __FILE__)
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
 
-    FileList['./lib/elasticsearch/wordlists/*.txt'].each do |wl_filename|
+    FileList[File.expand_path('../lib/elasticsearch/wordlists/*.txt', __FILE__)].each do |wl_filename|
       filter_name = wl_filename.pathmap('%n')
       printf 'Generating stopwords `%s`...' % filter_name
       word_lists = File
@@ -300,10 +301,10 @@ namespace :es do
   task :build_char_filter_mappings do
     puts 'Generating character filter mappings...'.yellow
 
-    dest_dir = './tmp/configs/elasticsearch/config/char_filter_mappings'
+    dest_dir = File.expand_path('../tmp/configs/elasticsearch/config/char_filter_mappings', __FILE__)
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
 
-    FileList['./config/elasticsearch/char_filter_mappings/*.txt'].each do |char_filter_mapping|
+    FileList[File.expand_path('../config/elasticsearch/char_filter_mappings/*.txt', __FILE__)].each do |char_filter_mapping|
       printf 'Generating char_filter_mapping %s...' % char_filter_mapping
       FileUtils.cp(char_filter_mapping, dest_dir + '/')
       puts 'Done!'.green
