@@ -9,7 +9,7 @@ class MerchantCrawlWorker < Worker::Base
   def perform(merchant_id)
     @merchant           = Merchant.find!(merchant_id)
     @merchant_cache_dir = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
-    FileUtils::mkdir(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
+    FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
 
     log_start
     @merchant.index_pages.each do |index_page|
@@ -30,13 +30,13 @@ class MerchantCrawlWorker < Worker::Base
   def log_start
     logger.info 'Start crawling %s...' % @merchant.name
     Slackiq.notify(webhook_name: :worker,
-                   title:        "#{@merchant.name} crawl started...")
+                   title:        "#{@merchant.name} crawl started, scheduling all index pages to be updated.")
   end
 
   def log_end
     logger.info 'Finished crawling %s...' % @merchant.name
     Slackiq.notify(webhook_name: :worker,
-                   title:        "#{@merchant.name} crawl finished in #{'%.02f' % (total_elapsed_time / 60)}m.")
+                   title:        "#{@merchant.name} index pages has been scheduled.")
   end
 
 end
