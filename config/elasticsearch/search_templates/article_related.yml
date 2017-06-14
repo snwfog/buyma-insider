@@ -2,9 +2,12 @@ _source: false
 query:
   bool:
     must:
-      match:
-        name: '{{article_name_query}}'
-        name.strict_keyword: '{{article_name_query}}'
+      multi_match:
+        query: '{{article_name_query}}'
+        fields:
+          - name
+          - name.strict_keyword^3
+        type: most_fields
     must_not:
       ids:
         values: '{{#toJson}}excluded_article_ids{{/toJson}}'
