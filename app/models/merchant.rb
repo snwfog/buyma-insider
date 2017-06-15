@@ -34,7 +34,7 @@ class Merchant
   
   field :name, type:        String,
                required:    true
-
+  
   # def each_index_page
   #   @indices ||= index_pages.map do |path|
   #     indexer.new(path, merchant_metadatum)

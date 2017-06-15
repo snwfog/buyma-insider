@@ -1,4 +1,5 @@
 module Merchants
+  # @deprecated showme is gone
   module Shoeme
     def self.extended(merchant)
       merchant.indexer = ShoemeIndexer

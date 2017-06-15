@@ -9,19 +9,20 @@ ssense:
     - en-ca/women
   ssl:              true
 
-shoeme:
-  id:               sho
-  name:             shoeme
-  domain:           //shoeme.ecomm-nav.com
-  pager_css:        div.nxt-pagination
-  item_css:         ul.product-list li.product-li
-  index_pages:
-    - collections/womens-shoes
-    - collections/mens-shoes
-    - collections/kids
-    - collections/all-bags
-    - collections/sale
-  ssl:              false
+# @deprecated shoeme is out of business
+#shoeme:
+#  id:               sho
+#  name:             shoeme
+#  domain:           //shoeme.ecomm-nav.com
+#  pager_css:        div.nxt-pagination
+#  item_css:         ul.product-list li.product-li
+#  index_pages:
+#    - collections/womens-shoes
+#    - collections/mens-shoes
+#    - collections/kids
+#    - collections/all-bags
+#    - collections/sale
+#  ssl:              false
 
 getoutside:
   id:               get

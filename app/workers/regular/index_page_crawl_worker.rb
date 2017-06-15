@@ -1,3 +1,4 @@
+# Crawls an index page
 class IndexPageCrawlWorker < Worker::Base
   sidekiq_options unique:                :until_and_while_executing,
                   log_duplicate_payload: true
