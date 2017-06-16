@@ -9,6 +9,8 @@ require_relative './config/application'
 #     map("/#{route}") { use ctrl_class.constantize }
 # end
 
+map('/message_bus') { run MessageBus::Rack::Middleware }
+
 map('/') { run StaticController }
 map_controller('/sessions')
 map_controller('/users')
@@ -22,3 +24,4 @@ map_controller('/article_notification_criteria')
 map_controller('/crawl_histories')
 map_controller('/index_pages')
 map_controller('/exchange_rates')
+
