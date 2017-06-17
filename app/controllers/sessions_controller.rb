@@ -4,7 +4,7 @@ class SessionsController < ApplicationController
   # get '/' do
   #   call env.merge('REQUEST_METHOD' => 'POST')
   # end
-  
+
   # Create the session
   post '/' do
     # param :username, String, required:  true,
@@ -12,7 +12,7 @@ class SessionsController < ApplicationController
     # param :password, String, required: true
     #
     # username, password = params.values_at('username', 'password')
-  
+
     request.body.rewind
     payload            = JSON.parse(request.body.read)
     user_hash          = as_model(payload)
