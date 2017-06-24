@@ -1,7 +1,10 @@
 class UserArticleSold
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-
+  
+  has_one    :buyer_user_article_sold, dependent: :destroy
+  has_one    :buyer,                   through: :buyer_user_article_sold
+  
   belongs_to :user,            index:    true,
                                required: true
   belongs_to :article,         index:    true,
