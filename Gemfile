@@ -19,7 +19,7 @@ gem 'rest-client'
 gem 'hashie'
 
 # Security / Login
-gem 'bcrypt',                   github: 'codahale/bcrypt-ruby', :require => 'bcrypt'
+gem 'bcrypt',                   github: 'codahale/bcrypt-ruby', require: 'bcrypt'
 gem 'net_http_ssl_fix'          # require: false if Gem.win_platform?
 
 # Persistence
