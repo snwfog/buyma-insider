@@ -1,10 +1,15 @@
 class UserArticleSold
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
-  
-  has_one    :buyer_user_article_sold, dependent: :destroy
-  has_one    :buyer,                   through: :buyer_user_article_sold
-  
+
+  has_many   :user_article_sold_extra_charge,      dependent: :destroy
+  has_many   :extra_charge,                        through: :user_article_sold_extra_charge
+  has_many   :user_article_sold_shipping_services, dependent: :destroy
+  has_many   :shipping_services,                   through: :user_article_sold_shipping_services
+
+  has_one    :user_article_sold_buyer, dependent: :destroy
+  has_one    :buyer,                   through: :user_article_sold_buyer
+
   belongs_to :user,            index:    true,
                                required: true
   belongs_to :article,         index:    true,
@@ -12,9 +17,6 @@ class UserArticleSold
   belongs_to :exchange_rate,   index:    true,
                                required: true
   
-  has_many :user_article_sold_shipping_services, dependent: :destroy
-  has_many :shipping_services, through: :user_article_sold_shipping_services
-
   index :ix_user_article_sold_user_id_article_id, [:user_id, :article_id]
 
   alias_method :sold_at,       :created_at

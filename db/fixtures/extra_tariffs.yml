@@ -1,0 +1,6 @@
+---
+name:            canada import duty
+rate:            15.0
+flat_or_percent: percent
+in_or_out_flow:  in
+description:     Canada import duty, applied on the item that is sold

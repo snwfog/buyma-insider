@@ -19,7 +19,12 @@ class MerchantCrawlWorker < Worker::Base
         logger.info 'Index cache is less than a week old, try use etag header'
         IndexPageCrawlWorker.perform_async(index_page_id: index_page.id, lazy: true)
       else
-        logger.info 'Index cache is over a week old, last modified at %s' % index_page_cache_mtime
+        if index_page_cache_mtime
+          logger.info 'Index cache is over a week old, last modified at %s' % index_page_cache_mtime
+        else
+          logger.info 'Index cache does not exists, creating a new cache copy at %s' % index_page_cache_path
+        end
+
         IndexPageCrawlWorker.perform_async(index_page_id: index_page.id)
       end
     end

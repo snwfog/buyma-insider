@@ -25,14 +25,13 @@ class IndexPageCrawlWorker < Worker::Base
     is_lazy             = !args.fetch('no_cache', false)
     is_schedule_parser  = args.fetch('schedule_parser', false)
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
+    @last_crawl_history = @index_page.crawl_histories.finished.first
     @merchant           = @index_page.merchant
     @merchant_cache_dir = File.expand_path("../../../../tmp/cache/crawl/#{@merchant.id}", __FILE__)
     FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
     @index_page_cache_path = @merchant_cache_dir + '/' + @index_page.cache_filename
 
     @standard_headers.merge(lazy_headers) if is_lazy
-
-    @last_crawl_history    = @index_page.crawl_histories.finished.first
     @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
                                                   status:      :inprogress,
                                                   description: "#{@merchant.name} [#{@index_page}]")
