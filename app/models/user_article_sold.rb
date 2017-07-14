@@ -42,6 +42,7 @@ class UserArticleSold
 
   field :price,      type:    Float
   field :sold_price, type:    Float
+  field :notes,      type:    String
   # field :sold_currency, type:    Enum,
   #                       in:      [:cad, :jpy]
 

@@ -1,12 +1,16 @@
 require 'buyma_insider'
 
+# rethinkdb
 include RethinkDB::Shortcuts
+URI.parse(BuymaInsider.configuration.database.uri).tap do |uri|
+  r.connect({ user:     uri.user && URI.decode(uri.user),
+              password: uri.password && URI.decode(uri.password),
+              host:     uri.host,
+              port:     uri.port,
+              db:       uri.path[1, -1] }).repl
+end
 
-client = Elasticsearch::Client.new
-conn   = r.connect(db: :"buyma_insider_#{BuymaInsider.environment}")
-conn.repl
-
-$es = $elasticsearch
+client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
 # def search_with_template(body)
 #   $elasticsearch.search_template(index: :_all, type: :article, body: body)
 # end
@@ -49,4 +53,3 @@ def fetch(uri, **opts)
     http.request(Net::HTTP::Get.new(uri))
   end
 end
-

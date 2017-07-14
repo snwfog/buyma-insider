@@ -80,6 +80,7 @@ group :development do
   gem 'coolline',              require: false
   gem 'awesome_print'
   gem 'table_print',           require: false
+  gem 'pry-byebug',            require: false
 end
 
 group :test do

@@ -66,6 +66,7 @@ GEM
     awesome_print (1.7.0)
     backports (3.8.0)
     builder (3.2.3)
+    byebug (9.0.6)
     capistrano (3.8.1)
       airbrussh (>= 1.0.0)
       i18n
@@ -174,6 +175,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (3.4.2)
+      byebug (~> 9.0)
+      pry (~> 0.10)
     rack (2.0.3)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -297,6 +301,7 @@ DEPENDENCIES
   nokogiri
   nyan-cat-formatter
   pry
+  pry-byebug
   rack
   rake
   redis

@@ -1,4 +1,4 @@
-Sentry = Raven
+Sentry = Raven if defined? Sentry
 
 Raven.inject_only :sidekiq
 # :rack,

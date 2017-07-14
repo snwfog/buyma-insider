@@ -1,13 +1,5 @@
 # Buyma Insider
 
-## TO-IMPLEMENTS
--
-
-## TODO
-- Migrate old rethinkdb data
-- Add merchant index gateway that will scrape index pages
-- Add indexer persistent models
-
 ## SETUP
 
 - Unicorn in development can be run with local launch command
@@ -22,14 +14,11 @@
 - Make sure to set the ENVIRONMENT variable when running elsewhere
 - Make sure that a proper HTTPS certificate is installed (https://gist.github.com/fnichol/867550)
 - `foreman export launchd ./tmp/plist --log /usr/local/var/log`
-- Install nginx-full
+- Install nginx-full, or use Brewfile
 ```
 brew tap homebrew/nginx
 brew install nginx-full --with-debug --with-gzip-static
 ```
-
-### Docker / VirtualBox
-- vboxmanage controlvm default natpf1 rethinkdb,tcp,127.0.0.1,8080,,8080
 
 ### Elasticsearch
 
@@ -38,7 +27,16 @@ brew install nginx-full --with-debug --with-gzip-static
 - Setup analyzers
 ```
 
-### Docker
+### Docker / VirtualBox
+
+- Example of creating port forwarding on windows
+-- `vboxmanage controlvm default natpf1 rethinkdb,tcp,127.0.0.1,8080,,8080`
+
+- Example of building docker image
+-- `docker build -t buyma_insider_sidekiq:latest .`
+-- `docker run -it --network buymainsider_default --rm --privileged --name buyma_insider_sidekiq buyma_insider_sidekiq`
+-- `compose up sidekiq`
+
 - rethinkdb
 
 docker run --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
@@ -54,7 +52,7 @@ ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d --hos
 
 - pry
 
-be pry -Iapp -rbuyma_insider
+be pry -Iapp
 
 ## NOTE
 
@@ -64,9 +62,4 @@ be pry -Iapp -rbuyma_insider
 
 /exchange_rates/latest
 /crawl_sessions
-
-### To Add New Merchants
-
-- Add to merchants.yml
-- Add merchant class to models/merchants
-- Write a test
+...

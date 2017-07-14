@@ -1,0 +1,9 @@
+.dockerignore
+.git
+.bundle
+.idea
+.pryrc
+spec
+test
+log/*
+tmp/cache/*

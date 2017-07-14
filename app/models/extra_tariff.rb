@@ -8,10 +8,10 @@ class ExtraTariff
                           length:       (1..50)
   field :rate,            type:         Float,
                           required:     true
-  field :flat_or_percent, type:         Enum,
+  field :rate_type,       type:         Enum,
                           in:           [:flat, :percent],
                           default:      :flat
-  field :in_or_out_flow,  type:         Enum,
+  field :flow_direction,  type:         Enum,
                           in:           [:in, :out],
                           default:      :in
   field :description,     type:         String,

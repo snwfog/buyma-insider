@@ -28,6 +28,7 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
   attributes :status,
              :price,
              :sold_price,
+             :notes,
              :confirmed_at,
              :shipped_at,
              :cancelled_at,

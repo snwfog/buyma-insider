@@ -1,5 +1,9 @@
 # Elasticsearch configuration
-elasticsearch_cfg = Hash.new.tap do |h|
+elasticsearch_cfg = BuymaInsider
+                      .configuration
+                      .elasticsearch
+                      .dup
+                      .tap do |h|
   unless BuymaInsider.production?
     h[:logger] = Logging.logger[:Elasticsearch]
     h[:trace]  = true

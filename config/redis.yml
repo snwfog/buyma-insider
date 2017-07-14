@@ -1,4 +1,4 @@
-# Redis
+# redis
 default:          &default
   global:         &default_process
     host:         127.0.0.1

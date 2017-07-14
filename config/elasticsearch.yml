@@ -1,0 +1,17 @@
+# elasticsearch
+# ENV 'ELASTICSEARCH_URL' as 'localhost:9200'
+
+default:         &default
+  url:           127.0.0.1:9200
+
+development:
+  <<:            *default
+
+test:
+  <<:            *default
+
+staging:
+  <<:            *default
+
+production:
+  <<:            *default
