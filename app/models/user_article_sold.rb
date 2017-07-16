@@ -71,6 +71,12 @@ class UserArticleSold
   #   @shipping_service_ids = shipping_service_ids
   # end
 
+  def add_buyer!(buyer_payload)
+    buyer                   = Buyer.create!(buyer_payload)
+    user_article_sold_buyer = UserArticleSoldBuyer.create!(user_article_sold: self,
+                                                           buyer:             buyer)
+  end
+
   private
   def set_price
     self.price = article.price

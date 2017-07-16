@@ -1,4 +1,15 @@
 class UserArticleSoldSerializer < ActiveModel::Serializer
+  has_many :shipping_services do
+    link :related, proc {
+      "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services" }
+  end
+  
+  has_one :buyer do
+    include_data true
+    # link :related, proc {
+    #   "/#{BuymaInsider::API_VERSION}/buyer/#{object.buyer.id}" }
+  end
+  
   belongs_to :user do
     include_data true
     # link :related, proc {
@@ -15,14 +26,9 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
   end
   
   belongs_to :exchange_rate do
+    include_data true
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/exchange_rates/#{object.exchange_rate_id}" }
-    include_data true
-  end
-  
-  has_many :shipping_services do
-    link :related, proc {
-      "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services"}
   end
   
   attributes :status,

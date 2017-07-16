@@ -17,7 +17,13 @@ class UserArticleSoldsController < ApplicationController
 
   patch '/:id' do
     request.body.rewind
-    payload      = JSON.parse(request.body.read)
+    payload = JSON.parse(request.body.read)
+    
+    if buyer_embedded_payload = payload.dig('data', 'buyer')
+      payload['data'].delete('buyer')
+      @ua_sold.add_buyer!(as_model(buyer_embedded_payload))
+    end
+    
     ua_sold_json = as_model(payload)
     if current_user.id != ua_sold_json[:user_id]
       raise 'Only current user can update sold article'

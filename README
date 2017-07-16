@@ -36,23 +36,13 @@ brew install nginx-full --with-debug --with-gzip-static
 -- `docker build -t buyma_insider_sidekiq:latest .`
 -- `docker run -it --network buymainsider_default --rm --privileged --name buyma_insider_sidekiq buyma_insider_sidekiq`
 -- `compose up sidekiq`
-
-- rethinkdb
-
-docker run --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb
-
-- elasticsearch
-
-docker run --name elastic -p 9200:9200 -p 9300:9300 --rm -e ES_JAVA_OPTS='-Xms1g -Xmx1g' elasticsearch:latest
+- rethinkdb `docker run --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb`
+- elasticsearch `docker run --name elastic -p 9200:9200 -p 9300:9300 --rm -e ES_JAVA_OPTS='-Xms1g -Xmx1g' elasticsearch:latest`
 
 ### Local
-- unicorn
 
-ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d --host localhost --port 5000
-
-- pry
-
-be pry -Iapp
+- unicorn `ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d --host localhost --port 5000`
+- pry `be pry -Iapp`
 
 ## NOTE
 
