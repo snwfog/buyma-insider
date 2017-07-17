@@ -14,6 +14,6 @@ class Buyer
                         format: /[\w]+/
   field :email_address, type:   String,
                         index:  true,
-                        unique: true,
+                        unique: true, # Add index?
                         format: SIMPLE_EMAIL_VALIDATION_REGEX
 end

@@ -71,10 +71,11 @@ class UserArticleSold
   #   @shipping_service_ids = shipping_service_ids
   # end
 
-  def add_buyer!(buyer_payload)
-    buyer                   = Buyer.create!(buyer_payload)
-    user_article_sold_buyer = UserArticleSoldBuyer.create!(user_article_sold: self,
-                                                           buyer:             buyer)
+  def set_buyer!(buyer_payload)
+    buyer = Buyer
+              .where(email_address: buyer_payload.fetch(:email_address))
+              .first || Buyer.create!(buyer_payload)
+    UserArticleSoldBuyer.create!(user_article_sold: self, buyer: buyer)
   end
 
   private
