@@ -1,7 +1,14 @@
 class UserArticleSoldSerializer < ActiveModel::Serializer
   has_many :shipping_services do
-    link :related, proc {
-      "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services" }
+    # link :related, proc {
+    #   "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services" }
+    include_data true
+  end
+  
+  has_many :extra_tariffs do
+    # link :related, proc {
+    #   "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/extra_tariffs" }
+    include_data true
   end
   
   has_one :buyer do

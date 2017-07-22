@@ -9,10 +9,10 @@ class ExtraTariff
   field :rate,            type:         Float,
                           required:     true
   field :rate_type,       type:         Enum,
-                          in:           [:flat, :percent],
+                          in:           [:flat_rate, :percent_rate],
                           default:      :flat
   field :flow_direction,  type:         Enum,
-                          in:           [:in, :out],
+                          in:           [:inflow, :outflow],
                           default:      :in
   field :description,     type:         String,
                           required:     true,

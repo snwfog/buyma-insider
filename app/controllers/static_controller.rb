@@ -12,6 +12,7 @@ class StaticController < ApplicationController
     @bootstrap ||= {
       server_version:                BuymaInsider::VERSION,
       shipping_services:             to_hash(ShippingService.all),
+      extra_tariffs:                 to_hash(ExtraTariff.all),
       article_notification_criteria: to_hash(ArticleNotificationCriterium.all)
     }
 

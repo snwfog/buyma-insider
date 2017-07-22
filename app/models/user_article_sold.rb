@@ -2,10 +2,10 @@ class UserArticleSold
   include NoBrainer::Document
   include NoBrainer::Document::Timestamps
 
-  has_many   :user_article_sold_extra_tariff,      dependent: :destroy
-  has_many   :extra_tariff,                        through: :user_article_sold_extra_tariff
+  has_many   :user_article_sold_extra_tariffs,     dependent: :destroy
+  has_many   :extra_tariffs,                       through:   :user_article_sold_extra_tariffs
   has_many   :user_article_sold_shipping_services, dependent: :destroy
-  has_many   :shipping_services,                   through: :user_article_sold_shipping_services
+  has_many   :shipping_services,                   through:   :user_article_sold_shipping_services
 
   has_one    :user_article_sold_buyer, dependent: :destroy
   has_one    :buyer,                   through: :user_article_sold_buyer
@@ -75,7 +75,9 @@ class UserArticleSold
     buyer = Buyer
               .where(email_address: buyer_payload.fetch(:email_address))
               .first || Buyer.create!(buyer_payload)
-    UserArticleSoldBuyer.create!(user_article_sold: self, buyer: buyer)
+    UserArticleSoldBuyer
+      .where(user_article_sold: self, buyer: buyer)
+      .first_or_create!
   end
 
   private
