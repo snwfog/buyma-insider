@@ -1,6 +1,5 @@
 module AuthenticationHelper
   SESSION_EXPIRE_TIME = 1.week # TODO: SiteSetting
-  SESSION_KEY         = '_t'.freeze
   CURRENT_USER_KEY    = '_CURRENT_USER_KEY'.freeze
 
   UserNotFound     = Class.new(RuntimeError)
@@ -22,7 +21,7 @@ module AuthenticationHelper
 
   def current_user
     @current_user ||= begin
-      unhashed_token = cookies[SESSION_KEY]
+      unhashed_token = cookies[UserAuthToken::SESSION_KEY]
       raise InvalidSession unless unhashed_token
       session_cached_user
     end
@@ -38,8 +37,8 @@ module AuthenticationHelper
   def post_authenticate!(user)
     # @env        = Rack::Request.new(env)
     unhashed_token = SecureRandom.hex(16)
-    hashed_token   = hash_token(unhashed_token)
-    cookies.set(SESSION_KEY, cookie_hash(unhashed_token))
+    hashed_token   = UserAuthToken.hash_token(unhashed_token)
+    cookies.set(UserAuthToken::SESSION_KEY, cookie_hash(unhashed_token))
     session_cache do |redis|
       redis.set(hashed_token,
                 user,
@@ -51,26 +50,19 @@ module AuthenticationHelper
   end
 
   def destroy_session!
-    unhashed_token = cookies[SESSION_KEY]
+    unhashed_token = cookies[UserAuthToken::SESSION_KEY]
     raise InvalidSession unless unhashed_token
     session_cache do |redis|
-      redis.del(hash_token(unhashed_token))
+      redis.del(UserAuthToken.hash_token(unhashed_token))
     end
   end
 
   private
 
-  SECRET = SecureRandom.hex(64) # TODO: GlobalSettings
-  def hash_token(token)
-    # Escape string table
-    # https://github.com/ruby/ruby/blob/trunk/doc/syntax/literals.rdoc#strings
-    Digest::SHA1.base64digest(token + SECRET)
-  end
-
   def session_cached_user
     session_cache do |redis|
-      unhashed_token = cookies[SESSION_KEY]
-      hashed_token   = hash_token(unhashed_token)
+      unhashed_token = cookies[UserAuthToken::SESSION_KEY]
+      hashed_token   = UserAuthToken.hash_token(unhashed_token)
       user           = redis.get(hashed_token)
       raise UserNotFound unless !!user
       redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
