@@ -13,9 +13,9 @@ class CrawlHistory
                                  default:     :scheduled
   field :description,            type:        String,
                                  required:    true
-  field :updated_articles_count, type:        Integer,
-                                 default:     0
   field :created_articles_count, type:        Integer,
+                                 default:     0
+  field :updated_articles_count, type:        Integer,
                                  default:     0
   field :items_count,            type:        Integer,
                                  default:     0
