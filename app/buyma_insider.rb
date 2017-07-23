@@ -20,6 +20,10 @@ module BuymaInsider
         end
       end
     end
+    
+    def base_url
+      ENV['APP_BASE_URL'] || 'http://localhost:4200'
+    end
 
     # Return a redis pool for an app area that
     # requires redis connection, settings from redis.yml
