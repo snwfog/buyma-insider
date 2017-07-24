@@ -37,6 +37,10 @@ def get_user
              password: 123 })
 end
 
+def json_serialize(object)
+  ActiveModelSerializers::SerializableResource.new(object, include: '**')
+end
+
 require 'net/http'
 OracleProxyHttp = Net::HTTP::Proxy('adc-proxy.oracle.com', 80)
 

@@ -16,13 +16,9 @@ class UserArticleNotifiedsController < ApplicationController
     request.body.rewind
     payload          = JSON.parse(request.body.read)
     ua_notified_json = as_model(payload)
-    if current_user.id != ua_notified_json[:user_id]
-      raise 'Only current user can update notified article'
-    else
-      @ua_notified.update!(ua_notified_json)
-      status :ok
-      json @ua_notified
-    end
+    @ua_notified.update!(ua_notified_json)
+    status :ok
+    json @ua_notified
   end
   
   get '/:id' do
