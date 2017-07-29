@@ -2,9 +2,11 @@ class IndexPageSerializer < ActiveModel::Serializer
   HEALTH_GREEN  = :green
   HEALTH_ORANGE = :orange
   HEALTH_RED    = :red
-  
-  cache key: :index_page, expires_in: 5.minute
-  
+
+  cache key:        :index_page,
+        # except:     [:last_synced_at],
+        expires_in: 5.minute
+
   attributes :id,
              :full_url,
              :relative_path,

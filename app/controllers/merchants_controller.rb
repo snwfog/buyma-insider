@@ -22,12 +22,19 @@ class MerchantsController < ApplicationController
                                              'price:desc',
                                              'created_at:asc',
                                              'created_at:desc',
+                                             'updated_at:asc',
+                                             'updated_at:desc',
                                              'name',
                                              'price',
-                                             'created_at']
+                                             'created_at',
+                                             'updated_at']
 
     @merchant             = @merchants_lookup.fetch(params[:merchant_id])
     @page, @limit, @order = params.values_at(*%w(page limit order))
+    @order_by             = if @order
+                              @order_key, @order_direction, *_ = "#{@order}:asc".split(?:).each(&:to_sym)
+                              Hash[@order_key.to_sym, @order_direction.to_sym]
+                            end || {}
   end
   
   get '/' do
@@ -43,7 +50,7 @@ class MerchantsController < ApplicationController
            .articles
            .eager_load(:price_history,
                        :crawl_history_articles)
-           .order_by(@order)
+           .order_by(@order_by)
            .offset((@page - 1) * @limit)
            .limit(@limit),
          meta: { current_page: @page,

@@ -72,7 +72,7 @@ class ArticlesController < ApplicationController
                                                 article_name_query: q,
                                                 order_by:           order_by || [],
                                                 size:               limit,
-                                                from:               [page - 1, 0].min * limit)
+                                                from:               [page - 1, 0].max * limit)
     
     if documents = results.dig(*%w(hits hits))
       json Article

@@ -38,6 +38,12 @@ brew install nginx-full --with-debug --with-gzip-static
 -- `compose up sidekiq`
 - rethinkdb `docker run --name rethinkdb -p 8080:8080 -p 28015:28015 --rm greyarch/rethinkdb`
 - elasticsearch `docker run --name elastic -p 9200:9200 -p 9300:9300 --rm -e ES_JAVA_OPTS='-Xms1g -Xmx1g' elasticsearch:latest`
+TODO: Add to Dockerfile?
+- sidekiq `bundle exec sidekiq --environment development --require ./config/application.rb --pidfile ./tmp/pids/sidekiq.pid --logfile ./log/sidekiq.log --concurrency 5`
+- - sidekiq save a few stroke `bundle exec sidekiq -e development -r ./config/application.rb -P ./tmp/pids/sidekiq_1.pid -L ./log/sidekiq_1.log -c 1`
+
+- Example running alpine for job
+-- `docker run -it --rm --network buymainsider_default --privileged --name buyma_insider_sidekiq ruby:2.3-alpine sh`
 
 ### Local
 
