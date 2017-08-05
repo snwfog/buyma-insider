@@ -1,6 +1,6 @@
 ---
 name:            canada import duty
 rate:            15.0
-rate_type:       percent
+rate_type:       percent_rate
 flow_direction:  inflow
 description:     Canada import duty, applied on the item that is sold

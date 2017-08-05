@@ -7,19 +7,14 @@ class MerchantMetadatum
                         unique:   true
 
   field :id,           primary_key: true
-  
-  field :name,         type:     String,
-                       required: true
-  
-  field :domain,       type:     String,
-                       required: true,
-                       format:   %r{//[^/]+}
-  
-  field :pager_css,    type: String
-  
-  field :item_css,     type:     String,
-                       required: true
-
+  field :name,         type:        String,
+                       required:    true
+  field :domain,       type:        String,
+                       required:    true,
+                       format:      %r{//[^/]+}
+  field :pager_css,    type:        String
+  field :item_css,     type:        String,
+                       required:    true
   field :ssl,          type:        Boolean,
                        default:     false
   # field :index_pages,  type: Set, required: true

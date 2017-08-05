@@ -5,8 +5,8 @@ ssense:
   pager_css:        div.browsing-pagination ul.nav
   item_css:         div.browsing-product-list div.browsing-product-item
   index_pages:
-    - en-ca/men
-    - en-ca/women
+    - /en-ca/men
+    - /en-ca/women
   ssl:              true
 
 # @deprecated shoeme is out of business
@@ -28,15 +28,15 @@ getoutside:
   id:               get
   name:             getoutside
   domain:           //www.getoutsideshoes.com
-  pager_css:        div.pager
+  pager_css:        div.browing-pagination ui.nav
   item_css:         ul.products-grid li.item
   index_pages:
-    - new-arrivals.html
-    - mens.html
-    - womens.html
-    - kid-s.html
-    - accessories.html
-    - sale.html
+    - /new-arrivals.html
+    - /mens.html
+    - /womens.html
+    - /kid-s.html
+    - /accessories.html
+    - /sale.html
   ssl:              false
 
 zara:
@@ -46,7 +46,7 @@ zara:
   pager_css:
   item_css:         ul.product-list li.product
   index_pages:
-    - woman/new-in-c805003.html
+    - /woman/new-in-c805003.html
   ssl:              true
 
 octobersveryown:
@@ -56,5 +56,15 @@ octobersveryown:
   pager_css:
   item_css:         main.main-content div.grid__item
   index_pages:
-    - collections/all
+    - /collections/all
+  ssl:              true
+
+livestock:
+  id:               ltk
+  name:             livestock
+  domain:           //www.deadstock.ca
+  pager_css:        div.container div.paginate
+  item_css:         div.container div.columns
+  index_pages:
+    - /collections/new-arrivals
   ssl:              true

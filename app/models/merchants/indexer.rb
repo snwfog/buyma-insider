@@ -3,41 +3,39 @@ require 'active_support/core_ext/module/delegation'
 
 module Merchants
   class Indexer
-    delegate :pager_css, to: :merchant_metadatum
-    
-    # www.merchant.com/shoe + pager style
+    attr_accessor :index_page
+    attr_accessor :merchant
     attr_accessor :merchant_metadatum
-    attr_accessor :index_path # 'shoe'
-    attr_accessor :index_url # 'www.merchant.com'
-    
-    def initialize(index_path, metadatum)
-      @merchant_metadatum = metadatum
-      @index_path         = index_path
-      @index_url          = "#{merchant_metadatum.base_url}/#{index_path}"
+
+    def initialize(index_page)
+      @index_page         = index_page
+      @merchant           = @index_page.merchant
+      @merchant_metadatum = @merchant.metadatum
     end
-    
+
     def index_document
-      protocol = merchant_metadatum.ssl ? 'https' : 'http'
-      response = Http.get "#{protocol}:#{index_url}"
-      Nokogiri::HTML(response.body)
-    end
-    
-    def each_page(opts = {}, &blk)
-      if !pager_css
-        yield @index_url
+      if cache_index_document = @index_page.cache_html_document
+        Nokogiri::HTML(cache_index_document)
       else
-        compute_page(&blk)
+        nil
       end
     end
-    
-    # Use @index_url and compute the pages
-    def compute_page(&blk)
-      raise 'Indexer#compute_page requires a block parameter' unless block_given?
-      raise 'Indexer#compute_page is not implemented'
+
+    def pager_node
+      index_document&.at_css(@merchant_metadatum.pager_css)
     end
-    
-    def to_s
-      index_url
+
+    def compute!
+      if pager_node
+        compute_index_page
+      else
+        []
+      end
+    end
+
+    # returns index pages as array
+    def compute_index_page
+      raise 'Indexer#compute_page is not implemented'
     end
   end
 end

@@ -86,6 +86,7 @@ end
 group :test do
   gem 'minitest'
   gem 'rspec'
+  gem 'rspec-collection_matchers'
   gem 'nyan-cat-formatter'
 # gem 'redis-stat'
 end

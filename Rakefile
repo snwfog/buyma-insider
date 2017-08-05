@@ -79,9 +79,9 @@ namespace :db do
                                                  pager_css: m.pager_css,
                                                  item_css:  m.item_css,
                                                  ssl:       m.ssl)
-      m.index_pages.each do |idx|
+      m.index_pages.each do |index_page_path|
         IndexPage.upsert!(merchant:      merchant,
-                          relative_path: idx)
+                          relative_path: index_page_path)
       end
 
       puts 'Merchant %20s[%s] created...' % [metadatum.name, metadatum.code]

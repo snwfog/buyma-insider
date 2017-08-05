@@ -6,9 +6,7 @@ module Merchants
     end
     
     class GetoutsideIndexer < Indexer
-      def compute_page
-        super
-        
+      def compute_index_page
         page_nodes = index_document.at_css(self.pager_css)
         
         first_node = page_nodes.at_css('ol li:first-child')

@@ -8,9 +8,11 @@ class ArticleNotificationCriterium
 
   field :id,           primary_key: true,
                        required:    true
+
   field :name,         type:        String,
                        required:    true,
                        unique:      true,
+                       index:       true,
                        length:      (1..50)
   
   # around_save :fetch_from_cache
@@ -57,6 +59,7 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
   field :threshold_pct, type:     Integer,
                         required: true,
                         unique:   true,
+                        index:    true,
                         default:  20,
                         in:       (0...100)
 

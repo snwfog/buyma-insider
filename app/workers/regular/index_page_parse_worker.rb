@@ -5,9 +5,7 @@ class IndexPageParseWorker < Worker::Base
                        .where(status: :completed)
                        .first
     merchant       = history.index_page.merchant
-    cache_filename = history.index_page.cache_filename
-    cache_dir      = File.expand_path("../../../../tmp/cache/crawl/#{merchant.id}", __FILE__)
-    cache_filepath = '%s/%s' % [cache_dir, cache_filename]
+    cache_filepath = history.index_page.cache_html_path
     index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
 
     logger.info 'Parsing article for index %s' % index_summary

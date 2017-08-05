@@ -46,6 +46,10 @@ module BuymaInsider
       ENV['RACK_ENV'] || :development
     end
 
+    def app_path
+      ENV['APP_PATH'] || File.expand_path('../../', __FILE__)
+    end
+
     # copy&pasted from sinatra
     def development?; environment =~ /dev/  end # dev or development
     def staging?;     environment =~ /stag/ end # stag or stage or staging
