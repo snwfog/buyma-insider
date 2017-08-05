@@ -25,6 +25,7 @@ class IndexPage
   #                       required:    true,
   #                       default:     false
 
+  scope(:root_index_pages) { where(:index_page_id.undefined => true) }
 
   def full_url
     domain = merchant.metadatum.domain
