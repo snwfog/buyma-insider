@@ -1,6 +1,3 @@
-require 'minitest/autorun'
-require 'buyma_insider'
-
 require_relative './setup'
 
 class MerchantTest < Minitest::Test

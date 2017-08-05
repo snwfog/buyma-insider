@@ -31,10 +31,10 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        product_sku   = node.fetch('data-product-sku')
-        product_name  = node.fetch('data-product-name')
-        product_price = node.fetch('data-product-price')
-        product_brand = node.fetch('data-product-brand')
+        product_sku   = node['data-product-sku']
+        product_name  = node['data-product-name']
+        product_price = node['data-product-price']
+        product_brand = node['data-product-brand']
 
         { id:          "#{code}:#{product_sku}",
           sku:         product_sku,

@@ -76,7 +76,7 @@ class Article
   end
   
   def price=(price)
-    super(price.to_f)
+    Float === price ? super : super(price.to_f)
   end
 
   def link=(link)

@@ -1,5 +1,4 @@
-require 'buyma_insider'
-require 'minitest/autorun'
+require_relative './setup'
 
 class ArticleParserTest < Minitest::Test
   def test_ssense_should_parse
@@ -29,12 +28,9 @@ class ArticleParserTest < Minitest::Test
     FRAG
 
     parser = Class.new do |klazz|
-      def klazz.code
-        'sse'
-      end
-
-      def klazz.base_url
-        '//www.ssense.com'
+      class << klazz
+        def code; 'sse'; end
+        def domain; '//www.ssense.com'; end
       end
     end.extend(Merchants::Ssense::Parser)
 
@@ -58,8 +54,13 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'zar'; end }
-               .extend(Merchants::Zara::Parser)
+    parser = Class.new do |klazz|
+      class << self
+        def code; 'zar'; end
+        def domain; '//www.zara.com/ca/en'; end
+      end
+    end.extend(Merchants::Zara::Parser)
+
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'Velvet Toggle Jacket', article_hash[:name]
     assert_equal 'Velvet toggle jacket', article_hash[:description]
@@ -94,8 +95,13 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'get'; end }
-               .extend(Merchants::Getoutside::Parser)
+    parser = Class.new do |klazz|
+      class << klazz
+        def code; 'get'; end
+        def domain; '//www.getoutsideshoes.com'; end
+      end
+    end.extend(Merchants::Getoutside::Parser)
+
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -141,8 +147,12 @@ class ArticleParserTest < Minitest::Test
       </li>
     FRAG
 
-    parser = Class.new { |klazz| def klazz.code; 'get'; end }
-               .extend(Merchants::Getoutside::Parser)
+    parser = Class.new do |klazz|
+      class << klazz
+        def code; 'get'; end
+        def domain; '//www.getoutsideshoes.com'; end
+      end
+    end.extend(Merchants::Getoutside::Parser)
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
@@ -154,49 +164,6 @@ class ArticleParserTest < Minitest::Test
     assert_equal 'http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html', article_hash[:link]
   end
 
-  def test_shoeme_should_parse
-    frag = <<-FRAG
-      <li class="product-li">
-        <div class="product-tile">
-          <a href="//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88" onmousedown="return nxt_repo.product_x('The-North-Face-Womens-Thermoball-Roll-Down-Bootie-II-Tnf-Black-Jumbo-Hbone-Print-plum-Kittn-Gry',13);">
-            <img class="product-img img-responsive" src="https://cdn.shopify.com/s/files/1/0121/3322/products/CM88_DUL_SHOE_hero_F15_RGB_3370b15e-c23f-4c2a-8549-3ad10f8cb251_medium.jpeg?v=1450122887" onerror="this.style.display='none';">
-          </a>
-          <div class="product-dts">
-            <div class="product-title">
-              <a href="//shoeme.ecomm-nav.com/redirect?url=http%3A%2F%2Fwww.shoeme.ca%2Fproducts%2Fnorthface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88" onmousedown="return nxt_repo.product_x('The-North-Face-Womens-Thermoball-Roll-Down-Bootie-II-Tnf-Black-Jumbo-Hbone-Print-plum-Kittn-Gry',13);">
-                <h5>The North Face</h5>
-                <h6>
-                  Thermoball Roll-Down Bootie II
-                  <span>Black</span>
-                </h6>
-              </a>
-            </div>
-            <div class="product-buttons">
-              <a href="#" data-wishlist="add"><i class="sm-bag"></i></a>
-              <a href="#" data-cart="add"><i class="sm-heart"></i></a>
-            </div>
-          </div>
-          <div class="product-price">
-            <p class="product-price">$125.00</p>
-          </div>
-          <div class="sm-localfulfill" data-lf-vendor="V00018"></div>
-        </div>
-      </li>
-    FRAG
-
-    parser = Class.new { |klazz| def klazz.code; 'sho'; end }
-               .extend(Merchants::Shoeme::Parser)
-    article_hash = parser.attrs_from_node(
-      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
-    )
-
-    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article_hash[:name]
-    assert_equal 'The North Face - Thermoball Roll-Down Bootie II', article_hash[:description]
-    assert_equal 125.00, ('%.02f' % article_hash[:price].to_f).to_f
-    assert_equal "sho:#{Digest::MD5.hexdigest('The North Face - Thermoball Roll-Down Bootie II')}", article_hash[:id]
-    assert_equal '//www.shoeme.ca/products/northface-thermoball-roll-down-bootie-ii-tnf-black-jumbo-hbone-print-plum-kittn-gry-cm88', article_hash[:link]
-  end
-  
   def test_should_parse_octobersveryown
     frag = <<~FRAG
       <div class="grid__item prod-xlarge--one-fifth prod-large--one-quarter prod-medium--one-half " style="position:relative">
@@ -209,28 +176,98 @@ class ArticleParserTest < Minitest::Test
         <p>$40.00</p>
       </div>
     FRAG
-  
+
     parser = Class.new do |klazz|
-      def klazz.code
-        'ovo'
-      end
-      
-      def klazz.base_url
-        '//ca.octobersveryown.com'
+      class << klazz
+        def code; 'ovo'; end
+        def domain; '//ca.octobersveryown.com'; end
       end
     end
-    
+
     parser.extend(Merchants::Octobersveryown::Parser)
     article_hash = parser
                      .attrs_from_node(
                        Nokogiri::HTML::DocumentFragment
                          .parse(frag)
                          .at_css('div'))
-  
+
     assert_equal 'Ovo Athletics Tee – Red', article_hash[:name]
     assert_equal 'Ovo athletics tee – red', article_hash[:description]
     assert_equal 40.00, article_hash[:price]
     assert_equal "ovo:#{Digest::MD5.hexdigest('Ovo Athletics Tee – Red'.titleize)}", article_hash[:id]
     assert_equal '//ca.octobersveryown.com/collections/all/products/ovo-athletics-tee-red', article_hash[:link]
+  end
+
+  def test_should_parse_livestock
+    frag = <<~FRAG
+      <div class="four columns omega thumbnail odd">
+        <a href="https://www.deadstock.ca/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white?lshst=collection" title="ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
+          <div class="relative product_image">
+            <img style="max-height:275px" src="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" data-src-retina="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" alt="style code CG5329. ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
+            <span data-fancybox-href="#product-11326158357" class="quick_shop action_button" data-gallery="product-11326158357-gallery" style="display: none;">
+              Quick View
+              <div class="overlay" style="position:absolute; width:100%; font-size:10px; background-color:#f2f2f2;padding:8px 0 8px 0;">
+                <div class="size-label"></div>
+                <div class="size-val">
+                  <span value="48109400981" style="color:#242424;float:left;margin:1px 4px 0 0;">5</span>
+                  <span value="48109401109" style="color:#242424;float:left;margin:1px 4px 0 0;">6</span>
+                  <span value="48109401045" style="color:#242424;float:left;margin:1px 4px 0 0;">6.5</span>
+                  <span value="48109400853" style="color:#242424;float:left;margin:1px 4px 0 0;">7</span>
+                  <span value="48109400661" style="color:#242424;float:left;margin:1px 4px 0 0;">7.5</span>
+                  <span value="48109400725" style="color:#242424;float:left;margin:1px 4px 0 0;">8</span>
+                  <span value="48109400789" style="color:#242424;float:left;margin:1px 4px 0 0;">8.5</span>
+                  <span value="48109400917" style="color:#242424;float:left;margin:1px 4px 0 0;">9</span>
+                </div>
+                <div class="free-ship">
+                  <span class="free-shipping" style="background:#019444;">
+                    FREE SHIPPING
+                    <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/125/assets/free-shipping-banner-small-button.png?16613966375893227151"> -->
+                  </span>
+                </div>
+              </div>
+            </span>
+          </div>
+          <div class="info">
+            <div class="sizes_available">
+              <span></span>
+              <span value="48109400981" class="size">5</span>
+              <span value="48109401109" class="size">6</span>
+              <span value="48109401045" class="size">6.5</span>
+              <span value="48109400853" class="size">7</span>
+              <span value="48109400661" class="size">7.5</span>
+              <span value="48109400725" class="size">8</span>
+              <span value="48109400789" class="size">8.5</span>
+              <span value="48109400917" class="size">9</span>
+              <br>
+              <span class="free-shipping" style="background:#019444;">
+                FREE SHIPPING
+                <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/125/assets/free-shipping-banner-small-button.png?16613966375893227151"> -->
+              </span>
+            </div>
+            <span class="title">ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE</span>
+            <span class="price ">
+            <span class="money" data-currency-cad="$160.00 CAD">$160.00 CAD</span>
+            </span>
+          </div>
+        </a>
+      </div>
+    FRAG
+
+    parser = Class.new do |klazz|
+      def klazz.code; 'ltk'; end
+    end
+
+    parser.extend(Merchants::Livestock::Parser)
+    article_hash = parser
+                     .attrs_from_node(
+                       Nokogiri::HTML::DocumentFragment
+                         .parse(frag)
+                         .at_css('div'))
+
+    assert_equal 'Adidas Women\'s Alphabounce 1 Reigning Champ / White', article_hash[:name]
+    assert_equal 'Adidas women\'s alphabounce 1 reigning champ / white', article_hash[:description]
+    assert_equal 160.00, article_hash[:price]
+    assert_equal "ltk:#{Digest::MD5.hexdigest('ADIDAS WOMEN\'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE')}", article_hash[:id]
+    assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white', article_hash[:link]
   end
 end

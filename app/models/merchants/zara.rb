@@ -11,7 +11,7 @@ module Merchants
     module Parser
       def attrs_from_node(node)
         item                = node.at_css('a.item._item')
-        product_id          = node.fetch('data-productid')
+        product_id          = node['data-productid']
         product_description = node.at_css('div.product-info a.name._item')
         price               = node.at_css('div.product-info div.price._product-price span')
         

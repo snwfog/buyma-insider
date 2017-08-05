@@ -29,7 +29,26 @@ module Merchants
     end
 
     module Parser
+      def attrs_from_node(node)
+        product_node = node.at_css('a')
+        product_href = product_node['href']
+        product_uri  = URI(product_href)
 
+        product_info_node = node.at_css('div.info')
+        product_title     = product_info_node.at_css('span.title').content
+        product_title     = AsciiFolding.fold(product_title)
+        product_price     = product_info_node.at_css('span.price span.money').content
+        product_price     = product_price[/(?<=[$])?[\d]{1,10}\.[\d]{2}/].to_f
+        sku               = Digest::MD5.hexdigest(product_title)
+
+        { id:          "#{code}:#{sku}",
+          sku:         sku,
+          name:        product_title.titleize,
+          description: product_title.capitalize,
+          price:       product_price,
+          link:        "//#{product_uri.host}#{product_uri.path}"
+        }
+      end
     end
   end
 end

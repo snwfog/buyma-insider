@@ -1,6 +1,3 @@
-require 'buyma_insider'
-require 'minitest/autorun'
-
 class CrawlSessionTest < Minitest::Test
   def helper_get_crawl_history
     finished_at = Time.now.utc
