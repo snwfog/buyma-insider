@@ -33,7 +33,7 @@ class Article
   field :link,        type:        String,
                       required:    true,
                       length:      (1..1000),
-                      format:      %r{//.+}
+                      format:      %r{//[^/]+}
   
   # around_save  :watch_for_price_updates, unless: :new_record?
   after_create  :create_price_history!,        unless: :price_history

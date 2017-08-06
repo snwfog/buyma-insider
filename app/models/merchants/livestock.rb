@@ -46,7 +46,7 @@ module Merchants
           name:        product_title.titleize,
           description: product_title.capitalize,
           price:       product_price,
-          link:        "//#{product_uri.host}#{product_uri.path}"
+          link:        "#{domain}#{product_uri.path}"
         }
       end
     end

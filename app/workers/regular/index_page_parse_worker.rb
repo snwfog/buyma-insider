@@ -13,7 +13,7 @@ class IndexPageParseWorker < Worker::Base
     end
 
     item_css      = merchant.metadatum.item_css
-    article_nodes = index_page_cache_html.css(item_css)
+    article_nodes = Nokogiri::HTML(index_page_cache_html).css(item_css)
     logger.info 'Start parsing files with `%i` articles' % article_nodes.count
     article_nodes.each do |it|
       begin
@@ -60,7 +60,7 @@ class IndexPageParseWorker < Worker::Base
       end
     end
 
-    logger.info 'Finished parsing %s' % index_summary
+    logger.info "Finished parsing #{index_page}"
     last_history
   end
 

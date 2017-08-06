@@ -5,22 +5,29 @@ class CrawlHistory
 
   belongs_to :index_page,             index:     true,
                                       required:  true
+
   has_many   :crawl_history_articles, dependent: :destroy
 
   field :id,                     primary_key: true
   field :status,                 type:        Enum,
                                  in:          [:scheduled, :inprogress, :aborted, :completed],
                                  default:     :scheduled
+
   field :description,            type:        String,
                                  required:    true
+
   field :created_articles_count, type:        Integer,
                                  default:     0
+
   field :updated_articles_count, type:        Integer,
                                  default:     0
+
   field :items_count,            type:        Integer,
                                  default:     0
+
   field :invalid_items_count,    type:        Integer,
                                  default:     0
+
   field :traffic_size_kb,        type:        Float,
                                  default:     0.0
 

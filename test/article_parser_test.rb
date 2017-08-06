@@ -201,7 +201,7 @@ class ArticleParserTest < Minitest::Test
   def test_should_parse_livestock
     frag = <<~FRAG
       <div class="four columns omega thumbnail odd">
-        <a href="https://www.deadstock.ca/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white?lshst=collection" title="ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
+        <a href="/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white?lshst=collection" title="ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
           <div class="relative product_image">
             <img style="max-height:275px" src="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" data-src-retina="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" alt="style code CG5329. ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
             <span data-fancybox-href="#product-11326158357" class="quick_shop action_button" data-gallery="product-11326158357-gallery" style="display: none;">
@@ -253,8 +253,11 @@ class ArticleParserTest < Minitest::Test
       </div>
     FRAG
 
-    parser = Class.new do |klazz|
-      def klazz.code; 'ltk'; end
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'ltk'; end
+        def domain; '//www.deadstock.ca'; end
+      end
     end
 
     parser.extend(Merchants::Livestock::Parser)

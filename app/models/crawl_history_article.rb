@@ -8,6 +8,7 @@ class CrawlHistoryArticle
                              required: true
   
   field :article_id,         unique:   { scope: :crawl_history_id }
+
   field :status,             type:     Enum,
                              required: true,
                              in:       [:created, :updated]

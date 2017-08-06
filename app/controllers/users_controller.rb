@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     ensure_user_authenticated!
     
     param :id, String, required: true
-    @user = User.find?(params[:id])
+    @user = User.find(params[:id])
   end
   
   get '/:id/article_watcheds' do
