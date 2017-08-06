@@ -1,25 +1,19 @@
 class IndexPageParseWorker < Worker::Base
   def perform(index_page_id)
-    history        = CrawlHistory
-                       .where(index_page_id: index_page_id)
-                       .where(status: :completed)
-                       .first
-    merchant       = history.index_page.merchant
-    cache_filepath = history.index_page.cache_html_path
-    index_summary  = '`%s`[%s]' % [history.index_page, cache_filepath]
+    index_page = IndexPage.eager_load(:merchant).find(index_page_id)
+    logger.info "Parsing article for index #{index_page}"
 
-    logger.info 'Parsing article for index %s' % index_summary
-    if File.exist?(cache_filepath)
-      logger.info 'Found! Reading from cache file content...'
-      cache_file_content = File.open(cache_filepath, 'rb') { |file| file.read }
+    last_history = CrawlHistory.where(index_page_id: index_page_id,
+                                      status:        :completed).first
+    merchant     = index_page.merchant
+    if index_page_cache_html = index_page.cache_html_document
+      logger.info 'Found index cache!'
     else
-      raise 'Cache file not found %s' % index_summary
+      raise "Cache file not found #{index_page}"
     end
 
-    body          = read_cache_file(cache_file_content, history.content_encoding)
     item_css      = merchant.metadatum.item_css
-    document      = Nokogiri::HTML(body, nil, 'utf-8')
-    article_nodes = document.css(item_css)
+    article_nodes = index_page_cache_html.css(item_css)
     logger.info 'Start parsing files with `%i` articles' % article_nodes.count
     article_nodes.each do |it|
       begin
@@ -29,43 +23,45 @@ class IndexPageParseWorker < Worker::Base
         logger.debug 'Article properties'
         logger.debug JSON.pretty_generate(attrs)
 
-        raise 'No valid id was found in parsed article attributes' unless article_id =~ /[a-z]{3}:[a-z0-9]+/
+        unless article_id =~ /[a-z]{3}:[a-z0-9]+/
+          raise 'No valid id was found in parsed article attributes'
+        end
 
         if article = Article.find?(article_id)
           # Bust the (serializer) cache and touch the record
           article.update!(attrs.merge(updated_at: Time.now.utc.iso8601))
           # ArticleUpdatedWorker.perform_async(article.id)
-          CrawlHistoryArticle.upsert!(crawl_history: history,
+          CrawlHistoryArticle.upsert!(crawl_history: last_history,
                                       article:       article,
                                       status:        :updated)
           ArticleUpdatedWorker.perform_async(article_id)
-          history.updated_articles_count += 1
+          last_history.updated_articles_count += 1
           logger.info { 'Updated %s ...' % article_id }
         else
           article = Article.create!(attrs.merge(merchant: merchant))
-          CrawlHistoryArticle.create!(crawl_history: history,
+          CrawlHistoryArticle.create!(crawl_history: last_history,
                                       article:       article,
                                       status:        :created)
           ArticleCreatedWorker.perform_async(article_id)
-          history.created_articles_count += 1
+          last_history.created_articles_count += 1
           logger.info { 'Created %s ...' % article_id }
         end
 
         article.update_price_history!
-        history.items_count += 1
+        last_history.items_count += 1
       rescue Exception => ex
-        history.invalid_items_count += 1
+        last_history.invalid_items_count += 1
 
         logger.warn 'Failed creating article: %s' % ex.message
         logger.warn attrs
         logger.debug it.to_html
       ensure
-        history.save
+        last_history.save
       end
     end
 
     logger.info 'Finished parsing %s' % index_summary
-    history
+    last_history
   end
 
   private

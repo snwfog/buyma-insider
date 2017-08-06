@@ -20,6 +20,9 @@ class IndexPageCrawlWorker < Worker::Base
   end
 
   def perform(args)
+    validate_args(args, -> (args) { Hash === args }, 'must be an Hash')
+    validate_args(args, -> (args) { args.key?('index_page_id') }, 'must contains `index_page_id`')
+
     index_page_id       = args.fetch('index_page_id')
     is_lazy             = !args.fetch('no_cache', false)
     is_schedule_parser  = args.fetch('schedule_parser', false)

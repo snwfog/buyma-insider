@@ -63,8 +63,8 @@ livestock:
   id:               ltk
   name:             livestock
   domain:           //www.deadstock.ca
-  pager_css:        div.container div.paginate
-  item_css:         div.container div.columns
+  pager_css:        div.container.main.content > div.products div.paginate
+  item_css:         div.container.main.content > div.products > div.columns
   index_pages:
     - /collections/new-arrivals
   ssl:              true

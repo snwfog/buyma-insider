@@ -64,9 +64,9 @@ require_rel '../config/initializers/'
 require_rel './models'
 require_rel './controllers/helpers',
             './controllers/application_controller',
-            './controllers'
+            './workers/worker'
 
-require_rel './serializers'
 require_rel './controllers'
+require_rel './serializers'
 require_rel './channels'
 require_rel './workers'

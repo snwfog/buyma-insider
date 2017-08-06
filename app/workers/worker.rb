@@ -1,10 +1,14 @@
-require 'sidekiq'
-
 module Worker
   class Base
     include ::Sidekiq::Worker
 
     protected
+
+    def validate_args(args, validator, message)
+      unless validator.call(args)
+        logger.error "#{self} aborted, arguments #{message}" and raise
+      end
+    end
 
     # Fetch uri with capture to sentry
     # return RestClient::RawResponse
