@@ -6,7 +6,7 @@ module Elasticsearch
       operation  = args.fetch('operation')
       article    = Article.eager_load(:merchant).find(article_id)
 
-      logger.info "Elasticsearch indexing article #{article.name}"
+      logger.info "Elasticsearch indexing article `#{article.name}'"
 
       index = article.merchant.code
       type  = :article

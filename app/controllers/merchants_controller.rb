@@ -46,17 +46,18 @@ class MerchantsController < ApplicationController
   end
   
   get '/:merchant_id/articles' do
-    json @merchant
-           .articles
-           .eager_load(:price_history,
-                       :crawl_history_articles)
-           .order_by(@order_by)
-           .offset((@page - 1) * @limit)
-           .limit(@limit),
+    total_article_count = @merchant.articles.count
+
+    json @merchant.articles
+                  .eager_load(:price_history,
+                              :crawl_history_articles)
+                  .order_by(@order_by)
+                  .offset((@page - 1) * @limit)
+                  .limit(@limit),
          meta: { current_page: @page,
                  limit:        @limit,
-                 total_pages:  @merchant.articles.count / @limit + 1,
-                 total_count:  @merchant.articles.count }
+                 total_pages:  (total_article_count / @limit.to_f).ceil,
+                 total_count:  total_article_count }
   end
 
   get '/:merchant_id/articles/_search' do

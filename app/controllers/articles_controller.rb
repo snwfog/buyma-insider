@@ -33,14 +33,15 @@ class ArticlesController < ApplicationController
     param :filter,      String
 
     merchant_id, page, limit, filter = params.values_at(*%w(merchant_id page limit filter))
-    merchant = Merchant.find!(merchant_id)
+    merchant                         = Merchant.find(merchant_id)
+    total_article_count              = merchant.articles.count.to_f
     json merchant
            .articles
            .eager_load(:price_history)
            .offset((page - 1) * limit)
-           .limit(limit), meta: { current_page:  page,
-                                  total_pages:   merchant.articles.count / limit + 1,
-                                  total_count:   merchant.articles.count }
+           .limit(limit), meta: { current_page: page,
+                                  total_pages:  (total_article_count / limit.to_f).ceil,
+                                  total_count:  total_article_count }
   end
 
   get '/_search' do
@@ -73,14 +74,14 @@ class ArticlesController < ApplicationController
                                                 order_by:           order_by || [],
                                                 size:               limit,
                                                 from:               [page - 1, 0].max * limit)
-    
+
     if documents = results.dig(*%w(hits hits))
-      json Article
-             .eager_load(:price_history)
-             .where(:id.in => documents.map { |article| article['_id'] }),
+      total_article_count = results.dig(*%w(hits total))
+      json Article.eager_load(:price_history)
+                  .where(:id.in => documents.map { |article| article['_id'] }),
            meta: { current_page: page,
-                   total_pages:  results.dig(*%w(hits total)) / limit + 1,
-                   total_count:  results.dig(*%w(hits total)),
+                   total_pages:  (total_article_count / limit.to_f).ceil,
+                   total_count:  total_article_count,
                    scores:       documents.map { |article|
                      Hash[:article_id, article['_id'], :score, article['_score']] } }
     else
