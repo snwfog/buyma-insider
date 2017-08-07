@@ -1,19 +1,13 @@
 class IndexPageParseWorker < Worker::Base
   def perform(index_page_id)
     index_page = IndexPage.eager_load(:merchant).find(index_page_id)
-    logger.info "Parsing article for index #{index_page}"
-
+    logger.info "Index page parser started for index `#{index_page}'"
     last_history = CrawlHistory.where(index_page_id: index_page_id,
                                       status:        :completed).first
     merchant     = index_page.merchant
-    if index_page_cache_html = index_page.cache_html_document
-      logger.info 'Found index cache!'
-    else
-      raise "Cache file not found #{index_page}"
-    end
-
+    raise "Cache file not found `#{index_page}'" unless index_page.cache_html_document
     item_css      = merchant.metadatum.item_css
-    article_nodes = Nokogiri::HTML(index_page_cache_html).css(item_css)
+    article_nodes = Nokogiri::HTML(index_page.cache_html_document).css(item_css)
     logger.info 'Start parsing files with `%i` articles' % article_nodes.count
     article_nodes.each do |it|
       begin

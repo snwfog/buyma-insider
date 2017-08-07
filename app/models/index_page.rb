@@ -51,9 +51,11 @@ class IndexPage
   # Its always the latest and we assume
   # there can be only 1 of them at the cache location
   def cache_html_document
-    if File.exists?(cache_html_path) && content_encoding = crawl_histories.completed.first&.content_encoding
+    if File.exists?(cache_html_path)
+      content_encoding           = crawl_histories.completed.first
+                                     &.content_encoding || 'gzip'.freeze
       cache_html_encoded_content = File.open(cache_html_path, 'rb') { |file| file.read }
-      RestClient::Request.decode(content_encoding, cache_html_encoded_content)
+      @cache_html_document       ||= RestClient::Request.decode(content_encoding, cache_html_encoded_content)
     else
       nil
     end
