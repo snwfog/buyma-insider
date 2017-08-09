@@ -11,6 +11,15 @@ services:
       - buymainsider_default
 #    volumes:
 #      - /docker_volumes/buyma_insider/rethinkdb/data:/data
+  postgres:
+    container_name: postgres
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - "POSTGRES_PASSWORD=mobara"
+    networks:
+      - buymainsider_default
   redis:
     container_name: redis
     image: redis

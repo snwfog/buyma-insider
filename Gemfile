@@ -4,6 +4,7 @@ gem 'bundler',                  require: 'bundler/setup'
 gem 'require_all'
 gem 'dotenv'
 gem 'rack'
+gem 'activerecord'
 gem 'activesupport',            require: ['active_support',
                                           'active_support/core_ext/module/delegation']
 gem 'actionpack',               require: ['action_controller/metal/strong_parameters']
