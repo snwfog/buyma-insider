@@ -8,7 +8,7 @@ class MerchantCrawlWorker < Worker::Base
   #                 backtrace: true
   def perform(merchant_id)
     @merchant           = Merchant.find!(merchant_id)
-    @merchant_cache_dir = File.expand_path("#{BuymaInsider.app_path}/tmp/cache/crawl/#{@merchant.id}")
+    @merchant_cache_dir = File.expand_path("#{BuymaInsider.root}/tmp/cache/crawl/#{@merchant.id}")
     FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
 
     log_start

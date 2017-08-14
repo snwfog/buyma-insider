@@ -29,7 +29,7 @@ class IndexPageCrawlWorker < Worker::Base
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @last_crawl_history = @index_page.crawl_histories.finished.first
     @merchant           = @index_page.merchant
-    @merchant_cache_dir = File.expand_path(BuymaInsider.app_path + "/tmp/cache/crawl/#{@merchant.id}")
+    @merchant_cache_dir = File.expand_path(BuymaInsider.root + "/tmp/cache/crawl/#{@merchant.id}")
     FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
 
     @standard_headers.merge(lazy_headers) if is_lazy

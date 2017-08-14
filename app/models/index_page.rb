@@ -42,7 +42,7 @@ class IndexPage
 
   def cache_html_path
     File.expand_path('%<app_path>s/tmp/cache/crawl/%<merchant_id>s/%<cache_filename>s' % {
-      app_path:       BuymaInsider.app_path,
+      root:           BuymaInsider.root,
       merchant_id:    merchant_id,
       cache_filename: cache_filename
     })

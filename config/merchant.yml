@@ -9,7 +9,7 @@ ssense:
     - /en-ca/women
   ssl:              true
 
-# @deprecated shoeme is out of business
+# @deprecated out of business
 #shoeme:
 #  id:               sho
 #  name:             shoeme
@@ -17,11 +17,11 @@ ssense:
 #  pager_css:        div.nxt-pagination
 #  item_css:         ul.product-list li.product-li
 #  index_pages:
-#    - collections/womens-shoes
-#    - collections/mens-shoes
-#    - collections/kids
-#    - collections/all-bags
-#    - collections/sale
+#    - /collections/womens-shoes
+#    - /collections/mens-shoes
+#    - /collections/kids
+#    - /collections/all-bags
+#    - /collections/sale
 #  ssl:              false
 
 getoutside:

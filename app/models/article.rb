@@ -20,16 +20,21 @@ class Article
   field :id,          primary_key: true,
                       required:    true, # merchant_id + ':' + sku
                       format:      /[a-z]{3}:[a-z0-9]+/
+
   field :sku,         type:        String,
                       required:    true,
                       length:      (1..100)
+
   field :name,        type:        String,
                       required:    true,
                       length:      (1..500)
+
   field :price,       type:        Float,
                       required:    true # Latest price
+
   field :description, type:        String,
                       length:      (1..1000)
+
   field :link,        type:        String,
                       required:    true,
                       length:      (1..1000),
