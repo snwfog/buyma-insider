@@ -4,7 +4,7 @@ gem 'bundler',                  require: 'bundler/setup'
 gem 'require_all'
 gem 'dotenv'
 gem 'rack'
-gem 'activerecord'
+gem 'activerecord',             require: ['active_record']
 gem 'activesupport',            require: ['active_support',
                                           'active_support/core_ext/module/delegation']
 gem 'actionpack',               require: ['action_controller/metal/strong_parameters']
@@ -24,6 +24,7 @@ gem 'bcrypt',                   github: 'codahale/bcrypt-ruby', require: 'bcrypt
 gem 'net_http_ssl_fix'          # require: false if Gem.win_platform?
 
 # Persistence
+gem 'pg',                       '0.20.0'
 gem 'rethinkdb'
 gem 'nobrainer'
 gem 'redis'
@@ -71,6 +72,7 @@ gem 'faker'
 gem 'pry',                     require: false # for debugging
 
 group :development do
+  gem 'standalone_migrations', require: false
   gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rbenv'

@@ -1,6 +1,9 @@
 ## Index is build by client
 public/index.html
 
+## active record migration
+db/schema.rb
+
 ## Dotenv
 *.env
 *.env.local

@@ -1,0 +1,24 @@
+# postgres database configuration
+
+default: &default
+  adapter:  postgresql
+  host:     localhost
+  username: postgres
+  password: mobara
+  pool:     5
+
+development:
+  <<: *default
+  database: buyma_insider_development
+
+test:
+  <<: *default
+  database: buyma_insider_test
+
+staging:
+  <<: *default
+  database: buyma_insider_staging
+
+production:
+  <<: *default
+  database: buyma_insider_production

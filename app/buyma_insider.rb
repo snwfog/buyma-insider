@@ -15,16 +15,13 @@ module BuymaInsider
           cfg.secret_token_base = ENV['SECRET_TOKEN_BASE']
           cfg.redis             = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/redis.yml', __FILE__))[environment])
           cfg.database          = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/database.yml', __FILE__))[environment])
+          cfg.postgres          = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/postgres.yml', __FILE__))[environment])
           cfg.logging           = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/logging.yml', __FILE__))[environment])
           cfg.elasticsearch     = Hashie::Mash.new(YAML.load_file(File.expand_path('../../config/elasticsearch.yml', __FILE__))[environment])
         end
       end
     end
     
-    def base_url
-      ENV['APP_BASE_URL'] || 'http://localhost:4200'
-    end
-
     # Return a redis pool for an app area that
     # requires redis connection, settings from redis.yml
     def redis_for(process)
@@ -37,7 +34,7 @@ module BuymaInsider
 
     def logger_for(process)
       unless Logging::Repository.instance.has_logger?(process)
-        raise 'Logger `%process` does not exists' % process
+        raise 'Logger `%s` does not exists' % process
       end
       Logging.logger[process]
     end
@@ -46,8 +43,12 @@ module BuymaInsider
       ENV['RACK_ENV'] || :development
     end
 
-    def app_path
+    def root
       ENV['APP_PATH'] || File.expand_path('../../', __FILE__)
+    end
+
+    def base_url
+      ENV['APP_BASE_URL'] || 'http://localhost:4200'
     end
 
     # copy&pasted from sinatra

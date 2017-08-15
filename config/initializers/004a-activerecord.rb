@@ -1,0 +1,1 @@
+ActiveRecord::Base.logger = BuymaInsider.logger_for(:Database)

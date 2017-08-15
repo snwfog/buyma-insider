@@ -1,69 +1,91 @@
 require_relative './config/application'
 require 'ostruct'
+require 'standalone_migrations'
 
 load 'no_brainer/railtie/database.rake'
+StandaloneMigrations::Tasks.load_tasks
+
+# load 'active_record/railties/databases.rake'
+
+# include ActiveRecord::Tasks
+# DatabaseTasks.tap do |task|
+#   task.env                    = BuymaInsider.environment
+#   task.root                   = BuymaInsider.root
+#   task.database_configuration = YAML.load_file(File.expand_path(BuymaInsider.root + '/config/postgres.yml'))
+#   task.db_dir                 = File.expand_path(BuymaInsider.root + '/db')
+#   task.migrations_paths       = [File.expand_path(task.db_dir + '/migrate')]
+#   task.fixtures_path          = File.expand_path(task.db_dir + '/fixtures')
+# end
+
+# ActiveRecordMigrations.configure { |c| c.yaml_config = 'config/postgres.yml' }
+# ActiveRecordMigrations.load_tasks
 
 # include RethinkDB::Shortcuts
 # db_name = "#{BuymaInsider::NAME}_#{ENV.fetch('RACK_ENV')}"
-desc 'Clean up config'
-task :align do
-  sh 'align ./config/**/*.yml'
-end
-
-desc 'Run test'
-task :test do
-  sh 'pry -Iapp:spec ./spec/*_spec.rb'
-end
-
-desc 'Setup ssh'
-task :ssh do
-  # sh 'ANYBAR_PORT=1735 open -na AnyBar'
-  # sh 'ANYBAR_PORT=1736 open -na AnyBar'
-  # sh 'ANYBAR_PORT=1737 open -na AnyBar'
-  #
-  # AnyBar::Client.new(1735).color = 'green'
-  # AnyBar::Client.new(1736).color = 'green'
-  # AnyBar::Client.new(1737).color = 'green'
-end
-
-desc 'Cleanup log'
-task :log_clean do
-  FileList['./log/**/*.log'].each do |log_file|
-    puts 'Cleaning `%s`' % log_file
-    sh "cat /dev/null > #{log_file}"
-  end
-end
 
 desc 'Environment'
 task :environment do
   puts "Executing task for `#{ENV['RACK_ENV']}`".yellow
+  # ActiveRecord::Base.configurations = DatabaseTasks.database_configuration
+  # ActiveRecord::Base.establish_connection DatabaseTasks.env
 end
 
-desc 'Fetch a merchant indices and cache the pages'
-task :fetch, [:merchant_id] do |_, args|
-  MerchantCrawlWorker.new.perform(args.fetch(:merchant_id))
-end
+namespace :app do
+  desc 'Clean up config'
+  task :align do
+    sh 'align ./config/**/*.yml'
+  end
 
-desc 'Parse article using cached index page'
-task :parse, [:index_page_id] do |_, args|
-  IndexPageParseWorker.new.perform(args.fetch(:index_page_id))
-end
+  desc 'Run test'
+  task :test do
+    sh 'pry -Iapp:spec ./spec/*_spec.rb'
+  end
 
-desc 'Crawl a merchant given merchant id'
-task :crawl, [:merchant_id] do |_, args|
-  merchant_id = args.fetch(:merchant_id)
-  merchant    = Merchant.find(merchant_id)
-  merchant.index_pages.each do |index_page|
-    puts 'Crawling page `%s`' % index_page.full_url
-    crawl_history = IndexPageCrawlWorker.new.perform('index_page_id' => index_page.id)
-    raise 'Crawl failed...' unless crawl_history.completed?
-    puts 'Parsing articles...'
-    crawl_history = IndexPageParseWorker.new.perform(index_page.id)
-    puts 'items_count: %d, invalid_items_count: %d' % [crawl_history.items_count, crawl_history.invalid_items_count]
+  desc 'Setup ssh'
+  task :ssh do
+    # sh 'ANYBAR_PORT=1735 open -na AnyBar'
+    # sh 'ANYBAR_PORT=1736 open -na AnyBar'
+    # sh 'ANYBAR_PORT=1737 open -na AnyBar'
+    #
+    # AnyBar::Client.new(1735).color = 'green'
+    # AnyBar::Client.new(1736).color = 'green'
+    # AnyBar::Client.new(1737).color = 'green'
+  end
+
+  desc 'Cleanup log'
+  task :log_clean do
+    FileList['./log/**/*.log'].each do |log_file|
+      puts 'Cleaning `%s`' % log_file
+      sh "cat /dev/null > #{log_file}"
+    end
+  end
+
+  desc 'Fetch a merchant indices and cache the pages'
+  task :fetch, [:merchant_id] do |_, args|
+    MerchantCrawlWorker.new.perform(args.fetch(:merchant_id))
+  end
+
+  desc 'Parse article using cached index page'
+  task :parse, [:index_page_id] do |_, args|
+    IndexPageParseWorker.new.perform(args.fetch(:index_page_id))
+  end
+
+  desc 'Crawl a merchant given merchant id'
+  task :crawl, [:merchant_id] do |_, args|
+    merchant_id = args.fetch(:merchant_id)
+    merchant    = Merchant.find(merchant_id)
+    merchant.index_pages.each do |index_page|
+      puts 'Crawling page `%s`' % index_page.full_url
+      crawl_history = IndexPageCrawlWorker.new.perform('index_page_id' => index_page.id)
+      raise 'Crawl failed...' unless crawl_history.completed?
+      puts 'Parsing articles...'
+      crawl_history = IndexPageParseWorker.new.perform(index_page.id)
+      puts 'items_count: %d, invalid_items_count: %d' % [crawl_history.items_count, crawl_history.invalid_items_count]
+    end
   end
 end
 
-namespace :db do
+namespace :rethinkdb do
   # Initialize merchant from config
   desc 'Setup merchants metadata'
   task :setup do
