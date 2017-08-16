@@ -14,4 +14,24 @@ class UserArticleWatched < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :article
+
+  alias_attribute :criteria, :article_notification_criteria
+
+  def all_criteria_apply?
+    article_notification_criteria.all? do |criterium|
+      criterium.applicable?(article)
+    end
+  end
+
+  def article_notification_criterium_ids=(article_notification_criterium_ids)
+    raise 'TODO IMPLEMENT'
+    # article_notification_criteria.destroy_all
+    # ArticleNotificationCriterium
+    #   .where(:id.in => article_notification_criterium_ids)
+    #   .each do |article_notification_criterium|
+    #   UserArticleWatchedNotificationCriterium
+    #     .create!(user_article_watched:           self,
+    #              article_notification_criterium: article_notification_criterium)
+    # end
+  end
 end

@@ -19,14 +19,14 @@ describe User do
   
   describe '#watch!' do
     it 'should respect uniqueness' do
-      user.watch!(article)
-      expect { user.watch!(article) }.to raise_error(
+      user.watch_article!(article)
+      expect { user.watch_article!(article) }.to raise_error(
                                            NoBrainer::Error::DocumentInvalid,
                                            /has already been taken/)
     end
     
     it 'should create with default criterium' do
-      user.watch!(article)
+      user.watch_article!(article)
       uw_article = user.user_article_watcheds.first
       expect(uw_article.article_notification_criteria.length).to eq(1)
       
@@ -50,7 +50,7 @@ describe User do
       
       expect(user.user_article_watcheds.count).to eq(3)
       to_destroy_uw = uw_articles.sample
-      user.destroy_user_article_watched!(to_destroy_uw.article)
+      user.unwatch_article!(to_destroy_uw.article)
       user.user_article_watcheds.reload
       
       expect(user.user_article_watcheds.count).to eq(2)

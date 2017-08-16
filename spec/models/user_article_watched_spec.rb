@@ -31,7 +31,7 @@ describe UserArticleWatched do
   end
   
   it 'should #notify' do
-    ua_watched = user.watch!(article, get_discount_percent_article_notification_criterium)
+    ua_watched = user.watch_article!(article, get_discount_percent_article_notification_criterium)
     expect(ua_watched.all_criteria_apply?).to eq(false)
   end
 end

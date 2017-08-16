@@ -11,4 +11,10 @@
 #
 
 class ExchangeRate < ActiveRecord::Base
+  default_scope { order(timestamp: :desc) }
+  scope :latest, -> { first }
+
+  def timestamp=(unix)
+    super(Time.at(unix).utc)
+  end
 end

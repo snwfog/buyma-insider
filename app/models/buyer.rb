@@ -11,5 +11,8 @@
 #
 
 class Buyer < ActiveRecord::Base
+  # https://stackoverflow.com/questions/22993545/ruby-email-validation-with-regex
+  SIMPLE_EMAIL_VALIDATION_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+
 end
   

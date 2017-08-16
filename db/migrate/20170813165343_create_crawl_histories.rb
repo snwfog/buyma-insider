@@ -17,7 +17,10 @@ class CreateCrawlHistories < ActiveRecord::Migration[5.0]
       t.timestamps null: false
     end
 
-    add_index :crawl_histories, :finished_at, order: { finished_at: :desc }
+    add_index :crawl_histories,
+              [:index_page_id, :status, :finished_at],
+              order: { index_page_id: :asc, status: :asc, finished_at: :desc },
+              name:  'idx_crawl_histories_index_page_id_status_finished_at'
 
     add_foreign_key :crawl_histories, :index_pages
   end

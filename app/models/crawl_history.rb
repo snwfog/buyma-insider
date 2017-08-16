@@ -24,4 +24,38 @@ class CrawlHistory < ActiveRecord::Base
   belongs_to :index_page
 
   enum status: [:scheduled, :inprogress, :aborted, :completed]
+  enum response_status: Rack::Utils::SYMBOL_TO_STATUS_CODE
+
+  default_scope { order(finished_at: :desc) }
+
+  alias_attribute :started_at, :created_at
+
+  def response_headers
+    text_headers = super || ''
+    YAML.parse(text_headers)
+  end
+
+  def response_headers=(hash_headers)
+    super(YAML.dump(hash_headers))
+  end
+
+  def etag
+    response_headers && response_headers[:etag]
+  end
+
+  def weak?
+    etag && etag.start_with?(?W)
+  end
+
+  def last_modified
+    response_headers && response_headers[:last_modified]
+  end
+
+  def content_encoding
+    response_headers && response_headers[:content_encoding]
+  end
+
+  def cache_resolve?
+    response_status == :not_modified
+  end
 end

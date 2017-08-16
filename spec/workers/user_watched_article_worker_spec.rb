@@ -5,7 +5,7 @@ describe UserArticleWatchedWorker do
   let(:article) { article = get_article.tap(&:save!) }
   
   it 'should notify' do
-    user.watch!(article)
+    user.watch_article!(article)
     article.update_price_history!
     
     current_price = article.price;
@@ -23,7 +23,7 @@ describe UserArticleWatchedWorker do
   end
   
   it 'should unique notify article on user/article/notified_date' do
-    user.watch!(article)
+    user.watch_article!(article)
     article.update_price_history!
     
     article.price *= 0.80

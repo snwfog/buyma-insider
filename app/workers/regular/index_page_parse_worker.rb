@@ -41,7 +41,6 @@ class IndexPageParseWorker < Worker::Base
           logger.info { 'Created %s ...' % article_id }
         end
 
-        article.update_price_history!
         last_history.article_count += 1
       rescue Exception => ex
         last_history.article_invalid_count += 1

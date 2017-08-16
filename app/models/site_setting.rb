@@ -6,4 +6,10 @@
 #
 
 class SiteSetting < ActiveRecord::Base
+  include Singleton
+
+  def settings
+    setting_yaml = super
+    YAML.parse(setting_yaml)
+  end
 end

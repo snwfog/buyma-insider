@@ -21,7 +21,7 @@ class UserArticleSoldsController < ApplicationController
     
     if buyer_embedded_payload = payload.dig('data', 'buyer')
       payload['data'].delete('buyer')
-      @ua_sold.set_buyer!(as_model(buyer_embedded_payload))
+      @ua_sold.create_buyer!(as_model(buyer_embedded_payload))
     end
     
     ua_sold_json = as_model(payload)

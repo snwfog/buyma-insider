@@ -149,7 +149,7 @@ class ArticlesController < ApplicationController
     default_notification_criterium = DiscountPercentArticleNotificationCriterium
                                        .where(threshold_pct: 10)
                                        .first_or_create
-    wa_watched = current_user.watch!(@article, default_notification_criterium)
+    wa_watched = current_user.watch_article!(@article, default_notification_criterium)
     status :created
     json wa_watched
   end
@@ -165,7 +165,7 @@ class ArticlesController < ApplicationController
     if current_user.id != ua_sold_json[:user_id]
       raise 'Only current user can create sold article'
     else
-      ua_sold = current_user.sold!(ua_sold_json)
+      ua_sold = current_user.sold_article!(ua_sold_json)
       status :created
       json ua_sold
     end
@@ -173,13 +173,13 @@ class ArticlesController < ApplicationController
 
   delete '/:id/watch' do
     ensure_user_authenticated!
-    current_user.destroy_user_article_watched!(@article)
+    current_user.unwatch_article!(@article)
     status :no_content
   end
 
   delete '/:id/sell' do
     ensure_user_authenticated!
-    current_user.destroy_user_article_sold!(@article)
+    current_user.unsold_article!(@article)
     status :no_content
   end
 end

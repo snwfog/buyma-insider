@@ -15,4 +15,12 @@ class UserArticleNotified < ActiveRecord::Base
 
   belongs_to :user
   belongs_to :article
+
+  def read!
+    self.read_at = Time.now # default is utc
+  end
+
+  def read?
+    !read_at.nil?
+  end
 end

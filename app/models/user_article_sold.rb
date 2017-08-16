@@ -17,7 +17,7 @@
 class UserArticleSold < ActiveRecord::Base
   has_and_belongs_to_many :extra_tariffs, join_table: :user_article_solds_extra_tariffs
   has_and_belongs_to_many :shipping_services, join_table: :user_article_solds_shipping_services
-  
+
   has_one :buyer, through: :user_article_sold_buyers
 
   belongs_to :user
@@ -26,4 +26,17 @@ class UserArticleSold < ActiveRecord::Base
   belongs_to :exchange_rate
 
   enum status: [:confirmed, :shipped, :cancelled, :received, :returned]
+
+  # TODO: Move this to another table
+  # State cycle for a sold article update status and timestamp
+  # (STATUS - [:confirmed]).each do |state|
+  #   field :"#{state}_at", type: Time
+  #   define_method("#{state}!") do
+  #     super() and self.__send__("#{state}_at=", Time.now)
+  #   end
+  # end
+
+  def create_buyer!(buyer_payload)
+    buyer.where(buyer_payload).first_or_create!
+  end
 end
