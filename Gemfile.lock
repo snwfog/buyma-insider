@@ -245,6 +245,9 @@ GEM
     ruby-progressbar (1.8.1)
     rufus-scheduler (3.4.2)
       et-orbi (~> 1.0)
+    seed-fu (2.3.6)
+      activerecord (>= 3.1)
+      activesupport (>= 3.1)
     sentry-raven (2.4.0)
       faraday (>= 0.7.6, < 1.0)
     shotgun (0.9.2)
@@ -337,6 +340,7 @@ DEPENDENCIES
   rspec
   rspec-collection_matchers
   rubocop
+  seed-fu
   sentry-raven
   shotgun
   sidekiq

@@ -4,6 +4,7 @@ require 'annotate'
 require 'standalone_migrations'
 
 load 'tasks/annotate_models.rake'
+load 'tasks/seed_fu.rake'
 load 'no_brainer/railtie/database.rake'
 StandaloneMigrations::Tasks.load_tasks
 

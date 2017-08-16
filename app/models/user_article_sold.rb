@@ -24,4 +24,6 @@ class UserArticleSold < ActiveRecord::Base
   belongs_to :article
   belongs_to :price_history
   belongs_to :exchange_rate
+
+  enum status: [:confirmed, :shipped, :cancelled, :received, :returned]
 end

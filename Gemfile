@@ -70,6 +70,7 @@ gem 'unicorn' if RUBY_PLATFORM =~ /darwin/
 # Misc
 gem 'faker'
 gem 'pry',                     require: false # for debugging
+gem 'seed-fu'
 
 group :development do
   gem 'annotate',              require: false # add comments to active record

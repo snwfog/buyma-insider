@@ -13,4 +13,6 @@
 #
 
 class ExtraTariff < ActiveRecord::Base
+  enum rate_type: [:flat_rate, :percent_rate]
+  enum flow_direction: [:inflow, :outflow]
 end
