@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: user_article_solds
+#
+#  id               :integer          not null, primary key
+#  user_id          :integer          not null
+#  article_id       :integer          not null
+#  exchange_rate_id :integer          not null
+#  price_history_id :integer          not null
+#  price_sold       :decimal(18, 5)
+#  status           :integer          not null
+#  notes            :text
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#
+
 require_relative '../setup'
 
 describe UserArticleSold do

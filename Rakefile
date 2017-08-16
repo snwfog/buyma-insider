@@ -1,7 +1,9 @@
 require_relative './config/application'
 require 'ostruct'
+require 'annotate'
 require 'standalone_migrations'
 
+load 'tasks/annotate_models.rake'
 load 'no_brainer/railtie/database.rake'
 StandaloneMigrations::Tasks.load_tasks
 
@@ -80,7 +82,7 @@ namespace :app do
       raise 'Crawl failed...' unless crawl_history.completed?
       puts 'Parsing articles...'
       crawl_history = IndexPageParseWorker.new.perform(index_page.id)
-      puts 'items_count: %d, invalid_items_count: %d' % [crawl_history.items_count, crawl_history.invalid_items_count]
+      puts 'article_count: %d, article_invalid_count: %d' % [crawl_history.article_count, crawl_history.article_invalid_count]
     end
   end
 end

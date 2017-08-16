@@ -72,6 +72,7 @@ gem 'faker'
 gem 'pry',                     require: false # for debugging
 
 group :development do
+  gem 'annotate',              require: false # add comments to active record
   gem 'standalone_migrations', require: false
   gem 'capistrano'
   gem 'capistrano-bundler'

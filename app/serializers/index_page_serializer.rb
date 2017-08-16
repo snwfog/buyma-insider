@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: index_pages
+#
+#  id            :integer          not null, primary key
+#  merchant_id   :integer          not null
+#  index_page_id :integer
+#  relative_path :string(2000)     not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#
+
 class IndexPageSerializer < ActiveModel::Serializer
   HEALTH_GREEN  = :green
   HEALTH_ORANGE = :orange
@@ -18,18 +30,18 @@ class IndexPageSerializer < ActiveModel::Serializer
       crawl_history.created_at
     end
   end
-  
+
   def health
-    crawl_histories                                    = object.crawl_histories.limit(10)
-    valid_items_count_total, invalid_items_count_total = crawl_histories.inject([0, 0]) do |(v_it_cnt, inv_it_cnt), crawl_hist|
-      v_it_cnt   += crawl_hist.items_count
-      inv_it_cnt += crawl_hist.invalid_items_count
-      [v_it_cnt, inv_it_cnt]
+    crawl_histories                                  = object.crawl_histories.limit(10)
+    article_count_total, invalid_article_count_total = crawl_histories.inject([0, 0]) do |(valid_article_cnt, invalid_article_cnt), crawl_hist|
+      valid_article_cnt   += crawl_hist.article_count
+      invalid_article_cnt += crawl_hist.article_invalid_count
+      [valid_article_cnt, invalid_article_cnt]
     end
 
-    if not crawl_histories.any?(&:completed?) || invalid_items_count_total > valid_items_count_total
+    if not crawl_histories.any?(&:completed?) || invalid_article_count_total > article_count_total
       HEALTH_RED
-    elsif crawl_histories.any?(&:aborted?) || invalid_items_count_total > 0
+    elsif crawl_histories.any?(&:aborted?) || invalid_article_count_total > 0
       HEALTH_ORANGE
     else
       HEALTH_GREEN

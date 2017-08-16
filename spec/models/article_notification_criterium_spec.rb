@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: article_notification_criteria
+#
+#  id         :integer          not null, primary key
+#  name       :string(500)      not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 require_relative '../setup'
 
 describe ArticleNotificationCriterium do

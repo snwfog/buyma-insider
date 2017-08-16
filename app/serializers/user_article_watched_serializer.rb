@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: user_article_watcheds
+#
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
+#  article_id :integer          not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class UserArticleWatchedSerializer < ActiveModel::Serializer
   belongs_to :user do
     # include_data true

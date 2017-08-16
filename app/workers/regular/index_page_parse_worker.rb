@@ -29,7 +29,7 @@ class IndexPageParseWorker < Worker::Base
                                       article:       article,
                                       status:        :updated)
           ArticleUpdatedWorker.perform_async(article_id)
-          last_history.updated_articles_count += 1
+          last_history.article_updated_count += 1
           logger.info { 'Updated %s ...' % article_id }
         else
           article = Article.create!(attrs.merge(merchant: merchant))
@@ -37,14 +37,14 @@ class IndexPageParseWorker < Worker::Base
                                       article:       article,
                                       status:        :created)
           ArticleCreatedWorker.perform_async(article_id)
-          last_history.created_articles_count += 1
+          last_history.article_created_count += 1
           logger.info { 'Created %s ...' % article_id }
         end
 
         article.update_price_history!
-        last_history.items_count += 1
+        last_history.article_count += 1
       rescue Exception => ex
-        last_history.invalid_items_count += 1
+        last_history.article_invalid_count += 1
 
         logger.warn 'Failed creating article: %s' % ex.message
         logger.warn attrs

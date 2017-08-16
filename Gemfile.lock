@@ -66,6 +66,9 @@ GEM
       tzinfo (~> 1.1)
     airbrussh (1.2.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    annotate (2.7.2)
+      activerecord (>= 3.2, < 6.0)
+      rake (>= 10.4, < 13.0)
     arel (7.1.4)
     ast (2.3.0)
     awesome_print (1.7.0)
@@ -292,6 +295,7 @@ DEPENDENCIES
   active_model_serializers (~> 0.10.0)
   activerecord
   activesupport
+  annotate
   awesome_print
   bcrypt!
   bundler
