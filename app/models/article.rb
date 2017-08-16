@@ -1,3 +1,33 @@
+class Article < ActiveRecord::Base
+  EXPIRES_IN = 1.week
+
+  has_many :user_article_solds, dependent: :destroy
+  has_many :user_article_watcheds, dependent: :destroy
+  has_many :crawl_history_articles, dependent: :destroy
+  has_many :price_histories, -> { order(created_at: :desc) }, dependent: :destroy
+
+  belongs_to :merchant
+
+  def price=(price)
+    price_histories.create(article: self,
+                           price:   price)
+  end
+
+  def price
+    if price_histories
+      price_histories.first.price
+    end
+  end
+
+  def name=(name)
+    super(name.titleize)
+  end
+
+  def link=(link)
+    super(link.gsub(%r{^https?://}, '//'))
+  end
+end
+
 # == Schema Information
 #
 # Table name: articles
@@ -12,23 +42,3 @@
 #  updated_at  :datetime         not null
 #
 
-class Article < ActiveRecord::Base
-  EXPIRES_IN = 1.week
-
-  has_many :user_article_solds, dependent: :destroy
-  has_many :user_article_watcheds, dependent: :destroy
-  has_many :crawl_history_articles, dependent: :destroy
-  has_many :price_histories, -> { order(created_at: :desc) }, dependent: :destroy
-
-  belongs_to :merchant
-
-  def price=()
-    raise
-  end
-
-  def price
-    if price_histories
-      price_histories.first
-    end
-  end
-end
