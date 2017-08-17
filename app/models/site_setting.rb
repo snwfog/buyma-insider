@@ -10,7 +10,7 @@ class SiteSetting < ActiveRecord::Base
   include Singleton
 
   def settings
-    setting_yaml = super
-    YAML.load(setting_yaml)
+    settings_yaml = super
+    @settings_h = settings_yaml.blank? ? nil : YAML.load(settings_yaml)
   end
 end

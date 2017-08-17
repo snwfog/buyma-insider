@@ -23,7 +23,7 @@ class ExchangeRate < ActiveRecord::Base
   end
 
   def rates
-    rates_h = super
-    @rates  = rates_h.blank? ? nil : YAML.load(rates_h)
+    rates_yaml = super
+    @rates  = rates_yaml.blank? ? nil : YAML.load(rates_yaml)
   end
 end
