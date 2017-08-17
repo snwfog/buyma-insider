@@ -32,7 +32,7 @@ class CrawlHistory < ActiveRecord::Base
 
   def response_headers
     text_headers = super || ''
-    YAML.parse(text_headers)
+    YAML.load(text_headers)
   end
 
   def response_headers=(hash_headers)

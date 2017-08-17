@@ -11,6 +11,6 @@ class SiteSetting < ActiveRecord::Base
 
   def settings
     setting_yaml = super
-    YAML.parse(setting_yaml)
+    YAML.load(setting_yaml)
   end
 end

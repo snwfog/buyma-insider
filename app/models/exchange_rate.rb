@@ -17,4 +17,13 @@ class ExchangeRate < ActiveRecord::Base
   def timestamp=(unix)
     super(Time.at(unix).utc)
   end
+
+  def rates=(rates_h)
+    super YAML.dump(rates_h) unless rates_h.blank?
+  end
+
+  def rates
+    rates_h = super
+    @rates  = rates_h.blank? ? nil : YAML.load(rates_h)
+  end
 end
