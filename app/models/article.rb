@@ -39,11 +39,11 @@ class Article < ActiveRecord::Base
   end
 
   def max_price
-    price_histories.order(price: :desc)&.price
+    price_histories.order(price: :desc).first&.price
   end
 
   def min_price
-    price_histories.order(price: :asc)&.price
+    price_histories.order(price: :asc).first&.price
   end
 
   def name=(name)
