@@ -22,19 +22,20 @@ client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
 # end
 
 def get_article
-  Article.new({ id:          "abc:#{Faker::Code.ean}",
-                merchant_id: 'zar',
-                sku:         Faker::Code.ean,
-                name:        Faker::Commerce.product_name,
-                price:       Faker::Commerce.price,
-                description: Faker::Commerce.product_name,
-                link:        '//test1.com', })
+  merchant = Merchant.find_by_code(:zar)
+  sku      = Faker::Code.ean
+  Article.new(merchant:    merchant,
+              sku:         sku,
+              name:        Faker::Commerce.product_name,
+              price:       Faker::Commerce.price,
+              description: Faker::Commerce.product_name,
+              link:        '//test1.com')
 end
 
 def get_user
-  User.new({ username: Faker::Internet.user_name,
-             email:    Faker::Internet.email,
-             password: 123 })
+  User.new(username: Faker::Internet.user_name,
+           email:    Faker::Internet.email,
+           password: 123)
 end
 
 def json_serialize(object)

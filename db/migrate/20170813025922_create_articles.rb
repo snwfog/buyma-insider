@@ -12,7 +12,7 @@ class CreateArticles < ActiveRecord::Migration[5.0]
       t.timestamps null: false
     end
 
-    add_index :articles, :sku, unique: true
+    add_index :articles, [:merchant_id, :sku], unique: true
     add_index :articles, :name
 
     add_foreign_key :articles, :merchants

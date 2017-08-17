@@ -193,6 +193,11 @@ namespace :rethinkdb do
   end
 end
 
+namespace :db do
+  desc 'Drop, create, migrate, seed'
+  task :reset => [:drop, :'environment:set', :create, :migrate, :seed_fu]
+end
+
 namespace :es do
   desc 'Drop index, setup elasticsearch, and sync all articles'
   task :reset => [:drop, :setup, :seed]
