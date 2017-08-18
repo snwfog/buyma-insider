@@ -10,5 +10,6 @@
 #
 
 class PriceHistory < ActiveRecord::Base
+  DEFAULT_CURRENCY = :CAD
   belongs_to :article
 end

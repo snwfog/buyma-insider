@@ -54,4 +54,3 @@ class Article < ActiveRecord::Base
     super(link.gsub(%r{^https?://}, '//'))
   end
 end
-

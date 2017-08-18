@@ -15,7 +15,6 @@
 class MerchantMetadatum < ActiveRecord::Base
   belongs_to :merchant
 
-  alias_attribute :code, :id
   alias_attribute :base_url, :domain
 
   def latests

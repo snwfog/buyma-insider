@@ -15,6 +15,8 @@ class Merchant < ActiveRecord::Base
 
   has_one :merchant_metadatum, dependent: :destroy
 
+  validates_format_of :code, with: /[a-z]{3}/
+
   default_scope { eager_load(:merchant_metadatum) }
 
   after_find do

@@ -11,6 +11,8 @@
 #
 
 class ExchangeRate < ActiveRecord::Base
+  enum :base, [:usd, :cad, :jyp]
+
   default_scope { order(timestamp: :desc) }
   scope :latest, -> { first }
 

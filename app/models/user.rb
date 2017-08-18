@@ -21,6 +21,9 @@ class User < ActiveRecord::Base
   has_many :user_auth_tokens, dependent: :destroy
   has_one :user_metadatum, dependent: :destroy
 
+  validates_length_of :username, within: (1..60)
+  validates_length_of :password_hash, is: 60
+
   before_validation :ensure_password_is_hashed
 
   def valid_password?(password)
