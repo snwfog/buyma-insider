@@ -36,14 +36,11 @@ module Merchants
         url_parts.shift
         link = "//#{url_parts.join}"
 
-        {
-          id:          "#{code}:#{Digest::MD5.hexdigest(desc)}",
-          sku:         Digest::MD5.hexdigest(desc),
+        { sku:         Digest::MD5.hexdigest(desc),
           name:        desc,
-          price:       node.at_css('div.product-price p.product-price').content[/[\d]{1,10}\.[\d]{2}/],
           description: desc,
           link:        link,
-        }
+          price:       node.at_css('div.product-price p.product-price').content[/[\d]{1,10}\.[\d]{2}/] }
       end
     end
   end

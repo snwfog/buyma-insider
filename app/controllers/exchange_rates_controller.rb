@@ -13,6 +13,6 @@ class ExchangeRatesController < ApplicationController
   
   get '/:id' do
     param :id, String, required: true
-    json ExchangeRate.find!(params[:id])
+    json ExchangeRate.find(params[:id])
   end
 end

@@ -5,6 +5,6 @@ class MerchantMetadataController < ApplicationController
 
   get '/:merchant_id' do
     param :merchant_name, String, required: true, transform: :downcase, format: /[a-z]{3}/
-    json MerchantMetadatum.find!(params[:merchant_name])
+    json MerchantMetadatum.find(params[:merchant_name])
   end
 end

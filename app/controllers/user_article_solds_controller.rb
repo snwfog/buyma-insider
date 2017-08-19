@@ -4,7 +4,7 @@ class UserArticleSoldsController < ApplicationController
   before '/:id(/**)?' do
     param :id, String, required: true
     
-    @ua_sold = UserArticleSold.find!(params[:id])
+    @ua_sold = UserArticleSold.find(params[:id])
   end
   
   get '/:id/shipping_services' do

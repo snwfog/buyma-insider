@@ -36,7 +36,7 @@ class CrawlHistory < ActiveRecord::Base
   end
 
   def response_headers=(headers_h)
-    super YAML.dump(hash_headers) unless headers_h.blank?
+    super YAML.dump(headers_h) unless headers_h.blank?
   end
 
   def etag

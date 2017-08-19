@@ -19,6 +19,8 @@ class IndexPage < ActiveRecord::Base
   belongs_to :merchant
   belongs_to :index_page
 
+  default_scope { eager_load(:merchant) }
+
   def full_url
     domain = merchant.metadatum.domain
     scheme << ':' << domain << relative_path
@@ -33,30 +35,37 @@ class IndexPage < ActiveRecord::Base
   end
 
   def cache_html_path
-    File.expand_path('%<app_path>s/tmp/cache/crawl/%<merchant_id>s/%<cache_filename>s' % {
+    File.expand_path('%<root>s/tmp/cache/crawl/%<merchant_code>s/%<cache_filename>s' % {
       root:           BuymaInsider.root,
-      merchant_id:    merchant_id,
+      merchant_code:  merchant.code,
       cache_filename: cache_filename
     })
   end
 
-  def cache_html_content
-    File.open(cache_html_path, 'rb') { |file| file.read }
-  end
-
-  def cache_html_content_encoding
-    crawl_histories.completed.first&.content_encoding || 'gzip'.freeze
+  def has_cache_content?
+    !cache_html_content.blank?
   end
 
   # Its always the latest and we assume
   # there can be only 1 of them at the cache location
   def cache_html_document
     if File.exists?(cache_html_path)
-      @cache_html_document ||= RestClient::Request.decode(content_encoding, cache_html_content)
+      RestClient::Request.decode(cache_html_content_encoding,
+                                 cache_html_content)
     end
   end
 
   def to_s
     full_url
+  end
+
+  private
+
+  def cache_html_content
+    @cache_html_content ||= File.open(cache_html_path, 'rb') { |file| file.read }
+  end
+
+  def cache_html_content_encoding
+    crawl_histories.completed.first&.content_encoding || 'gzip'.freeze
   end
 end

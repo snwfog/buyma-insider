@@ -41,13 +41,11 @@ module Merchants
         product_price     = product_price[/(?<=[$])?[\d]{1,10}\.[\d]{2}/].to_f
         sku               = Digest::MD5.hexdigest(product_title)
 
-        { id:          "#{code}:#{sku}",
-          sku:         sku,
+        { sku:         sku,
           name:        product_title.titleize,
           description: product_title.capitalize,
-          price:       product_price,
-          link:        "#{domain}#{product_uri.path}"
-        }
+          link:        "#{domain}#{product_uri.path}",
+          price:       product_price }
       end
     end
   end

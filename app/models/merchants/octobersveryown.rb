@@ -4,10 +4,10 @@ module Merchants
       merchant.indexer = OctobersveryownIndexer
       merchant.extend Parser
     end
-    
+
     class OctobersveryownIndexer < Indexer;
     end
-    
+
     module Parser
       def attrs_from_node(node)
         name_node, price_node = node.css('p')
@@ -16,17 +16,16 @@ module Merchants
         name                  = AsciiFolding.fold(name_node.at_css('a').content)
         link                  = link_node['href']
         sku                   = Digest::MD5.hexdigest(name.titleize)
-        
-        { id:          "#{code}:#{sku}",
-          # There is a sku, but its only shown
+
+        { # There is a sku, but its only shown
           # by fetching the article
-          sku:         sku,
-          name:        name.titleize,
-          price:       price,
+          sku:  sku,
+          name: name.titleize,
           # We can actually get a better description
           # by fetching the page and reading the meta tag
           description: name.capitalize,
-          link:        '%s%s' % [domain, link] }
+          link:        '%s%s' % [domain, link],
+          price:       price }
       end
     end
   end

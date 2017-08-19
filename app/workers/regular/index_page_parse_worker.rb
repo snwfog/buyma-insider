@@ -1,65 +1,58 @@
 class IndexPageParseWorker < Worker::Base
-  def perform(index_page_id)
-    index_page = IndexPage.eager_load(:merchant).find(index_page_id)
-    logger.info "Index page parser started for index `#{index_page}'"
-    last_history = CrawlHistory.where(index_page_id: index_page_id,
-                                      status:        :completed).first
-    merchant     = index_page.merchant
-    raise "Cache file not found `#{index_page}'" unless index_page.cache_html_document
+  def perform(crawl_history_id)
+    crawl_history = CrawlHistory.find(crawl_history_id)
+    index_page    = crawl_history.index_page
+    merchant      = index_page.merchant
+
+    unless index_page.has_cache_content?
+      raise "Cache file not found `#{index_page}' at [#{index_page.cache_html_path}]"
+    end
     item_css      = merchant.metadatum.item_css
     article_nodes = Nokogiri::HTML(index_page.cache_html_document).css(item_css)
-    logger.info 'Start parsing files with `%i` articles' % article_nodes.count
+    logger.info 'Start parsing index page html %s with `%i` articles' % [index_page, article_nodes.count]
     article_nodes.each do |it|
       begin
-        attrs      = merchant.attrs_from_node(it)
-        article_id = attrs[:id]
+        article_attrs = merchant.attrs_from_node(it)
 
         logger.debug 'Article properties'
-        logger.debug JSON.pretty_generate(attrs)
+        logger.debug JSON.pretty_generate(article_attrs)
 
-        unless article_id =~ /[a-z]{3}:[a-z0-9]+/
-          raise 'No valid id was found in parsed article attributes'
-        end
-
-        if article = Article.find?(article_id)
+        if article = Article.find_by_sku(article_attrs[:sku])
           # Bust the (serializer) cache and touch the record
-          article.update!(attrs.merge(updated_at: Time.now.utc.iso8601))
-          # ArticleUpdatedWorker.perform_async(article.id)
-          CrawlHistoryArticle.upsert!(crawl_history: last_history,
-                                      article:       article,
-                                      status:        :updated)
-          ArticleUpdatedWorker.perform_async(article_id)
-          last_history.article_updated_count += 1
-          logger.info { 'Updated %s ...' % article_id }
+          # article_attrs might have not be changed, in this case
+          # updated_at is not updated
+          article.touch unless article.update!(article_attrs)
+
+          unless crawl_history.articles.exists?(id: article.id)
+            crawl_history.articles << article
+          end
+
+          ArticleUpdatedWorker.perform_async(article.id)
+          crawl_history.increment!(:article_updated_count)
+          logger.info { 'Updated %s ...' % article.name }
         else
-          article = Article.create!(attrs.merge(merchant: merchant))
-          CrawlHistoryArticle.create!(crawl_history: last_history,
-                                      article:       article,
-                                      status:        :created)
-          ArticleCreatedWorker.perform_async(article_id)
-          last_history.article_created_count += 1
-          logger.info { 'Created %s ...' % article_id }
+          article = merchant.articles.create!(article_attrs)
+          crawl_history.articles << article
+
+          ArticleCreatedWorker.perform_async(article.id)
+          crawl_history.increment!(:article_created_count)
+          logger.info { 'Created %s ...' % article.name }
         end
 
-        last_history.article_count += 1
+        crawl_history.increment!(:article_count)
       rescue Exception => ex
-        last_history.article_invalid_count += 1
+        crawl_history.increment!(:article_invalid_count)
 
-        logger.warn 'Failed creating article: %s' % ex.message
-        logger.warn attrs
-        logger.debug it.to_html
+        logger.error 'Failed creating article: %s' % ex.message
+        logger.error ex.backtrace
+        logger.error article_attrs
+        logger.error it.to_html
       ensure
-        last_history.save
+        crawl_history.save
       end
     end
 
     logger.info "Finished parsing #{index_page}"
-    last_history
-  end
-
-  private
-
-  def read_cache_file(body, encoding = nil)
-    RestClient::Request.decode(encoding, body)
+    crawl_history
   end
 end

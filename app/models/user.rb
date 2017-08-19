@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   has_many :user_article_notifieds, dependent: :destroy
   has_many :article_notifieds, -> { eager_load(:article) }, through: :user_article_notifieds
   has_many :user_auth_tokens, dependent: :destroy
+
   has_one :user_metadatum, dependent: :destroy
 
   validates_length_of :username, within: (1..60)

@@ -24,18 +24,17 @@ class IndexPageCrawlWorker < Worker::Base
     validate_args(args, -> (args) { args.key?('index_page_id') }, 'must contains `index_page_id`')
 
     index_page_id       = args.fetch('index_page_id')
-    is_lazy             = !args.fetch('no_cache', false)
+    use_web_cache       = !args.fetch('use_web_cache', true)
     is_schedule_parser  = args.fetch('schedule_parser', false)
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
-    @last_crawl_history = @index_page.crawl_histories.finished.first
+    @last_crawl_history = @index_page.crawl_histories&.completed.first
     @merchant           = @index_page.merchant
-    @merchant_cache_dir = File.expand_path(BuymaInsider.root + "/tmp/cache/crawl/#{@merchant.id}")
+    @merchant_cache_dir = BuymaInsider.root + "/tmp/cache/crawl/#{@merchant.code}"
     FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
 
-    @standard_headers.merge(lazy_headers) if is_lazy
-    @current_crawl_history = CrawlHistory.create!(index_page:  @index_page,
-                                                  status:      :inprogress,
-                                                  description: "#{@merchant.name} [#{@index_page}]")
+    @standard_headers.merge(lazy_headers) if use_web_cache
+    @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
+                                                                description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
     if raw_resp_tempfile = fetch_page_with_capture(@index_page.full_url,
                                                    @merchant.meta.ssl?,
@@ -68,12 +67,11 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info 'Scheduling an index page parser'
       IndexPageParseWorker.perform_async(index_page_id)
     end
-    
+
     @current_crawl_history
   ensure
     if @current_crawl_history
-      @current_crawl_history.finished_at = Time.now
-      @current_crawl_history.save!
+      @current_crawl_history.update!(finished_at: Time.now)
       logger.info 'Finished crawling `%s`' % @current_crawl_history.description
       logger.info JSON.pretty_generate(@current_crawl_history.attributes)
     end

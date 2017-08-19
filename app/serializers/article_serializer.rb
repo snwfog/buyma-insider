@@ -2,15 +2,14 @@
 #
 # Table name: articles
 #
-#  id           :integer          not null, primary key
-#  merchant_id  :integer          not null
-#  merchant_sku :string(100)      not null
-#  sku          :string(100)      not null
-#  name         :string(500)      not null
-#  description  :text
-#  link         :string(2000)     not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id          :integer          not null, primary key
+#  merchant_id :integer          not null
+#  sku         :string(100)      not null
+#  name        :string(500)      not null
+#  description :text
+#  link        :string(2000)     not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #
 
 class ArticleSerializer < ActiveModel::Serializer

@@ -4,7 +4,7 @@ class UserArticleWatchedsController < ApplicationController
   before '/:id(/**)?' do
     param :id, String, required: true
   
-    @ua_watched = UserArticleWatched.find!(params[:id])
+    @ua_watched = UserArticleWatched.find(params[:id])
   end
   
   get '/:id/article_notification_criteria' do

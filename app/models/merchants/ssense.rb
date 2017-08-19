@@ -31,17 +31,17 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        product_sku   = node['data-product-sku']
-        product_name  = node['data-product-name']
-        product_price = node['data-product-price']
-        product_brand = node['data-product-brand']
+        product_sku   = node.at_css('meta[itemprop=sku]')['content']
+        product_name  = node.at_css('figcaption.browsing-product-description > p[itemprop=name]').content
+        product_brand = node.at_css('figcaption.browsing-product-description > p[itemprop=brand]').content
+        product_price = node.at_css('span[itemprop=offers] > meta[itemprop=price]')['content']
+        product_link  = node.at_css('meta[itemprop=url]')['content']
 
-        { id:          "#{code}:#{product_sku}",
-          sku:         product_sku,
+        { sku:         product_sku,
           name:        product_name,
-          price:       product_price,
           description: "#{product_brand} - #{product_name}",
-          link:        "#{domain}#{node.at_css('a')['href']}", }
+          link:        product_link.sub(/https?:/, ''),
+          price:       product_price }
       end
     end
   end

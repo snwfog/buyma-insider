@@ -4,7 +4,7 @@ class UserArticleNotifiedsController < ApplicationController
   before '/:id(/**)?' do
     param :id, String, required: true
     
-    @ua_notified = UserArticleNotified.find!(params[:id])
+    @ua_notified = UserArticleNotified.find(params[:id])
   end
   
   # Satisfied article notification criteria
