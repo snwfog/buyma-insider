@@ -4,7 +4,7 @@ class IndexPageParseWorker < Worker::Base
     index_page    = crawl_history.index_page
     merchant      = index_page.merchant
 
-    unless index_page.has_cache_content?
+    unless index_page.has_cache_html?
       raise "Cache file not found `#{index_page}' at [#{index_page.cache_html_path}]"
     end
     item_css      = merchant.metadatum.item_css

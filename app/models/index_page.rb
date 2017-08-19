@@ -19,7 +19,11 @@ class IndexPage < ActiveRecord::Base
   belongs_to :merchant
   belongs_to :index_page
 
+  validates_uniqueness_of :relative_path, scope: :merchant_id
+  validates_presence_of :merchant
+
   default_scope { eager_load(:merchant) }
+  scope :root, -> { where(index_page_id: nil) }
 
   def full_url
     domain = merchant.metadatum.domain
@@ -42,17 +46,13 @@ class IndexPage < ActiveRecord::Base
     })
   end
 
-  def has_cache_content?
-    !cache_html_content.blank?
+  def has_cache_html?
+    File.exists?(cache_html_path)
   end
 
-  # Its always the latest and we assume
-  # there can be only 1 of them at the cache location
   def cache_html_document
-    if File.exists?(cache_html_path)
-      RestClient::Request.decode(cache_html_content_encoding,
-                                 cache_html_content)
-    end
+    RestClient::Request.decode(cache_html_content_encoding,
+                               cache_html_content)
   end
 
   def to_s
@@ -62,7 +62,7 @@ class IndexPage < ActiveRecord::Base
   private
 
   def cache_html_content
-    @cache_html_content ||= File.open(cache_html_path, 'rb') { |file| file.read }
+    @cache_html_content_encoded ||= File.open(cache_html_path, 'rb', &:read)
   end
 
   def cache_html_content_encoding

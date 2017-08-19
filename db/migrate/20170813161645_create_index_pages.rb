@@ -9,7 +9,7 @@ class CreateIndexPages < ActiveRecord::Migration[5.0]
       t.timestamps null: false
     end
 
-    add_index :index_pages, :relative_path, unique: true
+    add_index :index_pages, [:merchant_id, :relative_path], unique: true
 
     add_foreign_key :index_pages, :merchants
   end
