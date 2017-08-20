@@ -246,11 +246,8 @@ namespace :es do
   task :seed do
     time = Benchmark.realtime do
       Article.eager_load(:merchant).all.each do |article|
-        article_attributes = article.attributes.except('id', 'merchant_id')
-        $elasticsearch.index index: article.merchant.code,
-                             type:  :article,
-                             id:    article.id,
-                             body:  article_attributes
+        Elasticsearch::IndexDocumentWorker.new.perform('article_id' => article.id,
+                                                       'operation'  => 'created')
       end
     end
     puts 'Seeded elasticsearch in %.02fs' % time

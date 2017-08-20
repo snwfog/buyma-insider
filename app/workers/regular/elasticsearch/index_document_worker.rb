@@ -6,19 +6,20 @@ module Elasticsearch
       operation  = args.fetch('operation')
       article    = Article.eager_load(:merchant).find(article_id)
 
-      logger.info "Elasticsearch indexing article `#{article.name}'"
+      logger.info "Indexing elasticsearch article `#{article.name}'."
 
       index = article.merchant.code
       type  = :article
       # TODO: Race condition here, article might be concurrently updated
       case operation
-      when /create/
-      when /update/
-        $elasticsearch.index(index: index,
+      when /created/
+      when /updated/
+        article_attributes = article.attributes.except('id', 'merchant_id')
+        $elasticsearch.index index: index,
                              type:  type,
                              id:    article.id,
-                             body:  article.attributes.except(:id))
-      when /destroy/
+                             body:  article_attributes
+      when /destroyed/
         # Not yet supported
       else
         raise 'Unsupported elasticsearch index operation `%s`' % operation
