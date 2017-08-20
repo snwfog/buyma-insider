@@ -31,9 +31,9 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        product_sku   = node.at_css('meta[itemprop=sku]')['content']
-        product_name  = node.at_css('figcaption.browsing-product-description > p[itemprop=name]').content
-        product_brand = node.at_css('figcaption.browsing-product-description > p[itemprop=brand]').content
+        product_sku   = node.at_css('meta[itemprop=sku]')['content'].strip
+        product_name  = node.at_css('figcaption.browsing-product-description > p[itemprop=name]').content.strip
+        product_brand = node.at_css('figcaption.browsing-product-description > p[itemprop=brand]').content.strip
         product_price = node.at_css('span[itemprop=offers] > meta[itemprop=price]')['content']
         product_link  = node.at_css('meta[itemprop=url]')['content']
 

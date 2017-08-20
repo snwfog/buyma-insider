@@ -35,7 +35,7 @@ module Merchants
         product_uri  = URI(product_href)
 
         product_info_node = node.at_css('div.info')
-        product_title     = product_info_node.at_css('span.title').content
+        product_title     = product_info_node.at_css('span.title').content.strip
         product_title     = AsciiFolding.fold(product_title)
         product_price     = product_info_node.at_css('span.price span.money').content
         product_price     = product_price[/(?<=[$])?[\d]{1,10}\.[\d]{2}/].to_f

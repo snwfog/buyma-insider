@@ -13,7 +13,7 @@ module Merchants
         name_node, price_node = node.css('p')
         link_node             = node.css('a').first
         price                 = price_node.content.strip[1..-1].to_f
-        name                  = AsciiFolding.fold(name_node.at_css('a').content)
+        name                  = AsciiFolding.fold(name_node.at_css('a').content.strip)
         link                  = link_node['href']
         sku                   = Digest::MD5.hexdigest(name.titleize)
 
