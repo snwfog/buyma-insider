@@ -7,8 +7,8 @@ services:
     ports:
       - "28015:28015"
       - "8080:8080"
-    networks:
-      - buymainsider_default
+#    networks:
+#      - buymainsider_default
 #    volumes:
 #      - /docker_volumes/buyma_insider/rethinkdb/data:/data
   postgres:
@@ -18,15 +18,15 @@ services:
       - "5432:5432"
     environment:
       - "POSTGRES_PASSWORD=mobara"
-    networks:
-      - buymainsider_default
+#    networks:
+#      - buymainsider_default
   redis:
     container_name: redis
     image: redis
     ports:
       - "6379:6379"
-    networks:
-      - buymainsider_default
+#    networks:
+#      - buymainsider_default
   elasticsearch:
     container_name: elasticsearch
     image: elasticsearch:latest
@@ -36,13 +36,13 @@ services:
       - /docker_volumes/buyma_insider/elasticsearch/config:/usr/share/elasticsearch/config
     ports:
       - "9200:9200"
-    networks:
-      - buymainsider_default
+#    networks:
+#      - buymainsider_default
   sidekiq:
     container_name: buyma_insider_sidekiq
     image: buyma_insider_sidekiq:latest
-    networks:
-      - buymainsider_default
-networks:
-  buymainsider_default:
-    driver: bridge
+#    networks:
+#      - buymainsider_default
+#networks:
+#  buymainsider_default:
+#    driver: bridge
