@@ -25,7 +25,7 @@ module AuthenticationHelper
       raise InvalidSession unless unhashed_token
       session_cached_user
       # cache_user = session_cached_user
-      # User.find!(cache_user.id)
+      # User.find(cache_user.id)
     end
   end
 
