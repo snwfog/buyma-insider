@@ -7,16 +7,17 @@ class IndexPageWorker < Worker::Base
     indexer_klass = merchant.indexer
     merchant.index_pages.root.each do |index_page|
       unless index_page.has_cache_html?
-        logger.warn "Index page #{index_page} is skipped, because it did not had a cached document"
+        logger.warn "Index page #{index_page} is skipped, it does not have a cached document"
         next
       end
 
       logger.info "Parsing pager from index page [#{index_page}] for indices"
       indexer_klass.new(index_page).compute!.each do |index_page|
         if index_page.save
-          logger.info "Merchant [#{merchant.name}] has an new index page [#{index_page}]"
+          logger.info "Merchant [#{merchant.name}] new index page [#{index_page}]"
         else
-          logger.error "Merchant [#{merchant.name}] found an invalid index page. Reason: #{index_page.errors.full_messages}"
+          logger.error "Merchant [#{merchant.name}] index page [#{index_page} is invalid."
+          logger.error "Reason: #{index_page.errors.full_messages}"
         end
       end
     end

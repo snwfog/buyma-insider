@@ -1,5 +1,5 @@
 ssense:
-  id:               sse
+  code:             sse
   name:             ssense
   domain:           //www.ssense.com
   pager_css:        div.browsing-pagination ul.nav
@@ -11,7 +11,7 @@ ssense:
 
 # @deprecated out of business
 #shoeme:
-#  id:               sho
+#  code:             sho
 #  name:             shoeme
 #  domain:           //shoeme.ecomm-nav.com
 #  pager_css:        div.nxt-pagination
@@ -25,7 +25,7 @@ ssense:
 #  ssl:              false
 
 getoutside:
-  id:               get
+  code:             get
   name:             getoutside
   domain:           //www.getoutsideshoes.com
   pager_css:        div.browing-pagination ui.nav
@@ -40,7 +40,7 @@ getoutside:
   ssl:              true
 
 zara:
-  id:               zar
+  code:             zar
   name:             zara
   domain:           //www.zara.com/ca/en
   pager_css:
@@ -50,7 +50,7 @@ zara:
   ssl:              true
 
 octobersveryown:
-  id:               ovo
+  code:             ovo
   name:             octobersveryown
   domain:           //ca.octobersveryown.com
   pager_css:
@@ -60,7 +60,7 @@ octobersveryown:
   ssl:              true
 
 #livestock:
-#  id:               ltk
+#  code:             ltk
 #  name:             livestock
 #  domain:           //www.deadstock.ca
 #  pager_css:        div.container.main.content > div.products div.paginate

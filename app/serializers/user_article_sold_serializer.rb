@@ -20,25 +20,25 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
     #   "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services" }
     include_data true
   end
-  
+
   has_many :extra_tariffs do
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/extra_tariffs" }
     include_data true
   end
-  
+
   has_one :buyer do
     include_data true
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/buyer/#{object.buyer.id}" }
   end
-  
+
   belongs_to :user do
     include_data true
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/users/#{object.user_id}" }
   end
-  
+
   belongs_to :article do
     # IMPT:
     # Having include_data and link cause
@@ -47,13 +47,13 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/articles/#{object.article_id}" }
   end
-  
+
   belongs_to :exchange_rate do
     include_data true
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/exchange_rates/#{object.exchange_rate_id}" }
   end
-  
+
   attributes :status,
              :price,
              :sold_price,
@@ -65,4 +65,18 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
              :returned_at,
              :created_at,
              :updated_at
+
+  def price
+    object.article.price
+  end
+
+  def sold_price
+    object.price_sold
+  end
+
+  def confirmed_at; end
+  def shipped_at; end
+  def cancelled_at; end
+  def received_at; end
+  def returned_at; end
 end

@@ -2,10 +2,12 @@
 #
 # Table name: article_notification_criteria
 #
-#  id         :integer          not null, primary key
-#  name       :string(500)      not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id            :integer          not null, primary key
+#  name          :string(500)      not null
+#  threshold_pct :float
+#  type          :string           not null
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #
 
 class ArticleNotificationCriterium < ActiveRecord::Base
@@ -21,19 +23,14 @@ class ArticleNotificationCriterium < ActiveRecord::Base
   end
 end
 
-# class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
-#   field :threshold_pct, type:     Integer,
-#         required: true,
-#         unique:   true,
-#         index:    true,
-#         default:  20,
-#         in:       (0...100)
-#
-#   def apply_criterium(article)
-#     if article.on_sale?
-#       article.price_history.discounted_pct >= threshold_pct
-#     else
-#       false
-#     end
-#   end
-# end
+class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
+  scope :default_notification, -> { where(threshold_pct: 10) }
+
+  def apply_criterium(article)
+    if article.on_sale?
+      article.price_history.discounted_pct >= threshold_pct
+    else
+      false
+    end
+  end
+end

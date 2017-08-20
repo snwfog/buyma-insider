@@ -29,4 +29,7 @@ class MerchantMetadatumSerializer < ActiveModel::Serializer
   #   # This is a chained criteria, not method call
   #   object.shinchyaku.count
   # end
+  def name
+    object.merchant.name
+  end
 end

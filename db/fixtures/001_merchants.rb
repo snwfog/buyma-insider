@@ -3,11 +3,11 @@ merchants_cfg = YAML.load_file(File.expand_path('config/merchant.yml'))
 merchants_cfg.each do |_merchant_name, config|
   config.symbolize_keys!
   Merchant.seed do |m|
-    m.code = config[:id]
+    m.code = config[:code]
     m.name = config[:name]
   end
 
-  merchant = Merchant.find_by_code(config[:id])
+  merchant = Merchant.find_by_code(config[:code])
 
   MerchantMetadatum.seed do |meta|
     meta.merchant_id = merchant.id

@@ -13,11 +13,11 @@
 
 class User < ActiveRecord::Base
   has_many :user_article_solds, dependent: :destroy
-  has_many :article_solds, -> { eager_load(:article) }, through: :user_article_solds
+  has_many :article_solds, through: :user_article_solds, source: :article
   has_many :user_article_watcheds, dependent: :destroy
-  has_many :article_watcheds, -> { eager_load(:article) }, through: :user_article_watcheds
+  has_many :article_watcheds, through: :user_article_watcheds, source: :article
   has_many :user_article_notifieds, dependent: :destroy
-  has_many :article_notifieds, -> { eager_load(:article) }, through: :user_article_notifieds
+  has_many :article_notifieds, through: :user_article_notifieds, source: :article
   has_many :user_auth_tokens, dependent: :destroy
 
   has_one :user_metadatum, dependent: :destroy
@@ -47,24 +47,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  def watch_article!(article, watch_criterium)
-    create_user_article_watched!(user:    self,
-                                 article: article).tap do |ua_watched|
+  def watch_article!(article,
+                     watch_criterium = DiscountPercentArticleNotificationCriterium.default_notification)
+    transaction do
+      ua_watched = user_article_watcheds.create!(article: article)
+      ua_watched.article_notification_criteria << watch_criterium
       ua_watched
-        .article_notification_criteria
-        .create!(article_notification_criterium: watch_criterium)
     end
   end
 
-  def unwatch_article!(article)
-    user_article_watcheds.where(article: article).destroy!
-  end
-
   def sold_article!(user_article_sold_json)
-    create_user_article_sold!(user_article_sold_json)
-  end
-
-  def unsold_article!(article)
-    user_article_solds.where(article: article).destroy!
+    user_article_solds.create!(user_article_sold_json)
   end
 end

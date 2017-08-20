@@ -4,8 +4,8 @@ mappings:
     dynamic:                 strict
   article:
     properties:
-      merchant_id:
-        type:                keyword
+#      merchant_id:
+#        type:                keyword
       sku:
         type:                keyword
       name:

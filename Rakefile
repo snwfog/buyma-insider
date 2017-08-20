@@ -64,25 +64,26 @@ namespace :app do
   end
 
   desc 'Fetch a merchant indices and cache the pages'
-  task :fetch, [:merchant_id] do |_, args|
-    MerchantCrawlWorker.new.perform(args.fetch(:merchant_id))
+  task :fetch, [:merchant_code] do |_, args|
+    MerchantCrawlWorker.new.perform(args.fetch(:merchant_code))
   end
 
   desc 'Parse article using cached index page'
-  task :parse, [:index_page_id] do |_, args|
-    IndexPageParseWorker.new.perform(args.fetch(:index_page_id))
+  task :parse, [:crawl_history_id] do |_, args|
+    IndexPageParseWorker.new.perform(args.fetch(:crawl_history_id))
   end
 
   desc 'Crawl a merchant given merchant id'
-  task :crawl, [:merchant_id] do |_, args|
-    merchant_id = args.fetch(:merchant_id)
-    merchant    = Merchant.find(merchant_id)
+  task :crawl, [:merchant_code] do |_, args|
+    merchant_code = args.fetch(:merchant_code)
+    merchant      = Merchant.find_by_code(merchant_code)
     merchant.index_pages.each do |index_page|
       puts 'Crawling page `%s`' % index_page.full_url
       crawl_history = IndexPageCrawlWorker.new.perform('index_page_id' => index_page.id)
+
       raise 'Crawl failed...' unless crawl_history.completed?
       puts 'Parsing articles...'
-      crawl_history = IndexPageParseWorker.new.perform(index_page.id)
+      crawl_history = IndexPageParseWorker.new.perform(crawl_history.id)
       puts 'article_count: %d, article_invalid_count: %d' % [crawl_history.article_count, crawl_history.article_invalid_count]
     end
   end
@@ -196,6 +197,17 @@ end
 namespace :db do
   desc 'Drop, create, migrate, seed'
   task :reset => [:drop, :'environment:set', :create, :migrate, :seed_fu]
+
+  desc 'Seed dev'
+  task :seed_dev do
+    puts 'Create test user "test:123"'
+    User.create!(username:      'test',
+                 password:      123,
+                 email_address: 'donchoa@gmail.com')
+
+    puts 'Grabbing latest exchange rates'
+    OpenExchangeRatesWorker.new.perform
+  end
 end
 
 namespace :es do
@@ -212,17 +224,18 @@ namespace :es do
     settings             = {}
     settings['settings'] = YAML.load_file(File.expand_path('../config/elasticsearch/settings.index.yml', __FILE__))
     settings['settings'].merge!(YAML.load_file(File.expand_path('../config/elasticsearch/settings.analysis.yml', __FILE__)))
-    mappings     = FileList[File.expand_path('../config/elasticsearch/mappings/**/*.yml', __FILE__)]
-    merchant_ids = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__)).values.map { |m| m['id'] }
-    merchant_ids.each do |merchant_id|
-      puts 'Creating index for `%s`'.yellow % merchant_id
-      $elasticsearch.indices.create index: merchant_id,
+    mappings       = FileList[File.expand_path('../config/elasticsearch/mappings/**/*.yml', __FILE__)]
+    merchant_codes = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__)).values.map { |m| m['code'] }
+    merchant_codes.each do |merchant_code|
+      puts 'Creating index for `%s`'.yellow % merchant_code
+      $elasticsearch.indices.create index: merchant_code,
                                     body:  settings
+
       mappings.each do |mapping_file|
-        puts '+- Creating index for `%s`'.yellow % merchant_id
+        puts '+- Creating index for `%s`'.yellow % merchant_code
         mapping_setting = YAML.load_file(mapping_file)
         type            = mapping_file.pathmap('%n')
-        $elasticsearch.indices.put_mapping index: merchant_id,
+        $elasticsearch.indices.put_mapping index: merchant_code,
                                            type:  type,
                                            body:  { "#{type}": mapping_setting }
       end
@@ -232,12 +245,9 @@ namespace :es do
   desc 'Index existing documents'
   task :seed do
     time = Benchmark.realtime do
-      Article.eager_load(:price_history).each do |article|
-        price_history      = article.price_history.attributes.except(:article_id,
-                                                                     :min_price,
-                                                                     :max_price)
-        article_attributes = article.attributes.except(:id).merge(price_history: price_history)
-        $elasticsearch.index index: article.merchant_id,
+      Article.eager_load(:merchant).all.each do |article|
+        article_attributes = article.attributes.except('id', 'merchant_id')
+        $elasticsearch.index index: article.merchant.code,
                              type:  :article,
                              id:    article.id,
                              body:  article_attributes

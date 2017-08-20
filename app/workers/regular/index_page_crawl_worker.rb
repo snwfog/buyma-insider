@@ -29,9 +29,6 @@ class IndexPageCrawlWorker < Worker::Base
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @last_crawl_history = @index_page.crawl_histories&.completed.first
     @merchant           = @index_page.merchant
-    @merchant_cache_dir = BuymaInsider.root + "/tmp/cache/crawl/#{@merchant.code}"
-    FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
-
     @standard_headers.merge(lazy_headers) if use_web_cache
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")

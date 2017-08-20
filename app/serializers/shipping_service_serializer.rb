@@ -18,4 +18,8 @@ class ShippingServiceSerializer < ActiveModel::Serializer
              :weight_in_kg,
              :arrive_in_days,
              :tracked
+
+  def arrive_in_days
+    object.arrival_in_days
+  end
 end

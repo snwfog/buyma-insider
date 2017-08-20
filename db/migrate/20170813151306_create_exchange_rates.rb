@@ -1,7 +1,7 @@
 class CreateExchangeRates < ActiveRecord::Migration[5.0]
   def change
     create_table :exchange_rates do |t|
-      t.string :base, null: false, limit: 3
+      t.integer :base, null: false
       t.datetime :timestamp, null: false
       t.text :rates, null: false, limit: 5000
 

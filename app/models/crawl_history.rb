@@ -11,8 +11,8 @@
 #  article_count         :integer          default(0)
 #  article_invalid_count :integer          default(0)
 #  traffic_size_in_kb    :float            default(0.0)
-#  response_headers      :text             not null
-#  response_status       :integer          not null
+#  response_headers      :text
+#  response_status       :integer
 #  finished_at           :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
@@ -26,7 +26,7 @@ class CrawlHistory < ActiveRecord::Base
   enum status: [:scheduled, :inprogress, :aborted, :completed]
   enum response_status: Rack::Utils::SYMBOL_TO_STATUS_CODE
 
-  default_scope { order(finished_at: :desc) }
+  # default_scope { order(finished_at: :desc) }
 
   alias_attribute :started_at, :created_at
 

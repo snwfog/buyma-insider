@@ -1,20 +1,20 @@
 class MerchantsController < ApplicationController
   before do
-    @merchants_lookup ||= Hash[Merchant.all.map { |m| [m.id, m] }]
+    @merchants_lookup ||= Hash[Merchant.all.map { |m| [m.code, m] }]
   end
-  
+
   before '/:merchant_id(/**)?' do
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
                                  in:        @merchants_lookup.keys,
-                                 format:    %r{[a-z]{3}}
-    
+                                 format:    /[a-z]{3}/
+
     param :limit,       Integer, in:        (1..20),
                                  default:   20
-    
+
     param :page,        Integer, in:        (1..200),
                                  default:   1
-    
+
     param :order,       String,  transform: :downcase,
                                  in:        ['name:asc',
                                              'name:desc',
@@ -36,7 +36,7 @@ class MerchantsController < ApplicationController
                               Hash[@order_key.to_sym, @order_direction.to_sym]
                             end || {}
   end
-  
+
   get '/' do
     json @merchants_lookup.values
   end
@@ -44,14 +44,13 @@ class MerchantsController < ApplicationController
   get '/:merchant_id' do
     json @merchant
   end
-  
+
   get '/:merchant_id/articles' do
     total_article_count = @merchant.articles.count
 
     json @merchant.articles
-                  .eager_load(:price_history,
-                              :crawl_history_articles)
-                  .order_by(@order_by)
+                  .eager_load(:price_histories)
+                  .order(@order_by)
                   .offset((@page - 1) * @limit)
                   .limit(@limit),
          meta: { current_page: @page,
@@ -63,11 +62,11 @@ class MerchantsController < ApplicationController
   get '/:merchant_id/articles/_search' do
     param :q,           String, required:  true,
                                 transform: :downcase
-    
+
     param :field,       String, transform: -> (f) { f.downcase.to_sym },
                                 in:        Article.fields.keys,
                                 default:   :name
-    
+
     q, field = params.values_at(*%w(q field))
 
     esq = search {
@@ -79,20 +78,20 @@ class MerchantsController < ApplicationController
               fields [field]
             }
           }
-          
+
           filter { term(merchant_id: @merchant.id) }
         }
       }
-      
+
       size @limit
       from (@page - 1) * @limit
     }
-    
+
     results = elasticsearch_query body: esq.to_hash
     if results.hits.total.zero?
       []
     else
-      json @merchant.articles.where(:id.in => results.hits.hits.map(&:_id))
+      json @merchant.articles.where(id: results.hits.hits.map(&:_id))
     end
   end
 end

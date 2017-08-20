@@ -11,8 +11,8 @@
 #  article_count         :integer          default(0)
 #  article_invalid_count :integer          default(0)
 #  traffic_size_in_kb    :float            default(0.0)
-#  response_headers      :text             not null
-#  response_status       :integer          not null
+#  response_headers      :text
+#  response_status       :integer
 #  finished_at           :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null

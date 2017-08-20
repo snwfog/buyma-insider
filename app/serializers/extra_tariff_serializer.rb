@@ -20,4 +20,8 @@ class ExtraTariffSerializer < ActiveModel::Serializer
              :rate_type,
              :flow_direction,
              :description
+
+  def name
+    object.tariff_name
+  end
 end

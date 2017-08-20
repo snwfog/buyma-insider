@@ -13,6 +13,8 @@ class UserAuthToken < ActiveRecord::Base
   SECRET      = ENV['APP_SECRET']
   SESSION_KEY = '_t'.freeze
 
+  belongs_to :user
+
   # Lookup the user by the cookie SESSION_KEY
   def self.find_by_cookie(request)
     unhashed_token = request.cookies[SESSION_KEY]

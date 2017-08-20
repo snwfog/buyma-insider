@@ -7,10 +7,7 @@ class MerchantCrawlWorker < Worker::Base
   #                 retry:     false,
   #                 backtrace: true
   def perform(merchant_code)
-    @merchant           = Merchant.find_by_code!(merchant_code)
-    @merchant_cache_dir = "#{BuymaInsider.root}/tmp/cache/crawl/#{@merchant.code}"
-    FileUtils::mkdir_p(@merchant_cache_dir) unless File::directory?(@merchant_cache_dir)
-
+    @merchant = Merchant.find_by_code!(merchant_code)
     log_start
     @merchant.index_pages.each do |index_page|
       index_page_cache_path = index_page.cache_html_path

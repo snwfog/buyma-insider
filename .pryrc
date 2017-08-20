@@ -33,9 +33,9 @@ def get_article
 end
 
 def get_user
-  User.new(username: Faker::Internet.user_name,
-           email:    Faker::Internet.email,
-           password: 123)
+  User.new(username:      Faker::Internet.user_name,
+           email_address: Faker::Internet.email,
+           password:      123)
 end
 
 def json_serialize(object)

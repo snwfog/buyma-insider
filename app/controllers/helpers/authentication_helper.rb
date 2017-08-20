@@ -24,6 +24,8 @@ module AuthenticationHelper
       unhashed_token = cookies[UserAuthToken::SESSION_KEY]
       raise InvalidSession unless unhashed_token
       session_cached_user
+      # cache_user = session_cached_user
+      # User.find!(cache_user.id)
     end
   end
 
@@ -45,8 +47,7 @@ module AuthenticationHelper
                 expires_in: SESSION_EXPIRE_TIME.to_i)
     end
 
-    UserAuthToken.create!(user:  user,
-                          token: hashed_token)
+    user.user_auth_tokens.create!(token: hashed_token)
   end
 
   def destroy_session!

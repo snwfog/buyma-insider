@@ -3,7 +3,7 @@
 # Table name: exchange_rates
 #
 #  id         :integer          not null, primary key
-#  base       :string(3)        not null
+#  base       :integer          not null
 #  timestamp  :datetime         not null
 #  rates      :text             not null
 #  created_at :datetime         not null
@@ -11,9 +11,9 @@
 #
 
 class ExchangeRate < ActiveRecord::Base
-  enum base: [:usd, :cad, :jyp]
+  enum base: [:USD, :CAD, :JYP]
 
-  default_scope { order(timestamp: :desc) }
+  # default_scope { order(timestamp: :desc) }
   scope :latest, -> { first }
 
   def timestamp=(unix)
@@ -26,6 +26,6 @@ class ExchangeRate < ActiveRecord::Base
 
   def rates
     rates_yaml = super
-    @rates  = rates_yaml.blank? ? nil : YAML.load(rates_yaml)
+    @rates     = rates_yaml.blank? ? nil : YAML.load(rates_yaml)
   end
 end

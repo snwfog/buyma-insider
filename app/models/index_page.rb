@@ -39,10 +39,9 @@ class IndexPage < ActiveRecord::Base
   end
 
   def cache_html_path
-    File.expand_path('%<root>s/tmp/cache/crawl/%<merchant_code>s/%<cache_filename>s' % {
-      root:           BuymaInsider.root,
-      merchant_code:  merchant.code,
-      cache_filename: cache_filename
+    File.expand_path('%<merchant_cache_dir>s/%<index_cache_filename>s' % {
+      merchant_cache_dir:   merchant.html_cache_dir_create_if_not_exists!,
+      index_cache_filename: cache_filename
     })
   end
 
