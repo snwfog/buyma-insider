@@ -25,11 +25,11 @@ class IndexPageCrawlWorker < Worker::Base
 
     index_page_id       = args.fetch('index_page_id')
     use_web_cache       = !args.fetch('use_web_cache', true)
-    is_schedule_parser  = args.fetch('schedule_parser', false)
+    schedule_parser     = args.fetch('schedule_parser', false)
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @last_crawl_history = @index_page.crawl_histories&.completed.first
     @merchant           = @index_page.merchant
-    @standard_headers.merge(lazy_headers) if use_web_cache
+    @standard_headers.merge(http_cache_headers) if use_web_cache
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
@@ -60,9 +60,9 @@ class IndexPageCrawlWorker < Worker::Base
     logger.error ex.http_headers if ex.is_a? RestClient::Exception
     logger.error ex.backtrace
   else
-    if is_schedule_parser
+    if schedule_parser
       logger.info 'Scheduling an index page parser'
-      IndexPageParseWorker.perform_async(index_page_id)
+      IndexPageParseWorker.perform_async(@current_crawl_history.id)
     end
 
     @current_crawl_history
@@ -76,7 +76,7 @@ class IndexPageCrawlWorker < Worker::Base
 
   private
 
-  def lazy_headers
+  def http_cache_headers
     if @last_crawl_history&.etag and not @last_crawl_history&.weak?
       logger.info 'Strong etag `%s` exists' % @last_crawl_history.etag
       { if_none_match: @last_crawl_history.etag }

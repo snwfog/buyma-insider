@@ -9,7 +9,7 @@ class OpenExchangeRatesWorker < Worker::Base
       rates_document.select! { |k, _v| %w(timestamp base rates).include? k }
       rates_timestamp_utc = Time.at(rates_document.fetch('timestamp')).utc
       if ExchangeRate.find_by_timestamp(rates_timestamp_utc)
-        logger.warn "Exchange rates for timestamp: #{rates_timestamp_utc} exists already!"
+        logger.warn "Exchange rates for timestamp #{rates_timestamp_utc} already record."
       else
         logger.info "Creating new exchange rates for #{rates_timestamp_utc}."
         ExchangeRate.create!(rates_document)
