@@ -5,6 +5,7 @@ class CreateUserArticleSolds < ActiveRecord::Migration[5.0]
       t.references :article, null: false
       t.references :exchange_rate, null: false
       t.references :price_history, null: false
+      t.references :buyer
 
       t.decimal :price_sold, precision: 18, scale: 5
       t.integer :status, null: false

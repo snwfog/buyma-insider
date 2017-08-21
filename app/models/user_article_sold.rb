@@ -18,13 +18,11 @@ class UserArticleSold < ActiveRecord::Base
   has_and_belongs_to_many :extra_tariffs, join_table: :user_article_solds_extra_tariffs
   has_and_belongs_to_many :shipping_services, join_table: :user_article_solds_shipping_services
 
-  has_one :user_article_sold_buyer
-  has_one :buyer, through: :user_article_sold_buyer
-
   belongs_to :user
   belongs_to :article
   belongs_to :price_history
   belongs_to :exchange_rate
+  belongs_to :buyer
 
   enum status: [:confirmed, :shipped, :cancelled, :received, :returned]
 
@@ -36,8 +34,4 @@ class UserArticleSold < ActiveRecord::Base
   #     super() and self.__send__("#{state}_at=", Time.now)
   #   end
   # end
-
-  def create_buyer!(buyer_payload)
-    buyer.where(buyer_payload).first_or_create!
-  end
 end

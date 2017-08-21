@@ -15,7 +15,7 @@ class UserArticleNotifiedsController < ApplicationController
   patch '/:id' do
     request.body.rewind
     payload          = JSON.parse(request.body.read)
-    ua_notified_json = as_model(payload)
+    ua_notified_json = extract_attributes(payload)
     @ua_notified.update!(ua_notified_json)
     status :ok
     json @ua_notified

@@ -14,7 +14,7 @@ class UserArticleWatchedsController < ApplicationController
   patch '/:id' do
     request.body.rewind
     payload                    = JSON.parse(request.body.read)
-    ua_watched_json            = as_model(payload)
+    ua_watched_json            = extract_attributes(payload)
     ua_watched_json['user_id'] = current_user.id
     @ua_watched.update!(ua_watched_json)
     status :ok

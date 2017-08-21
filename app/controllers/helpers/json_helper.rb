@@ -24,7 +24,7 @@ module JsonHelper
       end
     end
 
-    def as_model(json_api_document, options = {})
+    def extract_attributes(json_api_document, options = {})
       ActiveModelSerializers::Deserialization.jsonapi_parse(json_api_document, options)
     end
   end

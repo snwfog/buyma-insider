@@ -145,7 +145,7 @@ class ArticlesController < ApplicationController
   post '/:id/sell' do
     request.body.rewind
     payload      = JSON.parse(request.body.read)
-    ua_sold_attr = as_model(payload)
+    ua_sold_attr = extract_attributes(payload)
     ua_sold_attr.merge!(price_history: @article.price_histories.last,
                         status:        :confirmed)
     ua_sold = current_user.user_article_solds.create!(ua_sold_attr)

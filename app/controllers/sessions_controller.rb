@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
 
     request.body.rewind
     payload            = JSON.parse(request.body.read)
-    user_hash          = as_model(payload)
+    user_hash          = extract_attributes(payload)
     username, password = user_hash.values_at(:login, :password)
 
     begin

@@ -25,6 +25,6 @@ class UsersController < ApplicationController
   post '/' do
     request.body.rewind
     user_payload = request.body.read
-    user_hash    = as_model(user_payload)
+    user_hash    = extract_attributes(user_payload)
   end
 end
