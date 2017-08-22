@@ -1,13 +1,13 @@
 #
 class IndexPagesController < ApplicationController
-  options '/**' do
-    ;
-  end
+  options '/**' do; end
 
   before '/:id(/**)?' do
     param :id, String, required: true
 
-    @index_page = IndexPage.find(params[:id])
+    @index_page = IndexPage
+                    .includes(:index_pages)
+                    .find(params[:id])
   end
 
   post '/:id/_refresh' do

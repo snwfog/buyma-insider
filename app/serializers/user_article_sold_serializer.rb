@@ -56,7 +56,7 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
 
   attributes :status,
              :price,
-             :sold_price,
+             :price_sold,
              :notes,
              :confirmed_at,
              :shipped_at,
@@ -68,10 +68,6 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
 
   def price
     object.article.price
-  end
-
-  def sold_price
-    object.price_sold
   end
 
   def confirmed_at; end

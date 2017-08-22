@@ -1,6 +1,9 @@
 class MerchantsController < ApplicationController
   before do
-    @merchants_lookup ||= Hash[Merchant.all.map { |m| [m.code, m] }]
+    @merchants_lookup ||= Hash[Merchant
+                                 .includes(:index_pages, :merchant_metadatum)
+                                 .all
+                                 .map { |m| [m.code, m] }]
   end
 
   before '/:merchant_id(/**)?' do

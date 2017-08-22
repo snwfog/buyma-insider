@@ -374,6 +374,7 @@ DEPENDENCIES
   pry
   pry-byebug
   rack
+  rails
   rake
   redis
   redis-activesupport

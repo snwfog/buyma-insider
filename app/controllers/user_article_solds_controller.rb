@@ -23,10 +23,15 @@ class UserArticleSoldsController < ApplicationController
 
     if buyer_embedded_payload = payload.dig('data', 'buyer')
       payload['data'].delete('buyer')
-      buyer_attrs    = extract_attributes(buyer_embedded_payload)
-      buyer          = Buyer.find_or_create_by!(buyer_attrs)
-      @ua_sold.buyer = buyer
-      @ua_sold.save!
+      buyer_attrs      = extract_attributes(buyer_embedded_payload)
+      buyer            = Buyer.find_or_initialize_by(email_address: buyer_attrs[:email_address])
+      buyer.attributes = buyer_attrs if buyer.new_record?
+
+      @ua_sold.transaction do
+        buyer.save!
+        @ua_sold.buyer = buyer
+        @ua_sold.save!
+      end
     end
 
     ua_sold_json = extract_attributes(payload)

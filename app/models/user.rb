@@ -27,6 +27,10 @@ class User < ActiveRecord::Base
 
   before_validation :ensure_password_is_hashed
 
+  def username=(username)
+    super username.downcase
+  end
+
   def valid_password?(password)
     BCrypt::Password.new(password_hash) == password
   end

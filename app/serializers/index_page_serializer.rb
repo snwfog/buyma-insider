@@ -19,12 +19,20 @@ class IndexPageSerializer < ActiveModel::Serializer
         # except:     [:last_synced_at],
         expires_in: 5.minute
 
+  has_many :index_pages, if: :root? do
+    include_data(true)
+  end
+
   attributes :id,
              :full_url,
              :relative_path,
              :last_synced_at,
              :health
-  
+
+  def root?
+    object.index_page.blank?
+  end
+
   def last_synced_at
     if crawl_history = object.crawl_histories.first
       crawl_history.created_at

@@ -75,6 +75,8 @@ gem 'seed-fu'
 group :development do
   gem 'annotate',              require: false # add comments to active record
   gem 'standalone_migrations', require: false
+  # gem 'rails'
+  # gem 'pp_sql'
   gem 'capistrano'
   gem 'capistrano-bundler'
   gem 'capistrano-rbenv'
