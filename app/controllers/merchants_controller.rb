@@ -1,7 +1,7 @@
 class MerchantsController < ApplicationController
   before do
     @merchants_lookup ||= Hash[Merchant
-                                 .includes(:index_pages, :merchant_metadatum)
+                                 .includes([{ index_pages: [:index_pages] }, :merchant_metadatum])
                                  .all
                                  .map { |m| [m.code, m] }]
   end
