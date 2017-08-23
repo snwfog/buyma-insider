@@ -54,10 +54,18 @@ class User < ActiveRecord::Base
   def watch_article!(article,
                      watch_criterium = DiscountPercentArticleNotificationCriterium.default_notification)
     transaction do
-      ua_watched = user_article_watcheds.create!(article: article)
+      ua_watched = user_article_watcheds.find_or_create_by!(article: article)
       ua_watched.article_notification_criteria << watch_criterium
       ua_watched
     end
+  end
+
+  def notify_article!(article, notify_criterium)
+    transaction do
+      ua_notified = user_article_notifieds.find_or_create_by!(article: article)
+      ua_notified.article_notification_criteria << notify_criterium
+    end
+
   end
 
   def sold_article!(user_article_sold_json)
