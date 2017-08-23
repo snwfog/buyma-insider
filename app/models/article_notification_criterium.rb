@@ -24,13 +24,20 @@ class ArticleNotificationCriterium < ActiveRecord::Base
 end
 
 class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
-  scope :default_notification, -> { where(threshold_pct: 10) }
+  scope :default_notification, -> { where(threshold_pct: 10).take }
 
   def apply_criterium(article)
-    if article.on_sale?
-      article.price_history.discounted_pct >= threshold_pct
-    else
-      false
+    on_sale = false
+    article.price_histories
+      .order(created_at: :desc)
+      .reduce(article.price.to_f) do |prev_price, current|
+      current_price = current.price.to_f
+      on_sale       = ((current_price - prev_price).abs / prev_price * 100.0) >= threshold_pct
+      break if on_sale
+
+      current_price
     end
+
+    on_sale
   end
 end
