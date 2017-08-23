@@ -30,12 +30,15 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
     on_sale = false
     article.price_histories
       .order(created_at: :desc)
-      .reduce(article.price.to_f) do |prev_price, current|
-      current_price = current.price.to_f
-      on_sale       = ((current_price - prev_price).abs / prev_price * 100.0) >= threshold_pct
-      break if on_sale
+      .reduce(article.price) do |prev_price, current|
+      curr_price = current.price
+      next if prev_price == curr_price # there is no price change
 
-      current_price
+      on_sale = curr_price > prev_price
+      on_sale_pct = (curr_price - prev_price) / curr_price * 100.0
+
+      break if on_sale && on_sale_pct >= threshold_pct
+      curr_price
     end
 
     on_sale
