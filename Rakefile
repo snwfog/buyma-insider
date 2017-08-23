@@ -87,6 +87,18 @@ namespace :app do
       puts 'article_count: %d, article_invalid_count: %d' % [crawl_history.article_count, crawl_history.article_invalid_count]
     end
   end
+
+  desc 'Update all new index pages from merchant.yml'
+  task :update_index_pages do
+    merchant_cfg = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
+    merchant_cfg.each do |_m_name, cfg|
+      cfg.symbolize_keys!
+      merchant = Merchant.find_by_code!(cfg[:code])
+      cfg[:index_pages].each do |relative_path|
+        merchant.index_pages.find_or_create_by!(relative_path: relative_path)
+      end
+    end
+  end
 end
 
 namespace :rethinkdb do

@@ -70,7 +70,10 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
     object.article.price
   end
 
-  def confirmed_at; end
+  def confirmed_at
+    object.created_at
+  end
+
   def shipped_at; end
   def cancelled_at; end
   def received_at; end
