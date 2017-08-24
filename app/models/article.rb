@@ -13,18 +13,15 @@
 #
 
 class Article < ActiveRecord::Base
-  EXPIRES_IN                      = 1.week
   SIMPLE_URL_LINK_VALIDATOR_REGEX = %r{\A//(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)\z}
 
   has_and_belongs_to_many :crawl_histories, join_table: :crawl_histories_articles, dependent: :destroy
 
   has_many :user_article_solds, dependent: :destroy
   has_many :user_article_watcheds, dependent: :destroy
-  has_many :price_histories, dependent: :destroy
+  has_many :price_histories, dependent: :destroy, autosave: true
 
   belongs_to :merchant
-
-  after_save :create_price_history, if: :price
 
   validates_length_of :sku, within: (1..100)
   validates_length_of :name, within: (1..500)
@@ -32,30 +29,30 @@ class Article < ActiveRecord::Base
   validates_format_of :link, with: SIMPLE_URL_LINK_VALIDATOR_REGEX
 
   def create_price_history
-    price_histories.create(article: self, price: price)
+    price_histories.create(price: price)
   end
 
   def price=(price)
-    @price = price
+    @price = price_histories.build(price: price)
   end
 
   def price
-    @price || price_histories.first&.price
+    @price ||= price_histories.latest
   end
 
   def max_price
-    price_histories.order(price: :desc).first&.price
+    price_histories.max_price
   end
 
   def min_price
-    price_histories.order(price: :asc).first&.price
+    price_histories.min_price
   end
 
   def name=(name)
-    super(name.titleize)
+    super name.titleize
   end
 
   def link=(link)
-    super(link.gsub(%r{^https?://}, '//'))
+    super link.gsub(%r{^https?://}, '//')
   end
 end
