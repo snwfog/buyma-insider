@@ -8,6 +8,7 @@ class CreateArticles < ActiveRecord::Migration[5.0]
       # t.decimal :price, null: false, precision: 18, scale: 5
       t.text :description, limit: 1000
       t.string :link, null: false, limit: 2000
+      t.string :image_link, limit: 2000
 
       t.timestamps null: false
     end

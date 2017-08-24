@@ -28,7 +28,7 @@ getoutside:
   code:             get
   name:             getoutside
   domain:           //www.getoutsideshoes.com
-  pager_css:        div.browing-pagination ui.nav
+  pager_css:        div.pager > div.pages ol
   item_css:         ul.products-grid li.item
   index_pages:
     - /new-arrivals.html

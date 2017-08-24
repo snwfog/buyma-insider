@@ -27,20 +27,20 @@ class DiscountPercentArticleNotificationCriterium < ArticleNotificationCriterium
   scope :default_notification, -> { where(threshold_pct: 10).take }
 
   def apply_criterium(article)
-    on_sale = false
+    criterium_satisfied = false
     article.price_histories
       .order(created_at: :desc)
       .reduce(article.price) do |prev_price, current|
       curr_price = current.price
-      next if prev_price == curr_price # there is no price change
+      if prev_price != curr_price
+        on_sale_pct         = (curr_price - prev_price) / curr_price * 100.0
+        criterium_satisfied = on_sale_pct >= threshold_pct
+        break
+      end
 
-      on_sale = curr_price > prev_price
-      on_sale_pct = (curr_price - prev_price) / curr_price * 100.0
-
-      break if on_sale && on_sale_pct >= threshold_pct
       curr_price
     end
 
-    on_sale
+    criterium_satisfied
   end
 end
