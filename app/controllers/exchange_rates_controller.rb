@@ -3,14 +3,14 @@ class ExchangeRatesController < ApplicationController
   get '/latest' do
     json ExchangeRate.latest
   end
-  
+
   get '/' do
-    param :limit, Integer, in:        (1..100),
-          transform: :to_sym,
-          default:   20
-    json ExchangeRate.limit(params[:limit])
+    param :limit, Integer, in: (1..100), default: 20
+    json ExchangeRate
+           .order(timestamp: :desc)
+           .limit(params[:limit])
   end
-  
+
   get '/:id' do
     param :id, String, required: true
     json ExchangeRate.find(params[:id])

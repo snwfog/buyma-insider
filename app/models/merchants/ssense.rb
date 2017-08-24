@@ -12,8 +12,8 @@ module Merchants
 
         last_page_path = last_page_node['href']
         last_page_uri  = URI('%<scheme>s:%<domain>s%<path>s' % {
-          scheme: @index_page.scheme,
-          domain: @merchant_metadatum.domain,
+          scheme: index_page.scheme,
+          domain: merchant_metadatum.domain,
           path:   last_page_path
         })
 
@@ -23,8 +23,8 @@ module Merchants
         (1..total_pages).map do |page_number|
           query['page'] = page_number
           IndexPage.new(relative_path: page_uri.path + '?' + Rack::Utils.build_query(query),
-                        merchant:      @merchant,
-                        index_page:    @index_page)
+                        merchant:      merchant,
+                        index_page:    index_page)
         end
       end
     end

@@ -9,26 +9,12 @@ ssense:
     - /en-ca/women
   ssl:              true
 
-# @deprecated out of business
-#shoeme:
-#  code:             sho
-#  name:             shoeme
-#  domain:           //shoeme.ecomm-nav.com
-#  pager_css:        div.nxt-pagination
-#  item_css:         ul.product-list li.product-li
-#  index_pages:
-#    - /collections/womens-shoes
-#    - /collections/mens-shoes
-#    - /collections/kids
-#    - /collections/all-bags
-#    - /collections/sale
-#  ssl:              false
-
 getoutside:
   code:             get
   name:             getoutside
   domain:           //www.getoutsideshoes.com
-  pager_css:        div.browing-pagination ui.nav
+  ssl:              true
+  pager_css:        div.pager > div.pages ol
   item_css:         ul.products-grid li.item
   index_pages:
     - /new-arrivals.html
@@ -37,35 +23,34 @@ getoutside:
     - /kid-s.html
     - /accessories.html
     - /sale.html
-  ssl:              true
 
 zara:
   code:             zar
   name:             zara
   domain:           //www.zara.com/ca/en
+  ssl:              true
   pager_css:
   item_css:         ul.product-list li.product
   index_pages:
     - /woman/new-in-c840002.html
     - /woman/new-in-c805003.html
-  ssl:              true
 
 octobersveryown:
   code:             ovo
   name:             octobersveryown
   domain:           //ca.octobersveryown.com
+  ssl:              true
   pager_css:
   item_css:         main.main-content div.grid__item
   index_pages:
     - /collections/all
-  ssl:              true
 
 #livestock:
 #  code:             ltk
 #  name:             livestock
 #  domain:           //www.deadstock.ca
+#  ssl:              true
 #  pager_css:        div.container.main.content > div.products div.paginate
 #  item_css:         div.container.main.content > div.products > div.columns
 #  index_pages:
 #    - /collections/new-arrivals
-#  ssl:              true

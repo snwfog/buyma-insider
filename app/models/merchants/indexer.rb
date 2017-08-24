@@ -25,7 +25,7 @@ module Merchants
     end
 
     def pager_node
-      index_document&.at_css(@merchant_metadatum.pager_css)
+      index_document.at_css(@merchant_metadatum.pager_css)
     end
 
     def compute!
