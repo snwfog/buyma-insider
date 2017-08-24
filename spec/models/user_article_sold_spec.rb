@@ -7,6 +7,7 @@
 #  article_id       :integer          not null
 #  exchange_rate_id :integer          not null
 #  price_history_id :integer          not null
+#  buyer_id         :integer
 #  price_sold       :decimal(18, 5)
 #  status           :integer          not null
 #  notes            :text

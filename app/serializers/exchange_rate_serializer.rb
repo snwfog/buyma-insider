@@ -20,6 +20,8 @@ class ExchangeRateSerializer < ActiveModel::Serializer
              :rates
 
   def rates
-    object.rates.select { |k, v| DEFAULT_RATES.include? k }
+    object.rates.select do |currency, _rate|
+      DEFAULT_RATES.include?(currency)
+    end
   end
 end
