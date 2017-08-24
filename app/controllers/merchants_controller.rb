@@ -1,13 +1,17 @@
 class MerchantsController < ApplicationController
-  before '/:merchant_id(/**)?' do
-    MERCHANTS_LOOKUP ||= Hash[Merchant
-                                .includes([{ index_pages: [:index_pages] }, :merchant_metadatum])
-                                .all
-                                .map { |m| [m.code, m] }]
+  before do
+    @merchants = settings.cache.fetch(:merchants) do |key|
+      settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: [:index_pages] },
+                                                      :merchant_metadatum])
+                                     .all
+                                     .map { |m| [m.code, m] }]
+    end
+  end
 
+  before '/:merchant_id(/**)?' do
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
-                                 in:        MERCHANTS_LOOKUP.keys,
+                                 in:        @merchants.keys,
                                  format:    /[a-z]{3}/
 
     param :limit,       Integer, in:        (1..20),
@@ -30,7 +34,7 @@ class MerchantsController < ApplicationController
                                              'created_at',
                                              'updated_at']
 
-    @merchant             = MERCHANTS_LOOKUP.fetch(params[:merchant_id])
+    @merchant             = @merchants.fetch(params[:merchant_id])
     @page, @limit, @order = params.values_at(*%w(page limit order))
     @order_by             = if @order
                               @order_key, @order_direction, *_ = "#{@order}:asc".split(?:).each(&:to_sym)
@@ -39,7 +43,7 @@ class MerchantsController < ApplicationController
   end
 
   get '/' do
-    json MERCHANTS_LOOKUP.values
+    json @merchants.values
   end
 
   get '/:merchant_id' do

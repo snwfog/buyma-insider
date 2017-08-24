@@ -11,7 +11,7 @@ module Elasticsearch
       case operation
       when 'created', 'updated'
         logger.info "Indexing elasticsearch article `#{article.name}'."
-        article_attributes = article.attributes.except('id', 'merchant_id')
+        article_attributes = article.attributes.except('id', 'merchant_id', 'image_link')
         $elasticsearch.index index: index,
                              type:  type,
                              id:    article.id,

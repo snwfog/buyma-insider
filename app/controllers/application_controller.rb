@@ -42,6 +42,10 @@ class ApplicationController < Sinatra::Base
   
   # Global constants
   set :SESSION_TOKEN, :_t
+
+  configure do
+    set :cache, {}
+  end
   
   configure :development do
     require 'sinatra/reloader'
