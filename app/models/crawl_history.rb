@@ -26,7 +26,10 @@ class CrawlHistory < ActiveRecord::Base
   enum status: [:scheduled, :inprogress, :aborted, :completed]
   enum response_status: Rack::Utils::SYMBOL_TO_STATUS_CODE
 
-  validates_uniquess_of :status, scope: [:index_page_id], conditions: -> { where(status: [0, 1]) }
+  validates_presence_of :status
+  validates_presence_of :description
+
+  validates_uniqueness_of :status, scope: [:index_page_id], conditions: -> { where(status: [0, 1]) }
   # default_scope { order(finished_at: :desc) }
 
   alias_attribute :started_at, :created_at

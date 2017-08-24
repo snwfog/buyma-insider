@@ -1,10 +1,10 @@
 class MerchantsController < ApplicationController
-  MERCHANTS_LOOKUP ||= Hash[Merchant
-                              .includes([{ index_pages: [:index_pages] }, :merchant_metadatum])
-                              .all
-                              .map { |m| [m.code, m] }]
-
   before '/:merchant_id(/**)?' do
+    MERCHANTS_LOOKUP ||= Hash[Merchant
+                                .includes([{ index_pages: [:index_pages] }, :merchant_metadatum])
+                                .all
+                                .map { |m| [m.code, m] }]
+
     param :merchant_id, String,  required:  true,
                                  transform: :downcase,
                                  in:        MERCHANTS_LOOKUP.keys,
