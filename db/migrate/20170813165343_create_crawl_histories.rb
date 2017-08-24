@@ -22,6 +22,9 @@ class CreateCrawlHistories < ActiveRecord::Migration[5.0]
               order: { index_page_id: :asc, status: :asc, finished_at: :desc },
               name:  'idx_crawl_histories_index_page_id_status_finished_at'
 
+    # only 1 crawl history per index page that is scheduled or inprogress
+    add_index :crawl_histories, [:index_page_id, :status], unique: true, where: 'status in (0, 1)'
+
     add_foreign_key :crawl_histories, :index_pages
   end
 end
