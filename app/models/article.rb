@@ -37,15 +37,15 @@ class Article < ActiveRecord::Base
   end
 
   def price
-    @price ||= price_histories.latest
+    @price ||= price_histories.latest.try(:price)
   end
 
   def max_price
-    price_histories.max_price
+    price_histories.max.try(:price)
   end
 
   def min_price
-    price_histories.min_price
+    price_histories.min.try(:price)
   end
 
   def name=(name)

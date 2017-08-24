@@ -14,7 +14,7 @@ class PriceHistory < ActiveRecord::Base
 
   belongs_to :article
 
-  scope :latest, -> { order(created_at: :desc).take&.price }
-  scope :max_price, -> { order(price: :desc).take&.price }
-  scope :min_price, -> { order(price: :asc).take&.price }
+  scope :latest, -> { order(created_at: :desc).take }
+  scope :max, -> { order(price: :desc).take }
+  scope :min, -> { order(price: :asc).take }
 end

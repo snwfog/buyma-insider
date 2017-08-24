@@ -41,19 +41,19 @@ class CrawlHistory < ActiveRecord::Base
   end
 
   def etag
-    response_headers && response_headers[:etag]
+    response_headers.try(:[], :etag)
   end
 
   def weak?
-    etag && etag.start_with?(?W)
+    etag.try(:start_with?, ?w)
   end
 
   def last_modified
-    response_headers && response_headers[:last_modified]
+    response_headers.try(:[], :last_modified)
   end
 
   def content_encoding
-    response_headers && response_headers[:content_encoding]
+    response_headers.try(:[], :content_encoding)
   end
 
   def cache_resolve?
