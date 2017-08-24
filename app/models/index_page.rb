@@ -65,6 +65,6 @@ class IndexPage < ActiveRecord::Base
   end
 
   def cache_html_content_encoding
-    crawl_histories.completed.first&.content_encoding || 'gzip'.freeze
+    crawl_histories.completed.first.try(:content_encoding) || 'gzip'.freeze
   end
 end

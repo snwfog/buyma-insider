@@ -17,7 +17,7 @@ class ExchangeRate < ActiveRecord::Base
   scope :latest, -> { first }
 
   def timestamp=(unix)
-    super(Time.at(unix).utc)
+    super Time.at(unix).utc
   end
 
   def rates=(rates_h)
