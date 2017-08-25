@@ -26,16 +26,20 @@ class UserArticleSold < ActiveRecord::Base
   belongs_to :exchange_rate
   belongs_to :buyer
 
-  alias_attribute :user_article_sold_statuses, :statuses
+  alias_attribute :statuses, :user_article_sold_statuses
 
-  after_create :create_default_status
+  after_create :create_default_status, unless: :status
+
+  def status=(status)
+    @status = statuses.build(status: status)
+  end
 
   def status
-    statuses.order(created_at: :desc).take
+    @status ||= statuses.order(created_at: :desc).take
   end
 
   private
   def create_default_status
-    statuses.create!
+    statuses.build.confirmed!
   end
 end

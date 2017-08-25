@@ -3,6 +3,7 @@ class CreateUserArticleSoldStatuses < ActiveRecord::Migration[5.0]
     create_table :user_article_sold_statuses do |t|
       t.references :user_article_sold, null: false
       t.integer :status, null: false, default: 0
+
       t.timestamps null: false
     end
 

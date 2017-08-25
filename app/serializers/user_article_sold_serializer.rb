@@ -70,12 +70,27 @@ class UserArticleSoldSerializer < ActiveModel::Serializer
     object.article.price
   end
 
-  def confirmed_at
-    object.created_at
+  def status
+    object.status.status
   end
 
-  def shipped_at; end
-  def cancelled_at; end
-  def received_at; end
-  def returned_at; end
+  def confirmed_at
+    object.statuses.where(status: :confirmed).take.try(:created_at)
+  end
+
+  def shipped_at
+    object.statuses.where(status: :shipped).take.try(:created_at)
+  end
+
+  def cancelled_at
+    object.statuses.where(status: :cancelled).take.try(:created_at)
+  end
+
+  def received_at
+    object.statuses.where(status: :received).take.try(:created_at)
+  end
+
+  def returned_at
+    object.statuses.where(status: :returned).take.try(:created_at)
+  end
 end

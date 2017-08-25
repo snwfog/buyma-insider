@@ -16,7 +16,7 @@ class IndexPage < ActiveRecord::Base
   has_many :crawl_histories, dependent: :destroy
   has_many :index_pages, dependent: :destroy, inverse_of: :index_page
 
-  belongs_to :merchant
+  belongs_to :merchant, touch: true
   belongs_to :index_page, inverse_of: :index_pages
 
   validates_uniqueness_of :relative_path, scope: :merchant_id

@@ -29,10 +29,6 @@ class Article < ActiveRecord::Base
   validates_length_of :description, within: (1..2000)
   validates_format_of :link, with: SIMPLE_URL_LINK_VALIDATOR_REGEX
 
-  def create_price_history
-    price_histories.create(price: price)
-  end
-
   def price=(price)
     @price = price_histories.build(price: price)
   end

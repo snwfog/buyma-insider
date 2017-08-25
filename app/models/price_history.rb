@@ -12,7 +12,7 @@
 class PriceHistory < ActiveRecord::Base
   DEFAULT_CURRENCY = :CAD
 
-  belongs_to :article
+  belongs_to :article, touch: true
 
   scope :latest, -> { order(created_at: :desc).take }
   scope :max, -> { order(price: :desc).take }
