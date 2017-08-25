@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815023608) do
+ActiveRecord::Schema.define(version: 20170825122544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -133,6 +133,17 @@ ActiveRecord::Schema.define(version: 20170815023608) do
     t.index ["code"], name: "index_merchants_on_code", unique: true, using: :btree
   end
 
+  create_table "order_statuses", force: :cascade do |t|
+    t.string "status", limit: 20, null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer  "user_article_sold_id", null: false
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+    t.index ["user_article_sold_id"], name: "index_orders_on_user_article_sold_id", using: :btree
+  end
+
   create_table "price_histories", force: :cascade do |t|
     t.integer  "article_id",                          null: false
     t.decimal  "price",      precision: 18, scale: 5, null: false
@@ -178,6 +189,15 @@ ActiveRecord::Schema.define(version: 20170815023608) do
     t.index ["user_article_notified_id", "article_notification_criterium_id"], name: "idx_ua_notifieds_criteria_ua_notified_id_criterium_id", unique: true, using: :btree
   end
 
+  create_table "user_article_sold_statuses", force: :cascade do |t|
+    t.integer  "user_article_sold_id",             null: false
+    t.integer  "status",               default: 0, null: false
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["user_article_sold_id", "status"], name: "idx_user_article_sold_user_article_sold_id_status", unique: true, using: :btree
+    t.index ["user_article_sold_id"], name: "index_user_article_sold_statuses_on_user_article_sold_id", using: :btree
+  end
+
   create_table "user_article_solds", force: :cascade do |t|
     t.integer  "user_id",                                   null: false
     t.integer  "article_id",                                null: false
@@ -185,7 +205,6 @@ ActiveRecord::Schema.define(version: 20170815023608) do
     t.integer  "price_history_id",                          null: false
     t.integer  "buyer_id"
     t.decimal  "price_sold",       precision: 18, scale: 5
-    t.integer  "status",                                    null: false
     t.text     "notes"
     t.datetime "created_at",                                null: false
     t.datetime "updated_at",                                null: false
@@ -275,6 +294,7 @@ ActiveRecord::Schema.define(version: 20170815023608) do
   add_foreign_key "user_article_notifieds", "users"
   add_foreign_key "user_article_notifieds_article_notification_criteria", "article_notification_criteria"
   add_foreign_key "user_article_notifieds_article_notification_criteria", "user_article_notifieds"
+  add_foreign_key "user_article_sold_statuses", "user_article_solds"
   add_foreign_key "user_article_solds", "articles"
   add_foreign_key "user_article_solds", "exchange_rates"
   add_foreign_key "user_article_solds", "price_histories"

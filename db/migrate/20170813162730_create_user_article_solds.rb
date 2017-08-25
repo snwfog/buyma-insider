@@ -8,7 +8,6 @@ class CreateUserArticleSolds < ActiveRecord::Migration[5.0]
       t.references :buyer
 
       t.decimal :price_sold, precision: 18, scale: 5
-      t.integer :status, null: false
       t.text :notes, limit: 5000
 
       t.timestamps null: false

@@ -8,6 +8,7 @@
 #  name        :string(500)      not null
 #  description :text
 #  link        :string(2000)     not null
+#  image_link  :string(2000)
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #
