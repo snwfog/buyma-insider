@@ -1,4 +1,6 @@
 class MerchantsController < ApplicationController
+  options '/**' do; end
+
   before do
     @merchants_map_by_code = settings.cache.fetch(:merchants) do |key|
       settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: [:index_pages] },
@@ -54,14 +56,6 @@ class MerchantsController < ApplicationController
                  total_count:  total_article_count }
   end
 
-  get '/:merchant_code/_prune_index_pages' do
-    if IndexPageWorker.perform_async(@merchant.code)
-      status :created
-    else
-      status :conflict and halt
-    end
-  end
-
   get '/:merchant_code/articles/_search' do
     param :q,           String, required:  true,
                                 transform: :downcase
@@ -97,4 +91,14 @@ class MerchantsController < ApplicationController
       json @merchant.articles.where(id: results.hits.hits.map(&:_id))
     end
   end
+
+  post '/:merchant_code/_prune_index_pages' do
+    if IndexPageWorker.perform_async(@merchant.code)
+      status :created
+      json @merchant
+    else
+      status :conflict and halt
+    end
+  end
+
 end

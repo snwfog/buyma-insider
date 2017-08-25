@@ -22,7 +22,7 @@ class Article < ActiveRecord::Base
   has_many :user_article_watcheds, dependent: :destroy
   has_many :price_histories, dependent: :destroy, autosave: true
 
-  belongs_to :merchant
+  belongs_to :merchant, touch: true
 
   validates_length_of :sku, within: (1..100)
   validates_length_of :name, within: (1..500)
