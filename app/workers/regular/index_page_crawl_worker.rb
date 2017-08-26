@@ -26,6 +26,7 @@ class IndexPageCrawlWorker < Worker::Base
     index_page_id       = args.fetch('index_page_id')
     use_web_cache       = !args.fetch('use_web_cache', true)
     schedule_parser     = args.fetch('schedule_parser', false)
+
     @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
     @last_crawl_history = @index_page.crawl_histories&.completed.first
     @merchant           = @index_page.merchant
@@ -62,10 +63,11 @@ class IndexPageCrawlWorker < Worker::Base
     logger.error ex.http_headers if ex.is_a? RestClient::Exception
     logger.error ex.backtrace
   else
-    if schedule_parser
-      logger.info 'Scheduling an index page parser'
-      IndexPageParseWorker.perform_async(@current_crawl_history.id)
-    end
+    IndexPageParseWorker.new.perform(@current_crawl_history.id)
+    # if schedule_parser
+      # logger.info 'Scheduling an index page parser'
+      # IndexPageParseWorker.perform_async(@current_crawl_history.id)
+    # end
 
     @current_crawl_history
   ensure
