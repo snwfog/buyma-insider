@@ -10,22 +10,18 @@ class MerchantCrawlWorker < Worker::Base
     @merchant = Merchant.find_by_code!(merchant_code)
     log_start
     @merchant.index_pages.each do |index_page|
-      index_page_cache_path = index_page.cache_html_path
-      if File::exist?(index_page_cache_path) and ((index_page_cache_mtime = File::mtime(index_page_cache_path)) >= 1.weeks.ago)
-        logger.info 'Index cache `%s` exists' % index_page_cache_path
-        logger.info 'Index cache is less than a week old, try use etag header'
-        IndexPageCrawlWorker.perform_async(index_page_id: index_page.id, use_web_cache: true)
+      if index_page.is_cache_fresh? # implies has cache
+        logger.info 'Index cache `%s` exists.' % index_page.cache_html_path
+        logger.info 'Index cache is considered fresh, use web cache fetch if possible.'
+        IndexPageCrawlWorker.perform_async(index_page_id: index_page.id,
+                                           use_web_cache: true)
       else
-        if index_page_cache_mtime
-          logger.info 'Index cache is over a week old, last modified at %s' % index_page_cache_mtime
-        else
-          logger.info 'Index cache does not exists, creating a new cache copy at %s' % index_page_cache_path
-        end
+        logger.info 'Index page cache at `%s` is not fresh or does not exists.' % index_page.cache_html_path
+        logger.info 'Fetch new index page [%s].' % index_page
         IndexPageCrawlWorker.perform_async(index_page_id: index_page.id)
       end
     end
     log_end
-
   end
 
   def log_start

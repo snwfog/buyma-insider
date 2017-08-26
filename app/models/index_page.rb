@@ -11,6 +11,8 @@
 #
 
 class IndexPage < ActiveRecord::Base
+  CACHE_FRESH_IN_DAYS = 1.weeks
+
   has_and_belongs_to_many :articles, join_table: :index_pages_articles
 
   has_many :crawl_histories, dependent: :destroy
@@ -47,6 +49,10 @@ class IndexPage < ActiveRecord::Base
 
   def has_cache_html?
     File.exists?(cache_html_path)
+  end
+
+  def is_cache_fresh?
+    has_cache_html? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
   end
 
   def cache_html_document
