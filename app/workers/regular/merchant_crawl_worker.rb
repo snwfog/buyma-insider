@@ -8,7 +8,6 @@ class MerchantCrawlWorker < Worker::Base
   #                 backtrace: true
   def perform(merchant_code)
     @merchant = Merchant.find_by_code!(merchant_code)
-    log_start
     @merchant.index_pages.each do |index_page|
       if index_page.is_cache_fresh? # implies has cache
         logger.info 'Index cache `%s` exists.' % index_page.cache_html_path
@@ -21,18 +20,5 @@ class MerchantCrawlWorker < Worker::Base
         IndexPageCrawlWorker.perform_async(index_page_id: index_page.id)
       end
     end
-    log_end
-  end
-
-  def log_start
-    logger.info 'Start crawling %s...' % @merchant.name
-    Slackiq.notify(webhook_name: :worker,
-                   title:        "#{@merchant.name} crawl started, scheduling all index pages to be updated.")
-  end
-
-  def log_end
-    logger.info 'Finished crawling %s...' % @merchant.name
-    Slackiq.notify(webhook_name: :worker,
-                   title:        "#{@merchant.name} index pages has been scheduled.")
   end
 end
