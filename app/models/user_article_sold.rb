@@ -31,7 +31,7 @@ class UserArticleSold < ActiveRecord::Base
   after_create :create_default_status, unless: :status
 
   def status=(status)
-    @status = statuses.build(status: status)
+    @status = statuses.find_or_initialize_by(status: status)
   end
 
   def status

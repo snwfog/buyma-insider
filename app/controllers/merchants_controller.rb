@@ -92,7 +92,7 @@ class MerchantsController < ApplicationController
     end
   end
 
-  post '/:merchant_code/_prune_index_pages' do
+  post '/:merchant_code/_groom_index_pages' do
     if IndexPageWorker.perform_async(@merchant.code)
       status :created
       json @merchant

@@ -1,12 +1,9 @@
-require 'active_support/core_ext/numeric/time'
-require 'active_support/core_ext/time/calculations'
-
 #
 class MerchantCrawlScheduleWorker < Worker::Base
   def perform
     scheduled_merchants = []
-    Merchant.each do |merchant|
-      MerchantCrawlWorker.perform_async merchant.id
+    Merchant.all.each do |merchant|
+      MerchantCrawlWorker.perform_async merchant.code
       scheduled_merchants << merchant.name
     end
 

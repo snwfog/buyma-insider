@@ -10,9 +10,9 @@
 #
 
 class UserArticleSoldStatus < ActiveRecord::Base
-  belongs_to :user_article_sold
+  belongs_to :user_article_sold, touch: true
 
-  enum status: [:confirmed, :shipped, :cancelled, :received, :returned]
+  enum status: [:confirmed, :shipped, :received, :cancelled, :returned]
 
   validates_presence_of :status
   validates_uniqueness_of :status, scope: [:user_article_sold_id]

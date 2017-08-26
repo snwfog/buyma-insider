@@ -13,7 +13,7 @@ class CreateUserArticleSolds < ActiveRecord::Migration[5.0]
       t.timestamps null: false
     end
 
-    add_index :user_article_solds, [:user_id, :article_id], unique: true
+    add_index :user_article_solds, [:user_id, :article_id]
 
     add_foreign_key :user_article_solds, :users
     add_foreign_key :user_article_solds, :articles
