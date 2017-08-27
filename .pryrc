@@ -10,7 +10,8 @@ URI.parse(BuymaInsider.configuration.database.uri).tap do |uri|
               db:       uri.path[1, -1] }).repl
 end
 
-client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
+slack_notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
+elastic_client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
 # def search_with_template(body)
 #   $elasticsearch.search_template(index: :_all, type: :article, body: body)
 # end
@@ -40,10 +41,6 @@ end
 
 def json_serialize(object)
   ActiveModelSerializers::SerializableResource.new(object, include: '**')
-end
-
-def slack_notify(params)
-  Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
 end
 
 require 'net/http'

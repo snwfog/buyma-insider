@@ -36,15 +36,13 @@ class IndexPageCrawlWorker < Worker::Base
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
     slack_notify(title: "Crawl Starts [#{@index_page}]")
 
-    if raw_resp_tempfile = fetch_page_with_capture(@index_page.full_url,
-                                                   @merchant.meta.ssl?,
-                                                   @standard_headers)
-      @current_crawl_history.update!(traffic_size_in_kb: raw_resp_tempfile.file.size / 1000.0,
-                                     response_headers:   raw_resp_tempfile.headers.to_h,
+    if raw_response = fetch_url(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
+      @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
+                                     response_headers:   raw_response.headers.to_h,
                                      response_status:    :ok,
                                      status:             :completed)
-      logger.info 'Caching index `%s` into `%s`' % [raw_resp_tempfile.file.path, @index_page.cache_html_path]
-      FileUtils.cp(raw_resp_tempfile.file.path, @index_page.cache_html_path)
+      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache_html_path]
+      FileUtils.cp(raw_response.file.path, @index_page.cache_html_path)
     end
   rescue RestClient::ExceptionWithResponse => ex
     @current_crawl_history.update!(traffic_size_in_kb: 0.0,

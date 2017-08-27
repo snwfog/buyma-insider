@@ -19,7 +19,7 @@ module Worker
 
     # Fetch uri with capture to sentry
     # return RestClient::RawResponse
-    def fetch_page_with_capture(uri, verify_ssl, retries = 3, **headers)
+    def fetch_url(uri, verify_ssl = false, retries = 3, **headers)
       retry_count = 0
       logger.info "`GET` #{uri}"
       logger.debug JSON.pretty_generate(headers)
@@ -29,7 +29,6 @@ module Worker
                                   verify_ssl:   verify_ssl,
                                   raw_response: true,
                                   headers:      headers)
-
     rescue OpenSSL::SSL::SSLError
       retry_count += 1
       logger.warn 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count]
