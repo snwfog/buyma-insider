@@ -1,4 +1,4 @@
-# Configuration for sidekiq cron jobs
+# configuration for sidekiq cron jobs
 merchant_crawl_schedule_worker:
   cron:                         '0 20 * * *'
   class:                        'MerchantCrawlScheduleWorker'
@@ -8,9 +8,4 @@ merchant_crawl_schedule_worker:
 open_exchange_rates_worker:
   cron:                         '0 * * * *'
   class:                        'OpenExchangeRatesWorker'
-
-rethinkdb_backup_worker:
-  cron:                         '0 1 * * *'
-  class:                        'RethinkdbBackupWorker'
-
 

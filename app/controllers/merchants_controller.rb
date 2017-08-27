@@ -2,15 +2,15 @@ class MerchantsController < ApplicationController
   options '/**' do; end
 
   before do
-    @merchants_map_by_code = settings.cache.fetch(:merchants) do |key|
-      settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: [:index_pages] },
-                                                      :merchant_metadatum])
-                                     .all.map { |m| [m.code, m] }]
-    end
+    # @merchants_map_by_code = settings.cache.fetch(:merchants) do |key|
+    #   settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: [:index_pages] },
+    #                                                   :merchant_metadatum])
+    #                                  .all.map { |m| [m.code, m] }]
+    # end
   end
 
   before '/:merchant_code(/**)?' do
-    param :merchant_code, String, required: true, transform: :downcase, in: @merchants_map_by_code.keys, format: /[a-z]{3}/
+    param :merchant_code, String, required: true, transform: :downcase, in: Merchant.all.pluck(:code), format: /[a-z]{3}/
     param :limit, Integer, in: (1..20), default: 20
     param :page, Integer, in: (1..200), default: 1
     param :order, String, transform: :downcase, in: ['name:asc',
@@ -26,16 +26,24 @@ class MerchantsController < ApplicationController
                                                      'created_at',
                                                      'updated_at']
 
-    @merchant             = @merchants_map_by_code.fetch(params[:merchant_code])
-    @page, @limit, @order = params.values_at(*%w(page limit order))
-    @order_by             = if @order
-                              @order_key, @order_direction, *_ = "#{@order}:asc".split(?:).each(&:to_sym)
-                              Hash[@order_key.to_sym, @order_direction.to_sym]
-                            end || {}
+    # @merchant             = @merchants_map_by_code.fetch(params[:merchant_code])
+
+    @merchant            = Merchant
+                             .includes([{ index_pages: [:index_pages] },
+                                        :merchant_metadatum])
+                             .find_by_code(params[:merchant_code])
+    @page, @limit, order = params.values_at(*%w(page limit order))
+    @order_by            = if order
+                             order_key, order_direction, *_ = "#{order}:asc".split(?:).each(&:to_sym)
+                             Hash[order_key.to_sym, order_direction.to_sym]
+                           end || {}
   end
 
   get '/' do
-    json @merchants_map_by_code.values
+    json Merchant
+           .includes([{ index_pages: [:index_pages] },
+                      :merchant_metadatum])
+           .all
   end
 
   get '/:merchant_code' do
@@ -57,12 +65,8 @@ class MerchantsController < ApplicationController
   end
 
   get '/:merchant_code/articles/_search' do
-    param :q,           String, required:  true,
-                                transform: :downcase
-
-    param :field,       String, transform: -> (f) { f.downcase.to_sym },
-                                in:        Article.fields.keys,
-                                default:   :name
+    param :q, String, required: true, transform: :downcase
+    param :field, String, transform: -> (f) { f.downcase.to_sym }, in: Article.fields.keys, default: :name
 
     q, field = params.values_at(*%w(q field))
 
@@ -100,5 +104,4 @@ class MerchantsController < ApplicationController
       status :conflict and halt
     end
   end
-
 end
