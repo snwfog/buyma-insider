@@ -34,7 +34,7 @@ class IndexPageCrawlWorker < Worker::Base
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
-    Slackiq.notify(webhook_name: :worker, title: "Crawl Starts [#{@index_page}]")
+    slack_notify(title: "Crawl Starts [#{@index_page}]")
 
     if raw_resp_tempfile = fetch_page_with_capture(@index_page.full_url,
                                                    @merchant.meta.ssl?,
@@ -78,7 +78,7 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info JSON.pretty_generate(@current_crawl_history.attributes)
     end
 
-    Slackiq.notify(webhook_name: :worker, title: "Crawl Ends [#{@index_page}]")
+    slack_notify(title: "Crawl Ends [#{@index_page}]")
   end
 
   private

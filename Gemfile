@@ -55,8 +55,7 @@ gem 'colorize',                require: false
 
 # Integration
 gem 'sentry-raven',            require: 'sentry-raven-without-integrations'
-gem 'slackiq'
-# gem 'slack-notifier'
+gem 'slack-notifier'
 gem 'money-open-exchange-rates' # Money + exchange rates
 
 # Logging

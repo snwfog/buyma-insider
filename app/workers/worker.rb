@@ -4,6 +4,13 @@ module Worker
 
     protected
 
+    def slack_notify(params = {})
+      BuymaInsider
+        .configuration
+        .slack_notifier
+        .post(params.merge!(channel: '#jobs'))
+    end
+
     def validate_args(args, validator, message)
       unless validator.call(args)
         logger.error "#{self} aborted, arguments #{message}" and raise

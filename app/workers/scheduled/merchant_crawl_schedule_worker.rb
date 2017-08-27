@@ -8,6 +8,7 @@ class MerchantCrawlScheduleWorker < Worker::Base
       end
 
     msg = scheduled_merchants.join(' ')
-    Slackiq.notify(webhook_name: :worker, ':shipit: Merchant Refresh Scheduled' => msg)
+    slack_notify(title: ':shipit: Merchant Refresh Scheduled',
+                 text:  msg)
   end
 end

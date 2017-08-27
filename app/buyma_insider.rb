@@ -21,6 +21,10 @@ module BuymaInsider
         end
       end
     end
+
+    def configure
+      yield configuration
+    end
     
     # Return a redis pool for an app area that
     # requires redis connection, settings from redis.yml

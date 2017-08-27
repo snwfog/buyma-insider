@@ -42,6 +42,10 @@ def json_serialize(object)
   ActiveModelSerializers::SerializableResource.new(object, include: '**')
 end
 
+def slack_notify(params)
+  Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
+end
+
 require 'net/http'
 OracleProxyHttp = Net::HTTP::Proxy('adc-proxy.oracle.com', 80)
 
