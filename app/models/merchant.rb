@@ -20,12 +20,16 @@ class Merchant < ActiveRecord::Base
   default_scope { eager_load(:merchant_metadatum) }
 
   after_find do
-    extend "Merchants::#{name.capitalize}".safe_constantize
+    extend "Merchants::#{name.classify}".safe_constantize
   end
 
   class_attribute :indexer
 
-  delegate :domain, :pager_css, :item_css, to: :merchant_metadatum
+  delegate :domain,
+           :pager_css,
+           :item_css,
+           :ssl?,
+           to: :merchant_metadatum
 
   alias_attribute :metadatum, :merchant_metadatum
   alias_attribute :meta, :merchant_metadatum

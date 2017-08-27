@@ -28,12 +28,11 @@ class IndexPage < ActiveRecord::Base
   scope :root, -> { where(index_page_id: nil) }
 
   def full_url
-    domain = merchant.metadatum.domain
-    scheme << ':' << domain << relative_path
+    scheme << ':' << merchant.domain << relative_path
   end
 
   def scheme
-    merchant.metadatum.ssl? ? 'https' : 'http'
+    merchant.ssl? ? 'https' : 'http'
   end
 
   def cache_filename

@@ -2,7 +2,7 @@ require_relative './setup'
 
 class ArticleParserTest < Minitest::Test
   def test_ssense_should_parse
-    frag = <<-FRAG
+    frag = <<~HTML
       <div class="browsing-product-item" itemscope="" itemtype="http://schema.org/Product" data-product-id="1676753" data-product-sku="162418M176009" data-product-name="Tan Canadian Tapestry Coat" data-product-brand="Saint Laurent" data-product-price="5890" data-product-category="Coats">
         <meta itemprop="brand" content="Saint Laurent">
         <meta itemprop="name" content="Tan Canadian Tapestry Coat">
@@ -25,7 +25,7 @@ class ArticleParserTest < Minitest::Test
           </div>
         </a>
       </div>
-    FRAG
+    HTML
 
     parser = Class.new do |klazz|
       class << klazz
@@ -43,7 +43,7 @@ class ArticleParserTest < Minitest::Test
   end
 
   def test_zara_should_parse
-    frag = <<-FRAG
+    frag = <<~HTML
       <li id="product-3711654" class="product _product" data-productid="3711654" data-title="">
         <a class="item _item" href="//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html"><img id="product-img-3711654" class="_img _imageLoaded" alt="VELVET TOGGLE JACKET" src="//static.zara.net/photos///2016/I/0/1/p/6895/255/800/2/w/200/6895255800_2_8_1.jpg?ts=1475748298086"></a>
         <div class="product-info">
@@ -52,7 +52,7 @@ class ArticleParserTest < Minitest::Test
           <div class="price _product-price"><span data-price="139.00 CAD">139.00 CAD</span></div>
         </div>
       </li>
-    FRAG
+    HTML
 
     parser = Class.new do |klazz|
       class << self
@@ -70,7 +70,7 @@ class ArticleParserTest < Minitest::Test
   end
 
   def test_getoutside_should_parse
-    frag = <<-FRAG
+    frag = <<~HTML
       <li class="item">
         <div class="product-image-wrapper">
           <a href="http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html" title="Sperry Waterproof Cold Bay Boot" class="product-image">
@@ -93,7 +93,7 @@ class ArticleParserTest < Minitest::Test
         </div>
         <div class="actions clearer"></div>
       </li>
-    FRAG
+    HTML
 
     parser = Class.new do |klazz|
       class << klazz
@@ -114,7 +114,7 @@ class ArticleParserTest < Minitest::Test
   end
 
   def test_getoutside_should_parse_2
-    frag = <<-FRAG
+    frag = <<~HTML
       <li class="item">
         <div class="product-image-wrapper" style="max-width:295px;">
           <a href="http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html" title="Native Apex" class="product-image">
@@ -145,7 +145,7 @@ class ArticleParserTest < Minitest::Test
         </div>
         <!-- end: actions -->
       </li>
-    FRAG
+    HTML
 
     parser = Class.new do |klazz|
       class << klazz
@@ -165,7 +165,7 @@ class ArticleParserTest < Minitest::Test
   end
 
   def test_should_parse_octobersveryown
-    frag = <<~FRAG
+    frag = <<~HTML
       <div class="grid__item prod-xlarge--one-fifth prod-large--one-quarter prod-medium--one-half " style="position:relative">
         <a href="/collections/all/products/ovo-athletics-tee-red" class="grid__image">
           <img src="//cdn.shopify.com/s/files/1/0973/7782/products/OVO_ATHLETIC_TEE_SS17_RED_FRONT_large.jpg?v=1492102380" alt="OVO ATHLETICS TEE – RED" title="OVO ATHLETICS TEE – RED">
@@ -175,7 +175,7 @@ class ArticleParserTest < Minitest::Test
         </p>
         <p>$40.00</p>
       </div>
-    FRAG
+    HTML
 
     parser = Class.new do |klazz|
       class << klazz
@@ -199,7 +199,7 @@ class ArticleParserTest < Minitest::Test
   end
 
   def test_should_parse_livestock
-    frag = <<~FRAG
+    frag = <<~HTML
       <div class="four columns omega thumbnail odd">
         <a href="/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white?lshst=collection" title="ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
           <div class="relative product_image">
@@ -251,7 +251,7 @@ class ArticleParserTest < Minitest::Test
           </div>
         </a>
       </div>
-    FRAG
+    HTML
 
     parser = Class.new do |klass|
       class << klass
@@ -272,5 +272,115 @@ class ArticleParserTest < Minitest::Test
     assert_equal 160.00, article_hash[:price]
     assert_equal "ltk:#{Digest::MD5.hexdigest('ADIDAS WOMEN\'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE')}", article_hash[:id]
     assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white', article_hash[:link]
+  end
+
+  def test_should_parse_canada_goose
+    frag = <<~HTML
+      <div class="product-tile" data-cgid="shop-mens" data-itemid="6930M" id="f4d200e5722a6b62e5151f8c92">
+        <!-- dwMarker="product" dwContentID="f4d200e5722a6b62e5151f8c92" -->
+        <div class="product-image">
+          <!-- dwMarker="product" dwContentID="f4d200e5722a6b62e5151f8c92" -->
+          <a class="thumb-link" href="/ca/en/hybridge-knit-jacket-6930M.html?cgid=shop-mens" title="HyBridge Knit Jacket"><img alt="HyBridge Knit Jacket" class="one-img" src="http://demandware.edgesuite.net/sits_pod15/dw/image/v2/AATA_PRD/on/demandware.static/-/Sites-canadagoose-master-catalog/default/dw0b058e38/images/productimages/6930M_67.jpg?sw=435&amp;sh=655&amp;sm=fit" style="display: block;" title="HyBridge Knit Jacket"> <input class="secondImage" type="hidden" value="true"> <input class="deviceType" type="hidden" value="null"> <img alt="HyBridge Knit Jacket" class="two-img" src="http://demandware.edgesuite.net/sits_pod15/dw/image/v2/AATA_PRD/on/demandware.static/-/Sites-canadagoose-master-catalog/default/dwc896ccc1/images/productimages/6930M_67_a.jpg?sw=435&amp;sh=655&amp;sm=fit" style="display: none;" title="HyBridge Knit Jacket"></a>
+          <div class="badge-container"><img class="badge" src="http://demandware.edgesuite.net/aata_prd/on/demandware.static/-/Library-Sites-CG-Global/default/dwc669adcc/images/badges/badge-new-style.png"></div>
+        </div>
+        <div class="product-name">
+          <a class="name-link" href="/ca/en/hybridge-knit-jacket-6930M.html" title="HyBridge Knit Jacket">HyBridge Knit Jacket</a>
+        </div>
+        <div class="product-pricing">
+          <div class="product-price" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+            <span class="microdata visually-hidden"></span>
+            <link href="http://schema.org/InStock" itemprop="availability"><span class="price-sales"><span content="CAD" itemprop="priceCurrency"></span> <span content="595.00" itemprop="price">$595.00</span></span> <input id="currency" type="hidden" value="$">
+          </div>
+        </div>
+        <div class="product-promo"></div>
+        <div class="product-swatches">
+          <ul class="swatch-list">
+            <li>
+              <a class="swatch" title="Black">
+              <div class="image-outer">
+                <div class="image-inner1"><img alt="" class="swatch-image" data-thumb="{&quot;src&quot;:&quot;http://demandware.edgesuite.net/sits_pod15/dw/image/v2/AATA_PRD/on/demandware.static/-/Sites-canadagoose-master-catalog/default/dw4e204706/images/productimages/6930M_61.jpg?sw=435&amp;sh=655&amp;sm=fit&quot;,&quot;alt&quot;:&quot;HyBridge Knit Jacket&quot;,&quot;title&quot;:&quot;HyBridge Knit Jacket&quot;}" src="http://demandware.edgesuite.net/aata_prd/on/demandware.static/-/Library-Sites-CG-Global/default/dw466c9277/images/swatch/61.svg"></div>
+              </div></a>
+            </li>
+            <li>
+              <a class="swatch" title="Navy">
+              <div class="image-outer">
+                <div class="image-inner1"><img alt="" class="swatch-image" data-thumb="{&quot;src&quot;:&quot;http://demandware.edgesuite.net/sits_pod15/dw/image/v2/AATA_PRD/on/demandware.static/-/Sites-canadagoose-master-catalog/default/dw0b058e38/images/productimages/6930M_67.jpg?sw=435&amp;sh=655&amp;sm=fit&quot;,&quot;alt&quot;:&quot;HyBridge Knit Jacket&quot;,&quot;title&quot;:&quot;HyBridge Knit Jacket&quot;}" src="http://demandware.edgesuite.net/aata_prd/on/demandware.static/-/Library-Sites-CG-Global/default/dw733c023b/images/swatch/67.svg"></div>
+              </div></a>
+            </li>
+          </ul><!-- .swatch-list -->
+        </div><!-- .product-swatches -->
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'goo'; end
+        def domain; '//www.canadagoose.com'; end
+      end
+    end
+
+    parser.extend(Merchants::CanadaGoose::Parser)
+    article_hash = parser
+                     .attrs_from_node(
+                       Nokogiri::HTML::DocumentFragment
+                         .parse(frag)
+                         .at_css('div'))
+
+    assert_equal 'HyBridge Knit Jacket', article_hash[:name]
+    assert_equal 'HyBridge Knit Jacket', article_hash[:description]
+    assert_equal '595.00', article_hash[:price]
+    assert_equal 'f4d200e5722a6b62e5151f8c92', article_hash[:sku]
+    assert_equal '//www.canadagoose.com/ca/en/hybridge-knit-jacket-6930M.html', article_hash[:link]
+  end
+
+  def test_should_parse_arcteryx
+    frag = <<~HTML
+      <div class="searchResult Shell_Jackets" data-baseimage="Gamma-MX-Hoody" data-black="Blackbird" data-blue="Rigel" data-drag-drop-image="//images.arcteryx.com/F17/85x110/Gamma-MX-Hoody-Pompeii.png" data-grey="Heron" data-model="19274" data-red="Pompeii" id="Gamma-MX-Hoody">
+        <a class="Shell_Jackets" href="product.aspx?country=ca&amp;language=en&amp;gender=mens&amp;model=Gamma-MX-Hoody">
+          <span class="searchResultThumbnail" id="Gamma-MX-Hoody_Thumbnail">
+            <span class="viewProduct">
+              <span class="viewProductCta">Shop Now</span>
+            </span>
+            <img alt="Gamma MX Hoody Men's" data-image-alt="//images.arcteryx.com/details/450x500/Gamma-MX-Hoody-Pompeii-Open-Collar.jpg" src="//images.arcteryx.com/F17/162x205/Gamma-MX-Hoody-Pompeii.gif"></span> <span class="searchResultColours" id="Gamma-MX-Hoody_Colours">
+            <span class="spanSearchResultColoursList">
+              <span class="spanSearchResultColoursListItem BLACK" data-basecolour="BLACK" data-colourname="Blackbird" style="background: #333333;">Blackbird</span> 
+              <span class="spanSearchResultColoursListItem GREY" data-basecolour="GREY" data-colourname="Heron" style="background: #5B6173;">Heron</span> 
+              <span class="spanSearchResultColoursListItem RED selected" data-basecolour="RED" data-colourname="Pompeii" style="background: #98382f;">Pompeii</span> 
+              <span class="spanSearchResultColoursListItem BLUE" data-basecolour="BLUE" data-colourname="Rigel" style="background: #2a6be1;">Rigel</span> 
+            </span>
+          </span>
+          <span class="BVRRRatingSummary">
+            <img alt="4.55 / 5" class="BVImgOrSprite" src="//arcteryx.ugc.bazaarvoice.com/7059-en_ca/4_55/5/rating.gif" title="4.55 / 5">
+            <span class="BVRRNumber">56</span> Reviews
+          </span>
+          <span class="searchResultName" id="Gamma-MX-Hoody_Name">Gamma MX Hoody Men's
+            <span class="subMarketName">Lightly insulated, softshell alpine hoody, with stretch for mixed weather.</span>
+          </span> 
+          <span class="searchResultPrice" id="Gamma-MX-Hoody_Price">$400.00</span> 
+          <span class="searchResultCrncy" id="Gamma-MX-Hoody_Crncy">CAD</span>
+          <span class="description">Breathable, wind-resistant, lightly insulated hooded jacket constructed with Fortius 2.0 textile for increased comfort and mobility. Gamma Series: Softshell outerwear with stretch | MX: Mixed Weather.</span>
+        </a> 
+        <label class="compare-checkbox">
+          <input name="compare" type="checkbox" value="19274">
+          <span class="compare-checkbox-label">Compare Products</span>
+        </label>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'arc'; end
+        def domain; '//arcteryx.com'; end
+      end
+    end
+
+    parser.extend(Merchants::Arcteryx::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'Gamma MX Hoody Men\'s', article_hash[:name]
+    assert_equal 'Breathable, wind-resistant, lightly insulated hooded jacket constructed with Fortius 2.0 textile for increased comfort and mobility. Gamma Series: Softshell outerwear with stretch | MX: Mixed Weather.', article_hash[:description]
+    assert_equal '400.00', article_hash[:price]
+    assert_equal '19274', article_hash[:sku]
+    assert_equal '//arcteryx.com/product.aspx?country=ca&language=en&gender=mens&model=Gamma-MX-Hoody', article_hash[:link]
   end
 end

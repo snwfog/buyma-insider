@@ -5,7 +5,7 @@ module Merchants
       merchant.extend Parser
     end
 
-    class OctobersveryownIndexer < Indexer;
+    class OctobersveryownIndexer < Indexer
     end
 
     module Parser

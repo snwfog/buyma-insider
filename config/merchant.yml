@@ -1,21 +1,22 @@
+# 2016 - 2017
 ssense:
-  code:             sse
-  name:             ssense
-  domain:           //www.ssense.com
-  pager_css:        div.browsing-pagination ul.nav
-  item_css:         div.browsing-product-list figure.browsing-product-item
+  code:           sse
+  name:           ssense
+  domain:         //www.ssense.com
+  pager_css:      div.browsing-pagination ul.nav
+  item_css:       div.browsing-product-list figure.browsing-product-item
   index_pages:
     - /en-ca/men
     - /en-ca/women
-  ssl:              true
+  ssl:            true
 
 getoutside:
-  code:             get
-  name:             getoutside
-  domain:           //www.getoutsideshoes.com
-  ssl:              true
-  pager_css:        div.pager > div.pages ol
-  item_css:         ul.products-grid li.item
+  code:           get
+  name:           getoutside
+  domain:         //www.getoutsideshoes.com
+  ssl:            true
+  pager_css:      div.pager > div.pages ol
+  item_css:       ul.products-grid li.item
   index_pages:
     - /new-arrivals.html
     - /mens.html
@@ -25,32 +26,61 @@ getoutside:
     - /sale.html
 
 zara:
-  code:             zar
-  name:             zara
-  domain:           //www.zara.com/ca/en
-  ssl:              true
-  pager_css:
-  item_css:         ul.product-list li.product
+  code:           zar
+  name:           zara
+  domain:         //www.zara.com/ca/en
+  ssl:            true
+  pager_css:      ~
+  item_css:       ul.product-list li.product
   index_pages:
     - /woman/new-in-c840002.html
     - /woman/new-in-c805003.html
 
+
+# july 2017
 octobersveryown:
-  code:             ovo
-  name:             octobersveryown
-  domain:           //ca.octobersveryown.com
-  ssl:              true
-  pager_css:
-  item_css:         main.main-content div.grid__item
+  code:           ovo
+  name:           octobersveryown
+  domain:         //ca.octobersveryown.com
+  ssl:            true
+  pager_css:      ~
+  item_css:       main.main-content div.grid__item
   index_pages:
     - /collections/all
 
+# july 2017
 #livestock:
-#  code:             ltk
-#  name:             livestock
-#  domain:           //www.deadstock.ca
-#  ssl:              true
-#  pager_css:        div.container.main.content > div.products div.paginate
-#  item_css:         div.container.main.content > div.products > div.columns
+#  code:          ltk
+#  name:          livestock
+#  domain:        //www.deadstock.ca
+#  ssl:           true
+#  pager_css:     div.container.main.content > div.products div.paginate
+#  item_css:      div.container.main.content > div.products > div.columns
 #  index_pages:
 #    - /collections/new-arrivals
+
+# august 27, 2017
+canada_goose:
+  code:           goo
+  name:           canada goose
+  domain:         //www.canadagoose.com
+  ssl:            true
+  pager_css:      ~
+  item_css:       div#primary ul#search-result-items li div.product-tile
+  index_pages:
+    - /ca/en/shop/men
+    - /ca/en/shop/women
+    - /ca/en/shop/kids
+
+arcteryx:
+  code:           arc
+  name:           arcteryx
+  domain:         //arcteryx.com
+  ssl:            true
+  pager_css:      ~
+  item_css:       div#divContent div.searchResult
+  index_pages:
+    - /ProductFind.aspx?country=ca&language=en&gender=Mens
+    - /ProductFind.aspx?country=ca&language=en&gender=Womens
+
+

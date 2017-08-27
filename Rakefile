@@ -88,6 +88,29 @@ namespace :app do
     end
   end
 
+  desc 'Crawl index and parse it'
+  task :crawl_parse, [:index_page_id] do |_, args|
+    index_page_id = args.fetch(:index_page_id)
+    IndexPageCrawlWorker.new.perform('index_page_id' => index_page_id)
+  end
+
+  desc 'Update all merchants from merchant.yml'
+  task :update_merchants do
+    merchant_cfg = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
+    merchant_cfg.each do |_m_name, cfg|
+      cfg.symbolize_keys!
+      puts "Updating merchant [#{_m_name}]..."
+      unless merchant = Merchant.find_by_code(cfg[:code])
+        merchant = Merchant.create!(cfg.dup.delete_if { |k| !%i(code name).include?(k) })
+        merchant.create_merchant_metadatum!(cfg.dup.delete_if { |k| !%i(domain ssl pager_css item_css).include?(k) })
+      end
+
+      cfg[:index_pages].each do |relative_path|
+        merchant.index_pages.find_or_create_by!(relative_path: relative_path)
+      end
+    end
+  end
+
   desc 'Update all new index pages from merchant.yml'
   task :update_index_pages do
     merchant_cfg = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
