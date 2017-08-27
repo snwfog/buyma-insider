@@ -6,14 +6,21 @@ class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
     root_indices = IndexPage
-                     .root
                      .includes(merchant: :merchant_metadatum)
+                     .root
                      .all
     slack_notify(text: "Sentinel: Checking all #{root_indices.count} root index pages")
     all_statuses = root_indices.map { |index_page| check_health(index_page) }
 
     logger.info JSON.pretty_generate(all_statuses)
-    slack_notify(attachments: all_statuses)
+
+    status_groups = all_statuses.group_by { |status| status[:health] }
+    slack_notify(attachments: {
+      text:   '4xx - 5xx',
+      fields: status_groups[:red].map { |status| { title: status[:index_page],
+                                                   value: "#{status[:http_status]}",
+                                                   short: false } }
+    })
   end
 
   def check_health(index_page)
@@ -29,7 +36,8 @@ class IndexPageSentinelWorker < Worker::Base
       raw_response = ex.response
     end
 
-    status = { http_status:    raw_response.try(:code),
+    status = { index_page:     index_page.full_url,
+               http_status:    raw_response.try(:code),
                size_in_kb:     file_size_in_kb || 0,
                relocation:     raw_response.try(:history).try(:any?),
                articles_count: article_nodes.try(:count), }
