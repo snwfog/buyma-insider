@@ -36,7 +36,8 @@ module Worker
       nil
     rescue Exception => ex
       Raven.capture_exception(ex)
-      logger.error 'Fail fetch index page %s' % uri
+      logger.error 'Fail fetch uri `%s`' % uri
+      logger.error ex.message
       raise
     end
   end

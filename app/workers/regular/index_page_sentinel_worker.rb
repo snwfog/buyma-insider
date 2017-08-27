@@ -5,36 +5,53 @@
 class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
-    all_root_index_pages = IndexPage
-                             .root
-                             .includes(merchant: :merchant_metadatum)
-                             .all
-    slack_notify(text: "Sentinel: Checking all #{all_root_index_pages.count} root index pages")
-    index_pages_status = all_root_index_pages.map { |index_page| check_health(index_page) }
+    root_indices = IndexPage
+                     .root
+                     .includes(merchant: :merchant_metadatum)
+                     .all
+    slack_notify(text: "Sentinel: Checking all #{root_indices.count} root index pages")
+    all_statuses = root_indices.map { |index_page| check_health(index_page) }
 
-    logger.info index_pages_status
-    slack_notify(attachments: index_pages_status)
+    logger.info JSON.pretty_generate(all_statuses)
+    slack_notify(attachments: all_statuses)
   end
 
   def check_health(index_page)
-    merchant     = index_page.merchant
-    raw_response = fetch_uri(index_page.full_url)
-    # FileUtils.cp(raw_resp_tempfile.file.path, index_page.cache_html_path)
-    gzip_encoded_html = File.open(raw_response.file.path, 'rb') { |f| f.read }
-    file_size_in_kb   = gzip_encoded_html.size / 1000.0
-    html_document     = RestClient::Request.decode('gzip', gzip_encoded_html)
-    article_nodes     = Nokogiri::HTML(html_document).css(merchant.metadatum.item_css)
+    begin
+      merchant     = index_page.merchant
+      raw_response = fetch_uri(index_page.full_url)
+      # FileUtils.cp(raw_resp_tempfile.file.path, index_page.cache_html_path)
+      gzip_encoded_html = File.open(raw_response.file.path, 'rb') { |f| f.read }
+      file_size_in_kb   = gzip_encoded_html.size / 1000.0
+      html_document     = RestClient::Request.decode('gzip', gzip_encoded_html)
+      article_nodes     = Nokogiri::HTML(html_document).css(merchant.metadatum.item_css)
+    rescue RestClient::ExceptionWithResponse => ex
+      raw_response = ex.response
+    end
 
-    # unless article_nodes.any?
-    #   slack_notify(text: "Could not find any article nodes from index page #{index_page.full_url}")
-    # end
+    status = { http_status:    raw_response.try(:code),
+               size_in_kb:     file_size_in_kb || 0,
+               relocation:     raw_response.try(:history).try(:any?),
+               articles_count: article_nodes.try(:count), }
 
-    { http_status:    raw_response.code,
-      size_in_kb:     file_size_in_kb,
-      redirection:    raw_response.history.count,
-      articles_count: article_nodes.count, }
-  rescue RestClient::ExceptionWithResponse => ex
-    slack_notify(text: "Index Page #{index_page.full_url} fetch failed.")
-    slack_notify(text: ex.message)
+    status[:health] = health_code(status)
+    status
+  end
+
+  def health_code(status)
+    case status[:http_status]
+    when 400..599
+      :red
+    when 300...400
+      :yellow
+    when 200...300
+      if status[:relocation] || status[:articles_count] < 10
+        :yellow
+      else
+        :green
+      end
+    else
+      :red
+    end
   end
 end
