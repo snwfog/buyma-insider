@@ -5,7 +5,7 @@ class IndexPageParseWorker < Worker::Base
     merchant      = index_page.merchant
     exchange_rate = ExchangeRate.latest
 
-    unless index_page.has_cache_html?
+    unless index_page.is_cache_exists?
       raise "Cache file not found `#{index_page}' at [#{index_page.cache_html_path}]"
     end
     item_css      = merchant.metadatum.item_css

@@ -10,7 +10,7 @@ class CreateCrawlHistories < ActiveRecord::Migration[5.0]
       t.integer :article_count, default: 0
       t.integer :article_invalid_count, default: 0
       t.float :traffic_size_in_kb, default: 0.0
-      t.text :response_headers, limit: 2000
+      t.hstore :response_headers
       t.integer :response_status
       t.datetime :finished_at
 

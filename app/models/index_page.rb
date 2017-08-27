@@ -47,17 +47,21 @@ class IndexPage < ActiveRecord::Base
     })
   end
 
-  def has_cache_html?
-    File.exists?(cache_html_path)
-  end
-
-  def is_cache_fresh?
-    has_cache_html? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
+  def cache_mtime
+    File.mtime(cache_html_path) rescue nil
   end
 
   def cache_html_document
     RestClient::Request.decode(cache_html_content_encoding,
                                cache_html_content)
+  end
+
+  def is_cache_exists?
+    File.exists?(cache_html_path)
+  end
+
+  def is_cache_fresh?
+    is_cache_exists? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
   end
 
   def to_s
@@ -71,6 +75,10 @@ class IndexPage < ActiveRecord::Base
   end
 
   def cache_html_content_encoding
-    crawl_histories.completed.first.try(:content_encoding) || 'gzip'.freeze
+    crawl_histories
+      .order(finished_at: :desc)
+      .completed
+      .take
+      .try(:content_encoding) || 'gzip'.freeze
   end
 end

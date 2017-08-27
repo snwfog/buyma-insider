@@ -14,7 +14,7 @@ module Merchants
     end
 
     def index_document
-      if @index_page.has_cache_html?
+      if @index_page.is_cache_exists?
         Nokogiri::HTML(@index_page.cache_html_document)
       else
         raise <<~ERROR

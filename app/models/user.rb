@@ -65,7 +65,6 @@ class User < ActiveRecord::Base
       ua_notified = user_article_notifieds.find_or_create_by!(article: article)
       ua_notified.article_notification_criteria << notify_criterium
     end
-
   end
 
   def sold_article!(user_article_sold_json)

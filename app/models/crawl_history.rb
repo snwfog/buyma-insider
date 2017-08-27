@@ -34,15 +34,6 @@ class CrawlHistory < ActiveRecord::Base
 
   alias_attribute :started_at, :created_at
 
-  def response_headers
-    headers_yaml = super
-    @response_headers = headers_yaml.blank? ? nil : YAML.load(headers_yaml)
-  end
-
-  def response_headers=(headers_h)
-    super YAML.dump(headers_h) unless headers_h.blank?
-  end
-
   def etag
     response_headers.try(:[], :etag)
   end

@@ -23,12 +23,12 @@ class IndexPageCrawlWorker < Worker::Base
     validate_args(args, -> (args) { Hash === args }, 'must be an Hash')
     validate_args(args, -> (args) { args.key?('index_page_id') }, 'must contains `index_page_id`')
 
-    index_page_id       = args.fetch('index_page_id')
-    use_web_cache       = !args.fetch('use_web_cache', true)
-    schedule_parser     = args.fetch('schedule_parser', false)
+    index_page_id         = args.fetch('index_page_id')
+    use_web_cache         = !args.fetch('use_web_cache', true)
+    perform_async_parsing = args.fetch('perform_async_parsing', false)
 
-    @index_page         = IndexPage.eager_load(:merchant).find(index_page_id)
-    @last_crawl_history = @index_page.crawl_histories&.completed.first
+    @index_page         = IndexPage.includes(:merchant).find(index_page_id)
+    @last_crawl_history = @index_page.crawl_histories.completed.take
     @merchant           = @index_page.merchant
     @standard_headers.merge(http_cache_headers) if use_web_cache
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
@@ -46,10 +46,10 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info 'Caching index `%s` into `%s`' % [raw_resp_tempfile.file.path, @index_page.cache_html_path]
       FileUtils.cp(raw_resp_tempfile.file.path, @index_page.cache_html_path)
     end
-  rescue RestClient::NotModified
+  rescue RestClient::ExceptionWithResponse => ex
     @current_crawl_history.update!(traffic_size_in_kb: 0.0,
-                                   response_headers:   @last_crawl_history.response_headers,
-                                   response_status:    :not_modified)
+                                   response_headers:   ex.http_headers,
+                                   response_status:    ex.http_code)
 
     logger.debug 'Index has not been modified `%s`' % @index_page.full_url
     FileUtils::touch(@index_page.cache_html_path)
@@ -63,11 +63,12 @@ class IndexPageCrawlWorker < Worker::Base
     logger.error ex.http_headers if ex.is_a? RestClient::Exception
     logger.error ex.backtrace
   else
-    IndexPageParseWorker.new.perform(@current_crawl_history.id)
-    # if schedule_parser
-      # logger.info 'Scheduling an index page parser'
-      # IndexPageParseWorker.perform_async(@current_crawl_history.id)
-    # end
+    if perform_async_parsing
+      logger.info "Schedule a parser for index page #{@index_page}"
+      IndexPageParseWorker.perform_async(@current_crawl_history.id)
+    else
+      IndexPageParseWorker.new.perform(@current_crawl_history.id)
+    end
 
     @current_crawl_history
   ensure
@@ -82,13 +83,12 @@ class IndexPageCrawlWorker < Worker::Base
 
   private
   def http_cache_headers
-    if @last_crawl_history&.etag and not @last_crawl_history&.weak?
+    if @last_crawl_history.try(:etag) and not @last_crawl_history.try(:weak?)
       logger.info 'Strong etag `%s` exists' % @last_crawl_history.etag
       { if_none_match: @last_crawl_history.etag }
-    elsif File::exist?(@index_page.cache_html_path)
-      index_page_cache_file_mtime = File::mtime(@index_page.cache_html_path)
-      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache_html_path, index_page_cache_file_mtime]
-      { if_modified_since: index_page_cache_file_mtime.httpdate }
+    elsif @index_page.is_cache_exists?
+      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache_html_path, @index_page.cache_mtime]
+      { if_modified_since: @index_page.cache_mtime.httpdate }
     else
       {}
     end

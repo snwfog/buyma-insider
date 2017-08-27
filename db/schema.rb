@@ -14,6 +14,7 @@ ActiveRecord::Schema.define(version: 20170825122544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "article_notification_criteria", force: :cascade do |t|
     t.string   "name",          limit: 500, null: false
@@ -57,7 +58,7 @@ ActiveRecord::Schema.define(version: 20170825122544) do
     t.integer  "article_count",         default: 0
     t.integer  "article_invalid_count", default: 0
     t.float    "traffic_size_in_kb",    default: 0.0
-    t.text     "response_headers"
+    t.hstore   "response_headers"
     t.integer  "response_status"
     t.datetime "finished_at"
     t.datetime "created_at",                          null: false
@@ -77,7 +78,7 @@ ActiveRecord::Schema.define(version: 20170825122544) do
   create_table "exchange_rates", force: :cascade do |t|
     t.integer  "base",       null: false
     t.datetime "timestamp",  null: false
-    t.text     "rates",      null: false
+    t.hstore   "rates",      null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["timestamp"], name: "index_exchange_rates_on_timestamp", unique: true, using: :btree
@@ -166,7 +167,9 @@ ActiveRecord::Schema.define(version: 20170825122544) do
   end
 
   create_table "site_settings", force: :cascade do |t|
-    t.text "settings"
+    t.hstore   "settings",   null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "user_article_notifieds", force: :cascade do |t|
@@ -212,7 +215,7 @@ ActiveRecord::Schema.define(version: 20170825122544) do
     t.index ["buyer_id"], name: "index_user_article_solds_on_buyer_id", using: :btree
     t.index ["exchange_rate_id"], name: "index_user_article_solds_on_exchange_rate_id", using: :btree
     t.index ["price_history_id"], name: "index_user_article_solds_on_price_history_id", using: :btree
-    t.index ["user_id", "article_id"], name: "index_user_article_solds_on_user_id_and_article_id", unique: true, using: :btree
+    t.index ["user_id", "article_id"], name: "index_user_article_solds_on_user_id_and_article_id", using: :btree
     t.index ["user_id"], name: "index_user_article_solds_on_user_id", using: :btree
   end
 
