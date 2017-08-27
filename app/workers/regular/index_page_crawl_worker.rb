@@ -36,7 +36,7 @@ class IndexPageCrawlWorker < Worker::Base
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
     slack_notify(title: "Crawl Starts [#{@index_page}]")
 
-    if raw_response = fetch_url(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
+    if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
       @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
                                      response_headers:   raw_response.headers.to_h,
                                      response_status:    :ok,

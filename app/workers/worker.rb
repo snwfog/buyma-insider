@@ -17,9 +17,9 @@ module Worker
       end
     end
 
-    # Fetch uri with capture to sentry
+    # Fetch uri with capture to Sentry.io
     # return RestClient::RawResponse
-    def fetch_url(uri, verify_ssl = false, retries = 3, **headers)
+    def fetch_uri(uri, verify_ssl = false, retries = 3, **headers)
       retry_count = 0
       logger.info "`GET` #{uri}"
       logger.debug JSON.pretty_generate(headers)
@@ -35,7 +35,7 @@ module Worker
       retry if retry_count <= retries
       nil
     rescue Exception => ex
-      Sentry.capture_exception(ex)
+      Raven.capture_exception(ex)
       logger.error 'Fail fetch index page %s' % uri
       raise
     end
