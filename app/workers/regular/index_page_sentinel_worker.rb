@@ -6,7 +6,7 @@ class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
     root_indices = IndexPage
-                     .includes(merchant: :merchant_metadatum)
+                     .includes(:merchant)
                      .root
                      .all
     slack_notify(text: "Sentinel: Checking all #{root_indices.count} root index pages")

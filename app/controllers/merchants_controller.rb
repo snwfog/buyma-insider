@@ -3,8 +3,7 @@ class MerchantsController < ApplicationController
 
   before do
     # @merchants_map_by_code = settings.cache.fetch(:merchants) do |key|
-    #   settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: [:index_pages] },
-    #                                                   :merchant_metadatum])
+    #   settings.cache[key] ||= Hash[Merchant.includes([{ index_pages: :index_pages]}
     #                                  .all.map { |m| [m.code, m] }]
     # end
   end
@@ -29,8 +28,7 @@ class MerchantsController < ApplicationController
     # @merchant             = @merchants_map_by_code.fetch(params[:merchant_code])
 
     @merchant            = Merchant
-                             .includes([{ index_pages: [:index_pages] },
-                                        :merchant_metadatum])
+                             .includes(index_pages: :index_pages)
                              .find_by_code(params[:merchant_code])
     @page, @limit, order = params.values_at(*%w(page limit order))
     @order_by            = if order
@@ -41,8 +39,7 @@ class MerchantsController < ApplicationController
 
   get '/' do
     json Merchant
-           .includes([{ index_pages: [:index_pages] },
-                      :merchant_metadatum])
+           .includes(index_pages: :index_pages)
            .all
   end
 
