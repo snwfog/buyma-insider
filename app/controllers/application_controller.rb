@@ -48,12 +48,7 @@ class ApplicationController < Sinatra::Base
   end
   
   configure :development do
-    require 'sinatra/reloader'
-    
-    register Sinatra::Reloader
-    also_reload './app/serializers/*.rb'
-    
-    enable :static
+    enable :static # serve static files from public dir
   end
   
   configure :production do

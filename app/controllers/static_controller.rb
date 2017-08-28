@@ -16,7 +16,7 @@ class StaticController < ApplicationController
       article_notification_criteria: to_hash(ArticleNotificationCriterium.all)
     }
 
-    if user = current_user?
+    if user = current_user
       @bootstrap['current_user'] = to_hash(user)
     end
 

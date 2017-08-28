@@ -20,8 +20,7 @@ class Merchant < ActiveRecord::Base
   default_scope { includes(:merchant_metadatum) }
 
   after_find do
-    # extend "Merchants::#{name.classify}".safe_constantize
-    require_dependency "/merchants/#{name}"
+    extend "Merchants::#{name.classify}".safe_constantize
   end
 
   class_attribute :indexer

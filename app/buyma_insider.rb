@@ -82,14 +82,13 @@ module BuymaInsider
 end
 
 require_rel '../lib'
-require_rel '../config/initializers/'
+require_rel '../config/initializers'
 
 require_rel './models'
-require_rel './controllers/helpers',
-            './controllers/application_controller',
+require_rel './helpers'
+require_rel './controllers/application_controller',
             './workers/worker'
 
-require_rel './helpers'
 require_rel './controllers'
 require_rel './serializers'
 require_rel './channels'
