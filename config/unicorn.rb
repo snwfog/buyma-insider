@@ -18,3 +18,7 @@ listen            "#{app_dir}/tmp/sockets/unicorn.sock", backlog: 64
 stderr_path       "#{app_dir}/log/unicorn-stderr.log"
 stdout_path       "#{app_dir}/log/unicorn-stdout.log"
 
+before_fork do |server, worker|
+  # get rid of rubbish
+  GC.start
+end
