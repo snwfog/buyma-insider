@@ -77,21 +77,19 @@ module BuymaInsider
   end
 end
 
-if BuymaInsider.production?
-  require_rel '../lib'
-  require_rel '../config/initializers/'
+require_rel '../lib'
+require_rel '../config/initializers/'
 
-  require_rel './models'
-  require_rel './controllers/helpers',
-              './controllers/application_controller',
-              './workers/worker'
+require_rel './models'
+require_rel './controllers/helpers',
+            './controllers/application_controller',
+            './workers/worker'
 
-  require_rel './helpers'
-  require_rel './controllers'
-  require_rel './serializers'
-  require_rel './channels'
-  require_rel './workers'
-else
-  require 'active_support/dependencies'
-  ActiveSupport::Dependencies.autoload_paths += %w[app/controllers app/models app/serializers app/channels]
-end
+require_rel './helpers'
+require_rel './controllers'
+require_rel './serializers'
+require_rel './channels'
+require_rel './workers'
+
+# require 'active_support/dependencies'
+# ActiveSupport::Dependencies.autoload_paths += %w[app/controllers app/models app/serializers app/channels]
