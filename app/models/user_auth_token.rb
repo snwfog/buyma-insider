@@ -17,9 +17,8 @@ class UserAuthToken < ActiveRecord::Base
 
   # Lookup the user by the cookie SESSION_KEY
   def self.find_by_cookie(request)
-    unhashed_token = request.cookies[SESSION_KEY]
-    if unhashed_token
-      where(token: hash_token(unhashed_token)).first
+    if unhashed_token = request.cookies[SESSION_KEY]
+      where(token: hash_token(unhashed_token)).take
     end
   end
 

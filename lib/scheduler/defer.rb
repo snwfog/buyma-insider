@@ -1,3 +1,4 @@
+# copy paste from discourse
 module Scheduler
   module Deferrable
     def initialize(async = true)
@@ -62,30 +63,29 @@ module Scheduler
     
     # using non_block to match Ruby #deq
     def do_work(non_block = false)
-      db, job, desc = @queue.deq(non_block)
+      job, desc = @queue.deq(non_block)
       begin
         job.call
       rescue => ex
-        raise
+        BuymaInsider.handle_exception(ex)
       end
     rescue => ex
-      raise
+      BuymaInsider.handle_exception(ex)
     ensure
       ActiveRecord::Base.connection_handler.clear_active_connections!
     end
-  
   end
   
   class Defer
-    module Unicorn
-      def process_client(client)
-        Defer.pause
-        super(client)
-        Defer.do_all_work
-        Defer.resume
-      end
-    end
-    
+    # module Unicorn
+    #   def process_client(client)
+    #     Defer.pause
+    #     super(client)
+    #     Defer.do_all_work
+    #     Defer.resume
+    #   end
+    # end
+    #
     extend Deferrable
     initialize
   end

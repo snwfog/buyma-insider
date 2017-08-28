@@ -74,6 +74,10 @@ module BuymaInsider
     def test?;
       environment =~ /test/
     end # test or unittest or integrationtest
+    
+    def handle_exception(ex, context = {})
+      logger.error ex
+    end
   end
 end
 
