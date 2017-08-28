@@ -6,10 +6,10 @@ class ApplicationController < Sinatra::Base
   helpers Sinatra::Param
   helpers Sinatra::Cookies
   
-  helpers ::RouteHelper
-  helpers ::JsonHelper
-  helpers ::ElasticsearchHelper
-  helpers ::AuthenticationHelper
+  helpers RouteHelper
+  helpers JsonHelper
+  helpers ElasticsearchHelper
+  helpers AuthenticationHelper
   
   disable :run
   disable :static

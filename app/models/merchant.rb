@@ -17,10 +17,11 @@ class Merchant < ActiveRecord::Base
 
   validates_format_of :code, with: /[a-z]{3}/
 
-  default_scope { eager_load(:merchant_metadatum) }
+  default_scope { includes(:merchant_metadatum) }
 
   after_find do
-    extend "Merchants::#{name.classify}".safe_constantize
+    # extend "Merchants::#{name.classify}".safe_constantize
+    require_dependency "/merchants/#{name}"
   end
 
   class_attribute :indexer

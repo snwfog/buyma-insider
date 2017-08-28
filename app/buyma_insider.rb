@@ -7,7 +7,7 @@ module BuymaInsider
   VERSION          = '0.1.0'.freeze
   API_VERSION      = 'api/v1'.freeze
   SPOOF_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.54 Safari/537.36'
-
+  
   class << self
     def configuration
       @configuration ||= begin
@@ -21,7 +21,7 @@ module BuymaInsider
         end
       end
     end
-
+    
     def configure
       yield configuration
     end
@@ -35,43 +35,63 @@ module BuymaInsider
         Redis::Store::Factory.create(redis_cfg.to_h.symbolize_keys!)
       end
     end
-
+    
     def logger_for(process)
       unless Logging::Repository.instance.has_logger?(process)
         raise 'Logger `%s` does not exists' % process
       end
       Logging.logger[process]
     end
-
+    
     def environment
       ENV['RACK_ENV'] || :development
     end
-
+    
     def root
       ENV['APP_PATH'] || File.expand_path('../../', __FILE__)
     end
-
+    
     def base_url
       ENV['APP_BASE_URL'] || 'http://localhost:4200'
     end
-
+    
     # copy&pasted from sinatra
-    def development?; environment =~ /dev/  end # dev or development
-    def staging?;     environment =~ /stag/ end # stag or stage or staging
-    def production?;  environment =~ /prod/ end # prod or production
-    def test?;        environment =~ /test/ end # test or unittest or integrationtest
+    def development?;
+      environment =~ /dev/
+    end
+    
+    # dev or development
+    def staging?;
+      environment =~ /stag/
+    end
+    
+    # stag or stage or staging
+    def production?;
+      environment =~ /prod/
+    end
+    
+    # prod or production
+    def test?;
+      environment =~ /test/
+    end # test or unittest or integrationtest
   end
 end
 
-require_rel '../lib'
-require_rel '../config/initializers/'
+if BuymaInsider.production?
+  require_rel '../lib'
+  require_rel '../config/initializers/'
 
-require_rel './models'
-require_rel './controllers/helpers',
-            './controllers/application_controller',
-            './workers/worker'
+  require_rel './models'
+  require_rel './controllers/helpers',
+              './controllers/application_controller',
+              './workers/worker'
 
-require_rel './controllers'
-require_rel './serializers'
-require_rel './channels'
-require_rel './workers'
+  require_rel './helpers'
+  require_rel './controllers'
+  require_rel './serializers'
+  require_rel './channels'
+  require_rel './workers'
+else
+  require 'active_support/dependencies'
+  ActiveSupport::Dependencies.autoload_paths += %w[app/controllers app/models app/serializers app/channels]
+end
