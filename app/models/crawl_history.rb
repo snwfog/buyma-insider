@@ -50,7 +50,15 @@ class CrawlHistory < ActiveRecord::Base
     response_headers.try(:[], :content_encoding)
   end
 
-  def cache_resolve?
+  def use_web_cache?
     response_status == :not_modified
+  end
+
+  def elapsed_time_in_s
+    if finished_at && created_at
+      finished_at - created_at
+    else
+      Float.NaN
+    end
   end
 end
