@@ -34,7 +34,7 @@ class IndexPageCrawlWorker < Worker::Base
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
-    slack_notify(title: "Crawl Starts [#{@index_page}]")
+    slack_notify(text: "Crawl Starts [#{@index_page}]")
 
     if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
       @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
@@ -76,7 +76,7 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info JSON.pretty_generate(@current_crawl_history.attributes)
     end
 
-    slack_notify(title: "Crawl Ends [#{@index_page}]")
+    slack_notify(text: "Crawl Ends [#{@index_page}]")
   end
 
   private
