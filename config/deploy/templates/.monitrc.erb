@@ -25,8 +25,8 @@ check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pi
 
 check process postgresql with pidfile <%= shared_path %>/tmp/pids/postgresql.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgresql" with timeout 60 seconds
-  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/postgresql.pid`"
+  start program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres start" with timeout 60 seconds
+  stop program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres stop"
 
 check process rethinkdb with pidfile <%= shared_path %>/tmp/pids/rethinkdb.pid
   group database
