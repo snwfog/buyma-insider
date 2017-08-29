@@ -21,7 +21,7 @@ module AuthenticationHelper
 
   def current_user
     unhashed_token = cookies[UserAuthToken::SESSION_KEY]
-    raise InvalidSession unless unhashed_token
+    return nil unless unhashed_token
     current_user = session_cached_user
     # cache_user = session_cached_user
     # User.find(cache_user.id)
@@ -53,7 +53,7 @@ module AuthenticationHelper
 
   def destroy_session!
     unhashed_token = cookies[UserAuthToken::SESSION_KEY]
-    raise InvalidSession unless unhashed_token
+    return nil unless unhashed_token
     session_cache do |redis|
       redis.del(UserAuthToken.hash_token(unhashed_token))
     end
@@ -66,8 +66,10 @@ module AuthenticationHelper
       unhashed_token = cookies[UserAuthToken::SESSION_KEY]
       hashed_token   = UserAuthToken.hash_token(unhashed_token)
       user           = redis.get(hashed_token)
-      raise UserNotFound unless !!user
-      redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
+      if user
+        redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
+      end
+
       user
     end
   end
@@ -90,7 +92,7 @@ module AuthenticationHelper
 
   def should_update_last_seen?
     if @request.xhr?
-      @env['HTTP_DISCOURSE_VISIBLE'.freeze] == 'true'.freeze
+      @env['HTTP_BUYMA_INSIDER_VISIBLE'.freeze] == 'true'.freeze
     else
       true
     end
