@@ -235,13 +235,19 @@ namespace :db do
 
   desc 'Seed dev'
   task :seed_dev do
-    puts 'Create test user "test:123"'
-    User.create!(username:      'test',
-                 password:      123,
-                 email_address: 'donchoa@gmail.com')
+    begin
+      conn = ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
 
-    puts 'Grabbing latest exchange rates'
-    OpenExchangeRatesWorker.new.perform
+      puts 'Create test user "test:123"'
+      User.create!(username:      'test',
+                   password:      123,
+                   email_address: 'donchoa@gmail.com')
+
+      puts 'Grabbing latest exchange rates'
+      OpenExchangeRatesWorker.new.perform
+    ensure
+      ActiveRecord::Base.remove_connection(conn)
+    end
   end
 end
 

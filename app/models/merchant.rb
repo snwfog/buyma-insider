@@ -35,6 +35,7 @@ class Merchant < ActiveRecord::Base
   alias_attribute :meta, :merchant_metadatum
 
   def html_cache_dir_create_if_not_exists!
+    # TODO: Rename to `web_cache`
     @html_cache_dir ||= "#{BuymaInsider.root}/tmp/cache/crawl/#{code}"
 
     unless File::directory?(@html_cache_dir)

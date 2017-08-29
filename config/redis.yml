@@ -37,11 +37,11 @@ staging:
   sidekiq:
     <<:           *default_sidekiq
     # concurrency + 5 see https://github.com/mperham/sidekiq/issues/117#issuecomment-168971492
-    pool_size:    10
+    pool_size:    30
 
-# Change this to sock on production
+# TODO: Change this to sock on production
 production:
   <<:             *default
   sidekiq:
     <<:           *default_sidekiq
-    pool_size:    20
+    pool_size:    50

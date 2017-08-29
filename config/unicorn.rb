@@ -19,6 +19,8 @@ stderr_path       "#{app_dir}/log/unicorn-stderr.log"
 stdout_path       "#{app_dir}/log/unicorn-stdout.log"
 
 before_fork do |server, worker|
+  # Example from: https://bogomips.org/unicorn/examples/unicorn.conf.rb
+  defined? ActiveRecord::Base and ActiveRecord::Base.connection.disconnect!
   # get rid of rubbish
   GC.start
 end

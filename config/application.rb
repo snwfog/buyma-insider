@@ -1,3 +1,5 @@
+# used by sidekiq
+
 $LOAD_PATH.unshift(File.expand_path('../../app', __FILE__))
 # puts __FILE__
 # puts File.expand_path(__FILE__)

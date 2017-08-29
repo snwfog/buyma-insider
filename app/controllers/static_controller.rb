@@ -28,7 +28,7 @@ class StaticController < ApplicationController
   get '/(*)' do
     # requested_json = request.accept? 'application/vnd.api+json'
     requested_html = request.accept? 'text/html'
-    return 404 unless requested_html
+    halt 404 unless requested_html
     content_type 'text/html'
     index_key = if BuymaInsider.development?
                   'buyma-insider-client:index:__development__'
