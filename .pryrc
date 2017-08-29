@@ -1,5 +1,8 @@
 require 'buyma_insider'
 
+# activerecord
+ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+
 # rethinkdb
 include RethinkDB::Shortcuts
 URI.parse(BuymaInsider.configuration.database.uri).tap do |uri|
@@ -12,6 +15,7 @@ end
 
 slack_notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
 elastic_client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
+
 # def search_with_template(body)
 #   $elasticsearch.search_template(index: :_all, type: :article, body: body)
 # end
