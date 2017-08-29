@@ -34,7 +34,8 @@ class IndexPageCrawlWorker < Worker::Base
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
-    slack_notify(text: ":spider_web: *Crawl Started*\n#{@index_page.full_url}")
+
+    slack_notify(text: ":spider_web: *Crawl Started*\n#{@index_page.full_url}", unfurl_links: true)
 
     if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
       @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
@@ -85,12 +86,12 @@ class IndexPageCrawlWorker < Worker::Base
                                             value: @current_crawl_history.status,
                                             short: true },
                                           { title: 'Elapsed time',
-                                            value: @current_crawl_history.elapsed_time_in_s + ' s',
+                                            value: "#{@current_crawl_history.elapsed_time_in_s} s",
                                             short: true },
                                           { title: 'Traffic size',
-                                            value: @current_crawl_history.traffic_size_in_kb + ' kb',
+                                            value: "#{@current_crawl_history.traffic_size_in_kb} kb",
                                             short: true },
-                                          { title: 'Articles total',
+                                          { title: 'Article total',
                                             value: @current_crawl_history.article_count,
                                             short: true }] }])
   end

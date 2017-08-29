@@ -58,7 +58,7 @@ class CrawlHistory < ActiveRecord::Base
     if finished_at && created_at
       finished_at - created_at
     else
-      Float.NaN
+      Float::NaN
     end
   end
 end
