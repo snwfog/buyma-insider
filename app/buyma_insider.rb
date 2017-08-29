@@ -7,7 +7,7 @@ module BuymaInsider
   VERSION          = '0.1.0'.freeze
   API_VERSION      = 'api/v1'.freeze
   SPOOF_USER_AGENT = 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.54 Safari/537.36'
-  
+
   class << self
     def configuration
       @configuration ||= begin
@@ -21,11 +21,11 @@ module BuymaInsider
         end
       end
     end
-    
+
     def configure
       yield configuration
     end
-    
+
     # Return a redis pool for an app area that
     # requires redis connection, settings from redis.yml
     def redis_for(process)
@@ -35,46 +35,46 @@ module BuymaInsider
         Redis::Store::Factory.create(redis_cfg.to_h.symbolize_keys!)
       end
     end
-    
+
     def logger_for(process)
       unless Logging::Repository.instance.has_logger?(process)
         raise 'Logger `%s` does not exists' % process
       end
       Logging.logger[process]
     end
-    
+
     def environment
       ENV['RACK_ENV'] || :development
     end
-    
+
     def root
       ENV['APP_PATH'] || File.expand_path('../../', __FILE__)
     end
-    
+
     def base_url
-      ENV['APP_BASE_URL'] || 'http://localhost:4200'
+      ENV['APP_BASE_URL']
     end
-    
-    # copy&pasted from sinatra
-    def development?;
+
+    # dev or development
+    def development?
       environment =~ /dev/
     end
-    
-    # dev or development
-    def staging?;
+
+    # stag or stage or staging
+    def staging?
       environment =~ /stag/
     end
-    
-    # stag or stage or staging
-    def production?;
+
+    # prod or production
+    def production?
       environment =~ /prod/
     end
-    
-    # prod or production
-    def test?;
+
+    # test or unittest or integrationtest
+    def test?
       environment =~ /test/
-    end # test or unittest or integrationtest
-    
+    end
+
     def handle_exception(ex, context = {})
       logger.error ex
     end

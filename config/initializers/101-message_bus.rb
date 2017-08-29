@@ -12,7 +12,7 @@ def setup_message_bus_env(env)
       'Access-Control-Allow-Origin'      => BuymaInsider.base_url,
       'Access-Control-Allow-Methods'     => 'GET,POST',
       'Access-Control-Allow-Credentials' => 'true',
-      'Access-Control-Allow-Headers'     => 'X-Silence-Logger,X-Shared-Session-Key,Dont-Chunk,Discourse-Visible,*'
+      'Access-Control-Allow-Headers'     => 'X-Silence-Logger,X-Shared-Session-Key,Dont-Chunk,Buyma-Insider-Visible,*'
     },
   }
 

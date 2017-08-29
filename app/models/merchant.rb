@@ -36,6 +36,7 @@ class Merchant < ActiveRecord::Base
 
   def html_cache_dir_create_if_not_exists!
     # TODO: Rename to `web_cache`
+    # TODO: Ensure everything from `tmp` can be safely deleted/trashed
     @html_cache_dir ||= "#{BuymaInsider.root}/tmp/cache/crawl/#{code}"
 
     unless File::directory?(@html_cache_dir)
