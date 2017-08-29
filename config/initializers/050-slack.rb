@@ -1,7 +1,7 @@
 BuymaInsider.configure do |config|
   config[:slack_notifier] = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL'] do
     # send slack notification to prompt instead of actual channel
-    unless BuymaInsider.production?
+    unless BuymaInsider.production? || BuymaInsider.staging?
       http_client(Class.new do
         def self.post uri, params = {}
           logger ||= Logging.logger.root
