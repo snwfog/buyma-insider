@@ -1,11 +1,25 @@
 # configuration for sidekiq cron jobs
+# https://crontab.guru/ for easier time
+index_page_sentinel_worker:
+  cron:                            '0 12 * * *' # everyday at noon
+  class:                           IndexPageSentinelWorker
+  description:                     >
+                                   Crawl root index page of merchant, then parse it
+                                   to verify if this page can be used to return useful
+                                   information
+
 merchant_crawl_schedule_worker:
-  cron:                         '0 20 * * *'
-  class:                        'MerchantCrawlScheduleWorker'
-#  queue:                       default
-#  args:                        []
+  cron:                            '0 20 * * *' # everyday at 8pm
+  class:                           MerchantCrawlScheduleWorker
+  description:                     >
+                                   For all merchants indexes, including roots
+                                   schedule a crawl and a parse
+#  queue:                          default
+#  args:                           []
 
 open_exchange_rates_worker:
-  cron:                         '0 * * * *'
-  class:                        'OpenExchangeRatesWorker'
+  cron:                            '0 * * * *' # every hour
+  class:                           OpenExchangeRatesWorker
+  description:                     >
+                                   Every hour, fetch the latest exchange rates
 
