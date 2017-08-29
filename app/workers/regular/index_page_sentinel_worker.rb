@@ -15,12 +15,13 @@ class IndexPageSentinelWorker < Worker::Base
     logger.info JSON.pretty_generate(all_statuses)
 
     status_groups = all_statuses.group_by { |status| status[:health] }
-    slack_notify(attachments: {
-      text:   '4xx - 5xx',
-      fields: status_groups[:red].map { |status| { title: status[:index_page],
-                                                   value: "#{status[:http_status]}",
-                                                   short: false } }
-    })
+    slack_notify(attachments: [{ text:   '4xx - 5xx',
+                                 color:  :bad,
+                                 fields: status_groups[:red].map do |status|
+                                   { title: status[:index_page],
+                                     value: "#{status[:http_status]}",
+                                     short: false }
+                                 end }])
   end
 
   def check_health(index_page)
