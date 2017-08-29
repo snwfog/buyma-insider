@@ -22,3 +22,8 @@ before_fork do |server, worker|
   # get rid of rubbish
   GC.start
 end
+
+after_fork do |server, worker|
+  # establish db connection
+  ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+end

@@ -121,7 +121,7 @@ octobersveryown:
 # august 27, 2017
 canada_goose:
   code:           goo
-  name:           canada goose
+  name:           canada_goose
   domain:         //www.canadagoose.com
   ssl:            true
   pager_css:      ~
@@ -141,5 +141,9 @@ arcteryx:
   index_pages:
     - /ProductFind.aspx?country=ca&language=en&gender=Mens
     - /ProductFind.aspx?country=ca&language=en&gender=Womens
+
+
+
+
 
 

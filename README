@@ -1,5 +1,18 @@
 # Buyma Insider
 
+## DEPLOYMENT
+
+### STAGING
+```
+1. First deploy to environment
+
+be cap staging deploy
+
+2. Link + setup with generate erb config files from current_dir
+3. Use monit to start and monitor all services
+4. Capistrano will symlink shared dir to current
+5. `bundle config github.https true` if bundler complains about insecure git
+
 ## SETUP
 
 - Unicorn in development can be run with local launch command
