@@ -62,13 +62,3 @@ TODO: Add to Dockerfile?
 
 - unicorn `ENVIRONMENT=development be unicorn -c config/unicorn.rb -E $ENVIRONMENT -d --host localhost --port 5000`
 - pry `be pry -Iapp`
-
-## NOTE
-
-- Use be ruby to run patches instead of pry, pry screws up sometimes the format
-
-## REST API endpoint used by frontend
-
-/exchange_rates/latest
-/crawl_sessions
-...
