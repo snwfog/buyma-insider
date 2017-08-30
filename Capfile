@@ -10,7 +10,7 @@ require 'capistrano/capistrano_plugin_template'
 install_plugin Capistrano::SCM::Git
 
 # Ensure rbenv specified ruby is used
-require 'capistrano/rbenv' unless ENV['SKIP_RBENV']
+require 'capistrano/rbenv'
 
 # Ensure that we can install bundled gems
 require 'capistrano/bundler'

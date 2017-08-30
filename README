@@ -5,6 +5,7 @@
 1. First deploy to environment
 
 be cap staging deploy
+ps1. you might need to install rbenv, ruby, and bundler
 
 2. Link + setup with generate erb config files from current_dir
 3. Use monit to start and monitor all services

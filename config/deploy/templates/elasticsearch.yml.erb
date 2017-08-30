@@ -2,7 +2,7 @@ cluster.name: elasticsearch_<%= fetch(:application) %>
 # Do not automatically create index
 action.auto_create_index: false
 # Bind to all interface
-path.data: <%= shared_path %>/elasticsearch/
+path.data: <%= shared_path %>/elasticsearch_data/
 path.logs: <%= shared_path %>/log/elasticsearch/
 
 <% unless fetch(:stage) == /production/ %>
