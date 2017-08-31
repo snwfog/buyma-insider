@@ -236,7 +236,7 @@ namespace :db do
   desc 'Seed dev'
   task :seed_dev do
     begin
-      conn = ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+      ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
 
       puts 'Create test user "test:123"'
       User.create!(username:      'test',
@@ -246,7 +246,7 @@ namespace :db do
       puts 'Grabbing latest exchange rates'
       OpenExchangeRatesWorker.new.perform
     ensure
-      ActiveRecord::Base.remove_connection(conn)
+      ActiveRecord::Base.connection.disconnect!
     end
   end
 end
@@ -286,13 +286,19 @@ namespace :es do
 
   desc 'Index existing documents'
   task :seed do
-    time = Benchmark.realtime do
-      Article.eager_load(:merchant).all.each do |article|
-        Elasticsearch::IndexDocumentWorker.new.perform('article_id' => article.id,
-                                                       'operation'  => 'created')
+    begin
+      ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+      time = Benchmark.realtime do
+        Article.eager_load(:merchant).all.each do |article|
+          Elasticsearch::IndexDocumentWorker.new.perform('article_id' => article.id,
+                                                         'operation'  => 'created')
+        end
       end
+
+      puts 'Seeded elasticsearch in %.02fs' % time
+    ensure
+      ActiveRecord::Base.connection.disconnect!
     end
-    puts 'Seeded elasticsearch in %.02fs' % time
   end
 
   desc 'Build config'
