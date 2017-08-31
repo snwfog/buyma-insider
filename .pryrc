@@ -16,16 +16,6 @@ end
 slack_notifier = Slack::Notifier.new ENV['SLACK_WEBHOOK_URL']
 elastic_client = Elasticsearch::Client.new(BuymaInsider.configuration.elasticsearch)
 
-# def search_with_template(body)
-#   $elasticsearch.search_template(index: :_all, type: :article, body: body)
-# end
-#
-# def get_search_template_tester
-#   search_template_tester = Tempfile.create(['search_template_tester', '.yml'], './tmp')
-#   puts search_template_tester.path
-#   search_q = -> () { YAML::load_file(search_template_tester_path) }
-# end
-
 def get_article
   merchant = Merchant.find_by_code(:zar)
   sku      = Faker::Code.ean

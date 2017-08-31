@@ -257,7 +257,7 @@ namespace :es do
 
   desc 'Drop all indices'
   task :drop do
-    $elasticsearch.indices.delete index: :_all
+    $elasticsearch.with { |conn| conn.indices.delete index: :_all }
   end
 
   desc 'Create index'
@@ -269,16 +269,17 @@ namespace :es do
     merchant_codes = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__)).values.map { |m| m['code'] }
     merchant_codes.each do |merchant_code|
       puts 'Creating index for `%s`'.yellow % merchant_code
-      $elasticsearch.indices.create index: merchant_code,
-                                    body:  settings
+      $elasticsearch.with do |conn|
+        conn.indices.create index: merchant_code, body: settings
 
-      mappings.each do |mapping_file|
-        puts '+- Creating index for `%s`'.yellow % merchant_code
-        mapping_setting = YAML.load_file(mapping_file)
-        type            = mapping_file.pathmap('%n')
-        $elasticsearch.indices.put_mapping index: merchant_code,
-                                           type:  type,
-                                           body:  { "#{type}": mapping_setting }
+        mappings.each do |mapping_file|
+          puts '+- Creating index for `%s`'.yellow % merchant_code
+          mapping_setting = YAML.load_file(mapping_file)
+          type            = mapping_file.pathmap('%n')
+          conn.indices.put_mapping index: merchant_code,
+                                   type:  type,
+                                   body:  { "#{type}": mapping_setting }
+        end
       end
     end
   end
@@ -332,8 +333,10 @@ namespace :es do
       template_name = template_file.pathmap('%n')
       puts 'Registering `%s_search`...'.yellow % template_name
       template_hash = YAML::load_file(template_file)
-      $elasticsearch.put_template id:   "#{template_name}_search",
-                                  body: { template: template_hash }
+      $elasticsearch.with do |conn|
+        conn.put_template id:   "#{template_name}_search",
+                          body: { template: template_hash }
+      end
       puts 'Done!'.green
     end
   end
