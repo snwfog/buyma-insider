@@ -1,5 +1,5 @@
 cluster.name: elasticsearch_<%= fetch(:application) %>
-# Do not automatically create index
+# Require explicit index creation
 action.auto_create_index: false
 # Bind to all interface
 path.data: <%= shared_path %>/elasticsearch_data/
@@ -13,3 +13,12 @@ network.host: [_local_, _site_]
 #    _site_ Any site-local addresses on the system, for example 192.168.0.1.
 #    _global_ Any globally-scoped addresses on the system, for example 8.8.8.8.
 <% end %>
+
+# Require manual setup document mapping
+# This is deprecated, must be set individually
+# on an index using index API or use index template
+#index.mapper.dynamic: false
+
+# Closed indices has no overhead except metadata
+# and is blocked for r/w
+cluster.indices.close.enable: false
