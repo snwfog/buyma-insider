@@ -40,7 +40,7 @@ check process redis with pidfile <%= shared_path %>/tmp/pids/redis.pid
 
 check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/elasticsearch --daemonize --pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid"
+  start program = "<%= fetch(:bin_dir) %>/elasticsearch -Epath.config=<%= shared_path %>/elasticsearch_data/config --daemonize --pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid"
   stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`"
 
 <% 1.upto(fetch(:sidekiq_processes)).each do |index| %>

@@ -299,10 +299,7 @@ namespace :es do
 
   desc 'Build templates'
   task :build_templates do
-    puts <<~SQL.yellow
-      Generating search templates...
-    SQL
-
+    puts 'Generating search templates...'.yellow
     dest_dir        = File.expand_path('../tmp/configs/elasticsearch/config/scripts', __FILE__)
     replace_to_json = %r/"({{#toJson}}([^{]+){{\/toJson}})"/
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
@@ -344,12 +341,11 @@ namespace :es do
   desc 'Build stopword lists'
   task :build_stopwords do
     puts
-    puts <<~SQL.yellow
+    puts <<~TXT.yellow
       Generating stopword lists...
       To setup the wordlists, make sure that the ./config/elasticsearch/config
       folder is properly setup whether the host machine is win or mac
-      SELECT * FROM dbo.Test
-    SQL
+    TXT
 
     dest_dir = File.expand_path('../tmp/configs/elasticsearch/config/stopwords', __FILE__)
     FileUtils.mkdir_p(dest_dir) unless Dir.exists?(dest_dir)
