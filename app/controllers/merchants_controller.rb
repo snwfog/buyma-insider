@@ -1,5 +1,6 @@
 class MerchantsController < ApplicationController
-  options '/**' do; end
+  options '/**' do
+  end
 
   before do
     # @merchants_map_by_code = settings.cache.fetch(:merchants) do |key|
@@ -51,10 +52,10 @@ class MerchantsController < ApplicationController
     total_article_count = @merchant.articles.count
 
     json @merchant.articles
-                  .eager_load(:price_histories)
-                  .order(@order_by)
-                  .offset((@page - 1) * @limit)
-                  .limit(@limit),
+           .eager_load(:price_histories)
+           .order(@order_by)
+           .offset((@page - 1) * @limit)
+           .limit(@limit),
          meta: { current_page: @page,
                  limit:        @limit,
                  total_pages:  (total_article_count / @limit.to_f).ceil,
@@ -96,7 +97,8 @@ class MerchantsController < ApplicationController
   post '/:merchant_code/_groom_index_pages' do
     if IndexPageWorker.perform_async(@merchant.code)
       status :created
-      json @merchant
+      json data: { type: 'merchant_groom_index_pages',
+                   id:   SecureRandom.hex(4) }
     else
       status :conflict and halt
     end

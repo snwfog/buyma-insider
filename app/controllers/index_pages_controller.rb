@@ -1,5 +1,7 @@
 class IndexPagesController < ApplicationController
-  options '/**' do; end
+  options '/**' do
+    ;
+  end
 
   before '/:id(/**)?' do
     param :id, String, required: true
@@ -10,12 +12,12 @@ class IndexPagesController < ApplicationController
   end
 
   post '/:id/_refresh' do
-    if IndexPageCrawlWorker.perform_async(index_page_id:   @index_page.id,
-                                          use_web_cache:   true,
+    if IndexPageCrawlWorker.perform_async(index_page_id:         @index_page.id,
+                                          use_web_cache:         true,
                                           perform_async_parsing: true)
       status :created
-       # return dummy model
-      json data: [{ type: '-refresh', id: SecureRandom.hex(4) }]
+      json data: { type: 'index_pages_refresh',
+                   id:   SecureRandom.hex(4) }
     else
       status :conflict and halt
     end
