@@ -42,6 +42,10 @@ class MerchantSerializer < ActiveModel::Serializer
     object.code
   end
 
+  def name
+    object.name.titleize
+  end
+
   # These methods are here is okay..
   # The question to ask is, do we care about these values on model and backend?
   # If its only for UI display, then serializer is enough

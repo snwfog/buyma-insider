@@ -9,9 +9,9 @@ class StaticController < ApplicationController
   end
 
   get '/bootstrap' do
-    # TODO: Put merchants here...
     @bootstrap ||= {
       server_version:                BuymaInsider::VERSION,
+      merchants:                     to_hash(Merchant.all),
       shipping_services:             to_hash(ShippingService.all),
       extra_tariffs:                 to_hash(ExtraTariff.all),
       article_notification_criteria: to_hash(ArticleNotificationCriterium.all)

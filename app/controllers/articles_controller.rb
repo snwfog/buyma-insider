@@ -1,6 +1,5 @@
 class ArticlesController < ApplicationController
   options '/**' do
-    ;
   end
 
   # Do not do this filter if routes start with _

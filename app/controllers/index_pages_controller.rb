@@ -15,7 +15,9 @@ class IndexPagesController < ApplicationController
                                           use_web_cache:   true,
                                           perform_async_parsing: true)
       status :created
-      json @index_page.reload
+
+      # TODO: Return a dummy refresh action object instead of the index page
+      json ''
     else
       status :conflict and halt
     end
