@@ -183,7 +183,7 @@ namespace :rethinkdb do
         begin
           print "Applying #{patch_path}... "
           load(patch_path)
-        rescue Exception => ex
+        rescue => ex
           puts
           puts 'Error applying patch. Execution is terminated. Subsequent patches are not applied.'.red
           puts ex.message
