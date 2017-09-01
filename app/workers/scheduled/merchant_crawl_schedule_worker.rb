@@ -1,15 +1,19 @@
 #
 class MerchantCrawlScheduleWorker < Worker::Base
   def perform
-    scheduled_merchants =
-      Merchant.all.each do |merchant|
-        MerchantCrawlWorker.perform_async merchant.code
-        merchant.name
-      end
-
-    # TODO: Improve this message
-    msg = scheduled_merchants.join(' ')
-    slack_notify(title: ':shipit: Merchant Refresh Scheduled',
-                 text:  msg)
+    logger.info 'Merchant Crawl Scheduler Started'
+    scheduled_merchants = Merchant.all.map do |merchant|
+      MerchantCrawlWorker.perform_async merchant.code
+      merchant
+    end
+    
+    slack_notify(title:        ':shipit: Merchant Refresh Scheduled',
+                 attachments:  scheduled_merchants
+                                 .map { |merchant| { title:      merchant.name.titleize,
+                                                     title_link: merchant.full_url,
+                                                     footer:     "#{merchant.index_pages.count} Index Pages" } },
+                 unfurl_links: true)
+  ensure
+    logger.info 'Merchant Crawl Scheduler Completed'
   end
 end

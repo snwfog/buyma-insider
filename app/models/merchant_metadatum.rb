@@ -24,4 +24,12 @@ class MerchantMetadatum < ActiveRecord::Base
   def sales
     raise
   end
+
+  def full_url
+    scheme << ':' << domain
+  end
+
+  def scheme
+    ssl? ? 'https' : 'http'
+  end
 end

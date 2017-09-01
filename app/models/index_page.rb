@@ -28,11 +28,7 @@ class IndexPage < ActiveRecord::Base
   scope :root, -> { where(index_page_id: nil) }
 
   def full_url
-    scheme << ':' << merchant.domain << relative_path
-  end
-
-  def scheme
-    merchant.ssl? ? 'https' : 'http'
+    merchant.full_url << relative_path
   end
 
   def cache_filename
