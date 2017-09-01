@@ -1,4 +1,3 @@
-#
 class IndexPagesController < ApplicationController
   options '/**' do; end
 
@@ -15,9 +14,8 @@ class IndexPagesController < ApplicationController
                                           use_web_cache:   true,
                                           perform_async_parsing: true)
       status :created
-
-      # TODO: Return a dummy refresh action object instead of the index page
-      json ''
+       # return dummy model
+      json data: [{ type: '-refresh', id: SecureRandom.hex(4) }]
     else
       status :conflict and halt
     end
