@@ -60,7 +60,6 @@ module AuthenticationHelper
   end
 
   private
-
   def session_cached_user
     session_cache do |redis|
       unhashed_token = cookies[UserAuthToken::SESSION_KEY]
@@ -70,7 +69,7 @@ module AuthenticationHelper
         redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
       end
 
-      user
+      user.persisted? and user
     end
   end
 

@@ -6,7 +6,7 @@ class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
     root_indices = IndexPage.includes(:merchant).root.all
-    slack_notify(text: ":japanese_ogre: *Sentinel Started*\nChecking #{root_indices.count} root index pages")
+    slack_notify(text: ":japanese_ogre: *Sentinel Started*")
     all_statuses = root_indices.map do |index_page|
       get_index_page_status(index_page)
     end
@@ -15,7 +15,7 @@ class IndexPageSentinelWorker < Worker::Base
     statuses_grouped_by = all_statuses
                             .sort_by!(&:http_status)
                             .group_by do |index_page_status|
-      http_status_category(index_page_status.http_status)
+      http_status_category(index_page_status)
     end
 
     # TODO: Clunky, change this later
@@ -28,7 +28,7 @@ class IndexPageSentinelWorker < Worker::Base
                :'4xx' => 'FF0000', :'5xx' => 'C71585' }
 
     Hash[:text, ':japanese_ogre: *Sentinel Report*'].tap do |report|
-      report[:attachments] ||= []
+      report[:attachments] = {}
       statuses_grouped_by.each do |status, index_page_statuses|
         report[:attachments][status] = {
           color: colors[status],
@@ -61,7 +61,7 @@ class IndexPageSentinelWorker < Worker::Base
   end
 
   def http_status_category(status)
-    case status
+    case status.http_status
     when 500..599
       :'5xx'
     when 400..499
@@ -69,7 +69,7 @@ class IndexPageSentinelWorker < Worker::Base
     when 300...400
       :'3xx'
     when 200...300
-      if status[:redirection] || status[:articles_count] < 10
+      if status.redirection || status.articles_count < 10
         :'3xx'
       else
         :'2xx'
@@ -78,5 +78,4 @@ class IndexPageSentinelWorker < Worker::Base
       :'5xx'
     end
   end
-
 end
