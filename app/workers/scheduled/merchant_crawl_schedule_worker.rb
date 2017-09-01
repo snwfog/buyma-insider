@@ -7,8 +7,9 @@ class MerchantCrawlScheduleWorker < Worker::Base
         merchant.name
       end
 
+    # TODO: Improve this message
     msg = scheduled_merchants.join(' ')
-    slack_notify(text: ':shipit: Merchant Refresh Scheduled',
-                 text: msg)
+    slack_notify(title: ':shipit: Merchant Refresh Scheduled',
+                 text:  msg)
   end
 end

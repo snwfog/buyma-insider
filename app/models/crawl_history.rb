@@ -34,6 +34,10 @@ class CrawlHistory < ActiveRecord::Base
 
   alias_attribute :started_at, :created_at
 
+  def article_count
+    articles.count
+  end
+
   def etag
     response_headers.try(:[], :etag)
   end

@@ -26,7 +26,7 @@ module AuthenticationHelper
     # cache_user = session_cached_user
     # User.find(cache_user.id)
 
-    if current_user && should_update_last_seen?
+    if current_user.try(:persisted?)
       u = current_user
       Scheduler::Defer.later :update_last_seen do
         # u.update_column(last_seen_at: Time.now)
@@ -88,13 +88,5 @@ module AuthenticationHelper
       path:     '/',
       expires:  SESSION_EXPIRE_TIME.from_now,
       secure:   false }
-  end
-
-  def should_update_last_seen?
-    if @request.xhr?
-      @env['HTTP_BUYMA_INSIDER_VISIBLE'.freeze] == 'true'.freeze
-    else
-      true
-    end
   end
 end
