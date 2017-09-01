@@ -14,11 +14,11 @@ module Merchants
     end
 
     def index_document
-      if @index_page.is_cache_exists?
+      if @index_page.has_web_cache?
         Nokogiri::HTML(@index_page.cache_html_document)
       else
         raise <<~ERROR
-          Indexer was supplied with an index page without cache. 
+          Indexer was supplied with an index page without cache.
           #{index_page} cache at location #{index_page.cache_html_path} does not exists."
         ERROR
       end

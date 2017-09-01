@@ -34,7 +34,7 @@ module Worker
       logger.warn 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count]
       retry if retry_count <= retries
       nil
-    rescue Exception => ex
+    rescue => ex
       Raven.capture_exception(ex)
       logger.error 'Fail fetch uri `%s`' % uri
       logger.error ex.message

@@ -6,7 +6,7 @@ class IndexPageWorker < Worker::Base
     merchant      = Merchant.find_by_code!(merchant_code)
     indexer_klass = merchant.indexer
     merchant.index_pages.root.each do |index_page|
-      unless index_page.is_cache_exists?
+      unless index_page.has_web_cache?
         logger.warn "Index page #{index_page} is skipped, it does not have a cached document."
         next
       end

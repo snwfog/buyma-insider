@@ -5,8 +5,8 @@ class IndexPageParseWorker < Worker::Base
     merchant      = index_page.merchant
     exchange_rate = ExchangeRate.latest
 
-    unless index_page.is_cache_exists?
-      raise "Cache file not found `#{index_page}' at [#{index_page.cache_html_path}]"
+    unless index_page.has_web_cache?
+      raise "Web cache file not found for `#{index_page}' at [#{index_page.cache_html_path}]"
     end
     item_css      = merchant.metadatum.item_css
     article_nodes = Nokogiri::HTML(index_page.cache_html_document).css(item_css)
@@ -41,7 +41,7 @@ class IndexPageParseWorker < Worker::Base
         end
 
         crawl_history.increment!(:article_count)
-      rescue Exception => ex
+      rescue => ex
         crawl_history.increment!(:article_invalid_count)
 
         logger.error 'Failed creating article: %s' % ex.message

@@ -52,7 +52,7 @@ class IndexPageCrawlWorker < Worker::Base
 
     logger.debug 'Index has not been modified `%s`' % @index_page.full_url
     FileUtils::touch(@index_page.cache_html_path)
-  rescue Exception => ex
+  rescue => ex
     if @current_crawl_history
       @current_crawl_history.aborted!
       logger.error @current_crawl_history.description
@@ -101,7 +101,7 @@ class IndexPageCrawlWorker < Worker::Base
     if @last_crawl_history.try(:etag) and not @last_crawl_history.try(:weak?)
       logger.info 'Strong etag `%s` exists' % @last_crawl_history.etag
       { if_none_match: @last_crawl_history.etag }
-    elsif @index_page.is_cache_exists?
+    elsif @index_page.has_web_cache?
       logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache_html_path, @index_page.cache_mtime]
       { if_modified_since: @index_page.cache_mtime.httpdate }
     else

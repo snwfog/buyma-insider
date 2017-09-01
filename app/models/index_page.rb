@@ -51,12 +51,12 @@ class IndexPage < ActiveRecord::Base
                                cache_html_content)
   end
 
-  def is_cache_exists?
+  def has_web_cache?
     File.exists?(cache_html_path)
   end
 
   def is_cache_fresh?
-    is_cache_exists? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
+    has_web_cache? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
   end
 
   def to_s
