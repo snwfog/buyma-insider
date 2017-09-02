@@ -1,3 +1,9 @@
+After adding merchants or indexes,
+1. Need to update elastic search if there are new merchants, because
+   it will create new index for this merchant
+2. Run app:update_merchants rake tasks to update all indices and merchants
+
+
 # 2016 - 2017
 ssense:
   code:           sse
@@ -142,8 +148,6 @@ arcteryx:
   index_pages:
     - /ProductFind.aspx?country=ca&language=en&gender=Mens
     - /ProductFind.aspx?country=ca&language=en&gender=Womens
-
-
 
 
 
