@@ -108,15 +108,16 @@ octobersveryown:
     - /collections/all
 
 # july 2017
-#livestock:
-#  code:          ltk
-#  name:          livestock
-#  domain:        //www.deadstock.ca
-#  ssl:           true
-#  pager_css:     div.container.main.content > div.products div.paginate
-#  item_css:      div.container.main.content > div.products > div.columns
-#  index_pages:
-#    - /collections/new-arrivals
+livestock:
+  code:           ltk
+  name:           livestock
+  domain:         //www.deadstock.ca
+  ssl:            true
+  pager_css:      div.paginate
+  item_css:       div.container.main.content div.products div.four.columns.thumbnail
+  index_pages:
+    - /collections/new-arrivals
+    - /collections/footwear
 
 # august 27, 2017
 canada_goose:

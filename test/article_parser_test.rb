@@ -200,56 +200,29 @@ class ArticleParserTest < Minitest::Test
 
   def test_should_parse_livestock
     frag = <<~HTML
-      <div class="four columns omega thumbnail odd">
-        <a href="/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white?lshst=collection" title="ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
-          <div class="relative product_image">
-            <img style="max-height:275px" src="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" data-src-retina="//cdn.shopify.com/s/files/1/0616/3517/products/cg5329_adidas_womens_alphabounce_1_reigning_champ_white_1_large.jpg?v=1501613111" alt="style code CG5329. ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE">
-            <span data-fancybox-href="#product-11326158357" class="quick_shop action_button" data-gallery="product-11326158357-gallery" style="display: none;">
-              Quick View
-              <div class="overlay" style="position:absolute; width:100%; font-size:10px; background-color:#f2f2f2;padding:8px 0 8px 0;">
-                <div class="size-label"></div>
-                <div class="size-val">
-                  <span value="48109400981" style="color:#242424;float:left;margin:1px 4px 0 0;">5</span>
-                  <span value="48109401109" style="color:#242424;float:left;margin:1px 4px 0 0;">6</span>
-                  <span value="48109401045" style="color:#242424;float:left;margin:1px 4px 0 0;">6.5</span>
-                  <span value="48109400853" style="color:#242424;float:left;margin:1px 4px 0 0;">7</span>
-                  <span value="48109400661" style="color:#242424;float:left;margin:1px 4px 0 0;">7.5</span>
-                  <span value="48109400725" style="color:#242424;float:left;margin:1px 4px 0 0;">8</span>
-                  <span value="48109400789" style="color:#242424;float:left;margin:1px 4px 0 0;">8.5</span>
-                  <span value="48109400917" style="color:#242424;float:left;margin:1px 4px 0 0;">9</span>
-                </div>
-                <div class="free-ship">
-                  <span class="free-shipping" style="background:#019444;">
-                    FREE SHIPPING
-                    <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/125/assets/free-shipping-banner-small-button.png?16613966375893227151"> -->
-                  </span>
-                </div>
-              </div>
-            </span>
-          </div>
-          <div class="info">
-            <div class="sizes_available">
-              <span></span>
-              <span value="48109400981" class="size">5</span>
-              <span value="48109401109" class="size">6</span>
-              <span value="48109401045" class="size">6.5</span>
-              <span value="48109400853" class="size">7</span>
-              <span value="48109400661" class="size">7.5</span>
-              <span value="48109400725" class="size">8</span>
-              <span value="48109400789" class="size">8.5</span>
-              <span value="48109400917" class="size">9</span>
-              <br>
-              <span class="free-shipping" style="background:#019444;">
-                FREE SHIPPING
-                <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/125/assets/free-shipping-banner-small-button.png?16613966375893227151"> -->
-              </span>
+      <div class="four columns alpha thumbnail even">
+        <a href="/collections/new-arrivals/products/adidas-ultraboost-laceless-legend-ink" title="ADIDAS ULTRABOOST LACELESS / LEGEND INK">
+        <div class="relative product_image">
+          <img alt="style code S80771. ADIDAS ULTRABOOST LACELESS / LEGEND INK" data-src-retina="//cdn.shopify.com/s/files/1/0616/3517/products/s80771_adidas_ultraboost_laceless_legend_ink_1_large.jpg?v=1503073528" src="//cdn.shopify.com/s/files/1/0616/3517/products/s80771_adidas_ultraboost_laceless_legend_ink_1_large.jpg?v=1503073528" style="max-height:275px"> <span class="quick_shop action_button" data-fancybox-href="#product-10567086869" data-gallery="product-10567086869-gallery">Quick View</span>
+          <div class="overlay" style="position:absolute; width:100%; font-size:10px; background-color:#f2f2f2;padding:8px 0 8px 0;">
+            <span class="quick_shop action_button" data-fancybox-href="#product-10567086869" data-gallery="product-10567086869-gallery"></span>
+            <div class="size-label">
+              <span class="quick_shop action_button" data-fancybox-href="#product-10567086869" data-gallery="product-10567086869-gallery"></span>
             </div>
-            <span class="title">ADIDAS WOMEN'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE</span>
-            <span class="price ">
-            <span class="money" data-currency-cad="$160.00 CAD">$160.00 CAD</span>
-            </span>
+            <div class="size-val">
+              <span class="quick_shop action_button" data-fancybox-href="#product-10567086869" data-gallery="product-10567086869-gallery"><span style="color:#242424;float:left;margin:1px 4px 0 0;">7</span> <span style="text-decoration: line-through; color:#f06c6c;float:left;margin:1px 4px 0 0;">7.5</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">8</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">8.5</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">9</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">9.5</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">10</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">10.5</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">11</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">11.5</span> <span style="color:#242424;float:left;margin:1px 4px 0 0;">12</span> <span style="text-decoration: line-through; color:#f06c6c;float:left;margin:1px 4px 0 0;">13</span></span>
+            </div>
+            <div class="free-ship">
+              <span class="free-shipping" style="background:#019444;">FREE SHIPPING <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/127/assets/free-shipping-banner-small-button.png?1039608231286475540"> --></span>
+            </div>
           </div>
-        </a>
+        </div>
+        <div class="info">
+          <div class="sizes_available">
+            <span></span> <span class="size">7</span> <span class="size is-unavailable">7.5</span> <span class="size">8</span> <span class="size">8.5</span> <span class="size">9</span> <span class="size">9.5</span> <span class="size">10</span> <span class="size">10.5</span> <span class="size">11</span> <span class="size">11.5</span> <span class="size">12</span> <span class="size is-unavailable">13</span><br>
+            <span class="free-shipping" style="background:#019444;">FREE SHIPPING <!--                   <img src="//cdn.shopify.com/s/files/1/0616/3517/t/127/assets/free-shipping-banner-small-button.png?1039608231286475540"> --></span>
+          </div><span class="title">ADIDAS ULTRABOOST LACELESS / LEGEND INK</span> <span class="price"><span class="money">$250.00 CAD</span></span>
+        </div></a>
       </div>
     HTML
 
@@ -267,11 +240,11 @@ class ArticleParserTest < Minitest::Test
                          .parse(frag)
                          .at_css('div'))
 
-    assert_equal 'Adidas Women\'s Alphabounce 1 Reigning Champ / White', article_hash[:name]
-    assert_equal 'Adidas women\'s alphabounce 1 reigning champ / white', article_hash[:description]
-    assert_equal 160.00, article_hash[:price]
-    assert_equal "ltk:#{Digest::MD5.hexdigest('ADIDAS WOMEN\'S ALPHABOUNCE 1 REIGNING CHAMP / WHITE')}", article_hash[:id]
-    assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-womens-alphabounce-1-reigning-champ-white', article_hash[:link]
+    assert_equal 'Adidas Ultraboost Laceless / Legend Ink', article_hash[:name]
+    assert_equal 'Adidas ultraboost laceless / legend ink', article_hash[:description]
+    assert_equal 250.00, article_hash[:price]
+    assert_equal "#{Digest::MD5.hexdigest('adidas ultraboost laceless / legend ink')}", article_hash[:sku]
+    assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-ultraboost-laceless-legend-ink', article_hash[:link]
   end
 
   def test_should_parse_canada_goose

@@ -34,11 +34,6 @@ task :environment do
 end
 
 namespace :app do
-  desc 'Clean up config'
-  task :align do
-    sh 'align ./config/**/*.yml'
-  end
-
   desc 'Run test'
   task :test do
     sh 'pry -Iapp:spec ./spec/*_spec.rb'
@@ -53,6 +48,11 @@ namespace :app do
     # AnyBar::Client.new(1735).color = 'green'
     # AnyBar::Client.new(1736).color = 'green'
     # AnyBar::Client.new(1737).color = 'green'
+  end
+
+  desc 'Clean up config'
+  task :align do
+    sh 'align ./config/**/*.yml'
   end
 
   desc 'Cleanup log'
@@ -86,6 +86,12 @@ namespace :app do
       crawl_history = IndexPageParseWorker.new.perform(crawl_history.id)
       puts 'article_count: %d, article_invalid_count: %d' % [crawl_history.article_count, crawl_history.article_invalid_count]
     end
+  end
+
+  desc 'Index page indexer worker'
+  task :indexer, [:merchant_code] do |_, args|
+    merchant_code = args.fetch(:merchant_code)
+    IndexPageWorker.new.perform(merchant_code)
   end
 
   desc 'Crawl index and parse it'

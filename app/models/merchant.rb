@@ -25,12 +25,8 @@ class Merchant < ActiveRecord::Base
 
   class_attribute :indexer
 
-  delegate :domain,
-           :full_url,
-           :pager_css,
-           :item_css,
-           :ssl?,
-           to: :merchant_metadatum
+  delegate :domain, :scheme, :full_url,
+           :pager_css, :item_css, :ssl?, to: :merchant_metadatum
 
   alias_attribute :metadatum, :merchant_metadatum
   alias_attribute :meta, :merchant_metadatum

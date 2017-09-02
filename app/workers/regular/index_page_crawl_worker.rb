@@ -79,6 +79,7 @@ class IndexPageCrawlWorker < Worker::Base
 
     slack_notify(text:        ':spider: *Crawl Ended*',
                  attachments: [{ text:   @index_page.full_url,
+                                 ts:     Time.now.to_i,
                                  fields: [{ title: 'HTTP Status',
                                             value: @current_crawl_history.response_status,
                                             short: true },
@@ -93,7 +94,7 @@ class IndexPageCrawlWorker < Worker::Base
                                             short: true },
                                           { title: 'Article Total',
                                             value: @current_crawl_history.article_count,
-                                            short: true }] }])
+                                            short: true }], }])
   end
 
   private
