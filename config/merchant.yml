@@ -1,8 +1,7 @@
-After adding merchants or indexes,
-1. Need to update elastic search if there are new merchants, because
-   it will create new index for this merchant
-2. Run app:update_merchants rake tasks to update all indices and merchants
-
+# After adding merchants or indexes,
+# 1. Need to update elastic search if there are new merchants, because
+#    it will create new index for this merchant
+# 2. Run app:update_merchants rake tasks to update all indices and merchants
 
 # 2016 - 2017
 ssense:
@@ -151,6 +150,16 @@ arcteryx:
     - /ProductFind.aspx?country=ca&language=en&gender=Mens
     - /ProductFind.aspx?country=ca&language=en&gender=Womens
 
+# september 2, 2017
+adidas_canada:
+  code:           add
+  name:           adidas_canada
+  domain:         //www.adidas.ca
+  ssl:            true
+  pager_css:      div.paging#top-pagination
+  item_css:       div.product-tile div.hockeycard
+  index_pages:
+    - /en/men?grid=true
 
 
 

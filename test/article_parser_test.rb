@@ -356,4 +356,65 @@ class ArticleParserTest < Minitest::Test
     assert_equal '19274', article_hash[:sku]
     assert_equal '//arcteryx.com/product.aspx?country=ca&language=en&gender=mens&model=Gamma-MX-Hoody', article_hash[:link]
   end
+
+  def test_should_parse_adidas_canada
+    frag = <<~HTML
+      <div class="hockeycard performance" data-colorid="CR6203" data-component="" data-context="sku:CR6203;size:;colors:Dark Blue" data-scope="CR6203" data-target="CR6203" data-url="http://www.adidas.ca/on/demandware.store/Sites-adidas-CA-Site/en_CA/Product-GetVariations?pid=PRODUCTID" id="product-CR6203" style="z-index: 0;">
+        <div class="hidden" data-context="category:Clothing;brand:Performance;gender:MEN;type:Hockey;model_id:ZY906;video:OFF;color:Dark Blue;pricebook:adidas-CA-listprices;sport:Hockey"></div>
+        <div class="checkbox compare hidden CR6203" data-product-id="CR6203">
+          <span class="compare-title">Compare</span>
+        </div>
+        <div class="innercard">
+          <div class="close-container">
+            <a class="close close-button" tabindex="-1"></a>
+          </div><span class="aditype"></span>
+          <div class="badge new">
+            <span class="badge-text">New</span>
+          </div><a class="add-to-wishlist hockeycard-add-to-wishlist" data-in-wishlist="false" data-masterid="CR6203" href="#"><span class="wishlist-icon"></span></a>
+          <div class="image plp-image-bg">
+            <a class="link-CR6203 plp-image-bg-link lazybg_loaded" data-component="" data-productname="Men's Maple Leafs Jersey Tee-Matthews" data-track="CR6203" href="http://www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html"><img alt="adidas - Men's Maple Leafs Jersey Tee-Matthews Dark Blue CR6203" class="show lazyload" data-original="http://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw821a9ea9/zoom/CR6203_02_laydown.jpg?sw=230&amp;sfrm=jpg" data-othermobileview="http://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw821a9ea9/zoom/CR6203_02_laydown.jpg?sw=230&amp;sfrm=jpg" data-stackmobileview="http://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw821a9ea9/zoom/CR6203_02_laydown.jpg?sw=280&amp;sfrm=jpg" height="230" src="http://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw821a9ea9/zoom/CR6203_02_laydown.jpg?sw=230&amp;sfrm=jpg" title="adidas - Men's Maple Leafs Jersey Tee-Matthews" width="230"></a>
+          </div>
+          <div class="product-info-wrapper stack track" data-context="article:CR6203" data-track="plp product">
+            <div class="product-info-inner clear clearfix">
+              <div class="color-count spacer">
+                &nbsp;
+              </div>
+            </div>
+            <div class="hc-separator line-dotted-light divider-hor-top"></div>
+            <div class="product-info-inner-content clearfix with-badges">
+              <a class="link-CR6203 product-link clearfix" data-context="name:Men's Maple Leafs Jersey Tee-Matthews" data-productname="Men's Maple Leafs Jersey Tee-Matthews" data-track="CR6203" href="http://www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html" tabindex="-1"><span class="title">Men's Maple Leafs Jersey Tee-Matthews</span> <span class="subtitle">Men Hockey</span></a>
+            </div>
+            <div class="clearfix product-info-price-rating price-without-rating">
+              <div class="price" data-context="price:38.00; price_vat:38; price_type:full price">
+                <span class="currency-sign">C$</span> <span class="salesprice" id="salesprice-CR6203_380">38</span>
+              </div>
+            </div>
+            <div class="buttons clearfix" data-context="status:IN STOCK">
+              <div class="button-container" id="CR6203-buttons"></div>
+              <div class="cartaction" id="CR6203-cartaction"></div>
+              <div class="add-to-cart button-atb button-full-width cart-loading button-loading" id="CR6203-loading">
+                <span class="text">Add To Bag</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'add'; end
+        def domain; '//www.adidas.ca'; end
+      end
+    end
+
+    parser.extend(Merchants::AdidasCanada::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'men\'s maple leafs jersey tee-matthews', article_hash[:name]
+    assert_equal 'Men\'s maple leafs jersey tee-matthews', article_hash[:description]
+    assert_equal '38.00', article_hash[:price]
+    assert_equal 'CR6203', article_hash[:sku]
+    assert_equal '//www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html', article_hash[:link]
+  end
 end
