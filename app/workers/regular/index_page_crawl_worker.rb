@@ -6,12 +6,12 @@ class IndexPageCrawlWorker < Worker::Base
   attr_reader :standard_headers
   attr_reader :index_page
   attr_reader :merchant
-  attr_reader :merchant_cache_dir
 
   def initialize
+    spoof_ip_address  = GeoIpLocation.random_canadian.begin_ip_address
     @standard_headers = {
-      x_forwarded_for:  Faker::Internet.ip_v4_address,
-      x_forwarded_host: Faker::Internet.ip_v4_address,
+      x_forwarded_for:  spoof_ip_address,
+      x_forwarded_host: spoof_ip_address,
       user_agent:       BuymaInsider::SPOOF_USER_AGENT,
       accept_encoding:  'gzip',
       cache_control:    'no-cache',

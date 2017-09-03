@@ -124,6 +124,8 @@ livestock:
   index_pages:
     - /collections/new-arrivals
     - /collections/footwear
+    - /collections/apparel
+    - /collections/accessories
 
 # august 27, 2017
 canada_goose:

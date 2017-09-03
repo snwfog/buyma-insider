@@ -5,7 +5,7 @@
 #  id         :integer          not null, primary key
 #  base       :integer          not null
 #  timestamp  :datetime         not null
-#  rates      :text             not null
+#  rates      :hstore           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #

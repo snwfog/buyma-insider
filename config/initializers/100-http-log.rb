@@ -1,5 +1,3 @@
-# 100+ ids are for development
-
 HttpLog.configure do |cfg|
   cfg.logger      = Logging.logger[:Httplog]
   cfg.log_headers = true

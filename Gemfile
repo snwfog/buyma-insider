@@ -30,6 +30,7 @@ gem 'nobrainer'
 gem 'redis'
 gem 'redis-activesupport'
 gem 'connection_pool'
+gem 'bulk_insert', require: false
 
 # Bus / Messaging
 gem 'message_bus'

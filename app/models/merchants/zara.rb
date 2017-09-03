@@ -1,3 +1,5 @@
+# Notes:
+# 1. It looks like X-Forwarded-For headers works
 module Merchants
   module Zara
     def self.extended(merchant)

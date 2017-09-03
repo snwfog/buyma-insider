@@ -8,6 +8,7 @@
 #  relative_path :string(2000)     not null
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  web_cache_at  :datetime
 #
 
 class IndexPage < ActiveRecord::Base

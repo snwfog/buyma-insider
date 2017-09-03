@@ -236,23 +236,48 @@ namespace :rethinkdb do
 end
 
 namespace :db do
+  desc 'Connect to db'
+  task :connect_db do
+    ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+  end
+
   desc 'Drop, create, migrate, seed'
   task :reset => [:drop, :'environment:set', :create, :migrate, :seed_fu]
 
+
   desc 'Seed dev'
-  task :seed_dev do
-    begin
-      ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
+  task :seed_dev => [:connect_db] do
+    puts 'Create test user "test:123"'
+    User.create!(username:      'test',
+                 password:      123,
+                 email_address: 'donchoa@gmail.com')
 
-      puts 'Create test user "test:123"'
-      User.create!(username:      'test',
-                   password:      123,
-                   email_address: 'donchoa@gmail.com')
+    puts 'Grabbing latest exchange rates'
+    OpenExchangeRatesWorker.new.perform
+  end
 
-      puts 'Grabbing latest exchange rates'
-      OpenExchangeRatesWorker.new.perform
-    ensure
-      ActiveRecord::Base.connection.disconnect!
+  desc 'Seed geo ip database'
+  task :seed_geo_ip => [:connect_db] do
+    require 'open-uri'
+    require 'zlib'
+    require 'csv'
+    require 'bulk_insert'
+    GeoIpLocation.delete_all
+    SeedFu.quiet = true
+
+    open('http://download.db-ip.com/free/dbip-country-2017-08.csv.gz') do |remote_csv_gzip|
+      headers = [:begin_ip_address, :end_ip_address, :country_code]
+      Zlib::GzipReader.open(remote_csv_gzip) do |csv_stream|
+        csv_stream.lazy.each_slice(5_000) do |csv_batch|
+          geo_ip_locations = CSV.parse(csv_batch.join).map do |csv_line|
+            Hash[headers.zip(csv_line)]
+          end
+
+          # break and drop the last batch if ipv6 starts
+          break if IPAddr.new(geo_ip_locations.last[:begin_ip_address]).ipv6?
+          GeoIpLocation.bulk_insert values: geo_ip_locations
+        end
+      end
     end
   end
 end
