@@ -51,8 +51,6 @@ class MerchantsController < ApplicationController
   get '/:merchant_code/articles' do
     total_article_count = @merchant.articles.count
 
-
-
     json @merchant.articles
            .eager_load(:price_histories)
            .order(@order_by)
@@ -64,39 +62,9 @@ class MerchantsController < ApplicationController
                  total_count:  total_article_count }
   end
 
-  get '/:merchant_code/articles/_search' do
-    param :q, String, required: true, transform: :downcase
-    param :field, String, transform: -> (f) { f.downcase.to_sym }, in: Article.fields.keys, default: :name
-
-    q, field = params.values_at(*%w(q field))
-
-    esq = search {
-      query {
-        bool {
-          must {
-            query_string {
-              query q
-              fields [field]
-            }
-          }
-
-          filter { term(merchant_id: @merchant.id) }
-        }
-      }
-
-      size @limit
-      from (@page - 1) * @limit
-    }
-
-    results = elasticsearch_query body: esq.to_hash
-    if results.hits.total.zero?
-      []
-    else
-      json @merchant.articles.where(id: results.hits.hits.map(&:_id))
-    end
-  end
-
   post '/:merchant_code/_groom_index_pages' do
+    ensure_user_authenticated!
+
     if IndexPageWorker.perform_async(@merchant.code)
       status :created
       json data: { type: 'merchant_groom_index_pages',

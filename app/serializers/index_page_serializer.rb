@@ -16,7 +16,7 @@ class IndexPageSerializer < ActiveModel::Serializer
   HEALTH_ORANGE = :orange
   HEALTH_RED    = :red
 
-  cache key:        :index_page,
+  cache key: :index_page,
         # except:     [:last_synced_at],
         expires_in: 5.minute
 
@@ -41,19 +41,20 @@ class IndexPageSerializer < ActiveModel::Serializer
   end
 
   def health
-    crawl_histories                                  = object.crawl_histories.limit(10)
-    article_count_total, invalid_article_count_total = crawl_histories.inject([0, 0]) do |(valid_article_cnt, invalid_article_cnt), crawl_hist|
-      valid_article_cnt   += crawl_hist.article_count
-      invalid_article_cnt += crawl_hist.article_invalid_count
-      [valid_article_cnt, invalid_article_cnt]
-    end
+    last_crawl_histories           = object.crawl_histories.order(finished_at: :desc).limit(3)
+    articles_count_total,
+      articles_invalid_count_total =
+      last_crawl_histories.inject([0.0, 0.0]) do |(valid_article_cnt, invalid_article_cnt), crawl_history|
+        [valid_article_cnt + crawl_history.article_count,
+         invalid_article_cnt + crawl_history.article_invalid_count]
+      end
 
-    if not crawl_histories.any?(&:completed?) || invalid_article_count_total > article_count_total
-      HEALTH_RED
-    elsif crawl_histories.any?(&:aborted?) || invalid_article_count_total > 0
-      HEALTH_ORANGE
-    else
+    if last_crawl_histories.all?(&:completed?) && articles_invalid_count_total == 0
       HEALTH_GREEN
+    elsif last_crawl_histories.any?(&:aborted?) || (articles_invalid_count_total / (articles_count_total + articles_invalid_count_total)) > 0.5
+      HEALTH_RED
+    else
+      HEALTH_ORANGE
     end
   end
 end
