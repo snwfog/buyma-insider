@@ -22,8 +22,8 @@ class IndexPage < ActiveRecord::Base
   belongs_to :merchant, touch: true
   belongs_to :index_page, inverse_of: :index_pages
 
+  validates :relative_path, relative_path: true
   validates_uniqueness_of :relative_path, scope: :merchant_id
-  validates_format_of :relative_path, with: -> (relative_path) { URI(relative_path).path == relative_path }
   validates_presence_of :merchant
 
   default_scope { eager_load(:merchant) }

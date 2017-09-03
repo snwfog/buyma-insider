@@ -3,7 +3,6 @@ class IndexPageParseWorker < Worker::Base
     crawl_history = CrawlHistory.find(crawl_history_id)
     index_page    = crawl_history.index_page
     merchant      = index_page.merchant
-    exchange_rate = ExchangeRate.latest
 
     unless index_page.has_web_cache?
       raise "Web cache file not found for `#{index_page}' at [#{index_page.cache_html_path}]"

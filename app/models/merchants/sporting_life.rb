@@ -18,10 +18,10 @@ module Merchants
                              .sort
                              .last
 
-        relative_path = pager_node.css('a')
-                          .map { |href_node| URI.parse(href_node['href']).path rescue nil }
-                          .compact
-                          .last
+        relative_path = pager_node.css('a').map do |href_node|
+          path = URI.parse(href_node['href']).path rescue nil
+          path and path.gsub(/;jsessionid\=.+\z/, '')
+        end.compact.last
 
         ('1'..last_page_number).map do |page_number|
           merchant.index_pages.build(index_page:    index_page,
