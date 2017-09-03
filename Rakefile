@@ -316,20 +316,26 @@ namespace :es do
   end
 
   desc 'Index existing documents'
-  task :seed do
-    begin
-      ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
-      time = Benchmark.realtime do
-        Article.eager_load(:merchant).all.each do |article|
-          Elasticsearch::IndexDocumentWorker.new.perform('article_id' => article.id,
-                                                         'operation'  => 'created')
+  task :seed => ['db:connect_db'] do
+    time = Benchmark.realtime do
+      Merchant.all.each do |merchant|
+        puts "Bulk indexing #{merchant.name}"
+        merchant.articles.in_batches do |articles_batch|
+          bulk_body = articles_batch.inject([]) do |body, article|
+            meta = { index: { _index: merchant.code,
+                              _type:  :article,
+                              _id:    article.id } }
+
+            attrs = article.attributes.except(*%w(id merchant_id image_link))
+            body << meta << attrs
+          end
+
+          $elasticsearch.with { |conn| conn.bulk body: bulk_body }
         end
       end
-
-      puts 'Seeded elasticsearch in %.02fs' % time
-    ensure
-      ActiveRecord::Base.connection.disconnect!
     end
+
+    puts 'Seeded elasticsearch in %.02fs' % time
   end
 
   desc 'Build config'

@@ -5,16 +5,14 @@ module Elasticsearch
       operation  = args.fetch('operation')
       article    = Article.eager_load(:merchant).find(article_id)
 
-      index = article.merchant.code
-      type  = :article
       # TODO: Race condition, article might be concurrently updated
       case operation
       when 'created', 'updated'
         logger.info "Indexing elasticsearch article `#{article.name}'."
         article_attributes = article.attributes.except('id', 'merchant_id', 'image_link')
         $elasticsearch.with do |conn|
-          conn.index index: index,
-                     type:  type,
+          conn.index index: article.merchant.code,
+                     type:  :article,
                      id:    article.id,
                      body:  article_attributes
         end
