@@ -101,7 +101,7 @@ namespace :app do
   end
 
   desc 'Update all merchants from merchant.yml'
-  task :update_merchants do
+  task :update_merchants => ['db:connect_db'] do
     merchant_cfg = YAML.load_file(File.expand_path('../config/merchant.yml', __FILE__))
     merchant_cfg.each do |_m_name, cfg|
       cfg.symbolize_keys!
