@@ -51,6 +51,8 @@ class MerchantsController < ApplicationController
   get '/:merchant_code/articles' do
     total_article_count = @merchant.articles.count
 
+
+
     json @merchant.articles
            .eager_load(:price_histories)
            .order(@order_by)

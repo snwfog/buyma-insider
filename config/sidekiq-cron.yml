@@ -18,7 +18,7 @@ merchant_crawl_schedule_worker:
 #  args:                           []
 
 open_exchange_rates_worker:
-  cron:                            '0 * * * *' # every hour
+  cron:                            '0 4,8,12,16 * * *' # every hour
   class:                           OpenExchangeRatesWorker
   description:                     >
                                    Every hour, fetch the latest exchange rates
