@@ -28,7 +28,7 @@ class IndexPageCrawlWorker < Worker::Base
     perform_async_parsing = args.fetch('perform_async_parsing', false)
 
     @index_page         = IndexPage.includes(:merchant).find(index_page_id)
-    @last_crawl_history = @index_page.crawl_histories.completed.take
+    @last_crawl_history = @index_page.crawl_histories.completed.last
     @merchant           = @index_page.merchant
     @standard_headers.merge(http_cache_headers) if use_web_cache
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,

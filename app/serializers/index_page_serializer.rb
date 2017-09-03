@@ -35,13 +35,11 @@ class IndexPageSerializer < ActiveModel::Serializer
   end
 
   def last_synced_at
-    if crawl_history = object.crawl_histories.first
-      crawl_history.created_at
-    end
+    object.crawl_histories.completed.last.try(:created_at)
   end
 
   def health
-    last_crawl_histories           = object.crawl_histories.order(finished_at: :desc).limit(3)
+    last_crawl_histories           = object.crawl_histories.last(3)
     articles_count_total,
       articles_invalid_count_total =
       last_crawl_histories.inject([0.0, 0.0]) do |(valid_article_cnt, invalid_article_cnt), crawl_history|
