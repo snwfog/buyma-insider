@@ -11,8 +11,18 @@ module Merchants
       # its the default and we don't need to keep track of an extra qs param
       def compute_index_page
         # find max page number
-        relative_path    = URI(pager_node.at_css('a')['href']).path
-        last_page_number = pager_node.css('a').map(&:content).reject(&:blank?).sort.last
+        last_page_number = pager_node
+                             .css('a')
+                             .map(&:content)
+                             .reject(&:blank?)
+                             .sort
+                             .last
+
+        relative_path = pager_node.css('a')
+                          .map { |href_node| URI.parse(href_node['href']).path rescue nil }
+                          .compact
+                          .last
+
         ('1'..last_page_number).map do |page_number|
           merchant.index_pages.build(index_page:    index_page,
                                      relative_path: "#{relative_path}?page=#{page_number}")
