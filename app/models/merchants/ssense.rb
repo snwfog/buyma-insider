@@ -32,14 +32,14 @@ module Merchants
     module Parser
       def attrs_from_node(node)
         product_sku   = node.at_css('meta[itemprop=sku]')['content'].strip
-        product_name  = node.at_css('figcaption.browsing-product-description > p[itemprop=name]').content.strip
+        product_name  = node.at_css('figcaption.browsing-product-description > p[itemprop=name]').content.strip.downcase
         product_brand = node.at_css('figcaption.browsing-product-description > p[itemprop=brand]').content.strip
-        product_price = node.at_css('span[itemprop=offers] > meta[itemprop=price]')['content']
+        product_price = node.at_css('meta[itemprop=price]')['content']
         product_link  = node.at_css('meta[itemprop=url]')['content']
 
         { sku:         product_sku,
           name:        product_name,
-          description: "#{product_brand} - #{product_name}",
+          description: "#{product_brand.capitalize} - #{product_name.capitalize}",
           link:        product_link.sub(/https?:/, ''),
           price:       product_price }
       end

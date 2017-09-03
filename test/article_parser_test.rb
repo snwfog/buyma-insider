@@ -1,30 +1,25 @@
 require_relative './setup'
 
 class ArticleParserTest < Minitest::Test
-  def test_ssense_should_parse
+  def test_should_parse_ssense
     frag = <<~HTML
-      <div class="browsing-product-item" itemscope="" itemtype="http://schema.org/Product" data-product-id="1676753" data-product-sku="162418M176009" data-product-name="Tan Canadian Tapestry Coat" data-product-brand="Saint Laurent" data-product-price="5890" data-product-category="Coats">
-        <meta itemprop="brand" content="Saint Laurent">
-        <meta itemprop="name" content="Tan Canadian Tapestry Coat">
-        <meta itemprop="image" content="https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v550/162418M176009_1.jpg">
-        <meta itemprop="url" content="http://www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753">
-        <a data-product-id="1676753" data-product-sku="162418M176009" data-product-brand="Saint Laurent" data-product-name="Tan Canadian Tapestry Coat" data-product-price="5890" data-position="1" data-product-category="Coats" href="/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753">
-          <div class="browsing-product-thumb-container">
-            <div class="browsing-product-thumb">
-              <img class="product-thumbnail" src="https://res.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_1086,w_724/c_scale,h_560/v550/162418M176009_1.jpg" alt="Saint Laurent - Tan Canadian Tapestry Coat">
-            </div>
-          </div>
-          <div class="browsing-product-description text-center vspace1" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
-            <p class="bold">Saint Laurent</p>
-            <p class="hidden-smartphone-landscape">Tan Canadian Tapestry Coat</p>
-            <p class="price">
-              <span class="price">$5890</span>
-            </p>
-            <meta itemprop="price" content="5890.00">
-            <meta itemprop="priceCurrency" content="CAD">
-          </div>
-        </a>
-      </div>
+      <figure class="browsing-product-item" itemscope="itemscope" itemtype="http://schema.org/Product">
+        <meta content="172342M176002" itemprop="sku">
+        <meta content="https://res-5.cloudinary.com/ssenseweb/image/upload/w_1024,dpr_1.0/f_auto/172342M176002_1.jpg" itemprop="image">
+        <meta content="https://www.ssense.com/men/product/balenciaga/black-kering-padded-raincoat/2185587" itemprop="url"><a href="/en-ca/men/product/balenciaga/black-kering-padded-raincoat/2185587">
+        <div class="image-container">
+          <picture data-v-2737e8bc=""><!----><!----><img alt="Balenciaga - Black &#x27;Kering&#x27; Padded Raincoat" class="product-thumbnail lazyload" data-srcset="https://res-5.cloudinary.com/ssenseweb/image/upload/b_white,c_lpad,g_south,h_706,w_470/c_scale,h_280/f_auto,dpr_1.0/v550/172342M176002_1.jpg" data-v-2737e8bc="" src="https://res.cloudinary.com/ssenseweb/image/upload/v1472069180/product-placeholder_qulza9.png"></picture>
+        </div>
+        <figcaption class="browsing-product-description text-center vspace1">
+          <p class="bold" itemprop="brand">Balenciaga</p>
+          <p class="hidden-smartphone-landscape" itemprop="name">Black &#x27;Kering&#x27; Padded Raincoat</p><span itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer"></span>
+          <meta content="2740" itemprop="price">
+          <meta content="CAD" itemprop="priceCurrency">
+        </figcaption><!----></a>
+        <div>
+          <p class="price"><span class="price">$2740</span><!----></p>
+        </div>
+      </figure>
     HTML
 
     parser = Class.new do |klazz|
@@ -34,15 +29,15 @@ class ArticleParserTest < Minitest::Test
       end
     end.extend(Merchants::Ssense::Parser)
 
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-    assert_equal 'Saint Laurent - Tan Canadian Tapestry Coat', article_hash[:description]
-    assert_equal 'Tan Canadian Tapestry Coat', article_hash[:name]
-    assert_equal 5890.00, ('%.02f' % article_hash[:price].to_f).to_f
-    assert_equal 'sse:162418M176009', article_hash[:id]
-    assert_equal '//www.ssense.com/en-ca/men/product/saint-laurent/tan-canadian-tapestry-coat/1676753', article_hash[:link]
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('figure'))
+    assert_equal 'black \'kering\' padded raincoat', article_hash[:name]
+    assert_equal 'Balenciaga - Black \'kering\' padded raincoat', article_hash[:description]
+    assert_equal '2740', article_hash[:price]
+    assert_equal '172342M176002', article_hash[:sku]
+    assert_equal '//www.ssense.com/men/product/balenciaga/black-kering-padded-raincoat/2185587', article_hash[:link]
   end
 
-  def test_zara_should_parse
+  def test_should_parse_zara
     frag = <<~HTML
       <li id="product-3711654" class="product _product" data-productid="3711654" data-title="">
         <a class="item _item" href="//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html"><img id="product-img-3711654" class="_img _imageLoaded" alt="VELVET TOGGLE JACKET" src="//static.zara.net/photos///2016/I/0/1/p/6895/255/800/2/w/200/6895255800_2_8_1.jpg?ts=1475748298086"></a>
@@ -62,88 +57,29 @@ class ArticleParserTest < Minitest::Test
     end.extend(Merchants::Zara::Parser)
 
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
-    assert_equal 'Velvet Toggle Jacket', article_hash[:name]
+    assert_equal 'velvet toggle jacket', article_hash[:name]
     assert_equal 'Velvet toggle jacket', article_hash[:description]
-    assert_equal 139.00, ('%.02f' % article_hash[:price].to_f).to_f
-    assert_equal 'zar:3711654', article_hash[:id]
+    assert_equal '139.00', article_hash[:price]
+    assert_equal '3711654', article_hash[:sku]
     assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article_hash[:link]
   end
 
-  def test_getoutside_should_parse
-    frag = <<~HTML
-      <li class="item">
-        <div class="product-image-wrapper">
-          <a href="http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html" title="Sperry Waterproof Cold Bay Boot" class="product-image">
-            <img src="http://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/1/0/1018-sperry-mens-cold-bay-tan-sts14383.jpg" alt="Sperry Waterproof Cold Bay Boot">
-            <span class="sticker-wrapper top-left"><span class="sticker new">New</span></span>
-          </a>
-          <ul class="add-to-links clearer addto-links-icons addto-onimage display-onhover" style="display: none;">
-            <li>
-              <a class="link-wishlist" rel="nofollow" href="https://www.getoutsideshoes.com/wishlist/index/add/product/86405/form_key/uBsA0J7tsGSdqjdY/" title="Add to Wishlist">
-              <span class="icon icon-hover i-wishlist-bw"></span>
-              </a>
-            </li>
-          </ul>
-        </div>
-        <h2 class="product-name">
-            <a href="http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html" title="Sperry Waterproof Cold Bay Boot">Sperry Waterproof Cold Bay Boot</a>
-        </h2>
-        <div class="price-box">
-          <span class="regular-price" id="product-price-86405"><span class="price">CA$ 179.99</span></span>
-        </div>
-        <div class="actions clearer"></div>
-      </li>
-    HTML
-
-    parser = Class.new do |klazz|
-      class << klazz
-        def code; 'get'; end
-        def domain; '//www.getoutsideshoes.com'; end
-      end
-    end.extend(Merchants::Getoutside::Parser)
-
-    article_hash = parser.attrs_from_node(
-      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
-    )
-
-    assert_equal 'Sperry Waterproof Cold Bay Boot', article_hash[:description]
-    assert_equal 'Sperry Waterproof Cold Bay Boot', article_hash[:name]
-    assert_equal 179.99, ('%.02f' % article_hash[:price].to_f).to_f
-    assert_equal 'get:86405', article_hash[:id]
-    assert_equal 'http://www.getoutsideshoes.com/sperry-men-waterproof-cold-bay-boot-tan-gum.html', article_hash[:link]
-  end
-
-  def test_getoutside_should_parse_2
+  def test_should_parse_getoutside
     frag = <<~HTML
       <li class="item">
         <div class="product-image-wrapper" style="max-width:295px;">
-          <a href="http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html" title="Native Apex" class="product-image">
-          <img src="http://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/2/0/208-native-apex-36001453-dublin-grey-1.jpg" alt="Native Apex">
-          <img class="alt-img" src="http://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/2/0/208-native-apex-36001453-dublin-grey-2.jpg" alt="Native Apex">
-          <span class="sticker-wrapper top-right"><span class="sticker sale">Sale</span></span>                    </a>
+          <a class="product-image" href="https://www.getoutsideshoes.com/reebok-women-pastel-classic-leather-pink-sneakers-94481.html" title="Reebok Women's Metallic Classic Leather"><img alt="Reebok Women's Metallic Classic Leather" src="https://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/r/e/reebok-women-metallic-classic-leather-peach-bs7897-1.jpg"> <img alt="Reebok Women's Metallic Classic Leather" class="alt-img" src="https://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/r/e/reebok-women-metallic-classic-leather-peach-bs7897-2.jpg"> <span class="sticker-wrapper top-left"><span class="sticker new">New</span></span></a>
           <ul class="add-to-links clearer addto-links-icons addto-onimage display-onhover">
-            <li><a class="link-wishlist" rel="nofollow" href="https://www.getoutsideshoes.com/wishlist/index/add/product/86297/form_key/KAG0e9eTWKcI0jsI/" title="Add to Wishlist">
-              <span class="icon icon-hover i-wishlist-bw"></span>
-              </a>
+            <li>
+              <a class="link-wishlist" href="https://www.getoutsideshoes.com/wishlist/index/add/product/94342/form_key/k5R5Ot3SZhbTpLjl/" rel="nofollow" title="Add to Wishlist"><span class="icon icon-hover i-wishlist-bw"></span></a>
             </li>
           </ul>
-        </div>
-        <!-- end: product-image-wrapper -->
-        <h2 class="product-name"><a href="http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html" title="Native Apex">Native Apex</a></h2>
+        </div><!-- end: product-image-wrapper -->
+        <h2 class="product-name"><a href="https://www.getoutsideshoes.com/reebok-women-pastel-classic-leather-pink-sneakers-94481.html" title="Reebok Women's Metallic Classic Leather">Reebok Women's Metallic Classic Leather</a></h2>
         <div class="price-box">
-          <p class="old-price">
-            <span class="price-label">Regular Price:</span>
-            <span class="price" id="old-price-86297">
-            CA$ 164.99                </span>
-          </p>
-          <p class="special-price sp-price-line">
-            <span class="price" id="product-price-86297">
-            CA$ 119.99                </span>
-          </p>
+          <span class="regular-price" id="product-price-94342"><span class="price">CAD$ 109.99</span></span>
         </div>
-        <div class="actions clearer">
-        </div>
-        <!-- end: actions -->
+        <div class="actions clearer"></div><!-- end: actions -->
       </li>
     HTML
 
@@ -153,15 +89,16 @@ class ArticleParserTest < Minitest::Test
         def domain; '//www.getoutsideshoes.com'; end
       end
     end.extend(Merchants::Getoutside::Parser)
+
     article_hash = parser.attrs_from_node(
       Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
     )
 
-    assert_equal 'Native Apex', article_hash[:description]
-    assert_equal 'Native Apex', article_hash[:name]
-    assert_equal 119.99, ('%.02f' % article_hash[:price].to_f).to_f
-    assert_equal 'get:86297', article_hash[:id]
-    assert_equal 'http://www.getoutsideshoes.com/native-men-apex-dublin-grey-shell-white.html', article_hash[:link]
+    assert_equal 'reebok women\'s metallic classic leather', article_hash[:name]
+    assert_equal 'Reebok women\'s metallic classic leather', article_hash[:description]
+    assert_equal '109.99', article_hash[:price]
+    assert_equal '94342', article_hash[:sku]
+    assert_equal '//www.getoutsideshoes.com/reebok-women-pastel-classic-leather-pink-sneakers-94481.html', article_hash[:link]
   end
 
   def test_should_parse_octobersveryown
@@ -191,10 +128,10 @@ class ArticleParserTest < Minitest::Test
                          .parse(frag)
                          .at_css('div'))
 
-    assert_equal 'Ovo Athletics Tee – Red', article_hash[:name]
-    assert_equal 'Ovo athletics tee – red', article_hash[:description]
-    assert_equal 40.00, article_hash[:price]
-    assert_equal "ovo:#{Digest::MD5.hexdigest('Ovo Athletics Tee – Red'.titleize)}", article_hash[:id]
+    assert_equal 'ovo athletics tee - red', article_hash[:name]
+    assert_equal 'Ovo athletics tee - red', article_hash[:description]
+    assert_equal '40.00', article_hash[:price]
+    assert_equal Digest::MD5.hexdigest(article_hash[:name]), article_hash[:sku]
     assert_equal '//ca.octobersveryown.com/collections/all/products/ovo-athletics-tee-red', article_hash[:link]
   end
 
@@ -234,16 +171,12 @@ class ArticleParserTest < Minitest::Test
     end
 
     parser.extend(Merchants::Livestock::Parser)
-    article_hash = parser
-                     .attrs_from_node(
-                       Nokogiri::HTML::DocumentFragment
-                         .parse(frag)
-                         .at_css('div'))
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
 
-    assert_equal 'Adidas Ultraboost Laceless / Legend Ink', article_hash[:name]
+    assert_equal 'adidas ultraboost laceless / legend ink', article_hash[:name]
     assert_equal 'Adidas ultraboost laceless / legend ink', article_hash[:description]
-    assert_equal 250.00, article_hash[:price]
-    assert_equal "#{Digest::MD5.hexdigest('adidas ultraboost laceless / legend ink')}", article_hash[:sku]
+    assert_equal '250.00', article_hash[:price]
+    assert_equal "#{Digest::MD5.hexdigest(article_hash[:name])}", article_hash[:sku]
     assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-ultraboost-laceless-legend-ink', article_hash[:link]
   end
 
@@ -416,5 +349,83 @@ class ArticleParserTest < Minitest::Test
     assert_equal '38.00', article_hash[:price]
     assert_equal 'CR6203', article_hash[:sku]
     assert_equal '//www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html', article_hash[:link]
+  end
+
+  def test_should_parse_sporting_life
+    frag = <<~HTML
+      <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
+        <div class="col-md-12 clearfix no-padding">
+          <div class="product-image col-xs-12 no-padding">
+            <div class="image-container">
+              <div>
+                <a href="https://www.sportinglife.ca/p/23771496/womens-snow-mantra-parka;jsessionid=Ee+Id+yrQAJPanGJNbTJpA__.com2" title="View Product Details for Women's Snow Mantra Parka"><img alt="Women's Snow Mantra Parka" border class="" height="" id="23771496_small_image" onerror="this.src='https://www.sportinglife.ca/static/img/imgNotFound_list.png'" src="https://www.sportinglife.ca/images/products/small/23771496_RED_5.JPG" style="" title="Women's Snow Mantra Parka" width=""></a>
+              </div>
+            </div>
+            <div class="quickview-bar">
+              <a data-target="#modal" data-toggle="modal" href="/modalTemplate.jsp?contentURL=browse/include/productQuickView.jsp?productId=23771496">
+              <div>
+                <span>Quick View</span> <svg class="svg_quickview svg-icon mini grey">
+                <switch>
+                  <use xlink:href="#quickview" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                  <foreignobject>
+                    <div></div>
+                  </foreignobject>
+                </switch></svg>
+              </div></a>
+            </div>
+          </div>
+          <div class="swatches col-xs-12 hidden-xs">
+            <a class="swatchDisplayLink" data-swatch-url="https://www.sportinglife.ca/images/products/small/23771496_BLACK_5.JPG" href="javascript:void(0);" rel="23771496"><img alt="BLACK" border class="unselected-swatch" height="" id="" src="https://www.sportinglife.ca/images/swatches/sku_specific/23771496_BLACK_7.JPG" style="" title="BLACK" width=""></a> <a class="swatchDisplayLink" data-swatch-url="https://www.sportinglife.ca/images/products/small/23771496_NAVY_5.JPG" href="javascript:void(0);" rel="23771496"><img alt="NAVY" border class="unselected-swatch" height="" id="" src="https://www.sportinglife.ca/images/swatches/sku_specific/23771496_NAVY_7.JPG" style="" title="NAVY" width=""></a> <a class="swatchDisplayLink" data-swatch-url="https://www.sportinglife.ca/images/products/small/23771496_RED_5.JPG" href="javascript:void(0);" rel="23771496"><img alt="RED" border class="unselected-swatch" height="" id="" src="https://www.sportinglife.ca/images/swatches/default/RED.JPG" style="" title="RED" width=""></a>
+          </div>
+          <div class="product-name no-padding col-xs-12">
+            <h4 class="font-secondary"><strong>Canada Goose</strong></h4><a class="productDetailsLink-23771496" href="https://www.sportinglife.ca/p/23771496/womens-snow-mantra-parka;jsessionid=Ee+Id+yrQAJPanGJNbTJpA__.com2" title="View Product Details for&nbsp;Women's Snow Mantra Parka">
+            <h5>Women's Snow Mantra Parka</h5></a>
+          </div>
+          <div class="rating no-padding col-xs-12 hidden-xs">
+            <div class="pr_snippet_category" id="pr_category_23771496">
+              <script type="text/javascript">
+                    if (typeof POWERREVIEWS !== 'undefined') {
+                        var pr_snippet_min_reviews=0;
+                        POWERREVIEWS.display.snippet({write : function(content) {
+                            if(/<link/i.test(content)) {
+                                $('head').append(content);
+                            } else {
+                                $('#pr_category_23771496').append(content);
+                            }
+                        }}, { pr_page_id : "23771496" });
+                    }
+              </script>
+            </div>
+          </div>
+          <div class="price no-padding col-xs-12" id="displayPrices_23771496">
+            <div>
+              <p><span>$1,495.00</span></p>
+            </div>
+          </div>
+          <div class="prodregprice font-secondary"></div>
+          <div class="col-md-12 pull-left hidden-sm hidden-xs">
+            <div class="checkbox">
+              <label><input class="compareCheck" id="productCompare-23771496" name="product_compare" title="Compare this product" type="checkbox" value="23771496"> <a href="/comparison/productComparison.jsp;jsessionid=Ee+Id+yrQAJPanGJNbTJpA__.com2" title="Compare this product">Compare</a></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'slf'; end
+        def domain; '//www.sportinglife.ca'; end
+      end
+    end
+
+    parser.extend(Merchants::SportingLife::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'women\'s snow mantra parka', article_hash[:name]
+    assert_equal 'Women\'s snow mantra parka', article_hash[:description]
+    assert_equal '1,495.00', article_hash[:price]
+    assert_equal '23771496', article_hash[:sku]
+    assert_equal '//www.sportinglife.ca/p/23771496/womens-snow-mantra-parka', article_hash[:link]
   end
 end

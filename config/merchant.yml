@@ -160,6 +160,19 @@ adidas_canada:
   item_css:       div.product-tile div.hockeycard
   index_pages:
     - /en/men?grid=true
+    - /en/women?grid=true
+    - /en/kids?grid=true
+
+# september 3, 2017
+sporting_life:
+  code:           slf
+  name:           sporting_life
+  domain:         //www.sportinglife.ca
+  ssl:            true
+  pager_css:      div.pagination
+  item_css:       div.product-card
+  index_pages:
+    - /c/ladies-outdoor-alltype-jackets
 
 
 

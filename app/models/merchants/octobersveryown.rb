@@ -11,21 +11,23 @@ module Merchants
     module Parser
       def attrs_from_node(node)
         name_node, price_node = node.css('p')
-        link_node             = node.css('a').first
-        price                 = price_node.content.strip[1..-1].to_f
-        name                  = AsciiFolding.fold(name_node.at_css('a').content.strip)
-        link                  = link_node['href']
-        sku                   = Digest::MD5.hexdigest(name.titleize)
+        product_link_node     = node.css('a').first
+        product_price         = price_node.content.strip[/(?<=\$)?(([\d]{1,3}),?)+\.[\d]{2}/]
+        product_name          = AsciiFolding.fold(name_node.at_css('a').content.squish).downcase
+        product_relative_path = product_link_node['href']
 
-        { # There is a sku, but its only shown
-          # by fetching the article
-          sku:  sku,
-          name: name.titleize,
+        # WARN: Changing this will mess up product sku
+        product_sku = Digest::MD5.hexdigest(product_name)
+
+        # There is a sku, but its only shown
+        # by fetching the article
+        { sku:  product_sku,
+          name: product_name,
           # We can actually get a better description
           # by fetching the page and reading the meta tag
-          description: name.capitalize,
-          link:        '%s%s' % [domain, link],
-          price:       price }
+          description: product_name.capitalize,
+          link:        "#{domain}#{product_relative_path}",
+          price:       product_price }
       end
     end
   end

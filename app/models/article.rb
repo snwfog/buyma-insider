@@ -45,10 +45,6 @@ class Article < ActiveRecord::Base
     price_histories.min.try(:price)
   end
 
-  def name=(name)
-    super name.titleize
-  end
-
   def link=(link)
     super link.gsub(%r{^https?://}, '//')
   end

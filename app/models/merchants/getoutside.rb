@@ -20,19 +20,20 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        product_image_link = node.at_css('a.product-image')
+        product_name = node.at_css('a.product-image')['title'].squish.downcase
+        product_desc = product_name.capitalize
+        product_link = URI(node.at_css('.product-name a')['href'])
         # This is last price, which is either regular price or special price
-        # we display always the last price
-        price_node = node.at_css('div.price-box')
-                       .at_css('p.special-price span.price', 'span.regular-price')
-        article_id = price_node['id'][/[\d]{1,10}/]
-        price      = (price_node.at_css('span.price') || price_node).content[/[$]?[\d]{1,10}\.[\d]{2}/]
+        # we display always the last price, which is the special spice
+        product_sku   = node.at_css('div.price-box > span')['id'].split(/-/).last
+        price_node    = node.css('div.price-box span.price').last
+        product_price = price_node.content[/(?<=CAD\$\s)?(([\d]{1,3}),?)+\.[\d]{2}/]
 
-        { sku:         article_id.strip,
-          name:        product_image_link['title'].strip,
-          description: node.at_css('h2.product-name a').content.strip,
-          link:        product_image_link['href'],
-          price:       price }
+        { sku:         product_sku,
+          name:        product_name,
+          description: product_desc,
+          link:        "//#{product_link.host}#{product_link.path}",
+          price:       product_price }
       end
     end
   end

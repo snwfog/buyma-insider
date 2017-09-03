@@ -17,4 +17,6 @@ class PriceHistory < ActiveRecord::Base
   scope :latest, -> { order(created_at: :desc).take }
   scope :max, -> { order(price: :desc).take }
   scope :min, -> { order(price: :asc).take }
+
+  validates_numericality_of :price
 end
