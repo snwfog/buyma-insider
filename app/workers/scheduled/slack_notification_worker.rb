@@ -26,7 +26,7 @@ class SlackNotificationWorker < Worker::Base
     slack_notify(text:        ':spider: *Spider Report*',
                  attachments: [fields: report_attachment_fields,
                                ts:     Time.now.to_i,
-                               footer: "Report time  #{report_time.beginning_of_hour.strftime('%FT%R')} :clock#{report_time.hour - 12}:"])
+                               footer: "Report time #{report_time.beginning_of_hour.strftime('%FT%R')} :clock#{report_time.hour - 12}:"])
 
   end
 end
