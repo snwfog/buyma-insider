@@ -53,9 +53,11 @@ module AuthenticationHelper
 
   def destroy_session!
     unhashed_token = cookies[UserAuthToken::SESSION_KEY]
-    return nil unless unhashed_token
-    session_cache do |redis|
-      redis.del(UserAuthToken.hash_token(unhashed_token))
+    if unhashed_token
+      cookies.delete UserAuthToken::SESSION_KEY
+      session_cache do |redis_conn|
+        redis_conn.del(UserAuthToken.hash_token(unhashed_token))
+      end
     end
   end
 
@@ -67,9 +69,8 @@ module AuthenticationHelper
       user           = redis.get(hashed_token)
       if user
         redis.expire(hashed_token, SESSION_EXPIRE_TIME.to_i)
+        user.persisted? and user
       end
-
-      user.persisted? and user
     end
   end
 
