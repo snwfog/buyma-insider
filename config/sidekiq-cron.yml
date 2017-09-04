@@ -24,7 +24,7 @@ open_exchange_rates_worker:
                                    Fetch the latest exchange rates
 
 slack_notification_worker:
-  cron:                            '0 * * * *'
+  cron:                            '0 21,22 * * *'
   class:                           SlackNotificationWorker
   description:                     >
                                    Notify via Slack regarding crawling progress
