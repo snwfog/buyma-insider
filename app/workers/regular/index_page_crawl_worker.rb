@@ -35,7 +35,7 @@ class IndexPageCrawlWorker < Worker::Base
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
 
-    slack_notify(text: ":spider: *Crawl Started*\n#{@index_page.full_url}", unfurl_links: true)
+    # slack_notify(text: ":spider: *Crawl Started*\n#{@index_page.full_url}", unfurl_links: true)
 
     if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
       @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
@@ -77,24 +77,24 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info JSON.pretty_generate(@current_crawl_history.attributes)
     end
 
-    slack_notify(text:        ':spider: *Crawl Ended*',
-                 attachments: [{ text:   @index_page.full_url,
-                                 ts:     Time.now.to_i,
-                                 fields: [{ title: 'HTTP Status',
-                                            value: @current_crawl_history.response_status,
-                                            short: true },
-                                          { title: 'Crawl Status',
-                                            value: @current_crawl_history.status,
-                                            short: true },
-                                          { title: 'Elapsed Time',
-                                            value: "#{@current_crawl_history.elapsed_time_in_s} s",
-                                            short: true },
-                                          { title: 'Traffic Size',
-                                            value: "#{@current_crawl_history.traffic_size_in_kb} kb",
-                                            short: true },
-                                          { title: 'Article Total',
-                                            value: @current_crawl_history.article_count,
-                                            short: true }], }])
+    # slack_notify(text:        ':spider: *Crawl Ended*',
+    #              attachments: [{ text:   @index_page.full_url,
+    #                              ts:     Time.now.to_i,
+    #                              fields: [{ title: 'HTTP Status',
+    #                                         value: @current_crawl_history.response_status,
+    #                                         short: true },
+    #                                       { title: 'Crawl Status',
+    #                                         value: @current_crawl_history.status,
+    #                                         short: true },
+    #                                       { title: 'Elapsed Time',
+    #                                         value: "#{@current_crawl_history.elapsed_time_in_s} s",
+    #                                         short: true },
+    #                                       { title: 'Traffic Size',
+    #                                         value: "#{@current_crawl_history.traffic_size_in_kb} kb",
+    #                                         short: true },
+    #                                       { title: 'Article Total',
+    #                                         value: @current_crawl_history.article_count,
+    #                                         short: true }], }])
   end
 
   private
