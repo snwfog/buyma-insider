@@ -9,19 +9,20 @@ class StaticController < ApplicationController
   end
 
   get '/bootstrap' do
-    @bootstrap ||= {
-      server_version:                BuymaInsider::VERSION,
-      merchants:                     to_hash(Merchant.all),
-      shipping_services:             to_hash(ShippingService.all),
-      extra_tariffs:                 to_hash(ExtraTariff.all),
-      article_notification_criteria: to_hash(ArticleNotificationCriterium.all)
-    }
+    bootstrap_hash =
+      fetch('bootstrap', ex: 120) do
+        { server_version:                BuymaInsider::VERSION,
+          merchants:                     to_hash(Merchant.all),
+          shipping_services:             to_hash(ShippingService.all),
+          extra_tariffs:                 to_hash(ExtraTariff.all),
+          article_notification_criteria: to_hash(ArticleNotificationCriterium.all) }
+      end
 
     if user = current_user
-      @bootstrap['current_user'] = to_hash(user)
+      bootstrap_hash['current_user'] = to_hash(user)
     end
 
-    @bootstrap.to_json
+    bootstrap_hash.to_json
   end
 
   SHORT_UUID_V4_REGEXP = /\A[0-9a-f]{7}\z/i
