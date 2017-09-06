@@ -1,6 +1,6 @@
 class SlackNotificationWorker < Worker::Base
-  def perform(ago_in_hour = 1)
-    report_time       = ago_in_hour.hour.ago
+  def perform
+    report_time       = Time.now
     report_time_range = report_time.beginning_of_hour..report_time.end_of_hour
     # { merchant_code: { counts... } }
     report_agg = CrawlHistory

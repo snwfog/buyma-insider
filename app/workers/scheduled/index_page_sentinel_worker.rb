@@ -31,7 +31,7 @@ class IndexPageSentinelWorker < Worker::Base
       statuses_grouped_by.each do |status, index_page_statuses|
         report[:attachments] << { color: colors[status],
                                   title: status,
-                                  text:  index_page_statuses.map(&:index_page).join('\n'),
+                                  text:  "#{index_page_statuses.keys.count} Index Pages",
                                   ts:    Time.now.to_i }
       end
     end
@@ -55,24 +55,5 @@ class IndexPageSentinelWorker < Worker::Base
                      size_in_kb:     file_size_in_kb || 0.0,
                      redirection:    raw_response.try(:history).try(:any?),
                      articles_count: article_nodes.try(:count))
-  end
-
-  def http_status_category(status)
-    case status.http_status
-    when 500..599
-      :'5xx'
-    when 400..499
-      :'4xx'
-    when 300...400
-      :'3xx'
-    when 200...300
-      if status.redirection || status.articles_count < 10
-        :'3xx'
-      else
-        :'2xx'
-      end
-    else
-      :'5xx'
-    end
   end
 end
