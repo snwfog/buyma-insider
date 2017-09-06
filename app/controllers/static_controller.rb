@@ -10,7 +10,7 @@ class StaticController < ApplicationController
 
   get '/bootstrap' do
     bootstrap_hash =
-      fetch('bootstrap', ex: 120) do
+      fetch('bootstrap', ex: 1.day.to_i) do
         { server_version:                BuymaInsider::VERSION,
           merchants:                     to_hash(Merchant.all),
           shipping_services:             to_hash(ShippingService.all),

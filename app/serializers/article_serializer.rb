@@ -45,16 +45,13 @@ class ArticleSerializer < ActiveModel::Serializer
              :updated_at
 
   def synced_at
-    object
-      .crawl_histories
-      .completed
-      .take
-      &.created_at
+    object.crawl_histories.completed.last.try(:created_at)
   end
 
   def price_history
     object.price_histories.map do |price_history|
-      Hash[:timestamp, price_history.created_at, :price, price_history.price.to_f]
+      { timestamp: price_history.created_at,
+        price:     price_history.price.to_f }
     end
   end
 

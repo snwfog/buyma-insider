@@ -6,7 +6,6 @@ class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
     root_indices = IndexPage.includes(:merchant).root.all
-    slack_notify(text: ":japanese_ogre: *Sentinel Started*")
     all_statuses = root_indices.map do |index_page|
       get_index_page_status(index_page)
     end
@@ -28,14 +27,12 @@ class IndexPageSentinelWorker < Worker::Base
                :'4xx' => 'FF0000', :'5xx' => 'C71585' }
 
     Hash[:text, ':japanese_ogre: *Sentinel Report*'].tap do |report|
-      report[:attachments] = {}
+      report[:attachments] = []
       statuses_grouped_by.each do |status, index_page_statuses|
-        report[:attachments][status] = {
-          color: colors[status],
-          title: status,
-          text:  index_page_statuses.map(&:index_page).join('\n'),
-          ts:    Time.now.to_i
-        }
+        report[:attachments] << { color: colors[status],
+                                  title: status,
+                                  text:  index_page_statuses.map(&:index_page).join('\n'),
+                                  ts:    Time.now.to_i }
       end
     end
   end

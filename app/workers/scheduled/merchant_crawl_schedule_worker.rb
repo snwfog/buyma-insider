@@ -6,8 +6,8 @@ class MerchantCrawlScheduleWorker < Worker::Base
       MerchantCrawlWorker.perform_async merchant.code
       merchant
     end
-    
-    slack_notify(title:        ':shipit: Merchant Refresh Scheduled',
+
+    slack_notify(text:         ':shipit: Merchant Refresh Scheduled',
                  attachments:  scheduled_merchants
                                  .map { |merchant| { title:      merchant.name.titleize,
                                                      title_link: merchant.full_url,

@@ -19,14 +19,15 @@ class SlackNotificationWorker < Worker::Base
 
     report_attachment_fields = report_agg.map do |merchant_name, agg|
       { title: merchant_name.titleize,
-        value: "*#{agg[:index_pages_count]}* Index Pages\n*#{agg[:articles_count]}* Articles\n*#{agg[:articles_invalid_count]}* Invalid Articles",
+        value: "#{agg[:index_pages_count]} Index Pages\n#{agg[:articles_count]} Articles\n#{agg[:articles_invalid_count]} Invalid Articles",
         short: true }
     end
 
-    slack_notify(text:        ':spider: *Spider Report*',
-                 attachments: [fields: report_attachment_fields,
-                               ts:     Time.now.to_i,
-                               footer: "Report time #{report_time.beginning_of_hour.strftime('%FT%R')} :clock#{report_time.hour - 12}:"])
-
+    unless report_attachment_fields.empty?
+      slack_notify(text:        ':spider: *Spider Report*',
+                   attachments: [fields: report_attachment_fields,
+                                 ts:     Time.now.to_i,
+                                 footer: "Report time #{report_time.beginning_of_hour.strftime('%FT%R')} :clock#{report_time.hour - 12}:"])
+    end
   end
 end
