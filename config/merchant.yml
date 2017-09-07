@@ -324,3 +324,20 @@ sporting_life:
     - /c/winter-helmet-type-adult-recreational
     - /c/winterboots-shoe-type-ladies
     - /c/winterboots-shoe-type-mens
+
+# september 4, 2017
+# TODO: Using bad javascript backend
+#altitude_sports:
+#  code:           als
+#  name:           altitude_sports
+#  domain:         //www.altitude-sports.com
+#  ssl:            true
+#  pager_css:      table.pagination
+#  item_css:       li.item
+#  index_pages:
+#    - /collections/womens-clothing
+#    - /collections/mens-clothing
+#    - /collections/footwear
+#    - /collections/gear-equipment
+#    - /collections/youth
+#    - /collections/sale

@@ -43,5 +43,5 @@ production:
   <<:             *default
   sidekiq:
     <<:           *default_sidekiq
-    path:         ./tmp/sockets/redis.sock
+    path:         /usr/local/var/www/buyma_insider/shared/tmp/sockets/redis.sock
     pool_size:    50

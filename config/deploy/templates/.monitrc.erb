@@ -8,12 +8,12 @@ set onreboot start
 
 check process nginx with pidfile <%= shared_path %>/tmp/pids/nginx.pid
   group www
-  start program = "<%= fetch(:bin_dir) %>/nginx -c <%= current_path %>/default.nginx" with timeout 60 seconds
+  start program = "<%= fetch(:bin_dir) %>/nginx -c <%= current_path %>/default.nginx" with timeout 5 seconds
   stop program = "<%= fetch(:bin_dir) %>/nginx -s quit"
 
 check process unicorn_master with pidfile <%= shared_path %>/tmp/pids/unicorn.pid
   group www
-  start program = "<%= shared_path %>/bin/unicorn --daemonize --env <%= fetch(:stage) %> --include <%= current_path %>/app --config-file <%= current_path %>/config/unicorn.rb"
+  start program = "<%= shared_path %>/bin/unicorn --daemonize --env <%= fetch(:stage) %> --include <%= current_path %>/app --config-file <%= current_path %>/config/unicorn.rb" with timeout 5 seconds
   stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/unicorn.pid`"
 
 <% 1.upto(fetch(:unicorn_workers)).each do |index| %>
@@ -25,23 +25,23 @@ check process unicorn_worker_<%= index %> with pidfile <%= shared_path %>/tmp/pi
 
 check process postgresql with pidfile <%= shared_path %>/tmp/pids/postgresql.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres start" with timeout 60 seconds
-  stop program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres stop"
+  start program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres start" with timeout 5 seconds
+  stop program = "<%= fetch(:bin_dir) %>/pg_ctl -D /usr/local/var/postgres stop" with timeout 5 seconds
 
 check process rethinkdb with pidfile <%= shared_path %>/tmp/pids/rethinkdb.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/rethinkdb --daemon --config-file <%= current_path %>/rethinkdb.conf" with timeout 60 seconds
-  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/rethinkdb.pid`"
+  start program = "<%= fetch(:bin_dir) %>/rethinkdb --daemon --config-file <%= current_path %>/rethinkdb.conf" with timeout 5 seconds
+  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/rethinkdb.pid`" with timeout 5 seconds
 
 check process redis with pidfile <%= shared_path %>/tmp/pids/redis.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/redis-server <%= current_path %>/redis.conf" with timeout 60 seconds
-  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/redis.pid`"
+  start program = "<%= fetch(:bin_dir) %>/redis-server <%= current_path %>/redis.conf" with timeout 5 seconds
+  stop program = "/bin/kill -QUIT `cat <%= shared_path %>/tmp/pids/redis.pid`" with timeout 5 seconds
 
 check process elasticsearch with pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid
   group database
-  start program = "<%= fetch(:bin_dir) %>/elasticsearch -Epath.config=<%= shared_path %>/elasticsearch_data/config --daemonize --pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid"
-  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`"
+  start program = "<%= fetch(:bin_dir) %>/elasticsearch -Epath.config=<%= shared_path %>/elasticsearch_data/config --daemonize --pidfile <%= shared_path %>/tmp/pids/elasticsearch.pid" with timeout 5 seconds
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/elasticsearch.pid`" with timeout 5 seconds
 
 <% 1.upto(fetch(:sidekiq_processes)).each do |index| %>
 check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/sidekiq_<%= index %>.pid
@@ -52,5 +52,5 @@ check process sidekiq_<%= index %> with pidfile <%= shared_path %>/tmp/pids/side
 
 check process sidekiq_web with pidfile <%= shared_path %>/tmp/pids/sidekiq_web.pid
   group worker
-  start program = "<%= shared_path %>/bin/rackup -o 0.0.0.0 -p 9090 -D -E <%= fetch(:stage) %> -P <%= shared_path %>/tmp/pids/sidekiq_web.pid <%= current_path %>/script/sidekiq_web.ru"
-  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq_web.pid`"
+  start program = "<%= shared_path %>/bin/rackup -o 0.0.0.0 -p 9090 -D -E <%= fetch(:stage) %> -P <%= shared_path %>/tmp/pids/sidekiq_web.pid <%= current_path %>/script/sidekiq_web.ru" with timeout 5 seconds
+  stop program = "/bin/kill -SIGTERM `cat <%= shared_path %>/tmp/pids/sidekiq_web.pid`" with timeout 5 seconds
