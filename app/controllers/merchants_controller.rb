@@ -58,7 +58,7 @@ class MerchantsController < ApplicationController
            .limit(@limit),
          meta: { current_page: @page,
                  limit:        @limit,
-                 total_pages:  (total_article_count / @limit.to_f).ceil,
+                 total_pages:  (total_article_count / @limit.to_f).floor,
                  total_count:  total_article_count }
   end
 
