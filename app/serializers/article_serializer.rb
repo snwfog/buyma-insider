@@ -31,7 +31,7 @@ class ArticleSerializer < ActiveModel::Serializer
   end
 
   belongs_to :merchant do
-    include_data false
+    include_data true
   end
 
   attributes :id,
@@ -51,10 +51,8 @@ class ArticleSerializer < ActiveModel::Serializer
   end
 
   def price_history
-    object.price_histories.map do |price_history|
-      { timestamp: price_history.created_at,
-        price:     price_history.price.to_f }
-    end
+    object.price_histories.map { |price| { timestamp: price.created_at,
+                                           price:     price.price.to_f } }.uniq
   end
 
   def price
