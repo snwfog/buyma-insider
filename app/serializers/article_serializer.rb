@@ -51,7 +51,7 @@ class ArticleSerializer < ActiveModel::Serializer
   end
 
   def price_history
-    object.price_histories.map { |price| { timestamp: price.created_at,
+    object.price_histories.map { |price| { timestamp: price.created_at.beginning_of_day,
                                            price:     price.price.to_f } }.uniq
   end
 
