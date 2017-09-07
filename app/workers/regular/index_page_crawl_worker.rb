@@ -9,6 +9,7 @@ class IndexPageCrawlWorker < Worker::Base
 
   def initialize
     spoof_ip_address  = GeoIpLocation.random_canadian.begin_ip_address
+
     @standard_headers = {
       x_forwarded_for:  spoof_ip_address,
       x_forwarded_host: spoof_ip_address,

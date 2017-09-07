@@ -1,6 +1,7 @@
 require_relative './config/application'
 require 'ostruct'
 require 'annotate'
+require 'prettyprint'
 require 'standalone_migrations'
 
 load 'tasks/annotate_models.rake'
@@ -71,6 +72,13 @@ namespace :app do
   desc 'Parse article using cached index page'
   task :parse, [:crawl_history_id] do |_, args|
     IndexPageParseWorker.new.perform(args.fetch(:crawl_history_id))
+  end
+
+  desc 'Crawl an index page based on id'
+  task :crawl_index, [:index_page_id] do |_, args|
+    index_page_id = args.fetch(:index_page_id)
+    pp IndexPageCrawlWorker.new.perform('index_page_id' => index_page_id,
+                                        'use_web_cache' => false)
   end
 
   desc 'Crawl a merchant given merchant id'
