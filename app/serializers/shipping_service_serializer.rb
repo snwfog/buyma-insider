@@ -13,6 +13,8 @@
 #
 
 class ShippingServiceSerializer < ActiveModel::Serializer
+  cache key: :shipping_service, expires_in: 1.week
+
   attributes :service_name,
              :rate,
              :weight_in_kg,

@@ -13,7 +13,7 @@
 #
 
 class MerchantMetadatumSerializer < ActiveModel::Serializer
-  cache key: :merchant_metadatum
+  cache key: :merchant_metadatum, expires_in: 1.day
 
   attributes :id,
              :name,

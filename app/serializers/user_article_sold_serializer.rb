@@ -15,6 +15,8 @@
 #
 
 class UserArticleSoldSerializer < ActiveModel::Serializer
+  cache key: :user_article_sold, expires_in: 1.day
+
   has_many :shipping_services do
     # link :related, proc {
     #   "/#{BuymaInsider::API_VERSION}/user_article_solds/#{object.id}/shipping_services" }

@@ -14,7 +14,7 @@
 #
 
 class ArticleSerializer < ActiveModel::Serializer
-  cache key: :article, expires_in: 24.hours
+  cache key: :article, expires_in: 1.day
 
   # has_one :price_history do
   #   # If this block was present,
@@ -30,6 +30,9 @@ class ArticleSerializer < ActiveModel::Serializer
     link :related, 'article_relateds'
   end
 
+  belongs_to :merchant do
+    include_data false
+  end
 
   attributes :id,
              :name,
@@ -37,7 +40,6 @@ class ArticleSerializer < ActiveModel::Serializer
              :price,
              :link,
              :price_history,
-             # :price_summary,
              :min_price,
              :max_price,
              :synced_at,
@@ -66,16 +68,4 @@ class ArticleSerializer < ActiveModel::Serializer
   def max_price
     object.max_price.to_f
   end
-
-  # def price_summary
-  #   histories = object.price_history.history
-  #   stats     = Hash.new
-  #   unless histories.empty?
-  #     min, max    = histories.minmax
-  #     stats[:max] = { seen_at: max.first, price: max.last.to_f }
-  #     stats[:min] = { seen_at: min.first, price: min.last.to_f }
-  #     stats[:avg] = { price: histories.values.inject(0.0, :+) / histories.count }
-  #   end
-  #   stats
-  # end
 end

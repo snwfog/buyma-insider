@@ -13,7 +13,8 @@
 #
 
 class ExtraTariffSerializer < ActiveModel::Serializer
-  # cache key: :extra_tariffs
+  cache key: :extra_tariffs, expires_in: 1.week
+  
   attributes :id,
              :name,
              :rate,

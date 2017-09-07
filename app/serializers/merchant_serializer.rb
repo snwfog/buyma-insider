@@ -12,7 +12,7 @@
 require 'active_model_serializers/serialization_context'
 
 class MerchantSerializer < ActiveModel::Serializer
-  cache key: :merchant, expires_in: 5.minutes
+  cache key: :merchant, expires_in: 1.day
 
   has_many :articles do
     link :related, proc { 'articles' }

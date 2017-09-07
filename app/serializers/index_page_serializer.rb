@@ -18,7 +18,7 @@ class IndexPageSerializer < ActiveModel::Serializer
 
   cache key: :index_page,
         # except:     [:last_synced_at],
-        expires_in: 5.minute
+        expires_in: 1.day
 
   has_many :index_pages, if: :root? do
     include_data(true)

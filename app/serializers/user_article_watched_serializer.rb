@@ -10,6 +10,8 @@
 #
 
 class UserArticleWatchedSerializer < ActiveModel::Serializer
+  cache key: :user_article_watched, expires_in: 1.day
+
   belongs_to :user do
     # include_data true
     link :related, proc {

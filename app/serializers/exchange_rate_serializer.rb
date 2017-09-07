@@ -13,7 +13,8 @@
 class ExchangeRateSerializer < ActiveModel::Serializer
   DEFAULT_RATES = %w(JPY CAD USD)
 
-  # cache key: :exchange_rates
+  cache key: :exchange_rates, expires_in: 1.week
+  
   attributes :id,
              :base,
              :timestamp,

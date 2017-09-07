@@ -19,7 +19,7 @@
 #
 
 class CrawlHistorySerializer < ActiveModel::Serializer
-  # cache key: :crawl_history
+  cache key: :crawl_history, expires_in: 1.day
 
   attributes :id,
              :status,

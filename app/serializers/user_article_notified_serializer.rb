@@ -11,6 +11,8 @@
 #
 
 class UserArticleNotifiedSerializer < ActiveModel::Serializer
+  cache key: :user_article_notified, expires_in: 1.day
+
   belongs_to :article do
     include_data(true)
     # link :related, proc { "/articles/#{object.article_id}" }
