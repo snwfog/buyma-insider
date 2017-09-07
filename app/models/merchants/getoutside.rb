@@ -23,11 +23,12 @@ module Merchants
         product_name = node.at_css('a.product-image')['title'].squish.downcase
         product_desc = product_name.capitalize
         product_link = URI(node.at_css('.product-name a')['href'])
-        # This is last price, which is either regular price or special price
-        # we display always the last price, which is the special spice
-        product_sku   = node.at_css('div.price-box > span')['id'].split(/-/).last
-        price_node    = node.css('div.price-box span.price').last
+        # Pick last price node, which is normally the current price
+        price_node    = node.css('span.price').last
         product_price = price_node.content[/(?<=CAD\$\s)?(([\d]{1,3}),?)+\.[\d]{2}/]
+
+        sku_node    = price_node['id'].blank? ? price_node.parent : price_node
+        product_sku = sku_node['id'].split(/-/).last
 
         { sku:         product_sku,
           name:        product_name,
