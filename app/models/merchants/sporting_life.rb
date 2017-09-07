@@ -32,9 +32,11 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        product_name  = node.at_css('div.product-name a h5').content.strip.downcase
-        product_desc  = product_name.capitalize
-        product_price = node.at_css('div.price').content.strip[/(?<=\$)?(([\d]{1,3}),?)+\.[\d]{2}/]
+        product_name = node.at_css('div.product-name a h5').content.strip.downcase
+        product_desc = node.at_css('div.product-name').content.squish.capitalize
+
+        price_node    = node.css('div.price span').last
+        product_price = price_node.content.strip[/(?<=\$)?(([\d]{1,3}),?)+\.[\d]{2}/]
         product_link  = URI(node.at_css('div.product-name a')['href'])
         product_sku   = node.at_css('div.product-name a')['class'].strip.split(/-/).last
 
