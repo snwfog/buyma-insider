@@ -9,6 +9,7 @@ set :default_env, { PATH: '/usr/local/bin:$PATH' }
 after 'deploy:published', 'flush_redis'
 after 'deploy:published', 'setup_env'
 after 'deploy:published', 'reload_monit'
+after 'deploy:published', 'restart_services'
 
 desc 'Flush redis cache'
 task :flush_redis do
@@ -36,5 +37,13 @@ task :reload_monit do
       execute :cp, '.monitrc', '~/.monitrc'
       execute :monit, :reload
     end
+  end
+end
+
+desc 'Restart services'
+task :restart_services do
+  on roles(:all) do
+    execute :monit, :restart, :unicorn_master
+    execute :monit, :restart, :sidekiq_1
   end
 end
