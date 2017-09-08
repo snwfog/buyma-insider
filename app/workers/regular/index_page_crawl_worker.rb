@@ -7,19 +7,6 @@ class IndexPageCrawlWorker < Worker::Base
   attr_reader :index_page
   attr_reader :merchant
 
-  def initialize
-    spoof_ip_address  = GeoIpLocation.random_canadian.begin_ip_address
-
-    @standard_headers = {
-      x_forwarded_for:  spoof_ip_address,
-      x_forwarded_host: spoof_ip_address,
-      user_agent:       BuymaInsider::SPOOF_USER_AGENT,
-      accept_encoding:  'gzip',
-      cache_control:    'no-cache',
-      pragma:           'no-cache'
-    }
-  end
-
   def perform(args)
     validate_args(args, -> (args) { Hash === args }, 'must be an Hash')
     validate_args(args, -> (args) { args.key?('index_page_id') }, 'must contains `index_page_id`')

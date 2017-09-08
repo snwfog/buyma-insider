@@ -5,19 +5,11 @@
 class IndexPageSentinelWorker < Worker::Base
   def perform
     logger.info 'Sentinel Started'
-    root_indices = IndexPage.includes(:merchant).root.all
-    all_statuses = root_indices.map do |index_page|
-      get_index_page_status(index_page)
-    end
-
-    logger.info JSON.pretty_generate(all_statuses)
-    statuses_grouped_by = all_statuses
+    root_indices        = IndexPage.includes(:merchant).root.all
+    statuses_grouped_by = root_indices.map { |index_page| get_index_page_status(index_page) }
                             .sort_by!(&:http_status)
-                            .group_by do |index_page_status|
-      http_status_category(index_page_status)
-    end
+                            .group_by(&:http_status)
 
-    # TODO: Clunky, change this later
     slack_notify(sentinel_slack_report(statuses_grouped_by))
   end
 

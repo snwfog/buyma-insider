@@ -2,6 +2,21 @@ module Worker
   class Base
     include ::Sidekiq::Worker
 
+    attr_accessor :standard_headers
+
+    def initialize
+      spoof_ip_address = GeoIpLocation.random_canadian.begin_ip_address
+
+      @standard_headers = {
+        x_forwarded_for:  spoof_ip_address,
+        x_forwarded_host: spoof_ip_address,
+        user_agent:       BuymaInsider::SPOOF_USER_AGENT,
+        accept_encoding:  'gzip',
+        cache_control:    'no-cache',
+        pragma:           'no-cache'
+      }
+    end
+
     protected
 
     def slack_notify(params = {})
@@ -19,11 +34,12 @@ module Worker
 
     # Fetch uri with capture to Sentry.io
     # return RestClient::RawResponse
-    def fetch_uri(uri, verify_ssl = false, retries = 3, **headers)
+    def fetch_uri(uri, verify_ssl = false, retries = 3, **custom_headers)
+      headers     = standard_headers.merge(custom_headers)
       retry_count = 0
+
       logger.info "`GET` #{uri}"
       logger.debug JSON.pretty_generate(headers)
-
       RestClient::Request.execute(url:          uri,
                                   method:       :get,
                                   verify_ssl:   verify_ssl,
