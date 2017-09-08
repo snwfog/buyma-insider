@@ -23,7 +23,7 @@ class IndexPageSentinelWorker < Worker::Base
       statuses_grouped_by.each do |status, index_page_statuses|
         report[:attachments] << { color: colors[status],
                                   title: status,
-                                  text:  "#{index_page_statuses.keys.count} Index Pages",
+                                  text:  "#{index_page_statuses.count} Index Pages",
                                   ts:    Time.now.to_i }
       end
     end
