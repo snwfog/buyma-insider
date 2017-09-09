@@ -12,7 +12,7 @@ class MerchantsController < ApplicationController
   before '/:merchant_code(/**)?' do
     param :merchant_code, String, required: true, transform: :downcase, in: Merchant.all.pluck(:code), format: /[a-z]{3}/
     param :limit, Integer, in: (1..20), default: 20
-    param :page, Integer, in: (1..200), default: 1
+    param :page, Integer, in: (1..1000), default: 1
     param :order, String, transform: :downcase, in: ['name:asc',
                                                      'name:desc',
                                                      'price:asc',
