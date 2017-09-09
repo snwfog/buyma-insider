@@ -389,6 +389,87 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html', article_hash[:link]
   end
 
+  def test_should_parse_adidas_canada_with_discount
+    frag = <<~HTML
+      <div class="hockeycard athletics" data-colorid="B49913" data-component="" data-context="sku:B49913;size:;colors:Core Heather/Black;genders:" data-scope="B49913" data-target="B49913" data-url="https://www.adidas.ca/on/demandware.store/Sites-adidas-CA-Site/en_CA/Product-GetVariations?pid=PRODUCTID" id="product-B49913">
+        <div class="hidden" data-context="category:Clothing;brand:Athletics;gender:MEN;type:;model_id:BUQ98;video:OFF;color:Core Heather/Black;pricebook:adidas-CA-listprices;sport:Lifestyle|Training"></div>
+        <div class="checkbox compare hidden B49913" data-product-id="B49913">
+          <span class="compare-title">Compare</span>
+        </div>
+        <div class="innercard">
+          <div class="close-container">
+            <a class="close close-button" tabindex="-1"></a>
+          </div><span class="aditype"></span>
+          <div class="badge sale">
+            <span class="badge-text">-15 %</span>
+          </div><a class="add-to-wishlist hockeycard-add-to-wishlist" data-in-wishlist="false" data-masterid="B49913" href="#"><span class="wishlist-icon"></span></a>
+          <div class="image plp-image-bg">
+            <a class="product-images-js link-B49913 plp-image-bg-link" data-component="productlist/ProductImage" data-productname="Men's Sport Essentials French Terry Hoodie" data-track="B49913" href="http://www.adidas.ca/en/mens-sport-essentials-french-terry-hoodie/B49913.html"><img alt="adidas - Men's Sport Essentials French Terry Hoodie Core Heather/Black B49913" class="show lazyload" data-original="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dwfe4cd3b1/zoom/B49913_000_plp_model.jpg?sw=230&amp;sfrm=jpg" data-othermobileview="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dwfe4cd3b1/zoom/B49913_000_plp_model.jpg?sw=230&amp;sfrm=jpg" data-stackmobileview="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dwfe4cd3b1/zoom/B49913_000_plp_model.jpg?sw=280&amp;sfrm=jpg" height="230" src="https://www.adidas.ca/static/on/demandware.static/Sites-adidas-CA-Site/-/default/dw56d45f8a/images/1x1.gif" title="adidas - Men's Sport Essentials French Terry Hoodie" width="230"> <img alt="adidas - Men's Sport Essentials French Terry Hoodie Core Heather/Black B49913" class="hide lazyload loadonhover not-loaded" data-original="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw2cc4e8c7/zoom/B49913_23_hover_model.jpg?sw=230&amp;sfrm=jpg" data-othermobileview="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw2cc4e8c7/zoom/B49913_23_hover_model.jpg?sw=230&amp;sfrm=jpg" data-stackmobileview="https://www.adidas.ca/dis/dw/image/v2/aaqx_prd/on/demandware.static/-/Sites-adidas-products/default/dw2cc4e8c7/zoom/B49913_23_hover_model.jpg?sw=280&amp;sfrm=jpg" height="230" title="adidas - Men's Sport Essentials French Terry Hoodie" width="230"></a>
+          </div>
+          <div class="product-info-wrapper stack track" data-context="article:B49913" data-track="plp product">
+            <div class="product-info-inner clear clearfix">
+              <div class="color-count spacer">
+                &nbsp;
+              </div>
+            </div>
+            <div class="hc-separator line-dotted-light divider-hor-top"></div>
+            <div class="product-info-inner-content clearfix with-badges">
+              <a class="link-B49913 product-link clearfix" data-context="name:Men's Sport Essentials French Terry Hoodie" data-productname="Men's Sport Essentials French Terry Hoodie" data-track="B49913" href="http://www.adidas.ca/en/mens-sport-essentials-french-terry-hoodie/B49913.html" tabindex="-1"><span class="title">Men&#39;s Sport Essentials French Terry Hoodie</span> <span class="subtitle">Men Athletics</span></a>
+            </div>
+            <div class="clearfix product-info-price-rating">
+              <div class="price" data-context="price:64.95; price_vat:65; price_type:on sale">
+                <span class="currency-sign currency-sign-discounted">C$</span> <span class="salesprice discount-price" id="salesprice-B49913_310">64.95</span> <span class="strike"><span class="currency">C$</span> <span class="baseprice" id="baseprice-B49913_310">80</span></span>
+              </div>
+              <div class="rating new-plp-layout-disabled" data-context="rating:5;reviews:7">
+                <!-- rating -->
+                <div class="rating-stars-container">
+                  <ul class="rating-stars rating-stars-empty">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                  </ul>
+                  <ul class="rating-stars rating-stars-filled" style="width:100%;">
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                    <li></li>
+                  </ul>
+                </div><!-- /rating -->
+                <span class="rating-stars-count">7</span>
+              </div>
+            </div>
+            <div class="buttons clearfix" data-context="status:IN STOCK">
+              <div class="button-container" id="B49913-buttons"></div>
+              <div class="cartaction" id="B49913-cartaction"></div>
+              <div class="add-to-cart button-atb button-full-width cart-loading button-loading" id="B49913-loading">
+                <span class="text">Add To Bag</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'add'; end
+        def domain; '//www.adidas.ca'; end
+      end
+    end
+
+    parser.extend(Merchants::AdidasCanada::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'men\'s sport essentials french terry hoodie', article_hash[:name]
+    assert_equal 'Men\'s sport essentials french terry hoodie', article_hash[:description]
+    assert_equal '64.95', article_hash[:price]
+    assert_equal 'B49913', article_hash[:sku]
+    assert_equal '//www.adidas.ca/en/mens-sport-essentials-french-terry-hoodie/B49913.html', article_hash[:link]
+  end
+
   def test_should_parse_sporting_life
     frag = <<~HTML
       <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
@@ -570,6 +651,84 @@ class ArticleParserTest < Minitest::Test
     assert_equal '799.99', article_hash[:price]
     assert_equal '24717522', article_hash[:sku]
     assert_equal '//www.sportinglife.ca/p/24717522/womens-double-downtown-parka', article_hash[:link]
+  end
+
+  def test_should_parse_sporting_life_2
+    frag = <<~HTML
+      <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
+        <div class="col-md-12 clearfix no-padding">
+          <div class="product-image col-xs-12 no-padding">
+            <div class="image-container">
+              <div>
+                <a href="https://www.sportinglife.ca/p/23416688/womens-polar-bears-international-expedition-parka" title="View Product Details for Women's Polar Bears International Expedition Parka"><img alt="Women's Polar Bears International Expedition Parka" border class="" height="" id="23416688_small_image" onerror="this.src='https://www.sportinglife.ca/static/img/imgNotFound_list.png'" src="https://www.sportinglife.ca/images/products/small/23416688_PBI_BLUE_5.JPG" style="" title="Women's Polar Bears International Expedition Parka" width=""></a>
+              </div>
+            </div>
+            <div class="quickview-bar">
+              <a data-target="#modal" data-toggle="modal" href="/modalTemplate.jsp?contentURL=browse/include/productQuickView.jsp?productId=23416688">
+              <div>
+                <span>Quick View</span> <svg class="svg_quickview svg-icon mini grey">
+                <switch>
+                  <use xlink:href="#quickview" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                  <foreignobject>
+                    <div></div>
+                  </foreignobject>
+                </switch></svg>
+              </div></a>
+            </div>
+          </div>
+          <div class="swatches col-xs-12 hidden-xs">
+            <a class="swatchDisplayLink" data-swatch-url="https://www.sportinglife.ca/images/products/small/23416688_PBI_BLUE_5.JPG" href="javascript:void(0);" rel="23416688"><img alt="PBI BLUE" border class="unselected-swatch" height="" id="" src="https://www.sportinglife.ca/images/swatches/sku_specific/23416688_PBI_BLUE_7.JPG" style="" title="PBI BLUE" width=""></a>
+          </div>
+          <div class="product-name no-padding col-xs-12">
+            <h4 class="font-secondary"><strong>Canada Goose</strong></h4><a class="productDetailsLink-23416688" href="https://www.sportinglife.ca/p/23416688/womens-polar-bears-international-expedition-parka" title="View Product Details for&nbsp;Women's Polar Bears International Expedition Parka">
+            <h5>Women's Polar Bears International Expedition Parka</h5></a>
+          </div>
+          <div class="rating no-padding col-xs-12 hidden-xs">
+            <div class="pr_snippet_category" id="pr_category_23416688">
+              <script type="text/javascript">
+                    if (typeof POWERREVIEWS !== 'undefined') {
+                        var pr_snippet_min_reviews=0;
+                        POWERREVIEWS.display.snippet({write : function(content) {
+                            if(/<link/i.test(content)) {
+                                $('head').append(content);
+                            } else {
+                                $('#pr_category_23416688').append(content);
+                            }
+                        }}, { pr_page_id : "23416688" });
+                    }
+              </script>
+            </div>
+          </div>
+          <div class="price no-padding col-xs-12" id="displayPrices_23416688">
+            <div>
+              <p><span>$1,045.00</span></p>
+            </div>
+          </div>
+          <div class="prodregprice font-secondary"></div>
+          <div class="col-md-12 pull-left hidden-sm hidden-xs">
+            <div class="checkbox">
+              <label><input class="compareCheck" id="productCompare-23416688" name="product_compare" title="Compare this product" type="checkbox" value="23416688"> <a href="/comparison/productComparison.jsp" title="Compare this product">Compare</a></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'slf'; end
+        def domain; '//www.sportinglife.ca'; end
+      end
+    end
+
+    parser.extend(Merchants::SportingLife::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'women\'s polar bears international expedition parka', article_hash[:name]
+    assert_equal 'Canada goose women\'s polar bears international expedition parka', article_hash[:description]
+    assert_equal '1,045.00', article_hash[:price]
+    assert_equal '23416688', article_hash[:sku]
+    assert_equal '//www.sportinglife.ca/p/23416688/womens-polar-bears-international-expedition-parka', article_hash[:link]
   end
 
   def test_should_parse_altitude_sports
