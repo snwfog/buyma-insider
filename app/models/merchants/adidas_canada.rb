@@ -19,7 +19,7 @@ module Merchants
 
     module Parser
       def attrs_from_node(node)
-        data_context_attrs = Hash[*node['data-context'].split(/[:;]/)]
+        data_context_attrs = Hash[*node['data-context'].split(/[:;]/, -1)]
         product_sku        = data_context_attrs['sku']
 
         inner_content = node.at_css('div.product-info-inner-content')
