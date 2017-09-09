@@ -24,7 +24,7 @@ class ArticlesController < ApplicationController
     end
 
     param :merchant_id, String, required: true, transform: :downcase, format: /[a-z]{3}/
-    param :page, Integer, in: (1..200), default: 1
+    param :page, Integer, in: (1..1000), default: 1
     param :limit, Integer, in: (1..20), default: 20
     param :filter, String
 
@@ -42,7 +42,7 @@ class ArticlesController < ApplicationController
 
   get '/_search' do
     param :q, String, required: true, transform: :downcase
-    param :page, Integer, in: (1..200), default: 1
+    param :page, Integer, in: (1..1000), default: 1
     param :limit, Integer, in: (1..20), default: 20
     param :order, String, transform: :downcase, in: ['name:asc',
                                                      'name:desc',
