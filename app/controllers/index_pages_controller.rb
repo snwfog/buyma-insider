@@ -1,6 +1,5 @@
 class IndexPagesController < ApplicationController
   options '/**' do
-    ;
   end
 
   before '/:id(/**)?' do

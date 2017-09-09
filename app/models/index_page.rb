@@ -12,7 +12,7 @@
 #
 
 class IndexPage < ActiveRecord::Base
-  CACHE_FRESH_IN_DAYS = 1.weeks
+  FRESH_IN_DAYS = 1.weeks
 
   has_and_belongs_to_many :articles, join_table: :index_pages_articles
 
@@ -33,48 +33,55 @@ class IndexPage < ActiveRecord::Base
     merchant.full_url << relative_path
   end
 
-  def cache_filename
-    relative_path.tr('\\/:*?"<>|.', ?_)
+  def cache
+    @cache ||= Cache.new(self)
   end
 
-  def cache_html_path
-    File.expand_path('%<merchant_cache_dir>s/%<index_cache_filename>s' % {
-      merchant_cache_dir:   merchant.html_cache_dir_create_if_not_exists!,
-      index_cache_filename: cache_filename
-    })
-  end
+  class Cache
+    delegate :relative_path, :merchant, to: :index_page
+    attr_accessor :index_page
 
-  def cache_mtime
-    File.mtime(cache_html_path) rescue nil
-  end
+    def initialize(index_page)
+      @index_page = index_page
+    end
 
-  def cache_html_document
-    RestClient::Request.decode(cache_html_content_encoding,
-                               cache_html_content)
-  end
+    def filename
+      relative_path.tr('\\/:*?"<>|.', ?_)
+    end
 
-  def has_web_cache?
-    File.exists?(cache_html_path)
-  end
+    def mtime
+      File.mtime(html_path) rescue nil
+    end
 
-  def is_cache_fresh?
-    has_web_cache? && File::mtime(cache_html_path) >= CACHE_FRESH_IN_DAYS.ago
+    def size_in_kb
+      (File.size?(html_path) or 0) / 1000.0
+    end
+
+    def exists?
+      File.exists?(html_path)
+    end
+
+    def fresh?
+      exists? && File::mtime(html_path) >= FRESH_IN_DAYS.ago
+    end
+
+    def html_path
+      File.expand_path('%<merchant_cache_dir>s/%<index_cache_filename>s' % {
+        merchant_cache_dir:   merchant.html_cache_dir_create_if_not_exists!,
+        index_cache_filename: filename
+      })
+    end
+
+    def html_document
+      File.open(html_path, 'rb') do |file|
+        is_gzipped = file.read(2).unpack('s>') == [0x1f8b]
+        file.rewind
+        is_gzipped ? Zlib::GzipReader.new(file).read : file.read
+      end
+    end
   end
 
   def to_s
     full_url
-  end
-
-  private
-
-  def cache_html_content
-    @cache_html_content_encoded ||= File.open(cache_html_path, 'rb', &:read)
-  end
-
-  def cache_html_content_encoding
-    crawl_histories
-      .completed
-      .last
-      .try(:content_encoding) || 'gzip'.freeze
   end
 end

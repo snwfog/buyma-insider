@@ -45,6 +45,7 @@ module Worker
                                   verify_ssl:   verify_ssl,
                                   raw_response: true,
                                   headers:      headers)
+
     rescue OpenSSL::SSL::SSLError
       retry_count += 1
       logger.warn 'Fetching `%s` failed with SSL error (%i times)' % [uri, retry_count]

@@ -28,6 +28,7 @@ class IndexPageSerializer < ActiveModel::Serializer
              :full_url,
              :relative_path,
              :last_synced_at,
+             :cache_mtime,
              :health
 
   def root?
@@ -36,6 +37,10 @@ class IndexPageSerializer < ActiveModel::Serializer
 
   def last_synced_at
     object.crawl_histories.completed.last.try(:created_at)
+  end
+
+  def cache_mtime
+    object.cache.mtime
   end
 
   def health

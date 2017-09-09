@@ -15,23 +15,24 @@ class IndexPageCrawlWorker < Worker::Base
     use_web_cache         = !args.fetch('use_web_cache', true)
     perform_async_parsing = args.fetch('perform_async_parsing', false)
 
-    @index_page         = IndexPage.includes(:merchant).find(index_page_id)
-    @last_crawl_history = @index_page.crawl_histories.completed.last
-    @merchant           = @index_page.merchant
-    @standard_headers.merge(http_cache_headers) if use_web_cache
+    @index_page            = IndexPage.includes(:merchant).find(index_page_id)
+    @last_crawl_history    = @index_page.crawl_histories.completed.last
+    @merchant              = @index_page.merchant
+    cache_headers          = use_web_cache ? cache_control_headers : {}
     @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
                                                                 description: "#{@merchant.name} [#{@index_page}]")
     logger.info 'Started crawling index `%s`' % @current_crawl_history.description
 
     # slack_notify(text: ":spider: *Crawl Started*\n#{@index_page.full_url}", unfurl_links: true)
 
-    if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, @standard_headers)
+    if raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, cache_headers)
       @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
-                                     response_headers:   raw_response.headers.to_h,
-                                     response_status:    :ok,
+                                     response_headers:   raw_response.headers,
+                                     response_status:    raw_response.code,
                                      status:             :completed)
-      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache_html_path]
-      FileUtils.cp(raw_response.file.path, @index_page.cache_html_path)
+
+      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache.html_path]
+      FileUtils.cp(raw_response.file.path, @index_page.cache.html_path)
     end
   rescue RestClient::ExceptionWithResponse => ex
     @current_crawl_history.update!(traffic_size_in_kb: 0.0,
@@ -39,7 +40,7 @@ class IndexPageCrawlWorker < Worker::Base
                                    response_status:    ex.http_code)
 
     logger.debug 'Index has not been modified `%s`' % @index_page.full_url
-    FileUtils::touch(@index_page.cache_html_path)
+    FileUtils::touch(@index_page.cache.html_path)
   rescue => ex
     if @current_crawl_history
       @current_crawl_history.aborted!
@@ -86,15 +87,13 @@ class IndexPageCrawlWorker < Worker::Base
   end
 
   private
-  def http_cache_headers
+  def cache_control_headers
     if @last_crawl_history.try(:etag) and not @last_crawl_history.try(:weak?)
       logger.info 'Strong etag `%s` exists' % @last_crawl_history.etag
       { if_none_match: @last_crawl_history.etag }
-    elsif @index_page.has_web_cache?
-      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache_html_path, @index_page.cache_mtime]
-      { if_modified_since: @index_page.cache_mtime.httpdate }
-    else
-      {}
+    elsif @index_page.cache.exists?
+      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache.html_path, @index_page.cache.mtime]
+      { if_modified_since: @index_page.cache.mtime.httpdate }
     end
   end
 end

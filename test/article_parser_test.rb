@@ -101,6 +101,44 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.getoutsideshoes.com/reebok-women-pastel-classic-leather-pink-sneakers-94481.html', article_hash[:link]
   end
 
+  def test_should_parse_getoutside_with_discount
+    frag = <<~HTML
+      <li class="item">
+        <div class="product-image-wrapper" style="max-width:295px;">
+          <a class="product-image" href="https://www.getoutsideshoes.com/converse-kids-chuck-taylor-all-star-hi-soar-93171.html" title="Converse Kids Chuck Taylor All Star Fresh HI"><img alt="Converse Kids Chuck Taylor All Star Fresh HI" src="https://www.getoutsideshoes.com/media/catalog/product/cache/1/small_image/295x295/9df78eab33525d08d6e5fb8d27136e95/c/o/converse-kids-chuck-taylor-fresh-yellow-355738-1.jpg"> <span class="sticker-wrapper top-right"><span class="sticker sale">Sale</span></span></a>
+          <ul class="add-to-links clearer addto-links-icons addto-onimage display-onhover">
+            <li>
+              <a class="link-wishlist" href="https://www.getoutsideshoes.com/wishlist/index/add/product/93078/form_key/obiEJ3xVXq2OOYbs/" rel="nofollow" title="Add to Wishlist"><span class="icon icon-hover i-wishlist-bw"></span></a>
+            </li>
+          </ul>
+        </div><!-- end: product-image-wrapper -->
+        <h2 class="product-name"><a href="https://www.getoutsideshoes.com/converse-kids-chuck-taylor-all-star-hi-soar-93171.html" title="Converse Kids Chuck Taylor All Star Fresh HI">Converse Kids Chuck Taylor All Star Fresh HI</a></h2>
+        <div class="price-box">
+          <p class="old-price"><span class="price-label">Regular Price:</span> <span class="price" id="old-price-93078">CAD$ 39.99</span></p>
+          <p class="special-price sp-price-line"><span class="price" id="product-price-93078">CAD$ 24.99</span></p>
+        </div>
+        <div class="actions clearer"></div><!-- end: actions -->
+      </li>
+    HTML
+
+    parser = Class.new do |klazz|
+      class << klazz
+        def code; 'get'; end
+        def domain; '//www.getoutsideshoes.com'; end
+      end
+    end.extend(Merchants::Getoutside::Parser)
+
+    article_hash = parser.attrs_from_node(
+      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
+    )
+
+    assert_equal 'converse kids chuck taylor all star fresh hi', article_hash[:name]
+    assert_equal 'Converse kids chuck taylor all star fresh hi', article_hash[:description]
+    assert_equal '24.99', article_hash[:price]
+    assert_equal '93078', article_hash[:sku]
+    assert_equal '//www.getoutsideshoes.com/converse-kids-chuck-taylor-all-star-hi-soar-93171.html', article_hash[:link]
+  end
+
   def test_should_parse_octobersveryown
     frag = <<~HTML
       <div class="grid__item prod-xlarge--one-fifth prod-large--one-quarter prod-medium--one-half " style="position:relative">
@@ -423,9 +461,158 @@ class ArticleParserTest < Minitest::Test
     article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
 
     assert_equal 'women\'s snow mantra parka', article_hash[:name]
-    assert_equal 'Women\'s snow mantra parka', article_hash[:description]
+    assert_equal 'Canada goose women\'s snow mantra parka', article_hash[:description]
     assert_equal '1,495.00', article_hash[:price]
     assert_equal '23771496', article_hash[:sku]
     assert_equal '//www.sportinglife.ca/p/23771496/womens-snow-mantra-parka', article_hash[:link]
+  end
+
+  def test_should_parse_sporting_life_with_discount
+    frag = <<~HTML
+      <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
+        <div class="col-md-12 clearfix no-padding">
+          <div class="product-image col-xs-12 no-padding">
+            <div class="image-container">
+              <div>
+                <a href="https://www.sportinglife.ca/p/24717522/womens-double-downtown-parka" title="View Product Details for Women's Double Downtown Parka"><img alt="Women's Double Downtown Parka" border class="" height="" id="24717522_small_image" onerror="this.src='https://www.sportinglife.ca/static/img/imgNotFound_list.png'" src="https://www.sportinglife.ca/images/products/small/24717522_OLIVE_5.JPG" style="" title="Women's Double Downtown Parka" width=""></a>
+              </div>
+            </div>
+            <div class="quickview-bar">
+              <a data-target="#modal" data-toggle="modal" href="/modalTemplate.jsp?contentURL=browse/include/productQuickView.jsp?productId=24717522">
+              <div>
+                <span>Quick View</span> <svg class="svg_quickview svg-icon mini grey">
+                <switch>
+                  <use xlink:href="#quickview" xmlns:xlink="http://www.w3.org/1999/xlink"></use>
+                  <foreignobject>
+                    <div></div>
+                  </foreignobject>
+                </switch></svg>
+              </div></a>
+            </div>
+          </div>
+          <div class="swatches col-xs-12 hidden-xs">
+            <a class="swatchDisplayLink" data-swatch-url="https://www.sportinglife.ca/images/products/small/24717522_OLIVE_5.JPG" href="javascript:void(0);" rel="24717522"><img alt="OLIVE" border class="unselected-swatch" height="" id="" src="https://www.sportinglife.ca/images/swatches/sku_specific/24717522_OLIVE_7.JPG" style="" title="OLIVE" width=""></a>
+          </div>
+          <div class="product-name no-padding col-xs-12">
+            <h4 class="font-secondary"><strong>Sam</strong></h4><a class="productDetailsLink-24717522" href="https://www.sportinglife.ca/p/24717522/womens-double-downtown-parka" title="View Product Details for&nbsp;Women's Double Downtown Parka">
+            <h5>Women's Double Downtown Parka</h5></a>
+          </div>
+          <div class="rating no-padding col-xs-12 hidden-xs">
+            <div class="pr_snippet_category" id="pr_category_24717522">
+              <script type="text/javascript">
+                    if (typeof POWERREVIEWS !== 'undefined') {
+                        var pr_snippet_min_reviews=0;
+                        POWERREVIEWS.display.snippet({write : function(content) {
+                            if(/<link/i.test(content)) {
+                                $('head').append(content);
+                            } else {
+                                $('#pr_category_24717522').append(content);
+                            }
+                        }}, { pr_page_id : "24717522" });
+                    }
+              </script>
+              <div id="pr-snippet-holder-1">
+                <link href="//cdn.powerreviews.com/aux/11009/9576/css/express.css" id="prMerchantOverrideStylesheet" rel="stylesheet" type="text/css">
+                <div class="pr-snippet" id="pr-snippet-24717522-1">
+                  <div class="pr-snippet-wrapper">
+                    <div class="pr-snippet-stars">
+                      <div class="pr-stars pr-stars-small pr-stars-0-sm" style="background-position: 0px 0px;" title="Got it? Rate it.">
+                        &nbsp;
+                      </div><span class="pr-snippet-rating-decimal pr-rounded">0.0</span> <!--
+            ## // TODO: this is for the forthcoming histogram
+            ##<a id="pr-rating-popout" href=""><div class="pr-popout"></div></a>
+            -->
+                    </div>
+                    <p class="pr-snippet-review-count">(No reviews)</p>
+                    <div class="pr-snippet-read-write">
+                      <div class="pr-snippet-write-first-review">
+                        <p>Be the first to</p><a class="pr-snippet-link" data-pr-event="snippet-write-review" href="https://www.sportinglife.ca/review/addReview.jsp?pr_page_id=24717522">Write a Review</a>
+                      </div>
+                      <div class="pr-clear"></div>
+                    </div>
+                    <div class="pr-clear"></div>
+                    <div class="pr-snippet-social-bar">
+                      <div class="pr-clear"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="price no-padding col-xs-12" id="displayPrices_24717522">
+            <div>
+              <p><small>reg.</small>&nbsp;<span>$1,295.00</span></p>
+              <p><small>now</small>&nbsp;<span class="red">$799.99</span></p>
+            </div>
+          </div>
+          <div class="prodregprice font-secondary"></div>
+          <div class="col-md-12 pull-left hidden-sm hidden-xs">
+            <div class="checkbox">
+              <label><input class="compareCheck" id="productCompare-24717522" name="product_compare" title="Compare this product" type="checkbox" value="24717522"> <a href="/comparison/productComparison.jsp" title="Compare this product">Compare</a></label>
+            </div>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'slf'; end
+        def domain; '//www.sportinglife.ca'; end
+      end
+    end
+
+    parser.extend(Merchants::SportingLife::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+
+    assert_equal 'women\'s double downtown parka', article_hash[:name]
+    assert_equal 'Sam women\'s double downtown parka', article_hash[:description]
+    assert_equal '799.99', article_hash[:price]
+    assert_equal '24717522', article_hash[:sku]
+    assert_equal '//www.sportinglife.ca/p/24717522/womens-double-downtown-parka', article_hash[:link]
+  end
+
+  def test_should_parse_altitude_sports
+    frag = <<~HTML
+      <li class="item first item-1467330694" data-color-thumbnails="[{&quot;label&quot;:&quot;Dark Shadow&quot;,&quot;thumbUrl&quot;:&quot;https://cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_icon.jpg?v=1490260422&quot;,&quot;standardUrl&quot;:&quot;https://cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422&quot;}]" data-original-image="//cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422" itemprop="itemListElement" itemscope itemtype="http://schema.org/Product" style="height: 317px;">
+        <a class="product-image" href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" itemprop="url" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')" title="Herschel Supply Co."><img alt="Herschel Supply Co." class="ss-loaded" height="160" itemprop="image" onerror="this.onerror=null;this.src='//cdn.shopify.com/s/files/1/1230/9376/t/2/assets/loader.gif';" src="//cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422" width="160">
+        <div class="featured">
+          <div class="discount-disc">
+            -25%
+          </div>
+        </div></a>
+        <div class="swatch-container">
+          <a href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')">
+          <ul class="swatch-list"></ul></a>
+        </div>
+        <h2 class="product-name" itemprop="name"><a href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')" title="Herschel Supply Co. Little America Nylon Backpack"><span class="manufacturer">Herschel Supply Co.</span><br>
+        Little America Nylon Backpack</a></h2>
+        <div class="no-display" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+          <span itemprop="price"><span class="price">CA$ 141.99</span></span>
+          <link href="//schema.org/InStock" itemprop="availability">
+        </div>
+        <div class="price-box">
+          <p class="special-price"><span class="price ss-non-member-price" id="product-price-1467330694">CA$ 141.99</span> <span class="price ss-member-price" id="product-price-1467330694">Member: CA$ 0.00</span></p>
+          <p class="old-price"><span class="price" id="old-price-1467330694">CA$ 189.99</span></p>
+        </div>
+        <div class="ss-rating"><img alt="no review" src="//cdn.shopify.com/s/files/1/1230/9376/t/2/assets/stars0.png?422378479956574834"></div>
+      </li>
+    HTML
+
+    parser = Class.new do |klass|
+      class << klass
+        def code; 'als'; end
+        def domain; '//www.altitude-sports.com'; end
+      end
+    end
+
+    parser.extend(Merchants::AltitudeSports::Parser)
+    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
+
+    assert_equal 'herschel supply co. little america nylon backpack', article_hash[:name]
+    assert_equal 'Herschel supply co. little america nylon backpack', article_hash[:description]
+    assert_equal '141.99', article_hash[:price]
+    assert_equal '1467330694', article_hash[:sku]
+    assert_equal '//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n', article_hash[:link]
   end
 end

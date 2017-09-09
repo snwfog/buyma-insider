@@ -14,6 +14,25 @@ class IndexPageSentinelWorker < Worker::Base
   end
 
   private
+  def get_index_page_status(index_page)
+    merchant     = index_page.merchant
+    raw_response = fetch_uri(index_page.full_url)
+
+    FileUtils.cp(raw_response.file.path, index_page.cache.html_path)
+    article_nodes = Nokogiri::HTML(index_page.cache.html_document)
+                      .css(merchant.metadatum.item_css)
+  rescue RestClient::ExceptionWithResponse => ex
+    raw_response = ex.response
+  rescue => ex
+    Raven.capture_exception(ex)
+  ensure
+    return Hashie::Mash.new(index_page:     index_page.full_url,
+                            http_status:    raw_response.try(:code),
+                            size_in_kb:     index_page.cache.size_in_kb,
+                            redirection:    raw_response.history.try(:any?),
+                            articles_count: article_nodes.try(:count))
+  end
+
   def sentinel_slack_report(statuses_grouped_by)
     colors = { :'2xx' => '008000', :'3xx' => 'FFD700',
                :'4xx' => 'FF0000', :'5xx' => 'C71585' }
@@ -27,25 +46,5 @@ class IndexPageSentinelWorker < Worker::Base
                                   ts:    Time.now.to_i }
       end
     end
-  end
-
-  def get_index_page_status(index_page)
-    begin
-      merchant     = index_page.merchant
-      raw_response = fetch_uri(index_page.full_url)
-      # FileUtils.cp(raw_resp_tempfile.file.path, index_page.cache_html_path)
-      gzip_encoded_html = File.open(raw_response.file.path, 'rb') { |f| f.read }
-      file_size_in_kb   = gzip_encoded_html.size / 1000.0
-      html_document     = RestClient::Request.decode('gzip', gzip_encoded_html)
-      article_nodes     = Nokogiri::HTML(html_document).css(merchant.metadatum.item_css)
-    rescue RestClient::ExceptionWithResponse => ex
-      raw_response = ex.response
-    end
-
-    Hashie::Mash.new(index_page:     index_page.full_url,
-                     http_status:    raw_response.try(:code),
-                     size_in_kb:     file_size_in_kb || 0.0,
-                     redirection:    raw_response.try(:history).try(:any?),
-                     articles_count: article_nodes.try(:count))
   end
 end
