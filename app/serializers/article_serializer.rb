@@ -46,6 +46,14 @@ class ArticleSerializer < ActiveModel::Serializer
              :created_at,
              :updated_at
 
+  def name
+    object.name.titleize.squish
+  end
+
+  def description
+    object.description.capitalize
+  end
+
   def synced_at
     object.crawl_histories.completed.last.try(:created_at)
   end
