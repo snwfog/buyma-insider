@@ -31,12 +31,10 @@ class User < ActiveRecord::Base
     super username.downcase
   end
 
-  def valid_password?(password)
-    BCrypt::Password.new(password_hash) == password
-  end
-
-  def validate_password!(password)
-    raise InvalidPassword unless valid_password?(password)
+  def verify_password!(password)
+    unless BCrypt::Password.new(password_hash) == password
+      raise InvalidPassword
+    end
   end
 
   def password=(password)

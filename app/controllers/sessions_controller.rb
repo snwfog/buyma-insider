@@ -20,7 +20,7 @@ class SessionsController < ApplicationController
 
     begin
       user = User.where(username: username).first or raise UserNotFound
-      user.validate_password!(password)
+      user.verify_password!(password)
     rescue
       # error(400, { error: 'login.invalid_username_or_password' }.to_json)
       raise
