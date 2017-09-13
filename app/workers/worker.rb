@@ -17,6 +17,17 @@ module Worker
       }
     end
 
+    # def perform(args)
+    #   perform_safe(args)
+    # rescue => ex
+    #   Raven.capture_exception(ex)
+    #   logger.error(ex)
+    # end
+    #
+    # def perform_safe(args)
+    #   raise 'Not implemented'
+    # end
+
     protected
 
     def slack_notify(params = {})

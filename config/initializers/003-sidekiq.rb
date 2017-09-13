@@ -14,6 +14,12 @@ Sidekiq.configure_server do |cfg|
   if defined? Unicorn::HttpServer
     ActiveRecord::Base.establish_connection(BuymaInsider.configuration.postgres)
   end
+
+  cfg.error_handlers << -> (ex, ctx_hash) do
+    Raven.capture_exception(ex)
+    logger.error(ex)
+    logger.error(ctx_hash)
+  end
 end
 
 sidekiq_cron_cfg_file = File.expand_path('../../sidekiq-cron.yml', __FILE__)

@@ -20,7 +20,5 @@ class IndexPageWorker < Worker::Base
         end
       end
     end
-  rescue => ex
-    Raven.capture_exception(ex)
   end
 end
