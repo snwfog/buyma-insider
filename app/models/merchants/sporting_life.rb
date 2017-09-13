@@ -2,8 +2,7 @@ module Merchants
   module SportingLife
     def extract_index_pages!(root_index_page)
       # Top pager is picked
-      pager_node = root_index_page.cache.nokogiri_document.at_css(pager_css)
-
+      pager_node = super
       # By default, there are 12 articles per page, keep it so, because
       # its the default and we don't need to keep track of an extra qs param
       # find max page number

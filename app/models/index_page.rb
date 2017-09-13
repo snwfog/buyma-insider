@@ -41,6 +41,18 @@ class IndexPage < ActiveRecord::Base
     merchant.extract_nodes!(self)
   end
 
+  def extract_index_pages!
+    unless root?
+      raise 'Only root index page extract is currently supported'
+    end
+
+    unless cache.exists?
+      raise 'Index page cache does not exists'
+    end
+
+    merchant.extract_index_pages!(self)
+  end
+
   def root?
     index_pages.empty?
   end

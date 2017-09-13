@@ -1,8 +1,7 @@
 module Merchants
   module AdidasCanada
     def extract_index_pages!(root_index_page)
-      pager_node = root_index_page.cache.nokogiri_document.at_css(pager_css)
-
+      pager_node = super
       # Top pager is picked
       pager_node.css('select.paging-select option').map do |page_node|
         page_uri      = URI(page_node['data-href'])

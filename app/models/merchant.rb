@@ -48,12 +48,6 @@ class Merchant < ActiveRecord::Base
   end
 
   def extract_index_pages!(root_index_page)
-    unless root_index_page.root?
-      raise 'Only root index page extract is currently supported'
-    end
-
-    unless root_index_page.cache.exists?
-      raise 'Index page cache does not exists'
-    end
+    root_index_page.cache.nokogiri_document.at_css(pager_css)
   end
 end

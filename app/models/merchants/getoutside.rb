@@ -2,8 +2,7 @@ module Merchants
   module Getoutside
     def extract_index_pages!(root_index_page)
       # Top pager is picked
-      pager_node = root_index_page.cache.nokogiri_document.at_css(pager_css)
-
+      pager_node   = super
       page_numbers = pager_node.css('li:not(.next):not(.previous)').map(&:content)
       page_numbers.map do |page_number|
         relative_path = "#{index_page.relative_path}?p=#{page_number}"

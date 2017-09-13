@@ -2,8 +2,7 @@ module Merchants
   module Livestock
     def extract_index_pages!(root_index_page)
       # Top pager is picked
-      pager_node = root_index_page.cache.nokogiri_document.at_css(pager_css)
-
+      pager_node              = super
       last_page_node          = pager_node.css('span.page a').last
       last_page_relative_path = URI(last_page_node['href'])
 

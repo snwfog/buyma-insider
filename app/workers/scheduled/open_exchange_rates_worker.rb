@@ -17,5 +17,7 @@ class OpenExchangeRatesWorker < Worker::Base
     }
 
     oer.save_rates
+  rescue => ex
+    Raven.capture_exception(ex)
   end
 end

@@ -1,8 +1,7 @@
 module Merchants
   module Ssense
     def extract_index_pages!(root_index_page)
-      pager_node     = root_index_page.cache.nokogiri_document.at_css(pager_css)
-
+      pager_node     = super
       last_page_node = pager_node.try(:at_css, 'li.last-page a')
       return [] unless last_page_node
 
