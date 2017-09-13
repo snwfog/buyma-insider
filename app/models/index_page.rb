@@ -37,6 +37,14 @@ class IndexPage < ActiveRecord::Base
     @cache ||= Cache.new(self)
   end
 
+  def extract_article_nodes!
+    merchant.extract_nodes!(self)
+  end
+
+  def root?
+    index_pages.empty?
+  end
+
   class Cache
     delegate :relative_path, :merchant, to: :index_page
     attr_accessor :index_page
@@ -50,34 +58,38 @@ class IndexPage < ActiveRecord::Base
     end
 
     def mtime
-      File.mtime(html_path) rescue nil
+      File.mtime(path) rescue nil
     end
 
     def size_in_kb
-      (File.size?(html_path) or 0) / 1000.0
+      (File.size?(path) or 0) / 1000.0
     end
 
     def exists?
-      File.exists?(html_path)
+      File.exists?(path)
     end
 
     def fresh?
-      exists? && File::mtime(html_path) >= FRESH_IN_DAYS.ago
+      exists? && File::mtime(path) >= FRESH_IN_DAYS.ago
     end
 
-    def html_path
+    def path
       File.expand_path('%<merchant_cache_dir>s/%<index_cache_filename>s' % {
         merchant_cache_dir:   merchant.html_cache_dir_create_if_not_exists!,
         index_cache_filename: filename
       })
     end
 
-    def html_document
-      File.open(html_path, 'rb') do |file|
+    def web_document
+      File.open(path, 'rb') do |file|
         is_gzipped = file.read(2).unpack('s>') == [0x1f8b]
         file.rewind
         is_gzipped ? Zlib::GzipReader.new(file).read : file.read
       end
+    end
+
+    def nokogiri_document
+      Nokogiri::HTML(web_document)
     end
   end
 

@@ -50,6 +50,9 @@ gem 'sidekiq'
 gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs' # Experimental
 
+# Business logic
+gem 'execjs'
+
 # Tasks
 gem 'rake'
 gem 'colorize',                require: false

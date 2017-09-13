@@ -31,8 +31,8 @@ class IndexPageCrawlWorker < Worker::Base
                                      response_status:    raw_response.code,
                                      status:             :completed)
 
-      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache.html_path]
-      FileUtils.cp(raw_response.file.path, @index_page.cache.html_path)
+      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache.path]
+      FileUtils.cp(raw_response.file.path, @index_page.cache.path)
     end
   rescue RestClient::ExceptionWithResponse => ex
     @current_crawl_history.update!(traffic_size_in_kb: 0.0,
@@ -40,7 +40,7 @@ class IndexPageCrawlWorker < Worker::Base
                                    response_status:    ex.http_code)
 
     logger.debug 'Index has not been modified `%s`' % @index_page.full_url
-    FileUtils::touch(@index_page.cache.html_path)
+    FileUtils::touch(@index_page.cache.path)
   rescue => ex
     if @current_crawl_history
       @current_crawl_history.aborted!
@@ -92,7 +92,7 @@ class IndexPageCrawlWorker < Worker::Base
       logger.info 'Strong etag `%s` exists' % @last_crawl_history.etag
       { if_none_match: @last_crawl_history.etag }
     elsif @index_page.cache.exists?
-      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache.html_path, @index_page.cache.mtime]
+      logger.info 'Index cache `%s` exists and was modified on `%s`' % [@index_page.cache.path, @index_page.cache.mtime]
       { if_modified_since: @index_page.cache.mtime.httpdate }
     end
   end

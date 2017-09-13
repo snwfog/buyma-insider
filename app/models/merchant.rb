@@ -41,4 +41,19 @@ class Merchant < ActiveRecord::Base
     end
     @html_cache_dir
   end
+
+  protected
+  def extract_nodes!(index_page)
+    Nokogiri::HTML(index_page.cache.web_document).css(item_css)
+  end
+
+  def extract_index_pages!(root_index_page)
+    unless root_index_page.root?
+      raise 'Only root index page extract is currently supported'
+    end
+
+    unless root_index_page.cache.exists?
+      raise 'Index page cache does not exists'
+    end
+  end
 end

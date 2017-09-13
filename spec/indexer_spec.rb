@@ -2,7 +2,7 @@ require_relative './setup'
 
 describe 'Merchant Indexer' do
   before do
-    unless File.exists?(index_page.cache.html_path)
+    unless File.exists?(index_page.cache.path)
       IndexPageCrawlWorker.new.perform('index_page_id' => index_page.id)
     end
   end

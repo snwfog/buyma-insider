@@ -5,12 +5,10 @@ class IndexPageParseWorker < Worker::Base
     @merchant      = @index_page.merchant
 
     unless @index_page.cache.exists?
-      raise "Web cache file not found for `#{@index_page}' at [#{@index_page.cache.html_path}]"
+      raise "Web cache file not found for `#{@index_page}' at [#{@index_page.cache.path}]"
     end
 
-    article_nodes = Nokogiri::HTML(@index_page.cache.html_document)
-                      .css(@merchant.metadatum.item_css)
-
+    article_nodes = @index_page.extract_nodes!
     logger.info 'Start parsing index page html %s with `%i` articles' % [@index_page, article_nodes.count]
     article_nodes.each { |article_node| parse_article_node(article_node) }
   rescue => ex
@@ -24,7 +22,7 @@ class IndexPageParseWorker < Worker::Base
 
   private
   def parse_article_node(article_node)
-    article_attrs = @merchant.attrs_from_node(article_node)
+    article_attrs = @merchant.extract_attrs!(article_node)
 
     logger.debug 'Article properties'
     logger.debug JSON.pretty_generate(article_attrs)

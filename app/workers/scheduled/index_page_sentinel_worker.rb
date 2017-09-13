@@ -18,8 +18,8 @@ class IndexPageSentinelWorker < Worker::Base
     merchant     = index_page.merchant
     raw_response = fetch_uri(index_page.full_url)
 
-    FileUtils.cp(raw_response.file.path, index_page.cache.html_path)
-    article_nodes = Nokogiri::HTML(index_page.cache.html_document)
+    FileUtils.cp(raw_response.file.path, index_page.cache.path)
+    article_nodes = Nokogiri::HTML(index_page.cache.web_document)
                       .css(merchant.metadatum.item_css)
   rescue RestClient::ExceptionWithResponse => ex
     raw_response = ex.response

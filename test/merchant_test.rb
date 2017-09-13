@@ -39,9 +39,9 @@ class MerchantTest < Minitest::Test
     end
   end
 
-  def test_should_respond_to_attrs_from_node
+  def test_should_respond_to_extract_attrs!
     @merchants.each do |merchant|
-      assert_respond_to merchant, :attrs_from_node
+      assert_respond_to merchant, :extract_attrs!
     end
   end
 end

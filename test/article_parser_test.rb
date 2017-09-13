@@ -1,6 +1,8 @@
 require_relative './setup'
 
 class ArticleParserTest < Minitest::Test
+  MockMerchant = Struct.new(:code, :domain)
+
   def test_should_parse_ssense
     frag = <<~HTML
       <figure class="browsing-product-item" itemscope="itemscope" itemtype="http://schema.org/Product">
@@ -22,14 +24,10 @@ class ArticleParserTest < Minitest::Test
       </figure>
     HTML
 
-    parser = Class.new do |klazz|
-      class << klazz
-        def code; 'sse'; end
-        def domain; '//www.ssense.com'; end
-      end
-    end.extend(Merchants::Ssense::Parser)
+    merchant = MockMerchant.new('sse', '//www.ssense.com')
+    merchant.extend(Merchants::Ssense)
 
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('figure'))
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('figure'))
     assert_equal 'black \'kering\' padded raincoat', article_hash[:name]
     assert_equal 'Balenciaga - Black \'kering\' padded raincoat', article_hash[:description]
     assert_equal '2740', article_hash[:price]
@@ -49,14 +47,10 @@ class ArticleParserTest < Minitest::Test
       </li>
     HTML
 
-    parser = Class.new do |klazz|
-      class << self
-        def code; 'zar'; end
-        def domain; '//www.zara.com/ca/en'; end
-      end
-    end.extend(Merchants::Zara::Parser)
+    merchant = MockMerchant.new('zar', '//www.zara.com/ca/en')
+    merchant.extend(Merchants::Zara)
 
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'velvet toggle jacket', article_hash[:name]
     assert_equal 'Velvet toggle jacket', article_hash[:description]
     assert_equal '139.00', article_hash[:price]
@@ -83,17 +77,10 @@ class ArticleParserTest < Minitest::Test
       </li>
     HTML
 
-    parser = Class.new do |klazz|
-      class << klazz
-        def code; 'get'; end
-        def domain; '//www.getoutsideshoes.com'; end
-      end
-    end.extend(Merchants::Getoutside::Parser)
+    merchant = MockMerchant.new('get', '//www.getoutsideshoes.com')
+    merchant.extend(Merchants::Getoutside)
 
-    article_hash = parser.attrs_from_node(
-      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
-    )
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'reebok women\'s metallic classic leather', article_hash[:name]
     assert_equal 'Reebok women\'s metallic classic leather', article_hash[:description]
     assert_equal '109.99', article_hash[:price]
@@ -121,17 +108,10 @@ class ArticleParserTest < Minitest::Test
       </li>
     HTML
 
-    parser = Class.new do |klazz|
-      class << klazz
-        def code; 'get'; end
-        def domain; '//www.getoutsideshoes.com'; end
-      end
-    end.extend(Merchants::Getoutside::Parser)
+    merchant = MockMerchant.new('get', '//www.getoutsideshoes.com')
+    merchant.extend(Merchants::Getoutside)
 
-    article_hash = parser.attrs_from_node(
-      Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li')
-    )
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
     assert_equal 'converse kids chuck taylor all star fresh hi', article_hash[:name]
     assert_equal 'Converse kids chuck taylor all star fresh hi', article_hash[:description]
     assert_equal '24.99', article_hash[:price]
@@ -152,20 +132,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klazz|
-      class << klazz
-        def code; 'ovo'; end
-        def domain; '//ca.octobersveryown.com'; end
-      end
-    end
+    merchant = MockMerchant.new('ovo', '//ca.octobersveryown.com')
+    merchant.extend(Merchants::Octobersveryown)
 
-    parser.extend(Merchants::Octobersveryown::Parser)
-    article_hash = parser
-                     .attrs_from_node(
-                       Nokogiri::HTML::DocumentFragment
-                         .parse(frag)
-                         .at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'ovo athletics tee - red', article_hash[:name]
     assert_equal 'Ovo athletics tee - red', article_hash[:description]
     assert_equal '40.00', article_hash[:price]
@@ -201,16 +171,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'ltk'; end
-        def domain; '//www.deadstock.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('ltk', '//www.deadstock.ca')
+    merchant.extend(Merchants::Livestock)
 
-    parser.extend(Merchants::Livestock::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'adidas ultraboost laceless / legend ink', article_hash[:name]
     assert_equal 'Adidas ultraboost laceless / legend ink', article_hash[:description]
     assert_equal '250.00', article_hash[:price]
@@ -256,20 +220,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'goo'; end
-        def domain; '//www.canadagoose.com'; end
-      end
-    end
+    merchant = MockMerchant.new('goo', '//www.canadagoose.com')
+    merchant.extend(Merchants::CanadaGoose)
 
-    parser.extend(Merchants::CanadaGoose::Parser)
-    article_hash = parser
-                     .attrs_from_node(
-                       Nokogiri::HTML::DocumentFragment
-                         .parse(frag)
-                         .at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'HyBridge Knit Jacket', article_hash[:name]
     assert_equal 'HyBridge Knit Jacket', article_hash[:description]
     assert_equal '595.00', article_hash[:price]
@@ -311,16 +265,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'arc'; end
-        def domain; '//arcteryx.com'; end
-      end
-    end
+    merchant = MockMerchant.new('arc', '//arcteryx.com')
+    merchant.extend(Merchants::Arcteryx)
 
-    parser.extend(Merchants::Arcteryx::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'Gamma MX Hoody Men\'s', article_hash[:name]
     assert_equal 'Breathable, wind-resistant, lightly insulated hooded jacket constructed with Fortius 2.0 textile for increased comfort and mobility. Gamma Series: Softshell outerwear with stretch | MX: Mixed Weather.', article_hash[:description]
     assert_equal '400.00', article_hash[:price]
@@ -372,16 +320,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'add'; end
-        def domain; '//www.adidas.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('add', '//www.adidas.ca')
+    merchant.extend(Merchants::AdidasCanada)
 
-    parser.extend(Merchants::AdidasCanada::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'men\'s maple leafs jersey tee-matthews', article_hash[:name]
     assert_equal 'Men\'s maple leafs jersey tee-matthews', article_hash[:description]
     assert_equal '38.00', article_hash[:price]
@@ -453,16 +395,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'add'; end
-        def domain; '//www.adidas.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('add', '//www.adidas.ca')
+    merchant.extend(Merchants::AdidasCanada)
 
-    parser.extend(Merchants::AdidasCanada::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'men\'s sport essentials french terry hoodie', article_hash[:name]
     assert_equal 'Men\'s sport essentials french terry hoodie', article_hash[:description]
     assert_equal '64.95', article_hash[:price]
@@ -531,16 +467,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'slf'; end
-        def domain; '//www.sportinglife.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('slf', '//www.sportinglife.ca')
+    merchant.extend(Merchants::SportingLife)
 
-    parser.extend(Merchants::SportingLife::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'women\'s snow mantra parka', article_hash[:name]
     assert_equal 'Canada goose women\'s snow mantra parka', article_hash[:description]
     assert_equal '1,495.00', article_hash[:price]
@@ -636,16 +566,10 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'slf'; end
-        def domain; '//www.sportinglife.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('slf', '//www.sportinglife.ca')
+    merchant.extend(Merchants::SportingLife)
 
-    parser.extend(Merchants::SportingLife::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'women\'s double downtown parka', article_hash[:name]
     assert_equal 'Sam women\'s double downtown parka', article_hash[:description]
     assert_equal '799.99', article_hash[:price]
@@ -714,64 +638,14 @@ class ArticleParserTest < Minitest::Test
       </div>
     HTML
 
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'slf'; end
-        def domain; '//www.sportinglife.ca'; end
-      end
-    end
+    merchant = MockMerchant.new('slf', '//www.sportinglife.ca')
+    merchant.extend(Merchants::SportingLife)
 
-    parser.extend(Merchants::SportingLife::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
-
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
     assert_equal 'women\'s polar bears international expedition parka', article_hash[:name]
     assert_equal 'Canada goose women\'s polar bears international expedition parka', article_hash[:description]
     assert_equal '1,045.00', article_hash[:price]
     assert_equal '23416688', article_hash[:sku]
     assert_equal '//www.sportinglife.ca/p/23416688/womens-polar-bears-international-expedition-parka', article_hash[:link]
-  end
-
-  def test_should_parse_altitude_sports
-    frag = <<~HTML
-      <li class="item first item-1467330694" data-color-thumbnails="[{&quot;label&quot;:&quot;Dark Shadow&quot;,&quot;thumbUrl&quot;:&quot;https://cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_icon.jpg?v=1490260422&quot;,&quot;standardUrl&quot;:&quot;https://cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422&quot;}]" data-original-image="//cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422" itemprop="itemListElement" itemscope itemtype="http://schema.org/Product" style="height: 317px;">
-        <a class="product-image" href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" itemprop="url" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')" title="Herschel Supply Co."><img alt="Herschel Supply Co." class="ss-loaded" height="160" itemprop="image" onerror="this.onerror=null;this.src='//cdn.shopify.com/s/files/1/1230/9376/t/2/assets/loader.gif';" src="//cdn.shopify.com/s/files/1/1230/9376/products/HER-SOL-10014N_7EDark_20Shadow_f77a88ff-e2d7-401e-b72c-7f4ae81319e4_compact.jpg?v=1490260422" width="160">
-        <div class="featured">
-          <div class="discount-disc">
-            -25%
-          </div>
-        </div></a>
-        <div class="swatch-container">
-          <a href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')">
-          <ul class="swatch-list"></ul></a>
-        </div>
-        <h2 class="product-name" itemprop="name"><a href="//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n" onmousedown="return SearchSpring.Catalog.intellisuggest(this, 'eJwNwrsNwDAIBUAWQjLwDKF0Pl4klqwUabx_kejuHu-KSdbS9Doap2owxCs3nMY94LuZ1NqDCFKKwA1IJ_lhI0PSXM_4AGHND4k', 'a425ea73ad52f3c4064f93c016173cc9b7429ef19d18960335cc8790d77d5078')" title="Herschel Supply Co. Little America Nylon Backpack"><span class="manufacturer">Herschel Supply Co.</span><br>
-        Little America Nylon Backpack</a></h2>
-        <div class="no-display" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-          <span itemprop="price"><span class="price">CA$ 141.99</span></span>
-          <link href="//schema.org/InStock" itemprop="availability">
-        </div>
-        <div class="price-box">
-          <p class="special-price"><span class="price ss-non-member-price" id="product-price-1467330694">CA$ 141.99</span> <span class="price ss-member-price" id="product-price-1467330694">Member: CA$ 0.00</span></p>
-          <p class="old-price"><span class="price" id="old-price-1467330694">CA$ 189.99</span></p>
-        </div>
-        <div class="ss-rating"><img alt="no review" src="//cdn.shopify.com/s/files/1/1230/9376/t/2/assets/stars0.png?422378479956574834"></div>
-      </li>
-    HTML
-
-    parser = Class.new do |klass|
-      class << klass
-        def code; 'als'; end
-        def domain; '//www.altitude-sports.com'; end
-      end
-    end
-
-    parser.extend(Merchants::AltitudeSports::Parser)
-    article_hash = parser.attrs_from_node(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('li'))
-
-    assert_equal 'herschel supply co. little america nylon backpack', article_hash[:name]
-    assert_equal 'Herschel supply co. little america nylon backpack', article_hash[:description]
-    assert_equal '141.99', article_hash[:price]
-    assert_equal '1467330694', article_hash[:sku]
-    assert_equal '//www.altitude-sports.com/products/herschel-supply-co-little-america-nylon-backpack-llll-her-sol-10014n', article_hash[:link]
   end
 end
