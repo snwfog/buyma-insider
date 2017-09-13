@@ -7,7 +7,7 @@ module Merchants
 
       last_page_path = last_page_node['href']
       last_page_uri  = URI('%<scheme>s:%<domain>s%<path>s' % {
-        scheme: root_index_page.scheme,
+        scheme: scheme,
         domain: domain,
         path:   last_page_path
       })

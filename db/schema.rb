@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170902183631) do
+ActiveRecord::Schema.define(version: 20170913152205) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -108,7 +108,6 @@ ActiveRecord::Schema.define(version: 20170902183631) do
     t.string   "relative_path", limit: 2000, null: false
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
-    t.datetime "web_cache_at"
     t.index ["index_page_id"], name: "index_index_pages_on_index_page_id", using: :btree
     t.index ["merchant_id", "relative_path"], name: "index_index_pages_on_merchant_id_and_relative_path", unique: true, using: :btree
     t.index ["merchant_id"], name: "index_index_pages_on_merchant_id", using: :btree
