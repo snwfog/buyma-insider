@@ -42,12 +42,15 @@ class Merchant < ActiveRecord::Base
     @html_cache_dir
   end
 
-  protected
   def extract_nodes!(index_page)
     Nokogiri::HTML(index_page.cache.web_document).css(item_css)
   end
 
   def extract_index_pages!(root_index_page)
     root_index_page.cache.nokogiri_document.at_css(pager_css)
+  end
+
+  def extract_attrs!(node)
+    raise 'Not implemented'
   end
 end

@@ -33,11 +33,15 @@ class IndexPage < ActiveRecord::Base
     merchant.full_url << relative_path
   end
 
+  def root?
+    index_pages.empty?
+  end
+
   def cache
     @cache ||= Cache.new(self)
   end
 
-  def extract_article_nodes!
+  def extract_nodes!
     merchant.extract_nodes!(self)
   end
 
@@ -51,10 +55,6 @@ class IndexPage < ActiveRecord::Base
     end
 
     merchant.extract_index_pages!(self)
-  end
-
-  def root?
-    index_pages.empty?
   end
 
   class Cache
