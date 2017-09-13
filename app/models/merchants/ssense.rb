@@ -7,19 +7,20 @@ module Merchants
 
       last_page_path = last_page_node['href']
       last_page_uri  = URI('%<scheme>s:%<domain>s%<path>s' % {
-        scheme: index_page.scheme,
-        domain: merchant_metadatum.domain,
+        scheme: root_index_page.scheme,
+        domain: domain,
         path:   last_page_path
       })
 
       query       = Hash[Rack::Utils.parse_nested_query(last_page_uri.query)]
       page_uri    = last_page_uri.dup.tap { |uri| uri.query = nil }
       total_pages = query['page'].to_i
+
       (1..total_pages).map do |page_number|
         query['page'] = page_number
-        IndexPage.new(relative_path: page_uri.path + '?' + Rack::Utils.build_query(query),
-                      merchant:      merchant,
-                      index_page:    index_page)
+        root_index_page.index_pages
+          .build(relative_path: page_uri.path + '?' + Rack::Utils.build_query(query),
+                 merchant:      self)
       end
     end
 

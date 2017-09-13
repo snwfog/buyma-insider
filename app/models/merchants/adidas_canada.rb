@@ -1,13 +1,14 @@
 module Merchants
   module AdidasCanada
     def extract_index_pages!(root_index_page)
-      pager_node = super
       # Top pager is picked
+      pager_node = super
+
       pager_node.css('select.paging-select option').map do |page_node|
         page_uri      = URI(page_node['data-href'])
         relative_path = "#{page_uri.path}?#{page_uri.query}"
-        merchant.index_pages.build(index_page:    index_page,
-                                   relative_path: relative_path)
+        root_index_page.index_pages.build(relative_path: relative_path,
+                                          merchant:      self)
       end
     end
 

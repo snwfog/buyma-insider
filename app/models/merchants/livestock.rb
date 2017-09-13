@@ -2,7 +2,8 @@ module Merchants
   module Livestock
     def extract_index_pages!(root_index_page)
       # Top pager is picked
-      pager_node              = super
+      pager_node = super
+
       last_page_node          = pager_node.css('span.page a').last
       last_page_relative_path = URI(last_page_node['href'])
 
@@ -13,9 +14,9 @@ module Merchants
       puts query_strings.class
       ('1'..last_page_number).map do |page_number|
         query_strings[:page] = page_number
-        IndexPage.new(index_page:    index_page,
-                      merchant:      merchant,
-                      relative_path: "#{last_page_relative_path.path}?#{Rack::Utils.build_query(query_strings)}")
+        root_index_page.index_pages
+          .build(relative_path: "#{last_page_relative_path.path}?#{Rack::Utils.build_query(query_strings)}",
+                 merchant:      self)
       end
     end
 

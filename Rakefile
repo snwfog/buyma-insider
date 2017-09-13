@@ -69,16 +69,17 @@ namespace :app do
     MerchantCrawlWorker.new.perform(args.fetch(:merchant_code))
   end
 
-  desc 'Parse article using cached index page'
-  task :parse, [:crawl_history_id] do |_, args|
-    IndexPageParseWorker.new.perform(args.fetch(:crawl_history_id))
-  end
-
   desc 'Crawl an index page based on id and parse it synchronously'
   task :crawl, [:index_page_id] do |_, args|
     index_page_id = args.fetch(:index_page_id)
     pp IndexPageCrawlWorker.new.perform('index_page_id' => index_page_id,
                                         'use_web_cache' => false)
+  end
+
+  desc 'Index page indexer worker'
+  task :indexer, [:merchant_code] do |_, args|
+    merchant_code = args.fetch(:merchant_code)
+    IndexPageWorker.new.perform(merchant_code)
   end
 
   desc 'Crawl a merchant given merchant id'
@@ -96,10 +97,9 @@ namespace :app do
     end
   end
 
-  desc 'Index page indexer worker'
-  task :indexer, [:merchant_code] do |_, args|
-    merchant_code = args.fetch(:merchant_code)
-    IndexPageWorker.new.perform(merchant_code)
+  desc 'Parse article using cached index page'
+  task :parse, [:crawl_history_id] do |_, args|
+    IndexPageParseWorker.new.perform(args.fetch(:crawl_history_id))
   end
 
   desc 'Update all merchants from merchant.yml'

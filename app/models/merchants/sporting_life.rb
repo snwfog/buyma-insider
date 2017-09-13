@@ -3,6 +3,7 @@ module Merchants
     def extract_index_pages!(root_index_page)
       # Top pager is picked
       pager_node = super
+
       # By default, there are 12 articles per page, keep it so, because
       # its the default and we don't need to keep track of an extra qs param
       # find max page number
@@ -13,14 +14,17 @@ module Merchants
                            .sort
                            .last
 
+      return [] if last_page_number.blank?
+
       relative_path = pager_node.css('a').map do |href_node|
         path = URI.parse(href_node['href']).path rescue nil
         path and path.gsub(/;jsessionid\=.+\z/, '')
       end.compact.last
 
       ('1'..last_page_number).map do |page_number|
-        merchant.index_pages.build(index_page:    index_page,
-                                   relative_path: "#{relative_path}?page=#{page_number}")
+        root_index_page.index_pages
+          .build(relative_path: "#{relative_path}?page=#{page_number}",
+                 merchant:      self)
       end
     end
 

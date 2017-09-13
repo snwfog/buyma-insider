@@ -2,13 +2,13 @@ module Merchants
   module Getoutside
     def extract_index_pages!(root_index_page)
       # Top pager is picked
-      pager_node   = super
+      pager_node = super
+
       page_numbers = pager_node.css('li:not(.next):not(.previous)').map(&:content)
       page_numbers.map do |page_number|
-        relative_path = "#{index_page.relative_path}?p=#{page_number}"
-        IndexPage.new(index_page:    index_page,
-                      merchant:      merchant,
-                      relative_path: relative_path)
+        relative_path = "#{root_index_page.relative_path}?p=#{page_number}"
+        root_index_page.index_pages.build(relative_path: relative_path,
+                                          merchant:      self)
       end
     end
 
