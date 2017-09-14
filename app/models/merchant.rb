@@ -42,8 +42,8 @@ class Merchant < ActiveRecord::Base
     @html_cache_dir
   end
 
-  def extract_nodes!(index_page)
-    Nokogiri::HTML(index_page.cache.web_document).css(item_css)
+  def extract_nodes!(web_document)
+    Nokogiri::HTML(web_document).css(item_css)
   end
 
   def extract_index_pages!(root_index_page)

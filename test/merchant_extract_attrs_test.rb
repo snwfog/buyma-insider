@@ -1,9 +1,7 @@
 require_relative './setup'
 
-class ArticleParserTest < Minitest::Test
-  MockMerchant = Struct.new(:code, :domain)
-
-  def test_should_parse_ssense
+class MerchantExtractAttrsTest < Minitest::Test
+  def test_should_extract_attrs_ssense
     frag = <<~HTML
       <figure class="browsing-product-item" itemscope="itemscope" itemtype="http://schema.org/Product">
         <meta content="172342M176002" itemprop="sku">
@@ -35,7 +33,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.ssense.com/men/product/balenciaga/black-kering-padded-raincoat/2185587', article_hash[:link]
   end
 
-  def test_should_parse_zara
+  def test_should_extract_attrs_zara
     frag = <<~HTML
       <li id="product-3711654" class="product _product" data-productid="3711654" data-title="">
         <a class="item _item" href="//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html"><img id="product-img-3711654" class="_img _imageLoaded" alt="VELVET TOGGLE JACKET" src="//static.zara.net/photos///2016/I/0/1/p/6895/255/800/2/w/200/6895255800_2_8_1.jpg?ts=1475748298086"></a>
@@ -58,7 +56,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.zara.com/ca/en/woman/new-in/velvet-toggle-jacket-c840002p3711654.html', article_hash[:link]
   end
 
-  def test_should_parse_getoutside
+  def test_should_extract_attrs_getoutside
     frag = <<~HTML
       <li class="item">
         <div class="product-image-wrapper" style="max-width:295px;">
@@ -88,7 +86,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.getoutsideshoes.com/reebok-women-pastel-classic-leather-pink-sneakers-94481.html', article_hash[:link]
   end
 
-  def test_should_parse_getoutside_with_discount
+  def test_should_extract_attrs_getoutside_with_discount
     frag = <<~HTML
       <li class="item">
         <div class="product-image-wrapper" style="max-width:295px;">
@@ -119,7 +117,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.getoutsideshoes.com/converse-kids-chuck-taylor-all-star-hi-soar-93171.html', article_hash[:link]
   end
 
-  def test_should_parse_octobersveryown
+  def test_should_extract_attrs_octobersveryown
     frag = <<~HTML
       <div class="grid__item prod-xlarge--one-fifth prod-large--one-quarter prod-medium--one-half " style="position:relative">
         <a href="/collections/all/products/ovo-athletics-tee-red" class="grid__image">
@@ -143,7 +141,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//ca.octobersveryown.com/collections/all/products/ovo-athletics-tee-red', article_hash[:link]
   end
 
-  def test_should_parse_livestock
+  def test_should_extract_attrs_livestock
     frag = <<~HTML
       <div class="four columns alpha thumbnail even">
         <a href="/collections/new-arrivals/products/adidas-ultraboost-laceless-legend-ink" title="ADIDAS ULTRABOOST LACELESS / LEGEND INK">
@@ -182,7 +180,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.deadstock.ca/collections/new-arrivals/products/adidas-ultraboost-laceless-legend-ink', article_hash[:link]
   end
 
-  def test_should_parse_canada_goose
+  def test_should_extract_attrs_canada_goose
     frag = <<~HTML
       <div class="product-tile" data-cgid="shop-mens" data-itemid="6930M" id="f4d200e5722a6b62e5151f8c92">
         <!-- dwMarker="product" dwContentID="f4d200e5722a6b62e5151f8c92" -->
@@ -231,7 +229,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.canadagoose.com/ca/en/hybridge-knit-jacket-6930M.html', article_hash[:link]
   end
 
-  def test_should_parse_arcteryx
+  def test_should_extract_attrs_arcteryx
     frag = <<~HTML
       <div class="searchResult Shell_Jackets" data-baseimage="Gamma-MX-Hoody" data-black="Blackbird" data-blue="Rigel" data-drag-drop-image="//images.arcteryx.com/F17/85x110/Gamma-MX-Hoody-Pompeii.png" data-grey="Heron" data-model="19274" data-red="Pompeii" id="Gamma-MX-Hoody">
         <a class="Shell_Jackets" href="product.aspx?country=ca&amp;language=en&amp;gender=mens&amp;model=Gamma-MX-Hoody">
@@ -276,7 +274,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//arcteryx.com/product.aspx?country=ca&language=en&gender=mens&model=Gamma-MX-Hoody', article_hash[:link]
   end
 
-  def test_should_parse_adidas_canada
+  def test_should_extract_attrs_adidas_canada
     frag = <<~HTML
       <div class="hockeycard performance" data-colorid="CR6203" data-component="" data-context="sku:CR6203;size:;colors:Dark Blue" data-scope="CR6203" data-target="CR6203" data-url="http://www.adidas.ca/on/demandware.store/Sites-adidas-CA-Site/en_CA/Product-GetVariations?pid=PRODUCTID" id="product-CR6203" style="z-index: 0;">
         <div class="hidden" data-context="category:Clothing;brand:Performance;gender:MEN;type:Hockey;model_id:ZY906;video:OFF;color:Dark Blue;pricebook:adidas-CA-listprices;sport:Hockey"></div>
@@ -331,7 +329,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.adidas.ca/en/mens-maple-leafs-jersey-tee-matthews/CR6203.html', article_hash[:link]
   end
 
-  def test_should_parse_adidas_canada_with_discount
+  def test_should_extract_attrs_adidas_canada_with_discount
     frag = <<~HTML
       <div class="hockeycard athletics" data-colorid="B49913" data-component="" data-context="sku:B49913;size:;colors:Core Heather/Black;genders:" data-scope="B49913" data-target="B49913" data-url="https://www.adidas.ca/on/demandware.store/Sites-adidas-CA-Site/en_CA/Product-GetVariations?pid=PRODUCTID" id="product-B49913">
         <div class="hidden" data-context="category:Clothing;brand:Athletics;gender:MEN;type:;model_id:BUQ98;video:OFF;color:Core Heather/Black;pricebook:adidas-CA-listprices;sport:Lifestyle|Training"></div>
@@ -406,7 +404,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.adidas.ca/en/mens-sport-essentials-french-terry-hoodie/B49913.html', article_hash[:link]
   end
 
-  def test_should_parse_sporting_life
+  def test_should_extract_attrs_sporting_life
     frag = <<~HTML
       <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
         <div class="col-md-12 clearfix no-padding">
@@ -478,7 +476,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.sportinglife.ca/p/23771496/womens-snow-mantra-parka', article_hash[:link]
   end
 
-  def test_should_parse_sporting_life_with_discount
+  def test_should_extract_attrs_sporting_life_with_discount
     frag = <<~HTML
       <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
         <div class="col-md-12 clearfix no-padding">
@@ -577,7 +575,7 @@ class ArticleParserTest < Minitest::Test
     assert_equal '//www.sportinglife.ca/p/24717522/womens-double-downtown-parka', article_hash[:link]
   end
 
-  def test_should_parse_sporting_life_2
+  def test_should_extract_attrs_sporting_life_2
     frag = <<~HTML
       <div class="product-card col-xs-6 col-sm-4 col-md-4 small-padding columns-3">
         <div class="col-md-12 clearfix no-padding">
@@ -647,5 +645,45 @@ class ArticleParserTest < Minitest::Test
     assert_equal '1,045.00', article_hash[:price]
     assert_equal '23416688', article_hash[:sku]
     assert_equal '//www.sportinglife.ca/p/23416688/womens-polar-bears-international-expedition-parka', article_hash[:link]
+  end
+
+  def test_should_extract_attrs_sephora_canada
+    frag = {
+      'id'                    => 'P422856',
+      'display_name'          => 'Limited-Edition Pretty & Purrrfect Eye Set',
+      'variation_type'        => 'None',
+      'product_type'          => 'standard',
+      'product_url'           => '/product/limited-edition-pretty-purrrfect-eye-set-P422856',
+      'brand_name'            => 'tarte',
+      'default_sku_id'        => '1994714',
+      'rating'                => 0,
+      'certona_algorithm_id'  => 'g5',
+      'certona_experience_id' => '852',
+      'certona_audience_id'   => '187',
+      'certona_strategy_id'   => '17873',
+      'sku_number'            => '1994714',
+      'sku_size'              => '',
+      'sku_type'              => 'Standard',
+      'list_price'            => 26.00,
+      'primary_product_id'    => 'P422856',
+      'additional_sku_desc'   => 'Limited-Edition Pretty & Purrrfect Eye Set Brilliant',
+      'grid_images'           => '/productimages/sku/s1994714-main-grid.jpg',
+      'hero_images'           => '/productimages/sku/s1994714-main-hero.jpg',
+      'ingredients'           => '-Natural Waxes => Ensures a smooth application.-Vitamin A => Hydrates and helps protect against free radical damage.-Vitamin E => Acts as an emollient and antioxidant.-Castor Oil => Treats and moisturizes skin around the lash line.-Triple-Black Painted Mineral Pigments => Delivers rich, ultra-back pigment while nourishing and softening skin around the lash line. Deluxe Sex Kitten EyelinerCyclopentasiloxane, Trimethylsiloxysilicate, Polyethylene, Isododecane, Ceresin, Diisostearyl Malate, Triethoxycaprylylsilane, Silica Silylate, Phenoxyethanol, Ethylhexylglycerin, Kaolin. (+/-) => Iron Oxides (CI 77499). Deluxe Sex Kitten Liquid EyelinerWater, Acrylates/Ethylhexyl Acrylate/HEMA Copolymer, Propylene Glycol, Ammonium Acrylates Copolymer, Acrylates/Diethylaminoethyl Methacrylate/Ethylhexyl Acrylate Copolymer, Laureth-21, PEG-40 Hydrogenated Castor Oil, Caprylyl Glycol, Butylene Glycol, Isodeceth-6, Sodium Laureth Sulfate, Ethylhexylglycerin, Algae Extract, Glycerin, Phenoxyethanol, Potassium Sorbate, Sodium Dehydroacetate, Black 2 (CI 77266). Travel Size Tarteist&trade; Lash Paint MascaraWater, Paraffin, Glyceryl Stearate, Synthetic Beeswax, Acacia Senegal Gum, Stearic Acid, Butylene Glycol, Oryza Sativa (Rice) Bran Wax/Oryza Sativa (Rice) Bran Cera, Palmitic Acid, Polybutene, Ozokerite, VP/Eicosene Copolymer, Hydrogenated Vegetable Oil, Cera Carnauba/Copernicia Cerifera (Carnauba) Wax/Cire De Carnauba, Phenoxyethanol, Stearyl Stearate, Aminomethyl Propanol, Hydroxyethylcellulose, Tropolone, Sodium Nitrate, Iron Oxides (CI 77499).',
+      'is_sephora_exclusive'  => false,
+      'is_online_only'        => false,
+      'is_limited_edition'    => true,
+      'is_new'                => true,
+      'variation_value'       => '' }
+
+    merchant = MockMerchant.new('sph', '//www.sephora.com')
+    merchant.extend(Merchants::SephoraCanada)
+
+    article_hash = merchant.extract_attrs!(frag)
+    assert_equal 'limited-edition pretty & purrrfect eye set', article_hash[:name]
+    assert_equal 'Tarte limited-edition pretty & purrrfect eye set brilliant', article_hash[:description]
+    assert_equal 26.00, article_hash[:price]
+    assert_equal '1994714', article_hash[:sku]
+    assert_equal '//www.sephora.com/product/limited-edition-pretty-purrrfect-eye-set-P422856', article_hash[:link]
   end
 end

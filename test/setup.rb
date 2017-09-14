@@ -5,6 +5,8 @@ require 'buyma_insider'
 #   config.each_key.map { |k| MerchantMetadatum.new(config[k]) }
 # end
 
+MockMerchant = Struct.new(:code, :domain)
+
 def get_test_article(attrs = {})
   Article.new({ id:          "abc:#{Faker::Code.ean}",
                 merchant_id: 'abc',

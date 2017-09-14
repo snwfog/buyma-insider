@@ -325,3 +325,13 @@ sporting_life:
     - /c/winterboots-shoe-type-ladies
     - /c/winterboots-shoe-type-mens
 
+# september 13, 2017
+sephora_canada:
+  code:           sph
+  name:           sephora_canada
+  domain:         //www.sephora.com
+  ssl:            true
+  pager_css:      ~
+  item_css:       a.SkuItem
+  index_pages:
+    - /brand/list.jsp

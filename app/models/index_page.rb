@@ -42,7 +42,7 @@ class IndexPage < ActiveRecord::Base
   end
 
   def extract_nodes!
-    merchant.extract_nodes!(self)
+    merchant.extract_nodes!(cache.web_document)
   end
 
   def extract_index_pages!
