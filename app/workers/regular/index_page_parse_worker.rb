@@ -14,6 +14,7 @@ class IndexPageParseWorker < Worker::Base
   rescue => ex
     Raven.capture_exception(ex)
     logger.error "Error parse index page #{@index_page.full_url}"
+    logger.error ex.backtrace
     logger.error ex.message
   ensure
     logger.info "Finished parsing #{@index_page}"

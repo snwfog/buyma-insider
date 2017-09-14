@@ -649,41 +649,28 @@ class MerchantExtractAttrsTest < Minitest::Test
 
   def test_should_extract_attrs_sephora_canada
     frag = {
-      'id'                    => 'P422856',
-      'display_name'          => 'Limited-Edition Pretty & Purrrfect Eye Set',
-      'variation_type'        => 'None',
-      'product_type'          => 'standard',
-      'product_url'           => '/product/limited-edition-pretty-purrrfect-eye-set-P422856',
-      'brand_name'            => 'tarte',
-      'default_sku_id'        => '1994714',
-      'rating'                => 0,
-      'certona_algorithm_id'  => 'g5',
-      'certona_experience_id' => '852',
-      'certona_audience_id'   => '187',
-      'certona_strategy_id'   => '17873',
-      'sku_number'            => '1994714',
-      'sku_size'              => '',
-      'sku_type'              => 'Standard',
-      'list_price'            => 26.00,
-      'primary_product_id'    => 'P422856',
-      'additional_sku_desc'   => 'Limited-Edition Pretty & Purrrfect Eye Set Brilliant',
-      'grid_images'           => '/productimages/sku/s1994714-main-grid.jpg',
-      'hero_images'           => '/productimages/sku/s1994714-main-hero.jpg',
-      'ingredients'           => '-Natural Waxes => Ensures a smooth application.-Vitamin A => Hydrates and helps protect against free radical damage.-Vitamin E => Acts as an emollient and antioxidant.-Castor Oil => Treats and moisturizes skin around the lash line.-Triple-Black Painted Mineral Pigments => Delivers rich, ultra-back pigment while nourishing and softening skin around the lash line. Deluxe Sex Kitten EyelinerCyclopentasiloxane, Trimethylsiloxysilicate, Polyethylene, Isododecane, Ceresin, Diisostearyl Malate, Triethoxycaprylylsilane, Silica Silylate, Phenoxyethanol, Ethylhexylglycerin, Kaolin. (+/-) => Iron Oxides (CI 77499). Deluxe Sex Kitten Liquid EyelinerWater, Acrylates/Ethylhexyl Acrylate/HEMA Copolymer, Propylene Glycol, Ammonium Acrylates Copolymer, Acrylates/Diethylaminoethyl Methacrylate/Ethylhexyl Acrylate Copolymer, Laureth-21, PEG-40 Hydrogenated Castor Oil, Caprylyl Glycol, Butylene Glycol, Isodeceth-6, Sodium Laureth Sulfate, Ethylhexylglycerin, Algae Extract, Glycerin, Phenoxyethanol, Potassium Sorbate, Sodium Dehydroacetate, Black 2 (CI 77266). Travel Size Tarteist&trade; Lash Paint MascaraWater, Paraffin, Glyceryl Stearate, Synthetic Beeswax, Acacia Senegal Gum, Stearic Acid, Butylene Glycol, Oryza Sativa (Rice) Bran Wax/Oryza Sativa (Rice) Bran Cera, Palmitic Acid, Polybutene, Ozokerite, VP/Eicosene Copolymer, Hydrogenated Vegetable Oil, Cera Carnauba/Copernicia Cerifera (Carnauba) Wax/Cire De Carnauba, Phenoxyethanol, Stearyl Stearate, Aminomethyl Propanol, Hydroxyethylcellulose, Tropolone, Sodium Nitrate, Iron Oxides (CI 77499).',
-      'is_sephora_exclusive'  => false,
-      'is_online_only'        => false,
-      'is_limited_edition'    => true,
-      'is_new'                => true,
-      'variation_value'       => '' }
+      'id'              => 'P386112',
+      'display_name'    => 'Finishing Serum',
+      'rating'          => 4.3333,
+      'product_url'     => '/product/finishing-serum-P386112',
+      'hero_image'      => '/productimages/sku/s1614353-main-grid.jpg',
+      'brand_name'      => 'Tria',
+      'image_alt_text'  => 'Tria - Finishing Serum',
+      'sale_price'      => 45,
+      'primary_concern' => 'Fine lines/Wrinkles',
+      'sku_type'        => 'Standard',
+      'list_price'      => 75,
+      'sku_number'      => '1614353'
+    }
 
     merchant = MockMerchant.new('sph', '//www.sephora.com')
     merchant.extend(Merchants::SephoraCanada)
 
     article_hash = merchant.extract_attrs!(frag)
-    assert_equal 'limited-edition pretty & purrrfect eye set', article_hash[:name]
-    assert_equal 'Tarte limited-edition pretty & purrrfect eye set brilliant', article_hash[:description]
-    assert_equal 26.00, article_hash[:price]
-    assert_equal '1994714', article_hash[:sku]
-    assert_equal '//www.sephora.com/product/limited-edition-pretty-purrrfect-eye-set-P422856', article_hash[:link]
+    assert_equal 'finishing serum', article_hash[:name]
+    assert_equal 'Tria - finishing serum', article_hash[:description]
+    assert_equal 45.00, article_hash[:price]
+    assert_equal '1614353', article_hash[:sku]
+    assert_equal '//www.sephora.com/product/finishing-serum-P386112', article_hash[:link]
   end
 end

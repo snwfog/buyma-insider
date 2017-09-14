@@ -1,42 +1,43 @@
 module Merchants
   module SephoraCanada
     def extract_index_pages!(root_index_page)
-      super
-
+      brand_anchor_nodes = root_index_page.cache.nokogiri_document.css('div.Grid li a')
+      brand_anchor_nodes.map do |anchor_link|
+        brand_uri = URI(anchor_link['href'])
+        root_index_page.index_pages.build(relative_path: "#{brand_uri.path}?products=all",
+                                          merchant:      self)
+      end
     end
 
     def extract_nodes!(web_document)
-      js_content = web_document
+      html_document = Nokogiri::HTML(web_document)
+      json_content  = html_document.at_css('#searchResult')
 
-      # Sephora.certona({ ... });
-      js_string = <<~JAVASCRIPT
-        var Sephora = { certona: function(articleProperties) { 
-                                   return articleProperties; 
-                                 } };
-        return #{js_content}
-      JAVASCRIPT
+      return [] if json_content.blank?
 
-      articles_hash = ExecJS.exec(js_string)
-      schemes       = articles_hash.dig('resonance', 'schemes')
-      schemes.flat_map do |scheme|
-        scheme_items = scheme.dig('items')
-        scheme_items.flat_map do |item_default_attrs|
-          skus = item_default_attrs.delete('skus')
-          skus.map { |article_attrs| item_default_attrs.dup.merge!(article_attrs) }
-        end
+      articles_hash = JSON.parse!(json_content)
+      articles_hash.dig('products').flat_map do |article_hash|
+        derived_sku = article_hash.delete('derived_sku')
+        article_hash.merge!(derived_sku)
       end
     end
 
     def extract_attrs!(hash_node)
       product_link        = URI("#{domain}#{hash_node['product_url']}")
+      product_name        = hash_node['display_name'].squish.downcase
+      product_brand       = hash_node['brand_name']
       product_description =
-        hash_node['additional_sku_desc'] || hash_node['display_name']
+        hash_node['image_alt_text'] || "#{product_brand} #{product_name}"
 
-      { sku:         hash_node['default_sku_id'],
-        name:        hash_node['display_name'].squish.downcase,
-        description: "#{hash_node['brand_name']} #{product_description}".capitalize,
+      product_price = hash_node['sale_price'] ||
+        hash_node['list_price_min'] ||
+        hash_node['list_price']
+
+      { sku:         hash_node['sku_number'],
+        name:        product_name,
+        description: product_description.capitalize,
         link:        '//' + product_link.host + product_link.path,
-        price:       hash_node['list_price'] }
+        price:       product_price }
     end
   end
 end
