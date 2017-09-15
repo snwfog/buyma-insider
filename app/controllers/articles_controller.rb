@@ -77,43 +77,11 @@ class ArticlesController < ApplicationController
                    total_count:  total_article_count,
                    scores:       documents.map { |article|
                      Hash[:article_id, article['_id'], :score, article['_score']] } }
-      # else
-      #   json []
     end
   end
 
+  # TODO: Autocomplete
   # get '/_autocomplete' do
-  #   param :q,     String, required:  true,
-  #                         transform: :downcase
-  #   # TODO: Allow only single field for now, perhaps later allow multiple fields
-  #   param :field, String, transform: -> (f) { f.downcase.to_sym },
-  #                         in:        Article.fields.keys,
-  #                         default:   :name
-  #   param :limit, Integer, in: (1..10), default: 5
-  #   param :page,  Integer, in: (1..200), default: 1
-  #
-  #   q, field, page, limit = params.values_at(*%w(q field page limit))
-  #   results = elasticsearch_search_with_template(:article_name_search, :article,
-  #                                           params: {
-  #                                             article_name_query: q,
-  #                                             size:               limit,
-  #                                             from:               [page - 1, 0].min * limit })
-  #
-  #   if results.hits.total.zero?
-  #     json []
-  #   else
-  #     autocompletes = results.hits.hits.map do |article|
-  #       Hash[:autocomplete, article.highlight[field],
-  #            :id, article._id,
-  #            :type, article._type,
-  #            :score, article._score]
-  #     end
-  #
-  #     # WARNING: This method is not sorted wrt to elastic relevancy
-  #     json Article.where(:id.in => results.hits.hits.map(&:_id)),
-  #          meta: { autocompletes: autocompletes,
-  #                  total:         results.hits.total }
-  #   end
   # end
 
   get '/:id' do

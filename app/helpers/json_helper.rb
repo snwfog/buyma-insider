@@ -5,7 +5,7 @@ module JsonHelper
 
   module OverrideMethods
     def json(object, opts = {})
-      defaults = Hash[:include, '**']
+      defaults = Hash[:include, '']
       if object
         opts = defaults.merge(opts) if settings.deep_serialization
         super ActiveModelSerializers::SerializableResource.new(object, opts), { json_encoder: :to_json }

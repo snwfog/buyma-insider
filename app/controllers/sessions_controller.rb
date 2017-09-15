@@ -1,5 +1,6 @@
 class SessionsController < ApplicationController
-  options '/**' do; end
+  options '/**' do
+  end
   # # For testing purpose
   # get '/' do
   #   call env.merge('REQUEST_METHOD' => 'POST')
@@ -27,7 +28,7 @@ class SessionsController < ApplicationController
     else
       session_token = post_authenticate!(user)
       status :created
-      json session_token, include: ''
+      json session_token
     end
   end
 end
