@@ -4,18 +4,18 @@ module Merchants
       brand_anchor_nodes = root_index_page.cache.nokogiri_document.css('div.Grid li a')
       brand_anchor_nodes.map do |anchor_link|
         brand_uri = URI(anchor_link['href'])
-        root_index_page.index_pages.build(relative_path: "#{brand_uri.path}?products=all",
-                                          merchant:      self)
+        root_index_page.index_pages
+          .build(relative_path: "#{brand_uri.path}?products=all&pageSize=-1", merchant: self)
       end
     end
 
     def extract_nodes!(web_document)
       html_document = Nokogiri::HTML(web_document)
-      json_content  = html_document.at_css('#searchResult')
+      json_script   = html_document.at_css('#searchResult')
 
-      return [] if json_content.blank?
+      return [] if json_script.blank?
 
-      articles_hash = JSON.parse!(json_content)
+      articles_hash = JSON.parse!(json_script.content)
       articles_hash.dig('products').flat_map do |article_hash|
         derived_sku = article_hash.delete('derived_sku')
         article_hash.merge!(derived_sku)
@@ -38,6 +38,11 @@ module Merchants
         description: product_description.capitalize,
         link:        '//' + product_link.host + product_link.path,
         price:       product_price }
+    end
+
+    def cookies
+      { site_locale:   'ca',
+        site_language: 'en' }
     end
   end
 end

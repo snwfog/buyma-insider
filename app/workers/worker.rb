@@ -45,7 +45,7 @@ module Worker
 
     # Fetch uri with capture to Sentry.io
     # return RestClient::RawResponse
-    def fetch_uri(uri, verify_ssl = false, retries = 3, **custom_headers)
+    def fetch_uri(uri, verify_ssl = false, retries = 3, custom_headers, **args)
       headers     = standard_headers.merge(custom_headers)
       retry_count = 0
 
@@ -55,7 +55,8 @@ module Worker
                                   method:       :get,
                                   verify_ssl:   verify_ssl,
                                   raw_response: true,
-                                  headers:      headers)
+                                  headers:      headers,
+                                  **args)
 
     rescue OpenSSL::SSL::SSLError
       retry_count += 1

@@ -72,8 +72,9 @@ namespace :app do
   desc 'Crawl an index page based on id and parse it synchronously'
   task :crawl, [:index_page_id] do |_, args|
     index_page_id = args.fetch(:index_page_id)
-    pp IndexPageCrawlWorker.new.perform('index_page_id' => index_page_id,
-                                        'use_web_cache' => false)
+    crawl_history = IndexPageCrawlWorker.new.perform('index_page_id' => index_page_id,
+                                                     'use_web_cache' => false)
+    pp crawl_history.reload
   end
 
   desc 'Index page indexer worker'

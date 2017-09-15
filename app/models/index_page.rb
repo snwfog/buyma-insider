@@ -66,7 +66,7 @@ class IndexPage < ActiveRecord::Base
     end
 
     def filename
-      relative_path.tr('\\/:*?"<>|.', ?_)
+      relative_path.tr('\\/:*?"<>|.=\-&', ?_).downcase
     end
 
     def mtime

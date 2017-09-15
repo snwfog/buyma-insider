@@ -32,9 +32,7 @@ class Merchant < ActiveRecord::Base
   alias_attribute :meta, :merchant_metadatum
 
   def html_cache_dir_create_if_not_exists!
-    # TODO: Rename to `web_cache`
-    # TODO: Ensure everything from `tmp` can be safely deleted/trashed
-    @html_cache_dir ||= "#{BuymaInsider.root}/tmp/cache/crawl/#{code}"
+    @html_cache_dir ||= "#{BuymaInsider.root}/tmp/web_cache/#{code}"
 
     unless File::directory?(@html_cache_dir)
       FileUtils::mkdir_p(@html_cache_dir)
@@ -52,5 +50,11 @@ class Merchant < ActiveRecord::Base
 
   def extract_attrs!(node)
     raise 'Not implemented'
+  end
+
+  # Cookies specialized for this merchant
+  # Implement this in merchant if required
+  def cookies
+    {}
   end
 end

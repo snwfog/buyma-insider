@@ -4,5 +4,5 @@ currency:
   tertiary:  usd
 worker:
   crawl:
-    cache_dir: ./tmp/cache/crawl
+    cache_dir: ./tmp/web_cache
 
