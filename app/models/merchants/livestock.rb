@@ -11,7 +11,7 @@ module Merchants
                            .parse_nested_query(last_page_relative_path.query)
                            .symbolize_keys!
       last_page_number = query_strings[:page]
-      puts query_strings.class
+      
       ('1'..last_page_number).map do |page_number|
         query_strings[:page] = page_number
         root_index_page.index_pages

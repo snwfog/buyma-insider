@@ -52,9 +52,13 @@ class Merchant < ActiveRecord::Base
     raise 'Not implemented'
   end
 
-  # Cookies specialized for this merchant
-  # Implement this in merchant if required
+  # @override Cookies specialized for this merchant
   def cookies
+    {}
+  end
+
+  # @override Query strings specialized for this merchant
+  def query_strings
     {}
   end
 end
