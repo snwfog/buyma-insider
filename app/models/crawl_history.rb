@@ -29,7 +29,10 @@ class CrawlHistory < ActiveRecord::Base
   validates_presence_of :status
   validates_presence_of :description
 
-  validates_uniqueness_of :status, scope: [:index_page_id], conditions: -> { where(status: [0, 1]) }
+  validates_uniqueness_of :status,
+                          scope:      [:index_page_id],
+                          conditions: -> { where(status: [:scheduled, :inprogress]) }
+
   # default_scope { order(finished_at: :desc) }
 
   alias_attribute :started_at, :created_at

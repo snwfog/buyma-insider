@@ -3,7 +3,6 @@ class IndexPageCrawlWorker < Worker::Base
   sidekiq_options unique:                :until_and_while_executing,
                   log_duplicate_payload: true
 
-  attr_reader :standard_headers
   attr_reader :index_page
   attr_reader :merchant
 
@@ -15,37 +14,26 @@ class IndexPageCrawlWorker < Worker::Base
     @use_web_cache         = !args.fetch('use_web_cache', true)
     @perform_async_parsing = args.fetch('perform_async_parsing', false)
 
-    @index_page            = IndexPage.includes(:merchant).find(@index_page_id)
-    @last_crawl_history    = @index_page.crawl_histories.completed.last
-    @merchant              = @index_page.merchant
-    @current_crawl_history = @index_page.crawl_histories.create(status:      :inprogress,
-                                                                description: "#{@merchant.name} [#{@index_page}]")
-    logger.info 'Started crawling index `%s`' % @current_crawl_history.description
+    @index_page         = IndexPage.includes(:merchant).find(@index_page_id)
+    @last_crawl_history = @index_page.crawl_histories.completed.last
+    @merchant           = @index_page.merchant
+    @crawl_history      = @index_page.crawl_histories.create!(status:      :inprogress,
+                                                              description: "`#{@merchant.name}` [#{@index_page}]")
 
-    # slack_notify(text: ":spider: *Crawl Started*\n#{@index_page.full_url}", unfurl_links: true)
+    logger.info "Started crawling index #{@crawl_history.description}"
 
-    if (raw_response = fetch_uri(@index_page.full_url, @merchant.meta.ssl?, request_headers,
-                                 cookies: @merchant.cookies))
-
-      @current_crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
-                                     response_headers:   raw_response.headers,
-                                     response_status:    raw_response.code,
-                                     status:             :completed)
-
-      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache.path]
-      FileUtils.cp(raw_response.file.path, @index_page.cache.path)
-    end
+    make_request
   rescue RestClient::ExceptionWithResponse => ex
-    @current_crawl_history.update!(traffic_size_in_kb: 0.0,
-                                   response_headers:   ex.http_headers,
-                                   response_status:    ex.http_code)
+    @crawl_history.update!(traffic_size_in_kb: 0.0,
+                           response_headers:   ex.http_headers,
+                           response_status:    ex.http_code)
 
     logger.debug 'Index has not been modified `%s`' % @index_page.full_url
     FileUtils::touch(@index_page.cache.path)
   rescue => ex
-    if @current_crawl_history
-      @current_crawl_history.aborted!
-      logger.error @current_crawl_history.description
+    if @crawl_history
+      @crawl_history.aborted!
+      logger.error @crawl_history.description
     end
 
     logger.error ex
@@ -54,24 +42,48 @@ class IndexPageCrawlWorker < Worker::Base
   else
     if @perform_async_parsing
       logger.info "Schedule a parser for index page #{@index_page}"
-      IndexPageParseWorker.perform_async(@current_crawl_history.id)
+      IndexPageParseWorker.perform_async(@crawl_history.id)
     else
-      IndexPageParseWorker.new.perform(@current_crawl_history.id)
+      IndexPageParseWorker.new.perform(@crawl_history.id)
     end
 
-    @current_crawl_history
+    @crawl_history
   ensure
-    if @current_crawl_history
-      @current_crawl_history.update!(finished_at: Time.now)
-      logger.info 'Finished crawling `%s`' % @current_crawl_history.description
-      logger.info JSON.pretty_generate(@current_crawl_history.attributes)
+    if @crawl_history
+      @crawl_history.assign_attributes(finished_at: Time.now)
+      unless @crawl_history.completed? && @crawl_history.aborted?
+        @crawl_history.assign_attributes(status: :aborted)
+      end
+
+      @crawl_history.save!
+      logger.info 'Finished crawling `%s`' % @crawl_history.description
+      logger.info JSON.pretty_generate(@crawl_history.attributes)
     end
   end
 
   private
+  def make_request
+    if (raw_response = fetch_uri(@index_page.full_url,
+                                 @merchant.meta.ssl?,
+                                 request_headers,
+                                 cookies: @merchant.cookies))
+
+      @crawl_history.update!(traffic_size_in_kb: raw_response.file.size / 1000.0,
+                             response_headers:   raw_response.headers,
+                             response_status:    raw_response.code,
+                             status:             :completed)
+
+      logger.info 'Caching index `%s` into `%s`' % [raw_response.file.path, @index_page.cache.path]
+      FileUtils.cp(raw_response.file.path, @index_page.cache.path)
+    end
+  rescue RestClient::NotModified => ex
+    logger.warn "Index `#{index_page}` has not been modified since #{index_page.cache.mtime.httpdate}"
+    logger.warn ex.http_headers
+  end
+
   def request_headers
-    headers ||= {}
-    headers.merge!(cache_control_headers) if @use_web_cache
+    headers ||= @merchant.headers
+    headers.merge!(cache_control_headers) if @use_web_cache # && @merchant.support_cache_control
 
     headers
   end

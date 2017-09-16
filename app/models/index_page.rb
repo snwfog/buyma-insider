@@ -66,7 +66,9 @@ class IndexPage < ActiveRecord::Base
     end
 
     def filename
-      relative_path.tr('\\/:*?"<>|.=\-&', ?_).downcase
+      @filename ||= relative_path.tr('\\/:*?"<>|.=\-&', ?_).downcase.tap do |file|
+        file == '_' ? "_#{merchant.name}_default" : file
+      end
     end
 
     def mtime

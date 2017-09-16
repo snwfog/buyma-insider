@@ -5,16 +5,6 @@ module Worker
     attr_accessor :standard_headers
 
     def initialize
-      spoof_ip_address = GeoIpLocation.random_canadian.begin_ip_address
-
-      @standard_headers = {
-        x_forwarded_for:  spoof_ip_address,
-        x_forwarded_host: spoof_ip_address,
-        user_agent:       BuymaInsider::SPOOF_USER_AGENT,
-        accept_encoding:  'gzip',
-        cache_control:    'no-cache',
-        pragma:           'no-cache'
-      }
     end
 
     # def perform(args)
@@ -45,17 +35,16 @@ module Worker
 
     # Fetch uri with capture to Sentry.io
     # return RestClient::RawResponse
-    def fetch_uri(uri, verify_ssl = false, retries = 3, custom_headers, **args)
-      headers     = standard_headers.merge(custom_headers)
+    def fetch_uri(uri, verify_ssl = false, retries = 3, request_headers, **args)
       retry_count = 0
 
       logger.info "`GET` #{uri}"
-      logger.debug JSON.pretty_generate(headers)
+      logger.debug JSON.pretty_generate(request_headers)
       RestClient::Request.execute(url:          uri,
                                   method:       :get,
                                   verify_ssl:   verify_ssl,
                                   raw_response: true,
-                                  headers:      headers,
+                                  headers:      request_headers,
                                   **args)
 
     rescue OpenSSL::SSL::SSLError

@@ -51,7 +51,8 @@ gem 'sidekiq-cron'
 gem 'sidekiq-unique-jobs' # Experimental
 
 # Business logic
-gem 'execjs'
+gem 'addressable' # allow iri instead of uri
+gem 'execjs' # run crawled javascript file
 
 # Tasks
 gem 'rake'

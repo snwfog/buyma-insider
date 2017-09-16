@@ -13,7 +13,8 @@ class IndexPageParseWorker < Worker::Base
     article_nodes.each { |article_node| parse_article_node(article_node) }
   rescue => ex
     Raven.capture_exception(ex)
-    logger.error "Error parse index page #{@index_page.full_url}"
+    logger.error "Error parsing index page: #{ex}"
+    logger.error "Index page: `#{@index_page.full_url}`"
     logger.error ex.backtrace
     logger.error ex.message
   ensure
@@ -56,8 +57,7 @@ class IndexPageParseWorker < Worker::Base
 
     logger.error 'Failed creating article: %s' % ex.message
     logger.error ex.backtrace
-    logger.error article_attrs
-    logger.error article_node.to_html
+    logger.error JSON.pretty_generate(article_attrs)
   ensure
     @crawl_history.save
   end

@@ -5,23 +5,23 @@
 
 # 2016 - 2017
 ssense:
-  code:           sse
-  name:           ssense
-  domain:         //www.ssense.com
-  pager_css:      div.browsing-pagination ul.nav
-  item_css:       div.browsing-product-list figure.browsing-product-item
+  code:               sse
+  name:               ssense
+  domain:             //www.ssense.com
+  pager_css:          div.browsing-pagination ul.nav
+  item_css:           div.browsing-product-list figure.browsing-product-item
   index_pages:
     - /en-ca/men
     - /en-ca/women
-  ssl:            true
+  ssl:                true
 
 getoutside:
-  code:           get
-  name:           getoutside
-  domain:         //www.getoutsideshoes.com
-  ssl:            true
-  pager_css:      div.pager > div.pages ol
-  item_css:       ul.products-grid li.item
+  code:               get
+  name:               getoutside
+  domain:             //www.getoutsideshoes.com
+  ssl:                true
+  pager_css:          div.pager > div.pages ol
+  item_css:           ul.products-grid li.item
   index_pages:
     - /new-arrivals.html
     - /mens.html
@@ -31,12 +31,12 @@ getoutside:
     - /sale.html
 
 zara:
-  code:           zar
-  name:           zara
-  domain:         //www.zara.com/ca/en
-  ssl:            true
-  pager_css:      ~
-  item_css:       ul.product-list li.product
+  code:               zar
+  name:               zara
+  domain:             //www.zara.com/ca/en
+  ssl:                true
+  pager_css:          ~
+  item_css:           ul.product-list li.product
   index_pages:
     - /woman/new-in-c840002.html
     - /woman/new-in-c805003.html
@@ -103,23 +103,23 @@ zara:
 
 # july 2017
 octobersveryown:
-  code:           ovo
-  name:           octobersveryown
-  domain:         //ca.octobersveryown.com
-  ssl:            true
-  pager_css:      ~
-  item_css:       main.main-content div.grid__item
+  code:               ovo
+  name:               octobersveryown
+  domain:             //ca.octobersveryown.com
+  ssl:                true
+  pager_css:          ~
+  item_css:           main.main-content div.grid__item
   index_pages:
     - /collections/all
 
 # july 2017
 livestock:
-  code:           ltk
-  name:           livestock
-  domain:         //www.deadstock.ca
-  ssl:            true
-  pager_css:      div.paginate
-  item_css:       div.container.main.content div.products div.four.columns.thumbnail
+  code:               ltk
+  name:               livestock
+  domain:             //www.deadstock.ca
+  ssl:                true
+  pager_css:          div.paginate
+  item_css:           div.container.main.content div.products div.four.columns.thumbnail
   index_pages:
     - /collections/new-arrivals
     - /collections/footwear
@@ -128,36 +128,36 @@ livestock:
 
 # august 27, 2017
 canada_goose:
-  code:           goo
-  name:           canada_goose
-  domain:         //www.canadagoose.com
-  ssl:            true
-  pager_css:      ~
-  item_css:       div#primary ul#search-result-items li div.product-tile
+  code:               goo
+  name:               canada_goose
+  domain:             //www.canadagoose.com
+  ssl:                true
+  pager_css:          ~
+  item_css:           div#primary ul#search-result-items li div.product-tile
   index_pages:
     - /ca/en/shop/men
     - /ca/en/shop/women
     - /ca/en/shop/kids
 
 arcteryx:
-  code:           arc
-  name:           arcteryx
-  domain:         //arcteryx.com
-  ssl:            true
-  pager_css:      ~
-  item_css:       div#divContent div.searchResult
+  code:               arc
+  name:               arcteryx
+  domain:             //arcteryx.com
+  ssl:                true
+  pager_css:          ~
+  item_css:           div#divContent div.searchResult
   index_pages:
     - /ProductFind.aspx?country=ca&language=en&gender=Mens
     - /ProductFind.aspx?country=ca&language=en&gender=Womens
 
 # september 2, 2017
 adidas_canada:
-  code:           add
-  name:           adidas_canada
-  domain:         //www.adidas.ca
-  ssl:            true
-  pager_css:      div.paging#top-pagination
-  item_css:       div.product-tile div.hockeycard
+  code:               add
+  name:               adidas_canada
+  domain:             //www.adidas.ca
+  ssl:                true
+  pager_css:          div.paging#top-pagination
+  item_css:           div.product-tile div.hockeycard
   index_pages:
     - /en/men?grid=true
     - /en/women?grid=true
@@ -165,12 +165,12 @@ adidas_canada:
 
 # september 3, 2017
 sporting_life:
-  code:           slf
-  name:           sporting_life
-  domain:         //www.sportinglife.ca
-  ssl:            true
-  pager_css:      div.pagination
-  item_css:       div.product-card
+  code:               slf
+  name:               sporting_life
+  domain:             //www.sportinglife.ca
+  ssl:                true
+  pager_css:          div.pagination
+  item_css:           div.product-card
   index_pages:
     - /c/ladies-outdoor-alltype-jackets
     - /c/ladies-outdoor-sweaters-fleece
@@ -327,11 +327,22 @@ sporting_life:
 
 # september 13, 2017
 sephora_canada:
-  code:           sph
-  name:           sephora_canada
-  domain:         //www.sephora.com
-  ssl:            true
-  pager_css:      ~
-  item_css:       a.SkuItem
+  code:               sph
+  name:               sephora_canada
+  domain:             //www.sephora.com
+  ssl:                true
+  pager_css:          ~
+  item_css:           a.SkuItem
   index_pages:
     - /brand/list.jsp
+
+# september 15, 2017
+michael_kors_canada:
+  code:               mkr
+  name:               michael_kors_canada
+  domain:             //www.michaelkors.ca
+  ssl:                true
+  pager_css:          ~
+  item_css:           ~
+  index_pages:
+    - /

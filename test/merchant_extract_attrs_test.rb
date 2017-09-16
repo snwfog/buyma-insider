@@ -673,4 +673,65 @@ class MerchantExtractAttrsTest < Minitest::Test
     assert_equal '1614353', article_hash[:sku]
     assert_equal '//www.sephora.com/product/finishing-serum-P386112', article_hash[:link]
   end
+
+  def test_should_extract_attrs_michael_kors_canada
+    json_frag = {
+      'identifier'          => '126236039',
+      'description'         => 'Designed to go anywhere, the Brooklyn tote boasts seasonless appeal in an expansive silhouette crafted from pebbled leather. Polished grommets and an oversized tassel lend tactile edge, while the brand’s logo gives a refined nod to signature glamour.',
+      'brand'               => 'MICHAEL Michael Kors',
+      'displayName'         => '',
+      'seoURL'              => '/brooklyn-leather-tote/_/R-CA_30F7SBNT2L',
+      'longDescription'     => '',
+      'moreColors'          => '0',
+      'monogramableProduct' => '0',
+      'type'                => 'product',
+      'colorCode'           => '0560',
+      'media'               => {
+        'mediaSet'       => 'MichaelKors/30F7SBNT2L-0560_IS',
+        'alternateImage' => [],
+        'swatchImage'    => {
+          'imageUrl' => 'MichaelKors/30F7SBNT2L-0560_swatch'
+        }
+      },
+      'prices'              => {
+        'listPriceRange' => '498.0-498.0',
+        'salePriceRange' => '373.5-373.5',
+        'highListPrice'  => '498.00',
+        'lowSalePrice'   => '373.50',
+        'highSalePrice'  => '373.50',
+        'lowListPrice'   => '498.00'
+      },
+      'variant_options'     => {
+        'colors' => [
+          {
+            'colorCode'  => '0560',
+            'colorName'  => 'IRIS',
+            'name'       => 'IRIS',
+            'imageUrl'   => 'https => //michaelkors.scene7.com/is/image/MichaelKors/30F7SBNT2L-0560_swatch?$swatch$',
+            'identifier' => '126236039'
+          }
+        ]
+      },
+      'variant_values'      => {
+        'color' => {
+          'colorCode'  => '0560',
+          'colorName'  => 'PURPLE',
+          'name'       => 'PURPLE',
+          'imageUrl'   => 'MichaelKors/30F7SBNT2L-0560_IS',
+          'identifier' => '126236039'
+        }
+      },
+      'name'                => 'Brooklyn Leather Tote'
+    }
+
+    merchant = MockMerchant.new('mkr', '//www.michaelkors.ca')
+    merchant.extend(Merchants::MichaelKorsCanada)
+
+    article_hash = merchant.extract_attrs!(json_frag)
+    assert_equal 'brooklyn leather tote', article_hash[:name]
+    assert_equal 'MICHAEL Michael Kors - Designed to go anywhere, the Brooklyn tote boasts seasonless appeal in an expansive silhouette crafted from pebbled leather. Polished grommets and an oversized tassel lend tactile edge, while the brand’s logo gives a refined nod to signature glamour.', article_hash[:description]
+    assert_equal '373.50', article_hash[:price]
+    assert_equal '126236039', article_hash[:sku]
+    assert_equal '//www.michaelkors.ca/brooklyn-leather-tote/_/R-CA_30F7SBNT2L', article_hash[:link]
+  end
 end

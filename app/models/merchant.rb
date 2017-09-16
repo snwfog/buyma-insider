@@ -40,6 +40,30 @@ class Merchant < ActiveRecord::Base
     @html_cache_dir
   end
 
+  # @override Cookies for index page fetch
+  def cookies
+    {}
+  end
+
+  # @override Query strings for index page fetch
+  def query_strings
+    {}
+  end
+
+  # @override Headers for index page fetch
+  def headers
+    @standard_headers ||= begin
+      spoof_ip_address = GeoIpLocation.random_canadian.begin_ip_address
+
+      { x_forwarded_for:  spoof_ip_address,
+        x_forwarded_host: spoof_ip_address,
+        user_agent:       BuymaInsider::SPOOF_USER_AGENT,
+        accept_encoding:  'gzip',
+        cache_control:    'no-cache',
+        pragma:           'no-cache' }
+    end
+  end
+
   def extract_nodes!(web_document)
     Nokogiri::HTML(web_document).css(item_css)
   end
@@ -50,15 +74,5 @@ class Merchant < ActiveRecord::Base
 
   def extract_attrs!(node)
     raise 'Not implemented'
-  end
-
-  # @override Cookies specialized for this merchant
-  def cookies
-    {}
-  end
-
-  # @override Query strings specialized for this merchant
-  def query_strings
-    {}
   end
 end
