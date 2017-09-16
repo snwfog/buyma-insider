@@ -47,7 +47,7 @@ append :linked_dirs, *['log',
                        'tmp/configs',
                        'tmp/volumes',
                        'tmp/pids',
-                       'tmp/cache',
+                       'tmp/web_cache',
                        'tmp/sockets']
 
 # Default value for default_env is {}

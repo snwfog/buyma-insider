@@ -6,10 +6,20 @@ set :port_number, 8080
 
 set :default_env, { PATH: '/usr/local/bin:$PATH' }
 
+after 'deploy:updated', 'db_migrate'
 after 'deploy:published', 'flush_redis'
 after 'deploy:published', 'setup_env'
 after 'deploy:published', 'reload_monit'
 after 'deploy:published', 'restart_services'
+
+desc 'Db migrate'
+task :db_migrate do
+  on roles(:all) do |host|
+    within release_path do
+      execute(:bundle, :exec, :rake, 'db:migrate')
+    end
+  end
+end
 
 desc 'Flush redis cache'
 task :flush_redis do
