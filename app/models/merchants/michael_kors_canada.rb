@@ -47,12 +47,13 @@ module Merchants
       product_price         = hash_node['prices']['lowSalePrice'] || hash_node['prices']['lowListPrice']
       product_brand         = hash_node['brand']
       product_name          = hash_node['name'].squish.downcase
-      product_description   = hash_node['description']
+      description           = hash_node['description']
+      product_description   = [product_brand, description].compact.join(' - ')
       product_sku           = hash_node['identifier']
 
       { sku:         product_sku,
         name:        product_name,
-        description: "#{product_brand} - #{product_description}",
+        description: product_description,
         link:        domain + product_relative_path,
         price:       product_price }
     end

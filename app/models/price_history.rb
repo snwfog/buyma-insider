@@ -21,6 +21,6 @@ class PriceHistory < ActiveRecord::Base
   validates_numericality_of :price
 
   def price=(price)
-    super price.to_s.tr!('^0-9.', ?_).to_f
+    super price.to_s.tr('^0-9.', ?_).to_f
   end
 end
