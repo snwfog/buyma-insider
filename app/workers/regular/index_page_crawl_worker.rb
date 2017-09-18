@@ -50,12 +50,15 @@ class IndexPageCrawlWorker < Worker::Base
     @crawl_history
   ensure
     if @crawl_history
-      @crawl_history.assign_attributes(finished_at: Time.now)
+      # if crawl is not at a terminal status (either completed, or aborted)
+      # then assume its aborted
       unless @crawl_history.completed? && @crawl_history.aborted?
-        @crawl_history.assign_attributes(status: :aborted)
+        @crawl_history.status = :aborted
       end
 
+      @crawl_history.finished_at = Time.now
       @crawl_history.save!
+
       logger.info 'Finished crawling `%s`' % @crawl_history.description
       logger.info JSON.pretty_generate(@crawl_history.attributes)
     end
