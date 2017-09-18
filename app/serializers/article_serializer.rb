@@ -55,7 +55,7 @@ class ArticleSerializer < ActiveModel::Serializer
   end
 
   def synced_at
-    object.crawl_histories.completed.last.try(:created_at)
+    object.crawl_histories.last.try(:created_at)
   end
 
   def price_history

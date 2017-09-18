@@ -39,11 +39,11 @@ class MerchantsController < ApplicationController
   end
 
   get '/' do
-    json Merchant.includes(index_pages: :index_pages).all, include: [:metadatum]
+    json Merchant.includes(index_pages: :index_pages).all, include: [:merchant_metadatum]
   end
 
   get '/:merchant_code' do
-    json @merchant, include: [:metadatum]
+    json @merchant, include: [:merchant_metadatum]
   end
 
   get '/:merchant_code/articles' do
