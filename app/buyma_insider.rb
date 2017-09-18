@@ -1,10 +1,8 @@
 require 'dotenv'
-
-environment = ENV['RACK_ENV'] || :development
+environment = ENV['RACK_ENV'].downcase || :development
 # load default .env, and environment specific .env
-Dotenv.load(File.expand_path('../../.env', __FILE__),
-            File.expand_path("../../.env.#{environment.downcase}", __FILE__))
-Bundler.require(:default, ENV['RACK_ENV']) # INFO: it increases boot time
+Dotenv.load(File.expand_path('../../.env', __FILE__), File.expand_path('../../.env.' + environment, __FILE__))
+Bundler.require(:default, environment) # INFO: it increases boot time
 
 module BuymaInsider
   NAME             = 'buyma_insider'.freeze

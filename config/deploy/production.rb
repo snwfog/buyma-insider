@@ -16,7 +16,7 @@ desc 'Db migrate'
 task :db_migrate do
   on roles(:all) do |host|
     within release_path do
-      execute(:bundle, :exec, :rake, 'db:migrate')
+      execute(:rake, 'db:migrate')
     end
   end
 end
