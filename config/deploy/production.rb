@@ -6,17 +6,17 @@ set :port_number, 8080
 
 set :default_env, { PATH: '/usr/local/bin:$PATH' }
 
-after 'deploy:updated', 'setup_env'
+after 'deploy:updated', 'copy_env'
 after 'deploy:updated', 'db_migrate'
 after 'deploy:published', 'flush_redis'
 after 'deploy:published', 'reload_monit'
 after 'deploy:published', 'restart_services'
 
 desc 'Copy production dotenv to app path'
-task :setup_env do
+task :copy_env do
   on roles(:all) do
     within shared_path do
-      execute :cp, 'dotenv', "#{current_path}/.env"
+      execute :cp, 'dotenv', "#{release_path}/.env"
     end
   end
 end
