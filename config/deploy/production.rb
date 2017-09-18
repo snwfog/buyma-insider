@@ -16,7 +16,7 @@ desc 'Db migrate'
 task :db_migrate do
   on roles(:all) do
     within release_path do
-      with :rack_env, :production do
+      with rack_env: :production do
         execute(:bundle, :exec, :rake, 'db:migrate')
       end
     end
