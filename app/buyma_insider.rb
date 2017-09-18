@@ -46,7 +46,7 @@ module BuymaInsider
     end
 
     def environment
-      ENV['RACK_ENV'] || :development
+      ENV['RACK_ENV'].try(:downcase) || :development
     end
 
     def root

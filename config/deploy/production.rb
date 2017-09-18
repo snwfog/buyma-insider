@@ -14,9 +14,11 @@ after 'deploy:published', 'restart_services'
 
 desc 'Db migrate'
 task :db_migrate do
-  on roles(:all) do |host|
+  on roles(:all) do
     within release_path do
-      execute(:rake, 'db:migrate')
+      with :rack_env, :production do
+        execute(:rake, 'db:migrate')
+      end
     end
   end
 end
