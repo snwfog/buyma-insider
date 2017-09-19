@@ -6,8 +6,8 @@ set :port_number, 8080
 
 set :default_env, { PATH: '/usr/local/bin:$PATH' }
 
-after 'deploy:updated', 'copy_env'
-after 'deploy:updated', 'db_migrate'
+after 'deploy:published', 'copy_env'
+after 'deploy:published', 'db_migrate'
 after 'deploy:published', 'flush_redis'
 after 'deploy:published', 'reload_monit'
 after 'deploy:published', 'restart_services'
