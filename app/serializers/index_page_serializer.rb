@@ -32,7 +32,7 @@ class IndexPageSerializer < ActiveModel::Serializer
              :health
 
   def root?
-    object.index_page.blank?
+    object.root?
   end
 
   def last_synced_at

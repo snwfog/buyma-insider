@@ -12,7 +12,9 @@ class StaticController < ApplicationController
     bootstrap_hash =
       fetch('bootstrap', ex: 1.day.to_i) do
         { server_version:                BuymaInsider::VERSION,
-          merchants:                     to_hash(Merchant.all, include: [:merchant_metadatum, :index_pages]),
+          merchants:                     to_hash(Merchant.includes(:merchant_metadatum,
+                                                                   index_pages: :index_pages).all,
+                                                 include: [:merchant_metadatum, :index_pages]),
           shipping_services:             to_hash(ShippingService.all),
           extra_tariffs:                 to_hash(ExtraTariff.all),
           article_notification_criteria: to_hash(ArticleNotificationCriterium.all) }

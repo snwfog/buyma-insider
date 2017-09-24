@@ -29,7 +29,8 @@ class MerchantsController < ApplicationController
     # @merchant             = @merchants_map_by_code.fetch(params[:merchant_code])
 
     @merchant            = Merchant
-                             .includes(index_pages: :index_pages)
+                             .includes(:merchant_metadatum,
+                                       index_pages: :index_pages)
                              .find_by_code(params[:merchant_code])
     @page, @limit, order = params.values_at(*%w(page limit order))
     @order_by            = if order
@@ -39,11 +40,13 @@ class MerchantsController < ApplicationController
   end
 
   get '/' do
-    json Merchant.includes(index_pages: :index_pages).all, include: [:merchant_metadatum]
+    json Merchant.includes(:merchant_metadatum,
+                           index_pages: :index_pages).all,
+         include: [:merchant_metadatum, :index_pages]
   end
 
   get '/:merchant_code' do
-    json @merchant, include: [:merchant_metadatum]
+    json @merchant, include: [:merchant_metadatum, :index_pages]
   end
 
   get '/:merchant_code/articles' do

@@ -8,9 +8,6 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
-
-require 'active_model_serializers/serialization_context'
-
 class MerchantSerializer < ActiveModel::Serializer
   cache key: :merchant, expires_in: 1.day
 
@@ -22,7 +19,7 @@ class MerchantSerializer < ActiveModel::Serializer
     include_data(true)
   end
 
-  has_one :metadatum do
+  has_one :merchant_metadatum do
     include_data(true)
     # Disable link if it is not an async relationship
     # link :related, proc { "/merchants/#{object.id}/metadatum" }

@@ -14,7 +14,8 @@ gem 'sinatra-contrib',          require: ['sinatra/json', 'sinatra/cookies']
 gem 'sinatra-param',            github: 'snwfog/sinatra-param', branch: 'master', require: 'sinatra/param'
 gem 'sinatra-cross_origin',     require: 'sinatra/cross_origin'
 
-gem 'active_model_serializers', '~> 0.10.0'
+gem 'active_model_serializers', '~> 0.10.0', require: ['active_model_serializers',
+                                                       'active_model_serializers/serialization_context']
 gem 'nokogiri'
 gem 'rest-client'
 gem 'hashie'
