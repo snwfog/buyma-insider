@@ -30,7 +30,12 @@ class IndexPage < ActiveRecord::Base
   scope :root, -> { where(index_page_id: nil) }
 
   def full_url
-    merchant.full_url << relative_path
+    uri       = URI(merchant.full_url + relative_path)
+    uri.query = Rack::Utils
+                  .build_query(Rack::Utils
+                                 .parse_nested_query(uri.query)
+                                 .merge(merchant.query_strings))
+    uri.to_s
   end
 
   def root?
