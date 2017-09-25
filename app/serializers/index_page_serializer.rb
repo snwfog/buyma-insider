@@ -20,6 +20,10 @@ class IndexPageSerializer < ActiveModel::Serializer
         # except:     [:last_synced_at],
         expires_in: 1.day
 
+  belongs_to :index_page do
+    include_data(true)
+  end
+
   has_many :index_pages, if: :root? do
     include_data(true)
   end

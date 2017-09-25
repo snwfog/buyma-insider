@@ -30,7 +30,7 @@ class MerchantsController < ApplicationController
 
     @merchant            = Merchant
                              .includes(:merchant_metadatum,
-                                       index_pages: :index_pages)
+                                       index_pages: [:index_page, :index_pages])
                              .find_by_code(params[:merchant_code])
     @page, @limit, order = params.values_at(*%w(page limit order))
     @order_by            = if order
@@ -41,12 +41,13 @@ class MerchantsController < ApplicationController
 
   get '/' do
     json Merchant.includes(:merchant_metadatum,
-                           index_pages: :index_pages).all,
-         include: [:merchant_metadatum, :index_pages]
+                           index_pages: [:index_page, :index_pages]).all,
+         include: [:merchant_metadatum,
+                   index_pages: [:index_page, :index_pages]]
   end
 
   get '/:merchant_code' do
-    json @merchant, include: [:merchant_metadatum, :index_pages]
+    json @merchant, include: [:merchant_metadatum, :index_page, :index_pages]
   end
 
   get '/:merchant_code/articles' do
