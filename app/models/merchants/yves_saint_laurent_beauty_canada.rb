@@ -19,7 +19,7 @@ module Merchants
       last_page_starts_at = query_strings['start'].to_i
       max_articles        = articles_per_page + last_page_starts_at - 1
 
-      (0..max_articles).step(120) do |page_starts_at|
+      (0..max_articles).step(120).map do |page_starts_at|
         relative_path = root_index_page.relative_path + "?start=#{page_starts_at}"
         root_index_page.index_pages.build(relative_path: relative_path, merchant: self)
       end
