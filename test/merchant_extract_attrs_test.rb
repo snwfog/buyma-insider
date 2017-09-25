@@ -734,4 +734,40 @@ class MerchantExtractAttrsTest < Minitest::Test
     assert_equal '126236039', article_hash[:sku]
     assert_equal '//www.michaelkors.ca/brooklyn-leather-tote/_/R-CA_30F7SBNT2L', article_hash[:link]
   end
+
+  def test_should_extract_attrs_yves_saint_laurent_beauty_canada
+    frag = <<~HTML
+      <div class="product_tile b-product_tile" data-itemid="253YSL" id="0da2f2989e2ca28ea55891bdd9">
+        <!-- dwMarker="product" dwContentID="0da2f2989e2ca28ea55891bdd9" -->
+        <div class="product_image_topwrapper">
+          <a class="product_image_wrapper b-product_img-link" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare" title="Or Rouge Eye Cream"><img alt="Or Rouge Eye Cream" class="product_image b-product_img" data-desktop-src="http://www.yslbeauty.ca/dw/image/v2/AATL_PRD/on/demandware.static/-/Sites-ysl-master-catalog/default/dwa0f7cc86/Skincare/Or Rouge/3365440688292_15_Or-rouge-creme-regard_Alt1.png?sw=202&amp;sh=267&amp;sm=fit" data-mobile-src="http://www.yslbeauty.ca/dw/image/v2/AATL_PRD/on/demandware.static/-/Sites-ysl-master-catalog/default/dwa0f7cc86/Skincare/Or Rouge/3365440688292_15_Or-rouge-creme-regard_Alt1.png?sw=135&amp;sh=178&amp;sm=fit" data-retina-src="http://www.yslbeauty.ca/dw/image/v2/AATL_PRD/on/demandware.static/-/Sites-ysl-master-catalog/default/dwa0f7cc86/Skincare/Or Rouge/3365440688292_15_Or-rouge-creme-regard_Alt1.png?sw=404&amp;sh=534&amp;sm=fit" data-tablet-src="http://www.yslbeauty.ca/dw/image/v2/AATL_PRD/on/demandware.static/-/Sites-ysl-master-catalog/default/dwa0f7cc86/Skincare/Or Rouge/3365440688292_15_Or-rouge-creme-regard_Alt1.png?sw=202&amp;sh=267&amp;sm=fit" src="http://www.yslbeauty.ca/dw/image/v2/AATL_PRD/on/demandware.static/-/Sites-ysl-master-catalog/default/dwa0f7cc86/Skincare/Or%20Rouge/3365440688292_15_Or-rouge-creme-regard_Alt1.png?sw=202&amp;sh=267&amp;sm=fit" title="Or Rouge Eye Cream"></a> <a class="quickviewbutton" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare" title="Or Rouge Eye Cream"><span>Quick Shop</span><span class="js_disble_quickview disblequickview"></span></a>
+        </div>
+        <div class="action_product_block">
+          <div class="action_product_block_title">
+            <a class="product_name" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare" title="Or Rouge Eye Cream">Or Rouge Eye Cream</a>
+            <div class="description">
+              YVES SAINT LAURENT reveals OR ROUGE, its Exceptional Global Skincare, where lies at its heart the Pistil of Saffron from High Atlas. Soft and velvety, the EYE CREME targets the main signs of ageing on the eye contour.
+            </div>
+          </div>
+          <div class="promotion"></div><span class="ui-rating-title"></span> <a class="inline_rating_link" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare"><span class="bv-rating"><span class="bv-rating_empty"><span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span></span> <span class="bv-rating_value" style="width:100.00%"><span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span> <span class="bv-rating_item"></span></span></span></a> <a class="inline_rating_label_link" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare"><span class="ui-rating-label">2 reviews</span></a>
+          <div class="price b-price">
+            <p class="product_price price_sale b-product_price-sale b-product_price" data-pricevalue="235.0" title="Sale Price"><span class="product_price_title b-product_price-title"></span> $ 235.00</p>
+          </div>
+          <div class="product_actions">
+            <input name="cartAction" type="hidden" value="add"> <input name="pid" type="hidden" value="3365440688292"> <input name="quantity" type="hidden" value="1"> <input name="maxProductSpecificQuantity" type="hidden" value="5"> <a class="button js_learnmorebutton learnmorebutton" href="http://www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html?cgid=skincare" title="Shop now"><span>Shop now</span></a>
+          </div>
+        </div>
+      </div>
+    HTML
+
+    merchant = MockMerchant.new('ysb', '//www.yslbeauty.ca')
+    merchant.extend(Merchants::YvesSaintLaurentBeautyCanada)
+
+    article_hash = merchant.extract_attrs!(Nokogiri::HTML::DocumentFragment.parse(frag).at_css('div'))
+    assert_equal 'or rouge eye cream', article_hash[:name]
+    assert_equal 'YVES SAINT LAURENT reveals OR ROUGE, its Exceptional Global Skincare, where lies at its heart the Pistil of Saffron from High Atlas. Soft and velvety, the EYE CREME targets the main signs of ageing on the eye contour.', article_hash[:description]
+    assert_equal '235.0', article_hash[:price]
+    assert_equal '253YSL', article_hash[:sku]
+    assert_equal '//www.yslbeauty.ca/en/skincare/or-rouge-eye-cream/253YSL.html', article_hash[:link]
+  end
 end
