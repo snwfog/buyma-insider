@@ -17,8 +17,7 @@ Sidekiq.configure_server do |cfg|
 
   cfg.error_handlers << -> (ex, ctx_hash) do
     Raven.capture_exception(ex)
-    logger.error(ex)
-    logger.error(ctx_hash)
+    Raven.capture_exception(ctx_hash)
   end
 end
 
