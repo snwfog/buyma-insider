@@ -353,7 +353,7 @@ yves_saint_laurent_beauty_canada:
   name:                            yves_saint_laurent_beauty_canada
   domain:                          //www.yslbeauty.ca
   ssl:                             true
-  pager_css:                       ~
+  pager_css:                       div.paging_bar
   item_css:                        div.product_tile
   index_pages:
     - /en/exclusives/online-exclusives/
