@@ -109,9 +109,14 @@ namespace :app do
     merchant_cfg.each do |_m_name, cfg|
       cfg.symbolize_keys!
       puts "Updating merchant [#{_m_name}]..."
-      unless merchant = Merchant.find_by_code(cfg[:code])
-        merchant = Merchant.create!(cfg.dup.delete_if { |k| !%i(code name).include?(k) })
-        merchant.create_merchant_metadatum!(cfg.dup.delete_if { |k| !%i(domain ssl pager_css item_css).include?(k) })
+      merchant_attrs           = cfg.dup.delete_if { |k| !%i(code name).include?(k) }
+      merchant_metadatum_attrs = cfg.dup.delete_if { |k| !%i(domain ssl pager_css item_css).include?(k) }
+      if merchant = Merchant.find_by_code(cfg[:code])
+        merchant.update_attributes!(merchant_attrs)
+        merchant.metadatum.update_attributes!(merchant_metadatum_attrs)
+      else
+        merchant = Merchant.create!(merchant_attrs)
+        merchant.create_merchant_metadatum!(merchant_metadatum_attrs)
       end
 
       cfg[:index_pages].each do |relative_path|
